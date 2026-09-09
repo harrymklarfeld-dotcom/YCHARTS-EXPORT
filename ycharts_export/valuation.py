@@ -91,7 +91,17 @@ class Result:
 
 # ---------------------------------------------------------------- model
 def run(data: dict, price: float, r: float, shares_m: float):
-    q = data["quarters"]
+    yc = data.get("ycharts")
+    if yc:
+        # newest-first in YCharts; model wants oldest-first, last 4 = TTM
+        yq = list(reversed(yc["quarters"][:4]))
+        q = [{"fq": f"Q{((i+3)%4)+1}FY{x['fy'] % 100}", "end": x["end"], "revenue": x["revenue"],
+              "gaap_ni": x["net_income"], "gaap_eps": x["eps_diluted"],
+              "non_gaap_eps": data["quarters"][i]["non_gaap_eps"], "ocf": x["ocf"],
+              "capex": x["capex"], "fcf": x["fcf"], "gross_margin_pct": x["gross_margin_pct"]}
+             for i, x in enumerate(yq)]
+    else:
+        q = data["quarters"]
     bs = data["balance_sheet_2026-05-28"]
     g = data["guidance_Q4FY26"]
     mkt = data["market"]
@@ -131,6 +141,9 @@ def run(data: dict, price: float, r: float, shares_m: float):
     }
 
     # ---- lens 2: through-cycle earnings power
+    if yc:
+        hist = [{"fy": a["fy"], "revenue": a["revenue"], "gaap_ni": a["net_income"], "fcf": a["fcf"]}
+                for a in yc["annual"] if a["quarters"] == 4]
     old = [h for h in hist if 2017 <= h["fy"] <= 2025]
     old_avg_ni = sum(h["gaap_ni"] for h in old) / len(old)
     old_avg_rev = sum(h["revenue"] for h in old) / len(old)
@@ -182,6 +195,15 @@ def run(data: dict, price: float, r: float, shares_m: float):
         "Net cash / share, Aug-2027E (base-case FCF)": net_cash_aug27 / shares_m * 1000,
     }
 
+    # ---- operating diagnostics from YCharts statements
+    diag = None
+    if yc:
+        yq8 = yc["quarters"][:8]
+        diag = [{"end": x["end"], "revenue": x["revenue"], "receivables": x["receivables"], "dso": x["dso"],
+                 "inventory": x["inventory"], "inv_days": x["inv_days"], "wc_change": x["wc_change"],
+                 "ni": x["net_income"], "ocf": x["ocf"], "capex": x["capex"], "da": x["da"],
+                 "net_debt": x["net_debt"], "buyback": x["buyback"], "total_debt": x["total_debt"]} for x in yq8]
+
     # ---- margin of safety
     blended_iv = 0.5 * dcf_weighted + 0.5 * ep_weighted
     ivs = {
@@ -198,7 +220,7 @@ def run(data: dict, price: float, r: float, shares_m: float):
     return dict(ttm=ttm, fy26=fy26, multiples=multiples, earnings_power=earnings_power,
                 ep_weighted=ep_weighted, dcf=dcf, dcf_weighted=dcf_weighted, sens=sens,
                 floor=floor, ivs=ivs, mos=mos, buy_below=buy_below, old=old,
-                net_cash_aug26=net_cash_aug26, mcap=mcap, ev=ev, ncps=ncps)
+                net_cash_aug26=net_cash_aug26, mcap=mcap, ev=ev, ncps=ncps, diag=diag, q=q)
 
 
 # ---------------------------------------------------------------- report
@@ -209,15 +231,20 @@ def report(data, res, price, r, shares_m) -> str:
     P(f"# Micron (MU) intrinsic value and margin of safety\n")
     P(f"*Valuation date {data['as_of']}. Price ${price:,.2f} ({mkt['price_date']} close). "
       f"Diluted shares {shares_m:,.0f}M. Discount rate {r:.0%}. $ in billions unless per share.*\n")
-    P("> ycharts.com was unreachable from the analysis environment (blocked at the network "
-      "egress proxy), so the inputs below come from Micron's SEC-filed press releases and 10-Qs, "
-      "TrendForce, and sell-side notes. See `data/mu_fundamentals.json` for every input and its source. "
-      "Run `python -m ycharts_export.scrape MU` on an unrestricted network to pull the same fields from YCharts.\n")
+    if data.get("ycharts"):
+        P(f"> Financial statements are from the YCharts exports in `data/ycharts/` (quarterly, through "
+          f"{data['ycharts']['latest_quarter']}). Guidance, consensus, pricing data and the pre-earnings context come from "
+          "Micron's press releases, TrendForce and sell-side coverage; every input is listed in `data/mu_fundamentals.json`.\n")
+    else:
+        P("> ycharts.com was unreachable from the analysis environment (blocked at the network "
+          "egress proxy), so the inputs below come from Micron's SEC-filed press releases and 10-Qs, "
+          "TrendForce, and sell-side notes. See `data/mu_fundamentals.json` for every input and its source. "
+          "Run `python -m ycharts_export.scrape MU` on an unrestricted network to pull the same fields from YCharts.\n")
 
     P("## 1. What the business is doing right now\n")
     P("| Quarter | Revenue | Gross margin | GAAP net income | GAAP EPS | Op. cash flow | Capex | FCF |")
     P("|---|---:|---:|---:|---:|---:|---:|---:|")
-    for x in data["quarters"]:
+    for x in res["q"]:
         P(f"| {x['fq']} ({x['end']}) | {x['revenue']:.2f} | {x['gross_margin_pct']:.1f}% | {x['gaap_ni']:.2f} | "
           f"{x['gaap_eps']:.2f} | {x['ocf']:.2f} | {x['capex']:.2f} | {x['fcf']:.2f} |")
     P(f"| Q4FY26 guide | {g['revenue']:.0f} ± {g['revenue_range']:.0f} | — | — | ~{g['non_gaap_eps']:.2f} (non-GAAP) | — | ~{g['capex']:.0f} | >{g['fcf_min']:.0f} |")
@@ -225,6 +252,10 @@ def report(data, res, price, r, shares_m) -> str:
     P(f"| **TTM (to May-26)** | **{t['revenue']:.1f}** | | **{t['gaap_ni']:.1f}** | **{t['gaap_eps']:.2f}** | **{t['ocf']:.1f}** | **{t['capex']:.1f}** | **{t['fcf']:.1f}** |")
     P(f"| **FY26E (3Q actual + guide)** | **{f['revenue']:.0f}** | | **~{f['gaap_ni']:.0f}** | **~{f['non_gaap_eps']:.0f} (non-GAAP)** | | ~{g['fy26_capex_net']:.0f} | **~{f['fcf']:.0f}** |")
     P("")
+    if data.get("ycharts"):
+        P("*Quarterly figures are from the YCharts income statement, balance sheet and cash-flow exports "
+          "(`data/ycharts/`). Capex is gross; Micron's press releases report capex net of government "
+          "incentives, which is why its 'adjusted FCF' runs ~$0.5–0.7B/quarter higher than the FCF shown here.*\n")
     P("Revenue has more than quadrupled year over year and gross margin has gone from the mid-40s to 85%. "
       "That is not volume: it is price. Every dollar of memory price increase drops almost straight to "
       "operating income, which is why net income is compounding faster than revenue. The balance sheet "
@@ -256,11 +287,24 @@ def report(data, res, price, r, shares_m) -> str:
     P("## 3. Lens A: through-cycle earnings power\n")
     old = res["old"]
     d = res["earnings_power"][0].detail
-    P("Historical cycle (fiscal years, GAAP net income $B):\n")
-    P("| " + " | ".join(str(h["fy"]) for h in data["annual_history"]) + " |")
-    P("|" + "---:|" * len(data["annual_history"]))
-    P("| " + " | ".join(f"{h['gaap_ni']:.1f}" for h in data["annual_history"]) + " |")
+    yc = data.get("ycharts")
+    hist_rows = ([{"fy": a["fy"], "revenue": a["revenue"], "gaap_ni": a["net_income"], "fcf": a["fcf"]}
+                  for a in yc["annual"] if a["quarters"] == 4 and a["fy"] >= 2010] if yc else data["annual_history"])
+    P("Historical cycle from the YCharts export (fiscal years, $B):\n")
+    P("| FY | " + " | ".join(str(h["fy"]) for h in hist_rows) + " |")
+    P("|---|" + "---:|" * len(hist_rows))
+    P("| Revenue | " + " | ".join(f"{h['revenue']:.1f}" for h in hist_rows) + " |")
+    P("| Net income | " + " | ".join(f"{h['gaap_ni']:.1f}" for h in hist_rows) + " |")
+    if yc:
+        P("| FCF (OCF − gross capex) | " + " | ".join(f"{h['fcf']:.1f}" for h in hist_rows) + " |")
     P("")
+    if yc:
+        fcf_sum = sum(h["fcf"] for h in hist_rows if 2017 <= h["fy"] <= 2025)
+        ni_sum = sum(h["gaap_ni"] for h in hist_rows if 2017 <= h["fy"] <= 2025)
+        P(f"One thing the cash-flow statement makes brutally clear: across FY17–FY25 Micron reported ${ni_sum:.0f}B of "
+          f"net income but generated only ${fcf_sum:.0f}B of free cash flow, because ~${sum(a['capex'] for a in yc['annual'] if 2017<=a['fy']<=2025):.0f}B "
+          "went into fabs. Memory earnings are not the same as memory cash. That gap is why the "
+          "terminal value below is struck on FCF, not net income, and why FY27 capex guidance matters as much as the revenue guide.\n")
     P(f"Average FY17–FY25 net income was ${d['avg_ni']:.1f}B on ${d['avg_rev']:.1f}B revenue; the prior peak was "
       f"${d['peak_ni']:.1f}B. FY26 will earn roughly ${f['gaap_ni']:.0f}B, about {f['gaap_ni']/d['peak_ni']:.0f}x the old peak "
       f"and {f['gaap_ni']/d['avg_ni']:.0f}x the old average. The whole valuation debate is how much of that is permanent.\n")
@@ -305,6 +349,80 @@ def report(data, res, price, r, shares_m) -> str:
       "It is also 70–85% below the current price, which is roughly what memory drawdowns look like "
       "(−55% in 2018–19, −50% in 2022, −90% in 2000–01). Past cycles bottomed near 1.0–1.5x book.\n")
 
+    if res.get("diag"):
+        P("## 5b. What the statements say about the quality of these earnings\n")
+        P("| Quarter | Revenue | Receivables | DSO | Inventory | Inv. days | WC change | Net income | OCF | Gross capex | D&A | Net debt |")
+        P("|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+        for x in res["diag"]:
+            P(f"| {x['end']} | {x['revenue']:.1f} | {x['receivables']:.1f} | {x['dso']:.0f} | {x['inventory']:.1f} | {x['inv_days']:.0f} | "
+              f"{x['wc_change']:+.1f} | {x['ni']:.1f} | {x['ocf']:.1f} | {x['capex']:.1f} | {x['da']:.1f} | {x['net_debt']:+.1f} |")
+        P("")
+        P("- **Inventory is not building.** Inventory has been flat at ~$8.3–8.7B for two years while revenue quadrupled; "
+          "days held fell from 162 to 128. That is what a genuine shortage looks like. The first sign of the peak in every prior cycle "
+          "was inventory days turning up two to three quarters before prices broke. Watch this line on Sept 30.")
+        P("- **Receivables are the cost of the boom.** Receivables went from $7B to $27B in three quarters (DSO steady at ~75–78 days), "
+          "which is why operating cash flow is running ~$3B below net income per quarter. Not a red flag by itself, but it means a "
+          "price reversal would show up in cash (and in the balance sheet, via lower collections) faster than in the P&L.")
+        P("- **Capex is about to double.** Gross capex was $19.6B in the first nine months of FY26 against D&A of only $6.9B. "
+          "FY27 capex above $40B means depreciation will roughly double over 2027–29, exactly when the bear case has pricing softening. "
+          "Margins compress from both ends in a downturn.")
+        P("- **Balance sheet is now a fortress.** Total debt was cut from $16.2B to $6.4B in a year, and net cash is ~$20B "
+          "(YCharts basis, excludes $4.3B of long-term investments) heading toward ~$50B after Q4.")
+        P("- **Buybacks are token.** $1.4B repurchased over nine months against ~$26B of FCF. Management is keeping the cash for fabs, "
+          "which is the right call in a shortage but tells you where the next cycle's supply is coming from.")
+        P("")
+
+    pe = data.get("pre_earnings")
+    if pe:
+        gq = pe["guide_q4fy26"]; cq = pe["consensus_q4fy26"]; pp = pe["price_path_2026"]
+        P("## 5c. The September 30 print: what is priced in\n")
+        P("| Item | Value |")
+        P("|---|---|")
+        P(f"| Report | {pe['report_date']}, {pe['report_time']} |")
+        P(f"| Q4 guide | Rev ${gq['revenue']:.0f}B ± {gq['revenue_range']:.0f}, GM ~{gq['gross_margin_pct']:.0f}%, opex ${gq['opex']:.2f}B, EPS ${gq['non_gaap_eps']:.0f} ± {gq['eps_range']:.0f}, FCF >${gq['fcf_min']:.0f}B |")
+        P(f"| Consensus | Rev ${cq['revenue']:.1f}B, EPS ${cq['eps']:.2f} (i.e. the Street already sits above the guide) |")
+        P(f"| Last two EPS surprises | +{pe['recent_surprises'][0]['eps_surprise_pct']:.0f}% (Q2), +{pe['recent_surprises'][1]['eps_surprise_pct']:.0f}% (Q3); stock +{pe['recent_surprises'][1]['next_day_move_pct']:.1f}% after Q3 |")
+        P(f"| Options-implied move | ~{pe['implied_move_pct_typical'].split(' ')[0]}% |")
+        P(f"| Price path | ${pp['post_q3_close']:,.0f} after Q3 → ${pp['high']:,.0f} high → ${pp['late_july_low']:,.0f} late-July low → ${pp['sep_08_close']:,.2f} Sep 8 |")
+        P(f"| Sell-side | {pe['analyst_ratings']['buy']} buy / {pe['analyst_ratings']['hold']} hold / {pe['analyst_ratings']['sell']} sell |")
+        P(f"| Short interest | {pe['short_interest_pct_float']} |")
+        P(f"| Q1 FY27 pricing backdrop (TrendForce) | server DRAM +{pe['industry_q1fy27_pricing']['server_dram_qoq_pct']}% QoQ, PC DRAM +{pe['industry_q1fy27_pricing']['pc_dram_qoq_pct']}%, NAND +{pe['industry_q1fy27_pricing']['nand_qoq_pct']}%; PC DRAM slows to +{pe['industry_q1fy27_pricing']['q4cy26_pc_dram_qoq_pct']}% the quarter after |")
+        P("")
+        P("**The Q4 number itself is nearly a known quantity.** Management guided to a tight ±$1B range on a quarter that "
+          "was 75% contracted when they guided, and Micron has beaten its own guide every quarter of this upcycle. A beat is "
+          "the base case and is already in the price; consensus sits above the guide. What moves the stock is the **Q1 FY27 guide "
+          "and the FY27 capex/pricing language**:\n")
+        P("- **Arithmetic for the guide.** Q4 revenue of ~$51B, plus TrendForce's Q3-calendar price increases (server DRAM +13–18%, "
+          "NAND +10–15%) on roughly flat bits, points to a Q1 FY27 guide of roughly $56–60B and EPS in the mid-$30s. "
+          "FY27 consensus of $155 EPS needs an average of ~$39/quarter, so a guide much below ~$35 would be read as 'the "
+          "acceleration is over' even though it would be a record.")
+        P("- **The word 'moderation'.** Management already said the Q4 margin outlook 'reflects a moderation in the rate of "
+          "price increases'. TrendForce has PC DRAM slowing to +3–8% in calendar Q4. If Micron confirms deceleration into "
+          "the February quarter, the market will start discounting the peak regardless of how good Q4 was. That is the "
+          "single most likely way this print disappoints.")
+        P("- **Capex.** A FY27 gross capex number of $45B+ is expected. Higher than that is bullish for 2029 share and bearish "
+          "for the 2028 pricing cycle; the stock's reaction will depend on which narrative dominates that day.")
+        P("- **Positioning.** 45 buys, 0 sells, a $1,295–1,515 mean target, and the stock is 20% below its high with short interest "
+          "at multi-year highs. That combination produces violent moves both ways (see the +15.7% after Q3 and the trip to $740 "
+          "five weeks later). Expect the realized move to exceed the ~9% the options price.")
+        P("")
+        P("**Event math.** Three outcomes, weighted by what the pricing data and past prints suggest:\n")
+        P("| Outcome | Prob. | Typical reaction | Price next day | vs. blended IV |")
+        P("|---|---:|---:|---:|---:|")
+        iv = res["ivs"]["Blended intrinsic value"]
+        outcomes = [("Beat + Q1 guide ≥ $58B, no moderation talk", 0.35, 0.12),
+                    ("Beat + guide in the $54–58B range, 'moderation' reiterated", 0.45, -0.04),
+                    ("Guide < $54B or capex shock / pricing peak signalled", 0.20, -0.18)]
+        ev_move = 0.0
+        for name, pr, mv in outcomes:
+            px = price * (1 + mv); ev_move += pr * mv
+            P(f"| {name} | {pr:.0%} | {mv:+.0%} | ${px:,.0f} | {1 - px / iv:+.0%} MoS |")
+        P(f"| **Expected** | | **{ev_move:+.1%}** | **${price * (1 + ev_move):,.0f}** | |")
+        P("")
+        P(f"The expected one-day return on the event is roughly {ev_move:+.1%}, i.e. zero within any honest error bar. Buying the day "
+          "before the print is a coin flip with a ~10–15% payoff either way on a stock that is already at fair value. That is speculation, "
+          "not a margin-of-safety purchase, and nothing in the fundamentals changes on Sept 30 that isn't already visible in the pricing data.\n")
+
     P("## 6. Margin of safety\n")
     P("| Intrinsic value basis | Value / share | Margin of safety at $" + f"{price:,.0f}" + " |")
     P("|---|---:|---:|")
@@ -319,9 +437,20 @@ def report(data, res, price, r, shares_m) -> str:
         P(f"| {m:.0%} | ${v:,.0f} |")
     P("")
 
-    P("## 7. Conclusion\n")
+    P("## 7. Conclusion: should you buy before September 30?\n")
     iv = res["ivs"]["Blended intrinsic value"]
-    P(f"**At ~${price:,.0f} there is no margin of safety.** The probability-weighted intrinsic value is about "
+    P(f"**No, not as a value purchase.** At ~${price:,.0f} the stock sits at fair value on a full-cycle view, the print is "
+      "unlikely to change intrinsic value by more than a few percent in either direction, and the event is a ~±10–15% coin flip. "
+      "Buying ahead of it is a bet on the Q1 guide, not on the business. Three ways to act on that:\n")
+    P(f"1. **Wait for the print and buy weakness.** The market already offered ${data['pre_earnings']['price_path_2026']['late_july_low']:,.0f} six weeks ago on nothing "
+      f"fundamental. A 'moderation' guide or a capex shock could plausibly do it again. ${res['buy_below'][0.25]:,.0f} is a 25% margin of safety on the "
+      f"blended value and roughly where a disappointed market would take it; ${res['buy_below'][0.35]:,.0f}–${res['buy_below'][0.50]:,.0f} is where the bear case is covered.")
+    P("2. **If you must own it into the print, size it as a trade.** A third of the intended position, with the rest reserved for a post-earnings "
+      "pullback. Losing 15% on a third is survivable; losing 15% on a full position bought at fair value is a value investor's own goal.")
+    P("3. **If the guide is strong and the stock gaps up 10%+,** let it go. A $1,100–1,150 price is inside the bull case's margin only if you assign "
+      "the bull case more than 50% probability, and the industry data (decelerating price increases, doubling capex, China capacity) argue against that.")
+    P("")
+    P(f"For reference, the underlying valuation: **at ~${price:,.0f} there is no margin of safety.** The probability-weighted intrinsic value is about "
       f"${iv:,.0f}, so the stock trades within a few percent of fair value on a full-cycle view. The bull case "
       f"(${res['ivs']['DCF bull case']:,.0f}) is genuinely available, but you pay for it: the bear case is "
       f"${res['ivs']['DCF bear case']:,.0f}, roughly {1 - res['ivs']['DCF bear case']/price:.0%} lower, and the payoff is close to symmetric. "
