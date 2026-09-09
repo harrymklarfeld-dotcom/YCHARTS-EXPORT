@@ -1,0 +1,95 @@
+{
+  "ticker": "MU",
+  "company": "Micron Technology, Inc.",
+  "as_of": "2026-09-09",
+  "fiscal_year_end": "late August / early September",
+  "notes": [
+    "ycharts.com is blocked by this session's egress proxy, so figures were collected from Micron press releases / 10-Q filings (as surfaced by web search), TrendForce, and sell-side coverage. Re-run ycharts_export/scrape.py from a machine that can reach ycharts.com to refresh the 'ycharts' block.",
+    "All $ figures in billions unless suffixed _per_share. Shares in millions."
+  ],
+  "market": {
+    "price": 1000.26,
+    "price_date": "2026-09-08",
+    "week52_high": 1255.00,
+    "week52_low": 138.34,
+    "ytd_return_pct": 206,
+    "shares_outstanding_basic_m": 1129,
+    "shares_diluted_weighted_m": 1145,
+    "annual_dividend_per_share": 0.60,
+    "buyback_9m_fy26": 0.65,
+    "buyback_authorization_remaining_approx": 10.0,
+    "sellside_mean_target_range": [1295, 1515],
+    "sellside_high_target": 2200
+  },
+  "balance_sheet_2026-05-28": {
+    "cash_and_investments": 30.2,
+    "total_debt": 5.7,
+    "net_cash": 24.4,
+    "total_assets": 134.1,
+    "shareholders_equity": 100.7,
+    "book_value_per_share": 89.2
+  },
+  "quarters": [
+    {"fq": "Q4FY25", "end": "2025-08-28", "revenue": 11.32, "gaap_ni": 3.20, "gaap_eps": 2.83, "non_gaap_ni": 3.47, "non_gaap_eps": 3.03, "ocf": 5.73, "capex": 4.93, "fcf": 0.80, "gross_margin_pct": 44.7},
+    {"fq": "Q1FY26", "end": "2025-11-27", "revenue": 13.64, "gaap_ni": 5.24, "gaap_eps": 4.60, "non_gaap_ni": 5.48, "non_gaap_eps": 4.78, "ocf": 8.41, "capex": 4.5, "fcf": 3.9, "gross_margin_pct": 56.0},
+    {"fq": "Q2FY26", "end": "2026-02-26", "revenue": 23.86, "gaap_ni": 13.79, "gaap_eps": 12.07, "non_gaap_ni": 14.02, "non_gaap_eps": 12.20, "ocf": 11.90, "capex": 5.0, "fcf": 6.9, "gross_margin_pct": 73.0},
+    {"fq": "Q3FY26", "end": "2026-05-28", "revenue": 41.46, "gaap_ni": 28.24, "gaap_eps": 24.67, "non_gaap_ni": 28.86, "non_gaap_eps": 25.11, "ocf": 25.39, "capex": 7.1, "fcf": 18.3, "gross_margin_pct": 84.6}
+  ],
+  "guidance_Q4FY26": {
+    "revenue": 50.0, "revenue_range": 1.0,
+    "non_gaap_eps": 30.73, "eps_range": 1.0,
+    "fcf_min": 30.0,
+    "capex": 10.0,
+    "fy26_capex_net": 27.0,
+    "report_date": "2026-09-30",
+    "commentary": [
+      "16 strategic customer agreements, ~$100B minimum contracted revenue",
+      "HBM sold out through CY2026; full CY2027 capacity already booked",
+      "CEO: tight conditions to persist beyond calendar 2027",
+      "Q4 gross-margin outlook reflects moderation in the rate of price increases",
+      "FY27 capex expected to exceed mid-$40B (sell-side read of call); Idaho ID1 first output mid-CY2027, ID2 late CY2028, New York 2030"
+    ]
+  },
+  "consensus": {
+    "fy26_non_gaap_eps_implied": 72.8,
+    "fy27_eps": 155.0,
+    "fy27_eps_90_days_ago": 102.7,
+    "citi_view": "memory prices peak ~Q2 CY2027; cut FY27/FY28 estimates and multiple; China capacity the key long-term risk"
+  },
+  "industry": {
+    "trendforce_q3_2026_server_dram_contract_qoq_pct": "13-18",
+    "trendforce_q3_2026_pc_dram_contract_qoq_pct": "15-20",
+    "trendforce_q4_2026_pc_dram_contract_qoq_pct": "3-8",
+    "trendforce_q3_2026_nand_contract_qoq_pct": "10-15",
+    "hbm3e_price_per_stack_usd": 300,
+    "hbm4_price_per_stack_usd": 550,
+    "peer_forward_pe": {"SK_Hynix": 6.2, "Samsung": 4.7}
+  },
+  "annual_history": [
+    {"fy": 2016, "revenue": 12.40, "gaap_ni": -0.28},
+    {"fy": 2017, "revenue": 20.32, "gaap_ni": 5.09},
+    {"fy": 2018, "revenue": 30.39, "gaap_ni": 14.14},
+    {"fy": 2019, "revenue": 23.41, "gaap_ni": 6.31},
+    {"fy": 2020, "revenue": 21.44, "gaap_ni": 2.69},
+    {"fy": 2021, "revenue": 27.71, "gaap_ni": 5.86},
+    {"fy": 2022, "revenue": 30.76, "gaap_ni": 8.69},
+    {"fy": 2023, "revenue": 15.54, "gaap_ni": -5.83},
+    {"fy": 2024, "revenue": 25.11, "gaap_ni": 0.78},
+    {"fy": 2025, "revenue": 37.38, "gaap_ni": 8.54, "ocf": 17.5, "capex": 13.8}
+  ],
+  "sources": [
+    "https://www.sec.gov/Archives/edgar/data/723125/000072312526000013/a2026q3ex991-pressrelease.htm",
+    "https://www.sec.gov/Archives/edgar/data/0000723125/000072312526000015/mu-20260528.htm",
+    "https://www.sec.gov/Archives/edgar/data/723125/000072312526000004/a2026q2ex991-pressrelease.htm",
+    "https://www.sec.gov/Archives/edgar/data/723125/000072312525000044/a2026q1ex991-pressrelease.htm",
+    "https://www.sec.gov/Archives/edgar/data/723125/000072312525000028/mu-20250828.htm",
+    "https://www.cnbc.com/2026/06/24/micron-mu-earnings-report-q3-2026.html",
+    "https://www.investing.com/news/company-news/micron-q3-2026-slides-record-margins-100b-customer-agreements-93CH-4759276",
+    "https://www.trendforce.com/presscenter/news/20260709-13140.html",
+    "https://www.theregister.com/storage/2026/09/07/dram-contract-prices-forecast-to-grow-only-13-18-in-q3/5294776",
+    "https://finance.yahoo.com/markets/stocks/articles/micron-memory-boom-heading-peak-100028273.html",
+    "https://www.macrotrends.net/stocks/charts/MU/micron-technology/stock-price-history",
+    "https://fullratio.com/stocks/nasdaq-mu/pe-ratio",
+    "https://www.gurufocus.com/term/forward-pe-ratio/SKHY"
+  ]
+}
