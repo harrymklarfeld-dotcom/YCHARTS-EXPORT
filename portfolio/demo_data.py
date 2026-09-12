@@ -14,7 +14,7 @@ import os
 import random
 from datetime import date, timedelta, datetime, timezone
 
-from .ledger import build_positions, summarize
+from .ledger import build_positions, summarize, ytd_summary
 from .robinhood_sync import DATA_DIR
 
 
@@ -61,6 +61,8 @@ def build(seed: int = 7) -> dict:
     prev = {s: px[-2][1] for s, px in series.items()}
     cash = 2_314.55
     summary = summarize(pos, last, cash=cash, prev_close=prev)
+    summary["rh_cost_basis"] = summary["cost_basis"]
+    xfers = [{"date": (start + timedelta(days=30 * k)).isoformat(), "amount": 2500.0, "source": "bank"} for k in range(36)]
     stats = {"MU": (22.6, 1.145e12, 0.1, 11.2, 1255.0, 138.0, "Technology", "Semiconductors"),
              "NVDA": (48.0, 4.6e12, 0.02, 40.0, 210.0, 90.0, "Technology", "Semiconductors"),
              "AAPL": (32.0, 3.5e12, 0.45, 50.0, 260.0, 170.0, "Technology", "Consumer Electronics"),
@@ -94,6 +96,8 @@ def build(seed: int = 7) -> dict:
                         "withdrawable": cash},
             "summary": {k: v for k, v in summary.items() if k != "holdings"},
             "holdings": summary["holdings"], "trades": trades, "dividends": divs,
+            "transfers": xfers, "closed": [p.to_dict() for p in pos.values() if p.qty <= 1e-9],
+            "ytd": ytd_summary(pos, trades, divs, xfers, curve, summary["equity"], year=2026),
             "equity_curve": {"all": curve, "year": curve[-252:]}}
     return snap, series
 

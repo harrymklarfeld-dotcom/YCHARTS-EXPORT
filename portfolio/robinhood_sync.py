@@ -34,7 +34,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
-from .ledger import build_positions, summarize
+from .ledger import build_positions, summarize, ytd_summary
 
 DATA_DIR = os.path.join("data", "portfolio")
 
@@ -116,8 +116,18 @@ def fetch_trades(rh, instrument_symbols: dict[str, str] | None = None) -> list[d
     """Every filled stock order -> ledger trades. Partial fills use the executions list."""
     instrument_symbols = dict(instrument_symbols or {})
     trades = []
-    for o in rh.get_all_stock_orders() or []:
-        if not o or o.get("state") != "filled":
+    # Robinhood's /orders/ feed returns a limited window by default; asking with an old
+    # updated_at[gte] pulls the rest. Union both and de-duplicate by order id.
+    seen, orders = set(), []
+    for kwargs in ({}, {"start_date": "2010-01-01T00:00:00Z"}):
+        try:
+            for o in rh.get_all_stock_orders(**kwargs) or []:
+                if o and o.get("id") not in seen:
+                    seen.add(o.get("id")); orders.append(o)
+        except Exception as e:  # noqa: BLE001
+            print(f"warning: order fetch {kwargs} failed: {e}", file=sys.stderr)
+    for o in orders:
+        if o.get("state") != "filled":
             continue
         url = o.get("instrument")
         sym = instrument_symbols.get(url)
@@ -157,6 +167,64 @@ def fetch_dividends(rh, instrument_symbols: dict[str, str]) -> list[dict]:
     return out
 
 
+def fetch_transfers(rh) -> list[dict]:
+    """Cash in/out of the account: deposits positive, withdrawals negative."""
+    out = []
+    try:
+        for t in rh.get_bank_transfers() or []:
+            if not t or t.get("state") not in ("completed", "settled"):
+                continue
+            amt = _f(t.get("amount"))
+            out.append({"date": (t.get("created_at") or t.get("updated_at"))[:10],
+                        "amount": amt if t.get("direction") == "deposit" else -amt, "source": "bank"})
+    except Exception as e:  # noqa: BLE001
+        print(f"warning: bank transfers unavailable: {e}", file=sys.stderr)
+    try:
+        for t in rh.get_unified_transfers() or []:
+            if not t or str(t.get("state", "")).lower() not in ("completed", "settled"):
+                continue
+            amt = _f(t.get("amount", {}).get("amount") if isinstance(t.get("amount"), dict) else t.get("amount"))
+            d = (t.get("initiated_at") or t.get("created_at") or t.get("updated_at") or "")[:10]
+            direction = str(t.get("direction", "")).lower()
+            if not d or not amt or direction not in ("deposit", "withdraw", "withdrawal", "in", "out"):
+                continue
+            key = (d, round(amt, 2))
+            if any((x["date"], round(abs(x["amount"]), 2)) == key for x in out):
+                continue
+            out.append({"date": d, "amount": amt if direction in ("deposit", "in") else -amt, "source": "unified"})
+    except Exception as e:  # noqa: BLE001
+        print(f"warning: unified transfers unavailable: {e}", file=sys.stderr)
+    return sorted(out, key=lambda x: x["date"])
+
+
+def merge_csv_history(trades: list[dict], dividends: list[dict], transfers: list[dict], csv_paths: list[str]):
+    """Fold Robinhood activity-report CSVs (full history) into the API data, de-duplicated."""
+    from .csv_import import parse_activity, apply_splits
+    tkey = lambda t: (t["symbol"], t["date"], t["side"].lower()[0], round(float(t["qty"]), 4), round(float(t["price"]), 2))
+    dkey = lambda d: (d["symbol"], d["date"], round(float(d["amount"]), 2))
+    xkey = lambda x: (x["date"], round(float(x["amount"]), 2))
+    have_t, have_d, have_x = {tkey(t) for t in trades}, {dkey(d) for d in dividends}, {xkey(x) for x in transfers}
+    added = 0
+    for path in csv_paths:
+        t, d, c, sp = parse_activity(path)
+        t = apply_splits(t, sp)
+        for x in t:
+            x["source"] = "csv"
+            if tkey(x) not in have_t:
+                trades.append(x); have_t.add(tkey(x)); added += 1
+        for x in d:
+            if dkey(x) not in have_d:
+                dividends.append(x); have_d.add(dkey(x))
+        for x in c:
+            x = {"date": x["date"], "amount": x["amount"], "source": "csv"}
+            if xkey(x) not in have_x:
+                transfers.append(x); have_x.add(xkey(x))
+        print(f"merged {os.path.basename(path)}: {len(t)} trades ({added} new so far), {len(d)} dividends, {len(c)} cash movements",
+              file=sys.stderr)
+    trades.sort(key=lambda t: t["date"]); dividends.sort(key=lambda d: d["date"]); transfers.sort(key=lambda x: x["date"])
+    return trades, dividends, transfers
+
+
 def fetch_equity_curve(rh, span="year") -> list[dict]:
     """Robinhood's own daily portfolio equity for the span (day/week/month/3month/year/5year/all)."""
     interval = {"day": "5minute", "week": "10minute", "month": "hour", "3month": "day",
@@ -188,7 +256,7 @@ def reconcile(trades: list[dict], positions: list[dict]) -> list[dict]:
     return synthetic + trades
 
 
-def build_snapshot(rh, with_orders=True, spans=("year",)) -> dict:
+def build_snapshot(rh, with_orders=True, spans=("year",), csv_paths=()) -> dict:
     positions = fetch_positions(rh)
     symbols = [p["symbol"] for p in positions]
     inst_map = {p["instrument"]: p["symbol"] for p in positions}
@@ -198,6 +266,9 @@ def build_snapshot(rh, with_orders=True, spans=("year",)) -> dict:
     acct = rh.load_account_profile() or {}
     trades = fetch_trades(rh, inst_map) if with_orders else []
     divs = fetch_dividends(rh, inst_map)
+    transfers = fetch_transfers(rh)
+    if csv_paths:
+        trades, divs, transfers = merge_csv_history(trades, divs, transfers, list(csv_paths))
     cash = _f(acct.get("portfolio_cash")) or (_f(acct.get("cash")) + _f(acct.get("uncleared_deposits")))
 
     # Ledger view rebuilt from orders when we have them; otherwise trust Robinhood's average cost.
@@ -221,7 +292,13 @@ def build_snapshot(rh, with_orders=True, spans=("year",)) -> dict:
         row.update({k: v for k, v in funds.get(row["symbol"], {}).items()})
         row["quote_time"] = quotes.get(row["symbol"], {}).get("updated_at")
 
-    snap = {"source": "robinhood (robin_stocks, private API)",
+    curves = {span: fetch_equity_curve(rh, span) for span in spans}
+    long_curve = curves.get("all") or curves.get("5year") or curves.get("year") or []
+    ytd = ytd_summary(ledger, trades, divs, transfers, long_curve, summary["equity"])
+    closed = [p.to_dict() for p in ledger.values() if p.qty <= 1e-9 and (p.buys or p.sells)]
+    summary["rh_cost_basis"] = sum(p["qty"] * (p["rh_avg_cost"] or 0) for p in positions)
+    summary["realized_fifo"] = sum(p.realized_fifo for p in ledger.values())
+    snap = {"source": "robinhood (robin_stocks, private API)" + (" + activity CSV" if csv_paths else ""),
             "as_of": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "account": {"equity_rh": _f(port.get("equity")), "extended_hours_equity": _f(port.get("extended_hours_equity"), None),
                         "equity_previous_close": _f(port.get("adjusted_equity_previous_close") or port.get("equity_previous_close")),
@@ -229,8 +306,8 @@ def build_snapshot(rh, with_orders=True, spans=("year",)) -> dict:
                         "buying_power": _f(acct.get("buying_power")), "withdrawable": _f(port.get("withdrawable_amount"))},
             "summary": {k: v for k, v in summary.items() if k != "holdings"},
             "holdings": summary["holdings"],
-            "trades": trades, "dividends": divs,
-            "equity_curve": {span: fetch_equity_curve(rh, span) for span in spans}}
+            "trades": trades, "dividends": divs, "transfers": transfers, "closed": closed, "ytd": ytd,
+            "equity_curve": curves}
     return snap
 
 
@@ -246,7 +323,7 @@ def write_snapshot(snap: dict, data_dir: str = DATA_DIR) -> str:
                                 for r in snap["holdings"]]}, fh)
     if snap.get("trades"):
         with open(os.path.join(data_dir, "trades.csv"), "w", newline="", encoding="utf-8") as fh:
-            w = csv.DictWriter(fh, fieldnames=["symbol", "date", "side", "qty", "price", "fees", "order_id", "note"],
+            w = csv.DictWriter(fh, fieldnames=["symbol", "date", "side", "qty", "price", "fees", "order_id", "note", "source"],
                                extrasaction="ignore")
             w.writeheader()
             w.writerows(snap["trades"])
@@ -259,13 +336,22 @@ def main(argv=None):
     ap.add_argument("--spans", default="year,all", help="equity-curve spans to pull (day,week,month,3month,year,5year,all)")
     ap.add_argument("--data-dir", default=DATA_DIR)
     ap.add_argument("--pickle-path", default=None, help="where to cache the session token (default ~/.tokens)")
+    ap.add_argument("--csv", nargs="*", default=[], help="Robinhood activity-report CSV(s) to merge for full history")
     args = ap.parse_args(argv)
+    import glob
+    csvs = list(args.csv) + sorted(glob.glob(os.path.join(args.data_dir, "imports", "*.csv")))
     rh = login(pickle_path=args.pickle_path)
-    snap = build_snapshot(rh, with_orders=not args.no_orders, spans=tuple(args.spans.split(",")))
+    snap = build_snapshot(rh, with_orders=not args.no_orders, spans=tuple(args.spans.split(",")), csv_paths=csvs)
     path = write_snapshot(snap, args.data_dir)
     s = snap["summary"]
-    print(f"wrote {path}: {len(snap['holdings'])} holdings, equity ${s['equity']:,.2f}, "
-          f"day {s['day_change']:+,.2f} ({s['day_change_pct']:+.2f}%), unrealized {s['unrealized']:+,.2f}")
+    y = snap["ytd"]
+    print(f"wrote {path}: {len(snap['holdings'])} holdings, {len(snap['closed'])} closed, {len(snap['trades'])} fills, "
+          f"equity ${s['equity']:,.2f}, day {s['day_change']:+,.2f} ({s['day_change_pct']:+.2f}%), "
+          f"unrealized {s['unrealized']:+,.2f}, realized {s['realized']:+,.2f}, cost basis ${s['cost_basis']:,.2f} "
+          f"(Robinhood says ${s['rh_cost_basis']:,.2f})")
+    print(f"{y['year']} to date: bought ${y['buys']:,.2f}, sold ${y['sells']:,.2f}, deposits ${y['net_deposits']:,.2f}, "
+          f"dividends ${y['dividends']:,.2f}, realized {y['realized']:+,.2f}"
+          + (f", return {y['return']:+,.2f}" if y['return'] is not None else ""))
     return 0
 
 

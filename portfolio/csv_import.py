@@ -27,7 +27,7 @@ import re
 import sys
 from datetime import datetime, timezone
 
-from .ledger import build_positions, summarize
+from .ledger import build_positions, summarize, ytd_summary
 from .robinhood_sync import write_snapshot, DATA_DIR
 
 _NUM = re.compile(r"[^0-9.\-]")
@@ -115,12 +115,15 @@ def main(argv=None):
         except Exception as e:  # noqa: BLE001
             print(f"warning: could not fetch quotes for {missing}: {e}; using average cost", file=sys.stderr)
     summary = summarize(positions, prices, cash=args.cash, prev_close=prev)
+    transfers = [{"date": c["date"], "amount": c["amount"], "source": "csv"} for c in cash_flows]
+    summary["rh_cost_basis"] = None
     snap = {"source": f"robinhood activity CSV ({', '.join(os.path.basename(p) for p in args.csv)})",
             "as_of": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "account": {"cash": args.cash, "deposits": sum(c["amount"] for c in cash_flows)},
             "summary": {k: v for k, v in summary.items() if k != "holdings"},
             "holdings": summary["holdings"], "trades": trades, "dividends": dividends,
-            "cash_flows": cash_flows, "equity_curve": {}}
+            "transfers": transfers, "closed": [p.to_dict() for p in positions.values() if p.qty <= 1e-9],
+            "ytd": ytd_summary(positions, trades, dividends, transfers, [], summary["equity"]), "equity_curve": {}}
     path = write_snapshot(snap, args.data_dir)
     print(f"wrote {path}: {len(trades)} trades, {len(symbols)} open positions, equity ${summary['equity']:,.2f}")
 

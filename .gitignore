@@ -4,6 +4,9 @@ __pycache__/
 # your brokerage data never goes in git
 data/portfolio/*
 !data/portfolio/sample_snapshot.json
+!data/portfolio/imports/
+data/portfolio/imports/*
+!data/portfolio/imports/README.txt
 data/prices/*
 !data/prices/DEMO_*.csv
 .tokens/

@@ -84,7 +84,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
 .notice code{background:var(--surface);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
 .drawer{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:14px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px 16px;margin:8px 0 12px}
-.stats div{font-size:12px;color:var(--ink-3)} .stats div b{display:block;color:var(--ink);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.stats div{font-size:12px;color:var(--ink-3)} .stats div b{display:block;color:var(--ink);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums} .stats div span.muted{display:block;font-size:11px}
 form.bt{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:12px}
 form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-transform:uppercase;letter-spacing:.05em}
 .err{color:var(--bad);font-size:12px}
@@ -109,6 +109,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
 
 <div id="notice" class="notice" hidden></div>
 <div class="tiles" id="tiles"></div>
+<div class="card" id="ytdcard" hidden><h2>Year to date <small id="ytdsub"></small></h2><div class="stats" id="ytd"></div></div>
 
 <nav class="tabs">
   <button data-tab="holdings" class="active">Holdings</button>
@@ -142,6 +143,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
 </section>
 
 <section class="panel" id="trades">
+  <div class="card"><h2>Closed positions <small id="ccount"></small></h2><div class="tbl" id="ctable"></div></div>
   <div class="card"><h2>Trades <small id="tcount"></small>
     <select id="tfilter" style="float:right;padding:3px 8px;font-size:12px"><option value="">All symbols</option></select></h2>
     <div class="tbl" id="ttable"></div></div>
@@ -221,17 +223,35 @@ function render() {
   $('#tiles').innerHTML = [
     ['Total equity', fmtM(eq), `Robinhood: ${fmtM(a.equity_rh)}${a.extended_hours_equity ? ' · ext ' + fmtM(a.extended_hours_equity) : ''}`],
     ['Day change', `<span class="${cls(day)}">${fmtSign(day)}</span>`, `<span class="${cls(day)}">${fmtP(dayp, 2, true)}</span> vs prev close`],
-    ['Unrealized P&amp;L', `<span class="${cls(un)}">${fmtSign(un)}</span>`, `<span class="${cls(un)}">${fmtP(unp, 2, true)}</span> on ${fmtM(s.cost_basis)} cost basis`],
+    ['Unrealized P&amp;L', `<span class="${cls(un)}">${fmtSign(un)}</span>`, `<span class="${cls(un)}">${fmtP(unp, 2, true)}</span> on ${fmtM(s.cost_basis)} cost basis${s.rh_cost_basis && Math.abs(s.rh_cost_basis - s.cost_basis) > 0.5 ? ` <span class="down" title="Robinhood's own shares × average cost">(Robinhood: ${fmtM(s.rh_cost_basis)})</span>` : ''}`],
     ['Total return', `<span class="${cls(tr)}">${fmtSign(tr)}</span>`, `${fmtP(trp, 2, true)} · realized ${fmtSign(s.realized)} · dividends ${fmtM(s.dividends)}`],
     ['Cash', fmtM(s.cash), `buying power ${fmtM(a.buying_power)} · ${fmtP(eq ? s.cash / eq * 100 : null, 1)} of equity`],
   ].map(([k, v, d]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
 
-  renderHoldings(); renderAvgCost(); renderPerf(); renderTrades();
+  renderYtd(); renderHoldings(); renderAvgCost(); renderPerf(); renderTrades();
   const syms = (snap.holdings || []).map(h => h.symbol);
   if (!$('#btsym').value) $('#btsym').value = syms.includes('MU') ? 'MU' : (syms[0] || 'MU');
   $('#foot').textContent = `Average cost and P&L are rebuilt from your filled orders (average-cost method; FIFO lots in the drawer). Prices are Robinhood quotes at sync time. Nothing here is investment advice.`;
 }
 const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+// ---------- year to date ----------
+function renderYtd() {
+  const y = snap.ytd, c = $('#ytdcard');
+  if (!y) { c.hidden = true; return; }
+  c.hidden = false;
+  $('#ytdsub').textContent = `${y.year} · since ${y.equity_start_date ? fmtD(y.equity_start_date) : 'Jan 1'}`;
+  const cell = (k, v, sub) => `<div>${k}<b>${v}</b>${sub ? `<span class="muted">${sub}</span>` : ''}</div>`;
+  $('#ytd').innerHTML = [
+    cell('YTD return', y.return == null ? '--' : `<span class="${cls(y.return)}">${fmtSign(y.return)}</span>`, y.return_pct == null ? 'needs equity history' : `<span class="${cls(y.return_pct)}">${fmtP(y.return_pct, 2, true)}</span> on starting equity + deposits`),
+    cell('Equity Jan 1 → now', y.equity_start == null ? '--' : `${fmtM(y.equity_start, 0)} → ${fmtM(y.equity_now, 0)}`, ''),
+    cell('Deposits this year', fmtM(y.net_deposits), 'cash you put in (net of withdrawals)'),
+    cell('Bought this year', fmtM(y.buys), 'cost of purchases = Robinhood\'s "YTD cost basis"'),
+    cell('Sold this year', fmtM(y.sells), 'proceeds'),
+    cell('Realized this year', `<span class="${cls(y.realized)}">${fmtSign(y.realized)}</span>`, `FIFO (tax) ${fmtSign(y.realized_fifo)}`),
+    cell('Dividends this year', fmtM(y.dividends), ''),
+  ].join('');
+}
 
 // ---------- holdings ----------
 const COLS = [
@@ -369,6 +389,12 @@ function renderPerf() {
 
 // ---------- trades ----------
 function renderTrades() {
+  const cl = (snap.closed || []).slice().sort((a, b) => (b.realized_avg || 0) - (a.realized_avg || 0));
+  const tot = cl.reduce((a, x) => a + (x.realized_avg || 0), 0);
+  $('#ccount').textContent = cl.length ? `${cl.length} · realized ${fmtSign(tot)}` : '';
+  $('#ctable').innerHTML = cl.length ? `<table><thead><tr><th>Symbol</th><th>First buy</th><th>Closed</th><th>Invested</th><th>Proceeds</th><th>Realized (avg cost)</th><th>Realized (FIFO)</th><th>Return</th><th>Dividends</th><th>Buys / sells</th></tr></thead><tbody>` +
+    cl.map(x => `<tr><td class="sym">${x.symbol}</td><td>${fmtD(x.first_buy)}</td><td>${fmtD(x.last_trade)}</td><td>${fmtM(x.invested)}</td><td>${fmtM(x.proceeds)}</td><td class="${cls(x.realized_avg)}">${fmtSign(x.realized_avg)}</td><td class="${cls(x.realized_fifo)}">${fmtSign(x.realized_fifo)}</td><td class="${cls(x.realized_avg)}">${fmtP(x.invested ? x.realized_avg / x.invested * 100 : null, 2, true)}</td><td>${fmtM(x.dividends)}</td><td>${x.buys} / ${x.sells}</td></tr>`).join('') + '</tbody></table>' :
+    '<p class="muted">No closed positions in the history yet. Older sells (e.g. a stock you fully exited) only appear once the full activity report is merged in.</p>';
   const sel = $('#tfilter'), syms = [...new Set((snap.trades || []).map(t => t.symbol))].sort();
   sel.innerHTML = '<option value="">All symbols</option>' + syms.map(s => `<option>${s}</option>`).join('');
   sel.onchange = drawTrades; drawTrades();

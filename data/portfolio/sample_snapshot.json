@@ -21,7 +21,8 @@
   "day_change_pct": 2.3911781680926882,
   "realized": 899.2391923408277,
   "dividends": 258.5,
-  "total_return": 33675.568199999994
+  "total_return": 33675.568199999994,
+  "rh_cost_basis": 110787.22119234083
  },
  "holdings": [
   {
@@ -1711,6 +1712,204 @@
    "reinvested": true
   }
  ],
+ "transfers": [
+  {
+   "date": "2023-09-12",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2023-10-12",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2023-11-11",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2023-12-11",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-01-10",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-02-09",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-03-10",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-04-09",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-05-09",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-06-08",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-07-08",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-08-07",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-09-06",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-10-06",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-11-05",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2024-12-05",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-01-04",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-02-03",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-03-05",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-04-04",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-05-04",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-06-03",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-07-03",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-08-02",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-09-01",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-10-01",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-10-31",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-11-30",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2025-12-30",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2026-01-29",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2026-02-28",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2026-03-30",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2026-04-29",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2026-05-29",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2026-06-28",
+   "amount": 2500.0,
+   "source": "bank"
+  },
+  {
+   "date": "2026-07-28",
+   "amount": 2500.0,
+   "source": "bank"
+  }
+ ],
+ "closed": [],
+ "ytd": {
+  "year": 2026,
+  "buys": 32178.881000000005,
+  "sells": 1334.22,
+  "net_invested": 30844.661000000004,
+  "dividends": 69.5,
+  "net_deposits": 17500.0,
+  "realized": 362.8632585992475,
+  "realized_fifo": 757.2026000000001,
+  "equity_start": 97707.28,
+  "equity_start_date": "2025-12-31",
+  "equity_now": 145619.6002,
+  "return": 30412.320199999987,
+  "return_pct": 26.39791530535222
+ },
  "equity_curve": {
   "all": [
    {

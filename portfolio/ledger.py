@@ -52,6 +52,7 @@ class Position:
     last_trade: date | None = None
     dividends: float = 0.0
     untracked_sold: float = 0.0      # shares sold that no buy in the ledger accounts for (DRIP/transfer/split)
+    realized_log: list = field(default_factory=list)   # (date, qty, realized_avg, realized_fifo, proceeds) per sell
 
     @property
     def cost_basis(self) -> float:
@@ -91,8 +92,10 @@ class Position:
                 self.avg_cost = total_cost / self.qty if self.qty else 0.0
                 self.lots.insert(0, Lot(when, excess, basis))
             net = price - (fees / qty if qty else 0.0)
+            r_avg = qty * (net - self.avg_cost)
+            fifo_before = self.realized_fifo
             # average cost
-            self.realized_avg += qty * (net - self.avg_cost)
+            self.realized_avg += r_avg
             self.qty -= qty
             if self.qty < 1e-9:
                 self.qty, self.avg_cost = 0.0, 0.0
@@ -108,6 +111,7 @@ class Position:
                     self.lots.pop(0)
             self.sells += 1
             self.proceeds += qty * price - fees
+            self.realized_log.append((when.isoformat(), qty, r_avg, self.realized_fifo - fifo_before, qty * price - fees))
             if self.qty == 0.0:
                 self.lots = []
 
@@ -168,6 +172,35 @@ def summarize(positions: dict[str, Position], prices: dict[str, float], cash: fl
             "day_change_pct": (tot_day / (tot_mv - tot_day) * 100) if (tot_mv - tot_day) else 0.0,
             "realized": realized, "dividends": divs,
             "total_return": (tot_mv - tot_cost) + realized + divs}
+
+
+def ytd_summary(positions: dict, trades: list[dict], dividends: list[dict] | None, transfers: list[dict] | None,
+                curve: list[dict] | None, equity_now: float, year: int | None = None) -> dict:
+    """Calendar-year roll-up. transfers: [{date, amount}] deposits positive. curve: [{t, equity}] daily."""
+    year = year or date.today().year
+    y0 = f"{year}-01-01"
+    buys = sum(float(t["qty"]) * float(t["price"]) + float(t.get("fees") or 0) for t in trades
+               if t["date"] >= y0 and t["side"].lower().startswith("b") and not str(t.get("note", "")).startswith("reconciled"))
+    sells = sum(float(t["qty"]) * float(t["price"]) - float(t.get("fees") or 0) for t in trades
+                if t["date"] >= y0 and not t["side"].lower().startswith("b"))
+    divs = sum(float(d["amount"]) for d in (dividends or []) if d["date"] >= y0)
+    deps = sum(float(x["amount"]) for x in (transfers or []) if x["date"] >= y0)
+    realized = sum(r[2] for p in positions.values() for r in p.realized_log if r[0] >= y0)
+    realized_fifo = sum(r[3] for p in positions.values() for r in p.realized_log if r[0] >= y0)
+    start_eq, start_t = None, None
+    prev = None
+    for pt in curve or []:
+        t = str(pt["t"])[:10]
+        if t >= y0:
+            start_eq, start_t = (prev or pt)["equity"], (prev or pt)["t"]
+            break
+        prev = pt
+    ret = (equity_now - start_eq - deps) if start_eq is not None else None
+    return {"year": year, "buys": buys, "sells": sells, "net_invested": buys - sells, "dividends": divs,
+            "net_deposits": deps, "realized": realized, "realized_fifo": realized_fifo,
+            "equity_start": start_eq, "equity_start_date": str(start_t)[:10] if start_t else None,
+            "equity_now": equity_now, "return": ret,
+            "return_pct": (ret / (start_eq + max(0.0, deps)) * 100) if ret is not None and (start_eq + max(0.0, deps)) else None}
 
 
 def xirr(cashflows: list[tuple], guess: float = 0.1) -> float | None:
