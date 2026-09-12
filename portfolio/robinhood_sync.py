@@ -166,6 +166,28 @@ def fetch_equity_curve(rh, span="year") -> list[dict]:
              "net_return": _f(d.get("net_return"))} for d in data if d]
 
 
+def reconcile(trades: list[dict], positions: list[dict]) -> list[dict]:
+    """Robinhood's order feed misses shares that arrived by dividend reinvestment, transfer, split or
+    stock gift. Compare the replayed order history with the live position and insert an opening
+    'buy' at Robinhood's own average cost for any shares the orders cannot explain."""
+    synthetic = []
+    by_sym: dict[str, list[dict]] = {}
+    for t in trades:
+        by_sym.setdefault(t["symbol"], []).append(t)
+    for p in positions:
+        s = p["symbol"]
+        running, low = 0.0, 0.0
+        for t in sorted(by_sym.get(s, []), key=lambda x: x["date"]):
+            running += t["qty"] if t["side"].lower().startswith("b") else -t["qty"]
+            low = min(low, running)
+        missing = max(-low, p["qty"] - running)
+        if missing > 1e-6:
+            synthetic.append({"symbol": s, "date": "1970-01-01", "side": "buy", "qty": round(missing, 6),
+                              "price": p["rh_avg_cost"] or (by_sym.get(s) or [{"price": 0}])[0]["price"], "fees": 0.0,
+                              "order_id": None, "note": "reconciled to Robinhood position (DRIP/transfer/split not in order history)"})
+    return synthetic + trades
+
+
 def build_snapshot(rh, with_orders=True, spans=("year",)) -> dict:
     positions = fetch_positions(rh)
     symbols = [p["symbol"] for p in positions]
@@ -180,6 +202,7 @@ def build_snapshot(rh, with_orders=True, spans=("year",)) -> dict:
 
     # Ledger view rebuilt from orders when we have them; otherwise trust Robinhood's average cost.
     if trades:
+        trades = reconcile(trades, positions)
         ledger = build_positions(trades, divs)
     else:
         ledger = build_positions([{"symbol": p["symbol"], "date": "1970-01-01", "side": "buy",
@@ -223,7 +246,8 @@ def write_snapshot(snap: dict, data_dir: str = DATA_DIR) -> str:
                                 for r in snap["holdings"]]}, fh)
     if snap.get("trades"):
         with open(os.path.join(data_dir, "trades.csv"), "w", newline="", encoding="utf-8") as fh:
-            w = csv.DictWriter(fh, fieldnames=["symbol", "date", "side", "qty", "price", "fees", "order_id"])
+            w = csv.DictWriter(fh, fieldnames=["symbol", "date", "side", "qty", "price", "fees", "order_id", "note"],
+                               extrasaction="ignore")
             w.writeheader()
             w.writerows(snap["trades"])
     return path

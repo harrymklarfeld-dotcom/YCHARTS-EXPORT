@@ -33,6 +33,25 @@ def test_summary_roll_up():
     assert math.isclose(a["weight_pct"], 120 / 260 * 100)
 
 
+def test_oversell_is_absorbed_not_fatal():
+    trades = [{"symbol": "VGT", "date": "2026-01-01", "side": "buy", "qty": 0.02614, "price": 500},
+              {"symbol": "VGT", "date": "2026-05-01", "side": "sell", "qty": 0.20912, "price": 600}]
+    p = build_positions(trades)["VGT"]
+    assert p.qty == 0
+    assert math.isclose(p.untracked_sold, 0.20912 - 0.02614)
+    assert math.isclose(p.realized_avg, 0.20912 * (600 - 500))
+
+
+def test_reconcile_inserts_opening_lot():
+    from portfolio.robinhood_sync import reconcile
+    trades = [{"symbol": "VGT", "date": "2026-01-01", "side": "buy", "qty": 1, "price": 500},
+              {"symbol": "VGT", "date": "2026-05-01", "side": "sell", "qty": 3, "price": 600}]
+    out = reconcile(trades, [{"symbol": "VGT", "qty": 2.5, "rh_avg_cost": 450}])
+    assert out[0]["date"] == "1970-01-01" and math.isclose(out[0]["qty"], 4.5) and out[0]["price"] == 450
+    p = build_positions(out)["VGT"]
+    assert math.isclose(p.qty, 2.5) and p.untracked_sold == 0
+
+
 def test_xirr():
     r = xirr([("2025-01-01", -1000), ("2026-01-01", 1100)])
     assert abs(r - 0.10) < 1e-3

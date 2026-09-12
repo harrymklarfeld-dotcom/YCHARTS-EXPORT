@@ -51,6 +51,7 @@ class Position:
     first_buy: date | None = None
     last_trade: date | None = None
     dividends: float = 0.0
+    untracked_sold: float = 0.0      # shares sold that no buy in the ledger accounts for (DRIP/transfer/split)
 
     @property
     def cost_basis(self) -> float:
@@ -79,7 +80,16 @@ class Position:
             self.first_buy = self.first_buy or when
         else:
             if qty > self.qty + 1e-9:
-                raise ValueError(f"{self.symbol}: selling {qty} but only hold {self.qty} on {when}")
+                # Shares we never saw bought (dividend reinvestment, ACATS transfer, split not in the
+                # order feed). Treat the excess as acquired at the current average cost so realized P&L
+                # is not inflated; robinhood_sync reconciles this against Robinhood's position first.
+                excess = qty - self.qty
+                self.untracked_sold += excess
+                basis = self.avg_cost or price
+                total_cost = self.cost_basis + excess * basis
+                self.qty += excess
+                self.avg_cost = total_cost / self.qty if self.qty else 0.0
+                self.lots.insert(0, Lot(when, excess, basis))
             net = price - (fees / qty if qty else 0.0)
             # average cost
             self.realized_avg += qty * (net - self.avg_cost)
@@ -108,7 +118,7 @@ class Position:
                 "invested": round(self.invested, 2), "proceeds": round(self.proceeds, 2),
                 "first_buy": self.first_buy.isoformat() if self.first_buy else None,
                 "last_trade": self.last_trade.isoformat() if self.last_trade else None,
-                "dividends": round(self.dividends, 2),
+                "dividends": round(self.dividends, 2), "untracked_sold": round(self.untracked_sold, 6),
                 "lots": [{"date": l.date.isoformat(), "qty": round(l.qty, 6), "price": round(l.price, 4)}
                          for l in self.lots]}
 
