@@ -32,7 +32,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
 from .ledger import build_positions, summarize, ytd_summary, period_returns
 
@@ -274,11 +274,13 @@ def reconstruct_curve(trades, live_prices, live_date, live_equity):
                 last[s] = px[s][d]
         mv = sum(held[s] * (last[s] or 0.0) for s in px)
         curve.append({"t": d, "equity": round(mv, 2)})
-    # pin the final point to today's live holdings value so the chart ends where you actually are
+    # pin the final point to today's live holdings value, but only on a trading day, so a weekend
+    # does not add a flat "past day" that disagrees with Robinhood (which shows the last session).
     if curve and live_equity:
+        is_trading_day = date.fromisoformat(live_date).weekday() < 5
         if curve[-1]["t"] == live_date:
             curve[-1]["equity"] = round(live_equity, 2)
-        else:
+        elif is_trading_day:
             curve.append({"t": live_date, "equity": round(live_equity, 2)})
     return curve, flows
 
@@ -359,7 +361,7 @@ def build_snapshot(rh, with_orders=True, spans=("year",), csv_paths=()) -> dict:
         except Exception as e:  # noqa: BLE001
             print(f"warning: Robinhood equity history ({span}) unavailable: {e}", file=sys.stderr)
     # Reconstruct from our own fills + prices; reliable, and the source for period returns.
-    recon, flows = reconstruct_curve(trades, prices, snap_date_str(), summary["equity"])
+    recon, flows = reconstruct_curve(trades, prices, snap_date_str(), summary["market_value"])
     if recon:
         curves["all"] = recon
         curves.setdefault("year", [p for p in recon if p["t"] >= _one_year_ago()])
