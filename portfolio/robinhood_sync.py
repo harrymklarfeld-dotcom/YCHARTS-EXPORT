@@ -39,6 +39,15 @@ from .ledger import build_positions, summarize, ytd_summary, period_returns
 DATA_DIR = os.path.join("data", "portfolio")
 
 
+def snap_date_str():
+    return datetime.now(timezone.utc).date().isoformat()
+
+
+def _one_year_ago():
+    from datetime import timedelta
+    return (datetime.now(timezone.utc).date() - timedelta(days=366)).isoformat()
+
+
 def _f(x, default=0.0):
     try:
         return float(x)
@@ -179,6 +188,8 @@ def fetch_transfers(rh) -> list[dict]:
                         "amount": amt if t.get("direction") == "deposit" else -amt, "source": "bank"})
     except Exception as e:  # noqa: BLE001
         print(f"warning: bank transfers unavailable: {e}", file=sys.stderr)
+    if not hasattr(rh, "get_unified_transfers"):
+        return out
     try:
         for t in rh.get_unified_transfers() or []:
             if not t or str(t.get("state", "")).lower() not in ("completed", "settled"):
@@ -223,6 +234,53 @@ def merge_csv_history(trades: list[dict], dividends: list[dict], transfers: list
               file=sys.stderr)
     trades.sort(key=lambda t: t["date"]); dividends.sort(key=lambda d: d["date"]); transfers.sort(key=lambda x: x["date"])
     return trades, dividends, transfers
+
+
+def reconstruct_curve(trades, live_prices, live_date, live_equity):
+    """Build a daily portfolio-value curve from your own fills + cached daily prices, so period
+    returns and the equity chart do not depend on Robinhood's historicals endpoint (which 404s for
+    some accounts). Returns (curve, flows_by_date) where flows are net buy dollars per day."""
+    from .prices import load_prices
+    syms = sorted({t["symbol"] for t in trades})
+    if not syms:
+        return [], {}
+    start = min(t["date"] for t in trades)
+    px = {}
+    for sym in syms:
+        try:
+            rows = load_prices(sym, start, quiet=True)
+            if rows:
+                px[sym] = dict(rows)
+        except Exception as e:  # noqa: BLE001
+            print(f"warning: no price history for {sym}: {e}", file=sys.stderr)
+    if not px:
+        return [], {}
+    all_dates = sorted({d for m in px.values() for d in m} | {t["date"] for t in trades})
+    all_dates = [d for d in all_dates if d >= start and d <= live_date]
+    tsorted = sorted(trades, key=lambda t: t["date"])
+    ti, held, last = 0, {s: 0.0 for s in syms}, {s: None for s in syms}
+    flows, curve = {}, []
+    for d in all_dates:
+        while ti < len(tsorted) and tsorted[ti]["date"] <= d:
+            t = tsorted[ti]; ti += 1
+            q = float(t["qty"]); pr = float(t["price"])
+            if str(t.get("note", "")).startswith("reconciled"):
+                held[t["symbol"]] += q if t["side"].lower().startswith("b") else -q
+                continue
+            held[t["symbol"]] += q if t["side"].lower().startswith("b") else -q
+            flows[d] = flows.get(d, 0.0) + (q * pr if t["side"].lower().startswith("b") else -q * pr)
+        for s in px:
+            if d in px[s]:
+                last[s] = px[s][d]
+        mv = sum(held[s] * (last[s] or 0.0) for s in px)
+        curve.append({"t": d, "equity": round(mv, 2)})
+    # pin the final point to today's live holdings value so the chart ends where you actually are
+    if curve and live_equity:
+        if curve[-1]["t"] == live_date:
+            curve[-1]["equity"] = round(live_equity, 2)
+        else:
+            curve.append({"t": live_date, "equity": round(live_equity, 2)})
+    return curve, flows
 
 
 def fetch_equity_curve(rh, span="year") -> list[dict]:
@@ -292,9 +350,21 @@ def build_snapshot(rh, with_orders=True, spans=("year",), csv_paths=()) -> dict:
         row.update({k: v for k, v in funds.get(row["symbol"], {}).items()})
         row["quote_time"] = quotes.get(row["symbol"], {}).get("updated_at")
 
-    curves = {span: fetch_equity_curve(rh, span) for span in spans}
-    long_curve = curves.get("all") or curves.get("5year") or curves.get("year") or []
-    returns = period_returns(long_curve, transfers)
+    curves = {}
+    for span in spans:
+        try:
+            c = fetch_equity_curve(rh, span)
+            if c and c[0] is not None:
+                curves[span] = c
+        except Exception as e:  # noqa: BLE001
+            print(f"warning: Robinhood equity history ({span}) unavailable: {e}", file=sys.stderr)
+    # Reconstruct from our own fills + prices; reliable, and the source for period returns.
+    recon, flows = reconstruct_curve(trades, prices, snap_date_str(), summary["equity"])
+    if recon:
+        curves["all"] = recon
+        curves.setdefault("year", [p for p in recon if p["t"] >= _one_year_ago()])
+    long_curve = recon or curves.get("all") or curves.get("year") or []
+    returns = period_returns(long_curve, transfers, flows)
     ytd = ytd_summary(ledger, trades, divs, transfers, long_curve, summary["equity"])
     closed = [p.to_dict() for p in ledger.values() if p.qty <= 1e-9 and (p.buys or p.sells)]
     summary["rh_cost_basis"] = sum(p["qty"] * (p["rh_avg_cost"] or 0) for p in positions)

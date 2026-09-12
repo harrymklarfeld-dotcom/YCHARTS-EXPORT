@@ -219,15 +219,18 @@ def _twr(curve, deposits_by_date):
     return tw - 1.0
 
 
-def period_returns(curve: list[dict], transfers: list[dict] | None) -> dict:
+def period_returns(curve: list[dict], transfers: list[dict] | None, flows: dict | None = None) -> dict:
     """Robinhood-style returns for 1D/1W/1M/3M/YTD/1Y/All from the daily equity curve."""
     from datetime import timedelta
     pts = [{"t": str(p["t"])[:10], "equity": p.get("equity")} for p in (curve or []) if p.get("equity") is not None]
     if len(pts) < 2:
         return {}
-    dep = {}
-    for x in transfers or []:
-        dep[x["date"]] = dep.get(x["date"], 0.0) + float(x["amount"])
+    if flows is not None:
+        dep = dict(flows)   # net buy dollars per day: investment-only TWR
+    else:
+        dep = {}
+        for x in transfers or []:
+            dep[x["date"]] = dep.get(x["date"], 0.0) + float(x["amount"])
     end = date.fromisoformat(pts[-1]["t"])
     windows = {"1D": pts[-2]["t"], "1W": (end - timedelta(days=7)).isoformat(),
                "1M": (end - timedelta(days=30)).isoformat(), "3M": (end - timedelta(days=91)).isoformat(),
