@@ -48,6 +48,7 @@ def _f(x, default=0.0):
 
 def login(username=None, password=None, totp_secret=None, pickle_path=None):
     import robin_stocks.robinhood as rh
+    from .rh_login import login as rh_login
     username = username or os.environ.get("RH_USERNAME")
     password = password or os.environ.get("RH_PASSWORD")
     totp_secret = totp_secret or os.environ.get("RH_TOTP_SECRET")
@@ -58,14 +59,10 @@ def login(username=None, password=None, totp_secret=None, pickle_path=None):
             mfa_code = pyotp.TOTP(totp_secret).now()
         except ImportError:
             sys.exit("RH_TOTP_SECRET is set but pyotp is missing: pip install pyotp")
-    kwargs = {"store_session": True}
-    if pickle_path:
-        kwargs["pickle_path"] = pickle_path
-    print("Logging in to Robinhood (approve the device prompt in the app if asked)...", file=sys.stderr)
-    res = rh.login(username, password, mfa_code=mfa_code, **kwargs)
+    print("Logging in to Robinhood...", file=sys.stderr)
+    res = rh_login(username, password, mfa_code=mfa_code, pickle_path=pickle_path)
     if not res or "access_token" not in res:
-        sys.exit("Robinhood login failed. See research/robinhood_access.md for the known failure modes "
-                 "and use `python -m portfolio.csv_import` with an activity-report CSV as the fallback.")
+        sys.exit("Robinhood login failed. See research/robinhood_access.md; fallback: python -m portfolio.csv_import <activity.csv>")
     return rh
 
 
