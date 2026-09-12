@@ -203,6 +203,46 @@ def ytd_summary(positions: dict, trades: list[dict], dividends: list[dict] | Non
             "return_pct": (ret / (start_eq + max(0.0, deps)) * 100) if ret is not None and (start_eq + max(0.0, deps)) else None}
 
 
+def _twr(curve, deposits_by_date):
+    """Time-weighted return over the given daily [{t,equity}] points, removing deposits/withdrawals.
+    This is the 'how did my investments do' number Robinhood shows for each period."""
+    tw, prev = 1.0, None
+    for pt in curve:
+        v = pt.get("equity")
+        if v is None:
+            continue
+        d = str(pt["t"])[:10]
+        if prev is not None and prev > 0:
+            flow = deposits_by_date.get(d, 0.0)
+            tw *= (v - flow) / prev
+        prev = v
+    return tw - 1.0
+
+
+def period_returns(curve: list[dict], transfers: list[dict] | None) -> dict:
+    """Robinhood-style returns for 1D/1W/1M/3M/YTD/1Y/All from the daily equity curve."""
+    from datetime import timedelta
+    pts = [{"t": str(p["t"])[:10], "equity": p.get("equity")} for p in (curve or []) if p.get("equity") is not None]
+    if len(pts) < 2:
+        return {}
+    dep = {}
+    for x in transfers or []:
+        dep[x["date"]] = dep.get(x["date"], 0.0) + float(x["amount"])
+    end = date.fromisoformat(pts[-1]["t"])
+    windows = {"1D": pts[-2]["t"], "1W": (end - timedelta(days=7)).isoformat(),
+               "1M": (end - timedelta(days=30)).isoformat(), "3M": (end - timedelta(days=91)).isoformat(),
+               "YTD": f"{end.year}-01-01", "1Y": (end - timedelta(days=365)).isoformat(), "All": pts[0]["t"]}
+    out = {}
+    for label, start in windows.items():
+        seg = [p for p in pts if p["t"] >= start]
+        if len(seg) < 2 and label != "1D":
+            seg = pts[-2:] if label == "1D" else seg
+        if len(seg) >= 2:
+            out[label] = {"pct": _twr(seg, dep) * 100, "from": seg[0]["t"], "to": seg[-1]["t"],
+                          "equity_from": seg[0]["equity"], "equity_to": seg[-1]["equity"]}
+    return out
+
+
 def xirr(cashflows: list[tuple], guess: float = 0.1) -> float | None:
     """Money-weighted annual return. cashflows: [(date, amount)] with deposits negative,
     ending value positive. Newton with bisection fallback; None if it can't converge."""

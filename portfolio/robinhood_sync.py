@@ -34,7 +34,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
-from .ledger import build_positions, summarize, ytd_summary
+from .ledger import build_positions, summarize, ytd_summary, period_returns
 
 DATA_DIR = os.path.join("data", "portfolio")
 
@@ -294,6 +294,7 @@ def build_snapshot(rh, with_orders=True, spans=("year",), csv_paths=()) -> dict:
 
     curves = {span: fetch_equity_curve(rh, span) for span in spans}
     long_curve = curves.get("all") or curves.get("5year") or curves.get("year") or []
+    returns = period_returns(long_curve, transfers)
     ytd = ytd_summary(ledger, trades, divs, transfers, long_curve, summary["equity"])
     closed = [p.to_dict() for p in ledger.values() if p.qty <= 1e-9 and (p.buys or p.sells)]
     summary["rh_cost_basis"] = sum(p["qty"] * (p["rh_avg_cost"] or 0) for p in positions)
@@ -307,7 +308,7 @@ def build_snapshot(rh, with_orders=True, spans=("year",), csv_paths=()) -> dict:
             "summary": {k: v for k, v in summary.items() if k != "holdings"},
             "holdings": summary["holdings"],
             "trades": trades, "dividends": divs, "transfers": transfers, "closed": closed, "ytd": ytd,
-            "equity_curve": curves}
+            "returns": returns, "equity_curve": curves}
     return snap
 
 
@@ -333,7 +334,7 @@ def write_snapshot(snap: dict, data_dir: str = DATA_DIR) -> str:
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--no-orders", action="store_true", help="skip full order history (faster; uses Robinhood's avg cost)")
-    ap.add_argument("--spans", default="year,all", help="equity-curve spans to pull (day,week,month,3month,year,5year,all)")
+    ap.add_argument("--spans", default="all,year,3month,month,week", help="equity-curve spans to pull (day,week,month,3month,year,5year,all)")
     ap.add_argument("--data-dir", default=DATA_DIR)
     ap.add_argument("--pickle-path", default=None, help="where to cache the session token (default ~/.tokens)")
     ap.add_argument("--csv", nargs="*", default=[], help="Robinhood activity-report CSV(s) to merge for full history")

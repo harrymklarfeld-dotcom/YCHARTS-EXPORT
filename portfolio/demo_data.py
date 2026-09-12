@@ -14,7 +14,7 @@ import os
 import random
 from datetime import date, timedelta, datetime, timezone
 
-from .ledger import build_positions, summarize, ytd_summary
+from .ledger import build_positions, summarize, ytd_summary, period_returns
 from .robinhood_sync import DATA_DIR
 
 
@@ -98,6 +98,7 @@ def build(seed: int = 7) -> dict:
             "holdings": summary["holdings"], "trades": trades, "dividends": divs,
             "transfers": xfers, "closed": [p.to_dict() for p in pos.values() if p.qty <= 1e-9],
             "ytd": ytd_summary(pos, trades, divs, xfers, curve, summary["equity"], year=2026),
+            "returns": period_returns(curve, xfers),
             "equity_curve": {"all": curve, "year": curve[-252:]}}
     return snap, series
 

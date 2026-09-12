@@ -85,6 +85,13 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
 .drawer{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:14px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px 16px;margin:8px 0 12px}
 .stats div{font-size:12px;color:var(--ink-3)} .stats div b{display:block;color:var(--ink);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums} .stats div span.muted{display:block;font-size:11px}
+.rets{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+@media (max-width:720px){.rets{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:420px){.rets{grid-template-columns:repeat(2,1fr)}}
+.ret{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface-2)}
+.ret .p{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.ret .n{font-size:19px;font-weight:650;margin-top:3px;font-variant-numeric:tabular-nums}
+.ret.sel{outline:2px solid var(--accent);outline-offset:-1px}
 form.bt{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:12px}
 form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-transform:uppercase;letter-spacing:.05em}
 .err{color:var(--bad);font-size:12px}
@@ -109,6 +116,9 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
 
 <div id="notice" class="notice" hidden></div>
 <div class="tiles" id="tiles"></div>
+<div class="card" id="retcard" hidden><h2>Return <small>time-weighted, matches Robinhood's headline numbers</small>
+  <span id="retsub" style="float:right;color:var(--ink-3);font-weight:400"></span></h2>
+  <div id="returns" class="rets"></div></div>
 <div class="card" id="ytdcard" hidden><h2>Year to date <small id="ytdsub"></small></h2><div class="stats" id="ytd"></div></div>
 
 <nav class="tabs">
@@ -228,12 +238,26 @@ function render() {
     ['Cash', fmtM(s.cash), `buying power ${fmtM(a.buying_power)} · ${fmtP(eq ? s.cash / eq * 100 : null, 1)} of equity`],
   ].map(([k, v, d]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
 
-  renderYtd(); renderHoldings(); renderAvgCost(); renderPerf(); renderTrades();
+  renderReturns(); renderYtd(); renderHoldings(); renderAvgCost(); renderPerf(); renderTrades();
   const syms = (snap.holdings || []).map(h => h.symbol);
   if (!$('#btsym').value) $('#btsym').value = syms.includes('MU') ? 'MU' : (syms[0] || 'MU');
   $('#foot').textContent = `Average cost and P&L are rebuilt from your filled orders (average-cost method; FIFO lots in the drawer). Prices are Robinhood quotes at sync time. Nothing here is investment advice.`;
 }
 const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+// ---------- period returns (Robinhood-style) ----------
+const RET_ORDER = ['1D', '1W', '1M', '3M', 'YTD', '1Y', 'All'];
+function renderReturns() {
+  const r = snap.returns, c = $('#retcard');
+  if (!r || !Object.keys(r).length) { c.hidden = true; return; }
+  c.hidden = false;
+  $('#returns').innerHTML = RET_ORDER.filter(k => r[k]).map(k => {
+    const v = r[k].pct;
+    return `<div class="ret" title="${fmtD(r[k].from)} → ${fmtD(r[k].to)}"><div class="p">${k === '1D' ? 'Past day' : k === 'All' ? 'All time' : k === 'YTD' ? 'Year to date' : k === '1W' ? 'Past week' : k === '1M' ? 'Past month' : k === '3M' ? 'Past 3 mo' : 'Past year'}</div><div class="n ${cls(v)}">${fmtP(v, 2, true)}</div></div>`;
+  }).join('');
+  const all = r.All;
+  if (all) $('#retsub').textContent = `since ${fmtD(all.from)}`;
+}
 
 // ---------- year to date ----------
 function renderYtd() {
