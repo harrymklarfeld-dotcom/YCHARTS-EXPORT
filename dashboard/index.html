@@ -80,6 +80,16 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
 .range{display:flex;gap:4px;margin-bottom:8px}
 .range button{padding:3px 9px;font-size:12px}
 .range button.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cmpbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.segmented{display:inline-flex;border:1px solid var(--line-2);border-radius:7px;overflow:hidden}
+.segmented button{border:0;background:var(--surface);color:var(--ink-2);padding:5px 11px;font-size:12px;cursor:pointer;border-radius:0}
+.segmented button.active{background:var(--accent);color:var(--accent-ink)}
+.cmpsyms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:20px;padding:4px 11px;font-size:12.5px;cursor:pointer;user-select:none;background:var(--surface);font-variant-numeric:tabular-nums}
+.chip i{width:9px;height:9px;border-radius:50%}
+.chip.off{opacity:.4}
+.chip .rp{font-family:inherit}
+.spark{vertical-align:middle;display:inline-block}
 .notice{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--ink-2);margin:14px 0}
 .notice code{background:var(--surface);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
 .drawer{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:14px}
@@ -126,6 +136,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="avgcost">Average cost</button>
   <button data-tab="perf">Performance</button>
   <button data-tab="trades">Trades &amp; income</button>
+  <button data-tab="compare">Compare</button>
   <button data-tab="backtest">Backtest</button>
 </nav>
 
@@ -160,6 +171,23 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <div class="card"><h2>Dividends <small id="dcount"></small></h2><div class="tbl" id="dtable"></div></div>
 </section>
 
+<section class="panel" id="compare">
+  <div class="card">
+    <h2 id="cmphdr">Compare holdings <small>growth of your positions, YCharts-style</small></h2>
+    <div class="cmpbar">
+      <div class="range" id="cmprange"></div>
+      <div class="segmented" id="cmpmode">
+        <button data-m="norm" class="active">% change</button>
+        <button data-m="price">Indexed to 100</button>
+        <button data-m="growth">Growth of $10k</button>
+      </div>
+    </div>
+    <div class="cmpsyms" id="cmpsyms"></div>
+    <div class="legend" id="cmplegend"></div>
+    <div id="cmpchart"></div>
+    <p class="muted" style="font-size:12px">Each line rebased so you compare <em>performance</em>, not share price. This is how YCharts shows a comparison: pick a start, and everything starts together. Toggle a holding on or off by clicking its chip.</p>
+  </div>
+</section>
 <section class="panel" id="backtest">
   <div class="card">
     <h2>Accumulation strategies on one ticker <small>same contribution stream; lump sum invests the total on day one</small></h2>
@@ -194,6 +222,24 @@ const fmtD = s => { if (!s) return '--'; const d = new Date(s.length <= 10 ? s +
 const fmtT = s => s ? new Date(s).toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit' }) : '--';
 const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : '';
 const SERIES = ['--s1', '--s2', '--s3', '--s4', '--s5', '--s6', '--s7', '--s8'].map(v => `var(${v})`);
+function sparkline(pts, days = 90, w = 96, h = 26) {
+  if (!pts || pts.length < 2) return '<span class="muted">—</span>';
+  const seg = pts.slice(-days);
+  const ys = seg.map(p => p[1]);
+  let lo = Math.min(...ys), hi = Math.max(...ys); if (lo === hi) { lo *= 0.999; hi *= 1.001; }
+  const up = seg[seg.length - 1][1] >= seg[0][1];
+  const col = up ? 'var(--good)' : 'var(--bad)';
+  const X = i => (i / (seg.length - 1)) * (w - 2) + 1;
+  const Y = v => h - 3 - ((v - lo) / (hi - lo)) * (h - 6);
+  const line = seg.map((p, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(p[1]).toFixed(1)}`).join('');
+  const area = `M${X(0).toFixed(1)},${(h - 1).toFixed(1)} ` + line.slice(1).replace('M', 'L') + ` L${X(seg.length - 1).toFixed(1)},${(h - 1).toFixed(1)} Z`;
+  const gid = 'sg' + Math.random().toString(36).slice(2, 7);
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="0.22"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#${gid})"/><path d="${line}" fill="none" stroke="${col}" stroke-width="1.5"/></svg>`;
+}
+function sparkFor(sym) {
+  const px = PRICES[sym] || PRICES['DEMO_' + sym];
+  return px ? sparkline(px) : '<span class="muted">…</span>';
+}
 
 const EMB = JSON.parse($('#embedded-snapshot').textContent || 'null') || {};
 async function apiGet(path) {
@@ -203,6 +249,7 @@ async function apiGet(path) {
   throw new Error('offline: ' + path);
 }
 let snap = null, sortKey = 'market_value', sortDir = -1, timer = null, curveSpan = 'year';
+let PRICES = {}, cmpRange = 'all', cmpMode = 'norm', cmpSel = null;
 
 // ---------- data ----------
 async function load() {
@@ -214,6 +261,14 @@ async function load() {
     else { snap = { error: 'Could not reach the local API. Start it with <code>python -m dashboard.serve</code> (or <code>--demo</code>).', holdings: [], summary: {}, trades: [], dividends: [], equity_curve: {} }; }
   }
   render();
+  loadPrices();
+}
+async function loadPrices() {
+  try {
+    PRICES = await apiGet('/api/prices?benchmark=VOO');
+  } catch (e) { PRICES = {}; }
+  renderHoldings();           // fill sparklines
+  renderCompare();            // fill the compare tab
 }
 
 function render() {
@@ -238,7 +293,7 @@ function render() {
     ['Cash', fmtM(s.cash), `buying power ${fmtM(a.buying_power)} · ${fmtP(eq ? s.cash / eq * 100 : null, 1)} of equity`],
   ].map(([k, v, d]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
 
-  renderReturns(); renderYtd(); renderHoldings(); renderAvgCost(); renderPerf(); renderTrades();
+  renderReturns(); renderYtd(); renderHoldings(); renderAvgCost(); renderPerf(); renderTrades(); renderCompare();
   const syms = (snap.holdings || []).map(h => h.symbol);
   if (!$('#btsym').value) $('#btsym').value = syms.includes('MU') ? 'MU' : (syms[0] || 'MU');
   $('#foot').textContent = `Average cost and P&L are rebuilt from your filled orders (average-cost method; FIFO lots in the drawer). Prices are Robinhood quotes at sync time. Nothing here is investment advice.`;
@@ -257,6 +312,53 @@ function renderReturns() {
   }).join('');
   const all = r.All;
   if (all) $('#retsub').textContent = `since ${fmtD(all.from)}`;
+}
+
+// ---------- compare (YCharts-style normalized) ----------
+const CMP_RANGES = [['1M',30],['3M',91],['6M',182],['YTD',null],['1Y',365],['3Y',1095],['all',99999]];
+function cmpStartDate(days) {
+  const anchor = new Date(snap.as_of || Date.now());
+  if (days === null) return new Date(anchor.getFullYear(), 0, 1).toISOString().slice(0, 10);
+  if (days >= 99999) return '0000-01-01';
+  return new Date(anchor.getTime() - days * 864e5).toISOString().slice(0, 10);
+}
+function renderCompare() {
+  if (!snap.holdings) return;
+  const holds = snap.holdings.map(h => h.symbol);
+  const avail0 = holds.filter(s => PRICES[s] || PRICES['DEMO_' + s]);
+  if (cmpSel === null) {
+    if (!avail0.length) { $('#cmpchart').innerHTML = '<p class="muted">Loading price history…</p>'; return; }
+    cmpSel = new Set(avail0.slice(0, 6).concat(PRICES['VOO'] ? ['VOO'] : []));
+  }
+  // range buttons
+  $('#cmprange').innerHTML = CMP_RANGES.map(([lab]) => `<button class="${lab === cmpRange ? 'active' : ''}" data-r="${lab}">${lab === 'all' ? 'All' : lab}</button>`).join('');
+  $('#cmprange').querySelectorAll('button').forEach(b => b.onclick = () => { cmpRange = b.dataset.r; renderCompare(); });
+  $('#cmpmode').querySelectorAll('button').forEach(b => { b.classList.toggle('active', b.dataset.m === cmpMode); b.onclick = () => { cmpMode = b.dataset.m; renderCompare(); }; });
+  // symbol chips (holdings + VOO benchmark)
+  const universe = holds.concat(PRICES['VOO'] && !holds.includes('VOO') ? ['VOO'] : []);
+  $('#cmpsyms').innerHTML = universe.map((sym, i) => {
+    const col = SERIES[i % 8], on = cmpSel.has(sym), px = PRICES[sym] || PRICES['DEMO_' + sym];
+    return `<span class="chip ${on ? '' : 'off'}" data-s="${sym}"><i style="background:${col}"></i>${sym}${px ? '' : ' <span class="muted">(no data)</span>'}</span>`;
+  }).join('');
+  $('#cmpsyms').querySelectorAll('.chip').forEach(c => c.onclick = () => { const s = c.dataset.s; cmpSel.has(s) ? cmpSel.delete(s) : cmpSel.add(s); renderCompare(); });
+  // build series
+  const start = cmpStartDate(CMP_RANGES.find(r => r[0] === cmpRange)[1]);
+  const series = [];
+  universe.forEach((sym, i) => {
+    if (!cmpSel.has(sym)) return;
+    const px = PRICES[sym] || PRICES['DEMO_' + sym]; if (!px) return;
+    const seg = px.filter(p => p[0] >= start); if (seg.length < 2) return;
+    const base = seg[0][1];
+    const pts = seg.map(p => [p[0], cmpMode === 'norm' ? (p[1] / base - 1) * 100 : cmpMode === 'growth' ? p[1] / base * 10000 : p[1] / base * 100]);
+    series.push({ name: sym, color: SERIES[i % 8], pts, last: pts[pts.length - 1][1] });
+  });
+  const fmt = cmpMode === 'norm' ? (v => fmtP(v, 1, true)) : cmpMode === 'growth' ? (v => fmtM(v, 0)) : (v => v.toFixed(1));
+  $('#cmphdr').innerHTML = `Compare holdings <small>${cmpMode === 'norm' ? 'percent change' : cmpMode === 'growth' ? 'growth of $10,000' : 'indexed to 100'} since ${fmtD(start === '0000-01-01' ? (series[0] ? series[0].pts[0][0] : start) : start)}</small>`;
+  if (!series.length) { $('#cmpchart').innerHTML = '<p class="muted">Pick at least one holding with price data. Prices load a moment after the page opens; if they stay empty, run a sync so they cache.</p>'; $('#cmplegend').innerHTML = ''; return; }
+  series.sort((a, b) => b.last - a.last);
+  $('#cmplegend').innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.name} <b class="${cls(cmpMode === 'norm' ? s.last : s.last - (cmpMode === 'growth' ? 10000 : 100))}">${fmt(s.last)}</b></span>`).join('');
+  $('#cmpchart').innerHTML = lineChart(series, { height: 340, fmt, zero: cmpMode === 'norm' });
+  bindTips($('#cmpchart'));
 }
 
 // ---------- year to date ----------
@@ -283,6 +385,7 @@ const COLS = [
   ['qty', 'Shares', h => fmtN(h.qty, 4)],
   ['avg_cost', 'Avg cost', h => fmtM(h.avg_cost)],
   ['price', 'Price', h => fmtM(h.price)],
+  ['trend', '90-day', h => sparkFor(h.symbol)],
   ['day_change_pct', 'Day', h => `<span class="${cls(h.day_change_pct)}">${fmtP(h.day_change_pct, 2, true)}</span>`],
   ['market_value', 'Market value', h => fmtM(h.market_value)],
   ['weight_pct', 'Weight', h => `<span class="bar" style="width:${Math.max(2, h.weight_pct * 1.4)}px"></span>${fmtP(h.weight_pct, 1)}`],
@@ -300,8 +403,8 @@ function renderHoldings() {
   const s = snap.summary || {};
   $('#htable').innerHTML = rows.length ? `<table><thead><tr>${COLS.map(c => `<th data-k="${c[0]}" class="${c[0] === sortKey ? 'sorted' : ''}">${c[1]}${c[0] === sortKey ? (sortDir < 0 ? ' ▾' : ' ▴') : ''}</th>`).join('')}</tr></thead><tbody>` +
     rows.map(h => `<tr class="row" data-s="${h.symbol}">${COLS.map(c => `<td>${c[2](h)}</td>`).join('')}</tr>`).join('') +
-    `<tr class="total"><td>Total</td><td></td><td></td><td></td><td class="${cls(s.day_change)}">${fmtP(s.day_change_pct, 2, true)}</td><td>${fmtM(s.market_value)}</td><td>${fmtP(s.market_value / s.equity * 100, 1)}</td><td class="${cls(s.unrealized)}">${fmtSign(s.unrealized)}</td><td class="${cls(s.unrealized_pct)}">${fmtP(s.unrealized_pct, 2, true)}</td><td></td><td></td><td></td></tr></tbody></table>` : '<p class="muted">No holdings in the snapshot.</p>';
-  document.querySelectorAll('#htable th').forEach(th => th.onclick = () => { const k = th.dataset.k; sortDir = (sortKey === k) ? -sortDir : -1; sortKey = k; renderHoldings(); });
+    `<tr class="total"><td>Total</td><td></td><td></td><td></td><td></td><td class="${cls(s.day_change)}">${fmtP(s.day_change_pct, 2, true)}</td><td>${fmtM(s.market_value)}</td><td>${fmtP(s.market_value / s.equity * 100, 1)}</td><td class="${cls(s.unrealized)}">${fmtSign(s.unrealized)}</td><td class="${cls(s.unrealized_pct)}">${fmtP(s.unrealized_pct, 2, true)}</td><td></td><td></td><td></td></tr></tbody></table>` : '<p class="muted">No holdings in the snapshot.</p>';
+  document.querySelectorAll('#htable th').forEach(th => th.onclick = () => { const k = th.dataset.k; if (k === 'trend') return; sortDir = (sortKey === k) ? -sortDir : -1; sortKey = k; renderHoldings(); });
   document.querySelectorAll('#htable tr.row').forEach(tr => tr.onclick = () => openDrawer(tr.dataset.s));
 }
 
@@ -460,7 +563,18 @@ function lineChart(series, opt = {}) {
   if (lo === hi) { lo *= 0.95; hi *= 1.05; } const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
   const X = d => m.l + (new Date(d) - x0) / span * (W - m.l - m.r), Y = v => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
   const ticks = niceTicks(lo, hi, 5);
-  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" data-x0="${x0.toISOString()}" data-span="${span}" data-l="${m.l}" data-r="${m.r}" data-w="${W}"><g class="grid">${ticks.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/>`).join('')}</g>
+  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" data-x0="${x0.toISOString()}" data-span="${span}" data-l="${m.l}" data-r="${m.r}" data-w="${W}"><g class="grid">${ticks.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/>`).join('')}</g>`;
+  if (opt.zero && lo < 0 && hi > 0) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--ink-3)" stroke-width="1" opacity="0.55"/>`;
+  if (opt.area && series.length === 1) {
+    const s0 = series[0], seg = s0.pts.filter(p => p[1] != null);
+    if (seg.length > 1) {
+      const gid = 'ar' + Math.random().toString(36).slice(2, 6);
+      const top = seg.map((p, i) => `${i ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join('');
+      g += `<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${s0.color}" stop-opacity="0.20"/><stop offset="1" stop-color="${s0.color}" stop-opacity="0"/></linearGradient></defs>`;
+      g += `<path d="${top} L${X(seg[seg.length-1][0]).toFixed(1)},${H - m.b} L${X(seg[0][0]).toFixed(1)},${H - m.b} Z" fill="url(#${gid})"/>`;
+    }
+  }
+  g += `
   <g class="axis">${ticks.map(t => `<text x="${m.l - 8}" y="${Y(t) + 4}" text-anchor="end">${(opt.fmt || fmtM)(t)}</text>`).join('')}
   ${xTicks(x0, x1).map(d => `<text x="${X(d)}" y="${H - 8}" text-anchor="middle">${d.toLocaleDateString('en-US', span > 400 * 864e5 ? { month: 'short', year: '2-digit' } : { month: 'short', day: 'numeric' })}</text>`).join('')}</g>`;
   series.forEach(s => {

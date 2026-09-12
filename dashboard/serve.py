@@ -71,6 +71,50 @@ def read_prices(sym: str) -> list:
     return _read_csv(p) if os.path.exists(p) else []
 
 
+def read_all_prices(symbols, start="2015-01-01"):
+    sys.path.insert(0, ROOT)
+    from portfolio.prices import load_prices, _read_csv, CACHE
+    out = {}
+    for s in symbols:
+        # cache first (fast, no network) — try the symbol and its DEMO_ twin
+        for name in (s, "DEMO_" + s):
+            fp = os.path.join(ROOT, CACHE, name + ".csv")
+            if os.path.exists(fp):
+                rows = _read_csv(fp)
+                if rows:
+                    out[s] = rows
+                    break
+        if s in out:
+            continue
+        try:
+            rows = load_prices(s, start, quiet=True)
+            if rows:
+                out[s] = rows
+        except Exception:  # noqa: BLE001
+            pass
+    return out
+
+
+def ycharts_metric(sym, metric):
+    """Pull one metric's history from ycharts.com public pages (cached). Graceful on failure."""
+    sys.path.insert(0, ROOT)
+    from ycharts_export.scrape import fetch, parse_metric_page, BASE
+    from datetime import datetime
+    url = BASE.format(ticker=sym.upper(), metric=metric)
+    body = fetch(url)
+    parsed = parse_metric_page(body)
+    out = []
+    for h in parsed.get("history", []):
+        for fmt in ("%b %d, %Y", "%b. %d, %Y", "%B %d, %Y"):
+            try:
+                out.append([datetime.strptime(h["date"].replace(".", ""), fmt.replace(".", "")).date().isoformat(), h["value"]])
+                break
+            except ValueError:
+                continue
+    return {"symbol": sym.upper(), "metric": metric, "current": parsed.get("current"),
+            "as_of": parsed.get("as_of"), "history": sorted(out)}
+
+
 def run_backtest(q: dict) -> dict:
     sys.path.insert(0, ROOT)
     from portfolio.backtest import run, STRATEGIES, LABELS
@@ -147,8 +191,21 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(read_snapshot())
         if u.path == "/api/history":
             return self._json(read_history())
+        if u.path == "/api/prices":
+            snap = read_snapshot()
+            syms = [h["symbol"] for h in snap.get("holdings", [])]
+            bench = parse_qs(u.query).get("benchmark", ["VOO"])[0]
+            if bench and bench not in syms:
+                syms.append(bench)
+            return self._json(read_all_prices(syms))
         if u.path.startswith("/api/prices/"):
             return self._json(read_prices(u.path.rsplit("/", 1)[1]))
+        if u.path == "/api/ycharts":
+            q = parse_qs(u.query)
+            try:
+                return self._json(ycharts_metric(q.get("symbol", ["MU"])[0], q.get("metric", ["pe_ratio"])[0]))
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}", "history": []}, 200)
         if u.path == "/api/backtest":
             try:
                 return self._json(run_backtest(parse_qs(u.query)))
