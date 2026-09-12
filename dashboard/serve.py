@@ -173,6 +173,7 @@ def main(argv=None):
     ap.add_argument("--snapshot", help="path to a snapshot.json to serve")
     ap.add_argument("--refresh", type=int, default=0, help="seconds between automatic Robinhood re-syncs (market hours only)")
     ap.add_argument("--sync-now", action="store_true", help="run a Robinhood sync before serving")
+    ap.add_argument("--open", action="store_true", help="open the dashboard in your browser")
     args = ap.parse_args(argv)
     if args.demo:
         STATE["demo"] = True
@@ -193,6 +194,9 @@ def main(argv=None):
     srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     print(f"Dashboard: http://127.0.0.1:{args.port}/  (snapshot: {os.path.relpath(STATE['snapshot_path'], ROOT)}"
           f"{', demo' if args.demo else ''}{f', auto-refresh {args.refresh}s' if args.refresh else ''})")
+    if args.open:
+        import webbrowser
+        threading.Timer(1.0, lambda: webbrowser.open(f"http://127.0.0.1:{args.port}/")).start()
     try:
         srv.serve_forever()
     except KeyboardInterrupt:
