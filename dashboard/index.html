@@ -1,0 +1,460 @@
+<meta charset="utf-8">
+<title>Portfolio Desk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f6f4; --surface:#fcfcfb; --surface-2:#f0efec; --line:#e2e1dc; --line-2:#cfceC8;
+  --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#7d7c77;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
+  --good:#0ca30c; --bad:#d03b3b; --warn:#fab219; --accent:#2a78d6; --accent-ink:#fff;
+  --seq-1:#cde2fb; --seq-2:#86b6ef; --seq-3:#3987e5; --seq-4:#1c5cab; --seq-5:#0d366b;
+  --mid:#f0efec;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --line:#2e2e2b; --line-2:#3f3f3b;
+    --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#8f8e87;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+    --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --line:#2e2e2b; --line-2:#3f3f3b;
+  --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#8f8e87;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+  --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-inline:16px;padding-block:0 40px}
+.wrap{max-width:1240px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding:20px 0 12px;border-bottom:1px solid var(--line)}
+h1{font-size:22px;margin:0;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--ink-3);font-size:12px;margin-top:3px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button,select,input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:6px;padding:6px 10px}
+button{cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button:disabled{opacity:.5;cursor:default}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.dot.on{background:var(--good)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:16px 0}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.tile .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.tile .v{font-size:24px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tile .d{font-size:12px;color:var(--ink-2);margin-top:2px;font-variant-numeric:tabular-nums}
+.up{color:var(--good)} .down{color:var(--bad)}
+nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-top:8px;overflow-x:auto}
+nav.tabs button{border:0;background:none;border-radius:0;padding:10px 14px;color:var(--ink-2);border-bottom:2px solid transparent;white-space:nowrap}
+nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+section.panel{display:none;padding-top:16px} section.panel.active{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 10px;font-weight:600}
+.card h2 small{color:var(--ink-3);font-weight:400;margin-left:8px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:500;text-align:right;cursor:pointer;user-select:none;background:var(--surface)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+td{text-align:right}
+th.sorted{color:var(--ink)}
+tr.row:hover td{background:var(--surface-2)}
+tr.row{cursor:pointer}
+tr.total td{font-weight:600;border-top:2px solid var(--line-2);border-bottom:0}
+.sym{font-weight:600} .name{color:var(--ink-3);font-size:12px;font-weight:400;display:block;margin-top:-2px}
+.muted{color:var(--ink-3)}
+.bar{display:inline-block;height:6px;border-radius:3px;background:var(--s1);vertical-align:middle;margin-right:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+.axis text{fill:var(--ink-3);font-size:11px}
+.axis line,.grid line{stroke:var(--line);stroke-width:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink-2);margin:6px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tip{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--line-2);border-radius:6px;padding:8px 10px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;z-index:20;min-width:140px;font-variant-numeric:tabular-nums}
+.tip b{display:block;margin-bottom:4px}
+.tip .r{display:flex;justify-content:space-between;gap:12px}
+.range{display:flex;gap:4px;margin-bottom:8px}
+.range button{padding:3px 9px;font-size:12px}
+.range button.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.notice{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--ink-2);margin:14px 0}
+.notice code{background:var(--surface);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+.drawer{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px 16px;margin:8px 0 12px}
+.stats div{font-size:12px;color:var(--ink-3)} .stats div b{display:block;color:var(--ink);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+form.bt{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:12px}
+form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-transform:uppercase;letter-spacing:.05em}
+.err{color:var(--bad);font-size:12px}
+.footer{font-size:11px;color:var(--ink-3);margin-top:20px}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <h1>Portfolio Desk</h1>
+    <div class="sub" id="sub">Loading…</div>
+  </div>
+  <div class="controls">
+    <span class="live"><span class="dot" id="dot"></span><span id="livetxt">idle</span></span>
+    <button id="refresh" class="primary" title="Pull fresh numbers from Robinhood (uses the cached session)">Refresh from Robinhood</button>
+    <select id="auto" title="Auto-refresh interval">
+      <option value="0">Manual</option><option value="60">Every 1 min</option><option value="300">Every 5 min</option><option value="900">Every 15 min</option>
+    </select>
+    <button id="theme" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<div id="notice" class="notice" hidden></div>
+<div class="tiles" id="tiles"></div>
+
+<nav class="tabs">
+  <button data-tab="holdings" class="active">Holdings</button>
+  <button data-tab="avgcost">Average cost</button>
+  <button data-tab="perf">Performance</button>
+  <button data-tab="trades">Trades &amp; income</button>
+  <button data-tab="backtest">Backtest</button>
+</nav>
+
+<section class="panel active" id="holdings">
+  <div class="card"><h2>Holdings <small id="hcount"></small></h2><div class="tbl" id="htable"></div></div>
+  <div id="drawer" hidden></div>
+</section>
+
+<section class="panel" id="avgcost">
+  <div class="grid2">
+    <div class="card"><h2>Price vs. your average cost <small>% above (blue) or below (red) what you paid</small></h2><div id="vsavg"></div></div>
+    <div class="card"><h2>Allocation <small>% of equity, incl. cash</small></h2><div id="alloc"></div></div>
+  </div>
+  <div class="card"><h2>Cost basis vs. market value by holding</h2><div class="tbl" id="cbtable"></div></div>
+</section>
+
+<section class="panel" id="perf">
+  <div class="card">
+    <h2>Equity curve <small id="perfsrc"></small></h2>
+    <div class="range" id="range"></div>
+    <div class="legend" id="perflegend"></div>
+    <div id="eqchart"></div>
+  </div>
+  <div class="card"><h2>Daily snapshots <small>from data/portfolio/history; grows each time you sync</small></h2><div class="tbl" id="histtable"></div></div>
+</section>
+
+<section class="panel" id="trades">
+  <div class="card"><h2>Trades <small id="tcount"></small>
+    <select id="tfilter" style="float:right;padding:3px 8px;font-size:12px"><option value="">All symbols</option></select></h2>
+    <div class="tbl" id="ttable"></div></div>
+  <div class="card"><h2>Dividends <small id="dcount"></small></h2><div class="tbl" id="dtable"></div></div>
+</section>
+
+<section class="panel" id="backtest">
+  <div class="card">
+    <h2>Accumulation strategies on one ticker <small>same contribution stream; lump sum invests the total on day one</small></h2>
+    <form class="bt" id="btform">
+      <label>Symbol <input id="btsym" value="" size="6"></label>
+      <label>Start <input id="btstart" type="date" value="2016-01-01"></label>
+      <label>Contribution $ <input id="btamt" type="number" value="500" step="50" style="width:100px"></label>
+      <label>Frequency <select id="btfreq"><option value="W">Weekly</option><option value="2W">Every 2 weeks</option><option value="M" selected>Monthly</option><option value="Q">Quarterly</option></select></label>
+      <button class="primary" type="submit">Run</button>
+      <span id="bterr" class="err"></span>
+    </form>
+    <div class="legend" id="btlegend"></div>
+    <div id="btchart"></div>
+    <div class="tbl" id="bttable" style="margin-top:12px"></div>
+    <p class="muted" style="font-size:12px">Money-weighted return (XIRR) is the honest number for a strategy with contributions; time-weighted CAGR is what the asset did. Read <code>research/backtesting_and_average_cost.md</code> before trusting any of this on a stock you already know went up.</p>
+  </div>
+</section>
+
+<div class="footer" id="foot"></div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script id="embedded-snapshot" type="application/json">null</script>
+<script>
+// ---------- formatting (YCharts-style) ----------
+const $ = s => document.querySelector(s);
+const fmtM = (v, d = 2) => v == null || isNaN(v) ? '--' : (Math.abs(v) >= 1e12 ? (v / 1e12).toFixed(3) + 'T' : Math.abs(v) >= 1e9 ? (v / 1e9).toFixed(3) + 'B' : Math.abs(v) >= 1e6 ? (v / 1e6).toFixed(3) + 'M' : (v < 0 ? '-' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }));
+const fmtSign = (v, d = 2) => v == null || isNaN(v) ? '--' : (v >= 0 ? '+' : '-') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtP = (v, d = 2, sign = false) => v == null || isNaN(v) ? '--' : (sign && v > 0 ? '+' : '') + v.toFixed(d) + '%';
+const fmtN = (v, d = 2) => v == null || isNaN(v) ? '--' : Number(v).toLocaleString('en-US', { maximumFractionDigits: d });
+const fmtD = s => { if (!s) return '--'; const d = new Date(s.length <= 10 ? s + 'T12:00:00' : s); return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }); };
+const fmtT = s => s ? new Date(s).toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit' }) : '--';
+const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : '';
+const SERIES = ['--s1', '--s2', '--s3', '--s4', '--s5', '--s6', '--s7', '--s8'].map(v => `var(${v})`);
+
+const EMB = JSON.parse($('#embedded-snapshot').textContent || 'null') || {};
+async function apiGet(path) {
+  try { const r = await fetch(path, { cache: 'no-store' }); if (r.ok) return await r.json(); } catch (e) { }
+  if (EMB.api && EMB.api[path] !== undefined) return EMB.api[path];
+  if (EMB.api) { const k = Object.keys(EMB.api).find(k => path.startsWith(k.split('?')[0]) && k.includes('?') === path.includes('?')); if (k && path.split('?')[0] === k.split('?')[0]) return EMB.api[k]; }
+  throw new Error('offline: ' + path);
+}
+let snap = null, sortKey = 'market_value', sortDir = -1, timer = null, curveSpan = 'year';
+
+// ---------- data ----------
+async function load() {
+  try {
+    snap = await apiGet('/api/snapshot');
+    if (!snap._server && EMB.snapshot) snap._server = { demo: true, embedded: true };
+  } catch (e) {
+    if (EMB.snapshot) { snap = EMB.snapshot; snap._server = { demo: true, embedded: true }; }
+    else { snap = { error: 'Could not reach the local API. Start it with <code>python -m dashboard.serve</code> (or <code>--demo</code>).', holdings: [], summary: {}, trades: [], dividends: [], equity_curve: {} }; }
+  }
+  render();
+}
+
+function render() {
+  const s = snap.summary || {}, a = snap.account || {}, srv = snap._server || {};
+  const n = $('#notice');
+  if (snap.error) { n.innerHTML = snap.error; n.hidden = false; }
+  else if (srv.demo) { n.innerHTML = '<b>Demo data.</b> Synthetic holdings from <code>portfolio.demo_data</code>. Run <code>python -m portfolio.robinhood_sync</code> then <code>python -m dashboard.serve</code> for your live Robinhood account.'; n.hidden = false; }
+  else if (srv.last_error) { n.innerHTML = '<b>Last refresh failed:</b> <pre style="white-space:pre-wrap;margin:6px 0 0">' + esc(srv.last_error) + '</pre>'; n.hidden = false; }
+  else n.hidden = true;
+  $('#sub').textContent = `${snap.source || ''} · as of ${fmtT(snap.as_of)}${srv.file_mtime ? ' · file ' + fmtT(srv.file_mtime) : ''}`;
+  $('#refresh').disabled = !!srv.demo || !!srv.refreshing;
+  $('#livetxt').textContent = srv.refreshing ? 'refreshing…' : (timer ? 'auto' : 'idle');
+  $('#dot').className = 'dot' + (srv.refreshing || timer ? ' on' : '');
+
+  const eq = s.equity, day = s.day_change, dayp = s.day_change_pct, un = s.unrealized, unp = s.unrealized_pct;
+  const tr = s.total_return, trp = s.cost_basis ? tr / s.cost_basis * 100 : null;
+  $('#tiles').innerHTML = [
+    ['Total equity', fmtM(eq), `Robinhood: ${fmtM(a.equity_rh)}${a.extended_hours_equity ? ' · ext ' + fmtM(a.extended_hours_equity) : ''}`],
+    ['Day change', `<span class="${cls(day)}">${fmtSign(day)}</span>`, `<span class="${cls(day)}">${fmtP(dayp, 2, true)}</span> vs prev close`],
+    ['Unrealized P&amp;L', `<span class="${cls(un)}">${fmtSign(un)}</span>`, `<span class="${cls(un)}">${fmtP(unp, 2, true)}</span> on ${fmtM(s.cost_basis)} cost basis`],
+    ['Total return', `<span class="${cls(tr)}">${fmtSign(tr)}</span>`, `${fmtP(trp, 2, true)} · realized ${fmtSign(s.realized)} · dividends ${fmtM(s.dividends)}`],
+    ['Cash', fmtM(s.cash), `buying power ${fmtM(a.buying_power)} · ${fmtP(eq ? s.cash / eq * 100 : null, 1)} of equity`],
+  ].map(([k, v, d]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  renderHoldings(); renderAvgCost(); renderPerf(); renderTrades();
+  const syms = (snap.holdings || []).map(h => h.symbol);
+  if (!$('#btsym').value) $('#btsym').value = syms.includes('MU') ? 'MU' : (syms[0] || 'MU');
+  $('#foot').textContent = `Average cost and P&L are rebuilt from your filled orders (average-cost method; FIFO lots in the drawer). Prices are Robinhood quotes at sync time. Nothing here is investment advice.`;
+}
+const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+// ---------- holdings ----------
+const COLS = [
+  ['symbol', 'Symbol', h => `<span class="sym">${h.symbol}</span><span class="name">${esc(h.name || '')}</span>`],
+  ['qty', 'Shares', h => fmtN(h.qty, 4)],
+  ['avg_cost', 'Avg cost', h => fmtM(h.avg_cost)],
+  ['price', 'Price', h => fmtM(h.price)],
+  ['day_change_pct', 'Day', h => `<span class="${cls(h.day_change_pct)}">${fmtP(h.day_change_pct, 2, true)}</span>`],
+  ['market_value', 'Market value', h => fmtM(h.market_value)],
+  ['weight_pct', 'Weight', h => `<span class="bar" style="width:${Math.max(2, h.weight_pct * 1.4)}px"></span>${fmtP(h.weight_pct, 1)}`],
+  ['unrealized', 'Unrealized', h => `<span class="${cls(h.unrealized)}">${fmtSign(h.unrealized)}</span>`],
+  ['unrealized_pct', 'vs avg cost', h => `<span class="${cls(h.unrealized_pct)}">${fmtP(h.unrealized_pct, 2, true)}</span>`],
+  ['pe_ratio', 'P/E', h => h.pe_ratio == null ? '--' : fmtN(h.pe_ratio, 1)],
+  ['dividend_yield', 'Div yield', h => h.dividend_yield == null ? '--' : fmtP(h.dividend_yield, 2)],
+  ['pos52', '52w range', h => { if (!h.high_52_weeks || !h.low_52_weeks) return '--'; const p = (h.price - h.low_52_weeks) / (h.high_52_weeks - h.low_52_weeks) * 100; return `<span class="bar" style="width:${Math.max(2, Math.min(100, p)) * 0.6}px;background:var(--ink-3)"></span>${fmtP(p, 0)}`; }],
+];
+function renderHoldings() {
+  const rows = (snap.holdings || []).slice();
+  rows.forEach(h => h.pos52 = (h.high_52_weeks && h.low_52_weeks) ? (h.price - h.low_52_weeks) / (h.high_52_weeks - h.low_52_weeks) : null);
+  rows.sort((x, y) => { const a = x[sortKey], b = y[sortKey]; if (a == null) return 1; if (b == null) return -1; return (a > b ? 1 : a < b ? -1 : 0) * sortDir; });
+  $('#hcount').textContent = `${rows.length} positions · sorted by ${COLS.find(c => c[0] === sortKey)[1].toLowerCase()}`;
+  const s = snap.summary || {};
+  $('#htable').innerHTML = rows.length ? `<table><thead><tr>${COLS.map(c => `<th data-k="${c[0]}" class="${c[0] === sortKey ? 'sorted' : ''}">${c[1]}${c[0] === sortKey ? (sortDir < 0 ? ' ▾' : ' ▴') : ''}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(h => `<tr class="row" data-s="${h.symbol}">${COLS.map(c => `<td>${c[2](h)}</td>`).join('')}</tr>`).join('') +
+    `<tr class="total"><td>Total</td><td></td><td></td><td></td><td class="${cls(s.day_change)}">${fmtP(s.day_change_pct, 2, true)}</td><td>${fmtM(s.market_value)}</td><td>${fmtP(s.market_value / s.equity * 100, 1)}</td><td class="${cls(s.unrealized)}">${fmtSign(s.unrealized)}</td><td class="${cls(s.unrealized_pct)}">${fmtP(s.unrealized_pct, 2, true)}</td><td></td><td></td><td></td></tr></tbody></table>` : '<p class="muted">No holdings in the snapshot.</p>';
+  document.querySelectorAll('#htable th').forEach(th => th.onclick = () => { const k = th.dataset.k; sortDir = (sortKey === k) ? -sortDir : -1; sortKey = k; renderHoldings(); });
+  document.querySelectorAll('#htable tr.row').forEach(tr => tr.onclick = () => openDrawer(tr.dataset.s));
+}
+
+async function openDrawer(sym) {
+  const h = snap.holdings.find(x => x.symbol === sym); if (!h) return;
+  const d = $('#drawer'); d.hidden = false; d.className = 'drawer';
+  const trades = (snap.trades || []).filter(t => t.symbol === sym);
+  const lots = fifoLots(trades);
+  const divs = (snap.dividends || []).filter(x => x.symbol === sym).reduce((a, x) => a + x.amount, 0);
+  d.innerHTML = `<h2 style="font-size:16px;margin:0 0 4px">${sym} <small class="muted" style="font-weight:400">${esc(h.name || '')}${h.sector ? ' · ' + esc(h.sector) : ''}${h.industry ? ' · ' + esc(h.industry) : ''}</small>
+    <button style="float:right;padding:2px 8px" id="closed">✕</button></h2>
+    <div class="stats">
+      <div>Price<b>${fmtM(h.price)}</b></div><div>Avg cost (ledger)<b>${fmtM(h.avg_cost)}</b></div><div>Avg cost (Robinhood)<b>${fmtM(h.rh_avg_cost)}</b></div>
+      <div>Shares<b>${fmtN(h.qty, 4)}</b></div><div>Market value<b>${fmtM(h.market_value)}</b></div><div>Cost basis<b>${fmtM(h.cost_basis)}</b></div>
+      <div>Unrealized<b class="${cls(h.unrealized)}">${fmtSign(h.unrealized)} (${fmtP(h.unrealized_pct, 2, true)})</b></div><div>Realized<b class="${cls(h.realized)}">${fmtSign(h.realized)}</b></div><div>Dividends<b>${fmtM(divs)}</b></div>
+      <div>Market cap<b>${fmtM(h.market_cap)}</b></div><div>P/E<b>${h.pe_ratio == null ? '--' : fmtN(h.pe_ratio, 1)}</b></div><div>P/B<b>${h.pb_ratio == null ? '--' : fmtN(h.pb_ratio, 1)}</b></div>
+      <div>52w low / high<b>${fmtM(h.low_52_weeks)} / ${fmtM(h.high_52_weeks)}</b></div><div>First buy<b>${fmtD(h.first_buy)}</b></div><div>Buys / sells<b>${h.buys} / ${h.sells}</b></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>Price</span><span><i style="background:var(--s2)"></i>Your average cost</span><span><i style="background:var(--s3)"></i>Buys</span><span><i style="background:var(--s8)"></i>Sells</span></div>
+    <div id="dchart"><p class="muted">Loading price history…</p></div>
+    <div class="grid2" style="margin-top:12px">
+      <div><h2 style="font-size:13px">Open lots (FIFO)</h2><div class="tbl"><table><thead><tr><th>Bought</th><th>Shares</th><th>Cost/sh</th><th>Gain</th><th>Held</th></tr></thead><tbody>
+      ${lots.map(l => { const g = (h.price / l.price - 1) * 100; const days = Math.round((new Date(snap.as_of) - new Date(l.date)) / 864e5); return `<tr><td>${fmtD(l.date)}</td><td>${fmtN(l.qty, 4)}</td><td>${fmtM(l.price)}</td><td class="${cls(g)}">${fmtP(g, 1, true)}</td><td>${days > 365 ? '<span class="muted">long-term</span> ' : ''}${days}d</td></tr>`; }).join('') || '<tr><td colspan="5" class="muted">no order history in snapshot</td></tr>'}</tbody></table></div></div>
+      <div><h2 style="font-size:13px">Recent trades</h2><div class="tbl"><table><thead><tr><th>Date</th><th>Side</th><th>Shares</th><th>Price</th><th>Value</th></tr></thead><tbody>
+      ${trades.slice(-12).reverse().map(t => `<tr><td>${fmtD(t.date)}</td><td class="${t.side === 'buy' ? 'up' : 'down'}">${t.side}</td><td>${fmtN(t.qty, 4)}</td><td>${fmtM(t.price)}</td><td>${fmtM(t.qty * t.price)}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">none</td></tr>'}</tbody></table></div></div>
+    </div>`;
+  $('#closed').onclick = () => d.hidden = true;
+  d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  let px = [];
+  try { px = await apiGet('/api/prices/' + sym); } catch (e) { }
+  if (!px.length && snap._server && snap._server.demo) { try { px = await apiGet('/api/prices/DEMO_' + sym); } catch (e) { } }
+  if (!px.length) { $('#dchart').innerHTML = `<p class="muted">No cached price history. Run <code>python -m portfolio.prices ${sym}</code> to fetch it.</p>`; return; }
+  // running average cost line from trades
+  const avgLine = [], byDate = {}; trades.forEach(t => (byDate[t.date] = byDate[t.date] || []).push(t));
+  let q = 0, c = 0; px.forEach(([d]) => { (byDate[d] || []).forEach(t => { if (t.side === 'buy') { c += t.qty * t.price; q += t.qty; } else { c -= t.qty * (q ? c / q : 0); q -= t.qty; } }); avgLine.push(q > 1e-9 ? c / q : null); });
+  const marks = trades.map(t => ({ d: t.date, y: t.price, side: t.side, qty: t.qty }));
+  $('#dchart').innerHTML = lineChart([{ name: 'Price', color: SERIES[0], pts: px.map(([d, v]) => [d, v]) }, { name: 'Avg cost', color: SERIES[1], pts: px.map(([d], i) => [d, avgLine[i]]) }], { height: 260, marks, fmt: v => fmtM(v) });
+  bindTips($('#dchart'));
+}
+function fifoLots(trades) {
+  const lots = [];
+  trades.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach(t => {
+    if (t.side === 'buy') lots.push({ date: t.date, qty: t.qty, price: t.price + (t.fees || 0) / t.qty });
+    else { let r = t.qty; while (r > 1e-9 && lots.length) { const l = lots[0], k = Math.min(l.qty, r); l.qty -= k; r -= k; if (l.qty < 1e-9) lots.shift(); } }
+  });
+  return lots;
+}
+
+// ---------- average cost tab ----------
+function renderAvgCost() {
+  const hs = (snap.holdings || []).slice().sort((a, b) => b.unrealized_pct - a.unrealized_pct);
+  if (!hs.length) { $('#vsavg').innerHTML = $('#alloc').innerHTML = '<p class="muted">No holdings.</p>'; $('#cbtable').innerHTML = ''; return; }
+  $('#vsavg').innerHTML = divergingBars(hs.map(h => ({ label: h.symbol, v: h.unrealized_pct, extra: `${fmtM(h.price)} vs ${fmtM(h.avg_cost)} avg` })));
+  const s = snap.summary || {};
+  const al = hs.slice().sort((a, b) => b.weight_pct - a.weight_pct).map(h => ({ label: h.symbol, v: h.weight_pct, extra: fmtM(h.market_value) }));
+  al.push({ label: 'Cash', v: s.equity ? s.cash / s.equity * 100 : 0, extra: fmtM(s.cash), muted: true });
+  $('#alloc').innerHTML = hBars(al);
+  $('#cbtable').innerHTML = `<table><thead><tr><th>Symbol</th><th>Cost basis</th><th>Market value</th><th>Gain</th><th>Gain %</th><th>Share of P&amp;L</th><th>Avg cost if you add $1,000 today</th></tr></thead><tbody>` +
+    hs.map(h => { const tot = s.unrealized || 1; return `<tr><td class="sym">${h.symbol}</td><td>${fmtM(h.cost_basis)}</td><td>${fmtM(h.market_value)}</td><td class="${cls(h.unrealized)}">${fmtSign(h.unrealized)}</td><td class="${cls(h.unrealized_pct)}">${fmtP(h.unrealized_pct, 2, true)}</td><td>${fmtP(h.unrealized / tot * 100, 1)}</td><td>${fmtM((h.cost_basis + 1000) / (h.qty + 1000 / h.price))} <span class="muted">(${fmtP(((h.cost_basis + 1000) / (h.qty + 1000 / h.price) / h.avg_cost - 1) * 100, 2, true)})</span></td></tr>`; }).join('') +
+    `</tbody></table><p class="muted" style="font-size:12px">Adding to a position below your average lowers the average; adding above it raises it. Buying to "fix" an average is the anchoring trap discussed in the research notes; the column shows how little $1,000 moves it.</p>`;
+  bindTips($('#avgcost'));
+}
+function divergingBars(items) {
+  const max = Math.max(1, ...items.map(i => Math.abs(i.v)));
+  const W = 560, L = 60, mid = L + (W - L - 20) / 2, half = (W - L - 20) / 2, rh = 22, H = items.length * rh + 24;
+  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}"><g class="grid"><line x1="${mid}" x2="${mid}" y1="0" y2="${H - 20}" stroke="var(--line-2)"/></g>`;
+  items.forEach((it, i) => {
+    const y = i * rh + 4, w = Math.abs(it.v) / max * (half - 8), x = it.v >= 0 ? mid + 1 : mid - 1 - w;
+    g += `<text x="${L - 8}" y="${y + 15}" text-anchor="end" font-size="12" font-weight="600" fill="var(--ink)">${it.label}</text>
+      <rect class="hit" data-tip="${esc(it.label)}|${fmtP(it.v, 2, true)}|${esc(it.extra)}" x="${x}" y="${y + 4}" width="${Math.max(2, w)}" height="${rh - 8}" rx="3" fill="${it.v >= 0 ? 'var(--s1)' : 'var(--s8)'}"/>
+      <text x="${it.v >= 0 ? x + w + 6 : x - 6}" y="${y + 15}" text-anchor="${it.v >= 0 ? 'start' : 'end'}" font-size="11" fill="var(--ink-2)">${fmtP(it.v, 1, true)}</text>`;
+  });
+  g += `<g class="axis"><text x="${mid}" y="${H - 4}" text-anchor="middle">average cost</text><text x="${W - 20}" y="${H - 4}" text-anchor="end">+${fmtP(max, 0)}</text><text x="${L}" y="${H - 4}">-${fmtP(max, 0)}</text></g></svg>`;
+  return g;
+}
+function hBars(items) {
+  const max = Math.max(1, ...items.map(i => i.v)), W = 560, L = 60, rh = 22, H = items.length * rh + 8;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}">` + items.map((it, i) => {
+    const y = i * rh + 4, w = it.v / max * (W - L - 80);
+    return `<text x="${L - 8}" y="${y + 15}" text-anchor="end" font-size="12" font-weight="600" fill="var(--ink)">${it.label}</text>
+      <rect class="hit" data-tip="${esc(it.label)}|${fmtP(it.v, 1)}|${esc(it.extra)}" x="${L}" y="${y + 4}" width="${Math.max(2, w)}" height="${rh - 8}" rx="3" fill="${it.muted ? 'var(--ink-3)' : 'var(--s1)'}"/>
+      <text x="${L + w + 6}" y="${y + 15}" font-size="11" fill="var(--ink-2)">${fmtP(it.v, 1)} · ${it.extra}</text>`;
+  }).join('') + '</svg>';
+}
+
+// ---------- performance ----------
+function renderPerf() {
+  const ec = snap.equity_curve || {}, spans = Object.keys(ec).filter(k => (ec[k] || []).length);
+  const rg = $('#range');
+  rg.innerHTML = spans.map(k => `<button class="${k === curveSpan ? 'active' : ''}" data-s="${k}">${{ day: '1D', week: '1W', month: '1M', '3month': '3M', year: '1Y', '5year': '5Y', all: 'All' }[k] || k}</button>`).join('');
+  rg.querySelectorAll('button').forEach(b => b.onclick = () => { curveSpan = b.dataset.s; renderPerf(); });
+  if (!spans.length) { $('#eqchart').innerHTML = '<p class="muted">No equity history in the snapshot yet. Robinhood\'s own history is pulled on each sync; the daily snapshot folder fills in over time.</p>'; $('#perflegend').innerHTML = ''; }
+  else {
+    if (!ec[curveSpan]) curveSpan = spans[0];
+    const rows = ec[curveSpan];
+    const eq = rows.map(r => [r.t.slice(0, 10), r.equity]);
+    const contrib = rows.map(r => [r.t.slice(0, 10), r.equity - r.net_return]);
+    const first = rows[0], last = rows[rows.length - 1], ch = last.equity - first.equity;
+    $('#perfsrc').textContent = `${fmtD(first.t)} → ${fmtD(last.t)} · ${fmtSign(ch)} (${fmtP(first.equity ? ch / first.equity * 100 : null, 2, true)})`;
+    $('#perflegend').innerHTML = `<span><i style="background:var(--s1)"></i>Portfolio equity</span><span><i style="background:var(--s2)"></i>Net contributions (equity − net return)</span>`;
+    $('#eqchart').innerHTML = lineChart([{ name: 'Equity', color: SERIES[0], pts: eq }, { name: 'Net contributions', color: SERIES[1], pts: contrib }], { height: 300, fmt: v => fmtM(v, 0) });
+    bindTips($('#eqchart'));
+  }
+  apiGet('/api/history').catch(() => []).then(h => {
+    $('#histtable').innerHTML = h.length ? `<table><thead><tr><th>Date</th><th>Equity</th><th>Cost basis</th><th>Unrealized</th><th>Realized</th><th>Cash</th></tr></thead><tbody>` +
+      h.slice().reverse().map(r => `<tr><td>${fmtD(r.date)}</td><td>${fmtM(r.equity)}</td><td>${fmtM(r.cost_basis)}</td><td class="${cls(r.unrealized)}">${fmtSign(r.unrealized)}</td><td class="${cls(r.realized)}">${fmtSign(r.realized)}</td><td>${fmtM(r.cash)}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">No daily snapshots yet.</p>';
+  });
+}
+
+// ---------- trades ----------
+function renderTrades() {
+  const sel = $('#tfilter'), syms = [...new Set((snap.trades || []).map(t => t.symbol))].sort();
+  sel.innerHTML = '<option value="">All symbols</option>' + syms.map(s => `<option>${s}</option>`).join('');
+  sel.onchange = drawTrades; drawTrades();
+  const dv = (snap.dividends || []).slice().sort((a, b) => a.date < b.date ? 1 : -1);
+  $('#dcount').textContent = `${dv.length} payments · ${fmtM(dv.reduce((a, x) => a + x.amount, 0))} total`;
+  $('#dtable').innerHTML = dv.length ? `<table><thead><tr><th>Paid</th><th>Symbol</th><th>Amount</th><th>Rate/sh</th><th>Shares</th><th>Reinvested</th></tr></thead><tbody>` + dv.slice(0, 200).map(x => `<tr><td>${fmtD(x.date)}</td><td class="sym">${x.symbol}</td><td>${fmtM(x.amount)}</td><td>${x.rate ? fmtM(x.rate, 4) : '--'}</td><td>${x.position ? fmtN(x.position, 4) : '--'}</td><td>${x.reinvested ? 'yes' : 'no'}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">No dividends.</p>';
+}
+function drawTrades() {
+  const f = $('#tfilter').value, ts = (snap.trades || []).filter(t => !f || t.symbol === f).slice().sort((a, b) => a.date < b.date ? 1 : -1);
+  const buys = ts.filter(t => t.side === 'buy').reduce((a, t) => a + t.qty * t.price, 0), sells = ts.filter(t => t.side !== 'buy').reduce((a, t) => a + t.qty * t.price, 0);
+  $('#tcount').textContent = `${ts.length} fills · bought ${fmtM(buys)} · sold ${fmtM(sells)}`;
+  $('#ttable').innerHTML = ts.length ? `<table><thead><tr><th>Date</th><th>Symbol</th><th>Side</th><th>Shares</th><th>Price</th><th>Value</th><th>Fees</th></tr></thead><tbody>` + ts.slice(0, 500).map(t => `<tr><td>${fmtD(t.date)}</td><td class="sym">${t.symbol}</td><td class="${t.side === 'buy' ? 'up' : 'down'}">${t.side}</td><td>${fmtN(t.qty, 4)}</td><td>${fmtM(t.price)}</td><td>${fmtM(t.qty * t.price)}</td><td>${t.fees ? fmtM(t.fees) : '--'}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">No trades in the snapshot (sync without --no-orders, or import an activity CSV).</p>';
+}
+
+// ---------- backtest ----------
+$('#btform').onsubmit = async e => {
+  e.preventDefault(); $('#bterr').textContent = ''; $('#btchart').innerHTML = '<p class="muted">Running…</p>';
+  const q = new URLSearchParams({ symbol: $('#btsym').value.trim().toUpperCase(), start: $('#btstart').value, amount: $('#btamt').value, freq: $('#btfreq').value });
+  try {
+    const d = await apiGet('/api/backtest?' + q);
+    if (d.error) throw new Error(d.error);
+    const series = d.results.map((res, i) => ({ name: res.label, color: SERIES[i % 8], pts: res.curve.map(c => [c[0], c[1]]) }));
+    $('#btlegend').innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.name}</span>`).join('');
+    $('#btchart').innerHTML = lineChart(series, { height: 320, fmt: v => fmtM(v, 0) });
+    bindTips($('#btchart'));
+    $('#bttable').innerHTML = `<table><thead><tr><th>Strategy</th><th>Contributed</th><th>Final value</th><th>Profit</th><th>Total return</th><th>XIRR</th><th>TW CAGR</th><th>Max DD</th><th>Sharpe</th><th>Avg cost</th><th>Price vs avg</th><th>Cash drag</th><th>Buys/Sells</th></tr></thead><tbody>` +
+      d.results.map(r => `<tr><td>${r.label}</td><td>${fmtM(r.contributed)}</td><td>${fmtM(r.final_value)}</td><td class="${cls(r.profit)}">${fmtSign(r.profit)}</td><td class="${cls(r.total_return_pct)}">${fmtP(r.total_return_pct, 1, true)}</td><td>${fmtP(r.xirr_pct, 1)}</td><td>${fmtP(r.cagr_twr_pct, 1)}</td><td>${fmtP(r.max_drawdown_pct, 1)}</td><td>${r.sharpe == null ? '--' : r.sharpe.toFixed(2)}</td><td>${r.avg_cost ? fmtM(r.avg_cost) : '--'}</td><td class="${cls(r.price_vs_avg_cost_pct)}">${fmtP(r.price_vs_avg_cost_pct, 1, true)}</td><td>${fmtP(r.cash_drag_pct, 1)}</td><td>${r.buys}/${r.sells}</td></tr>`).join('') + '</tbody></table>';
+  } catch (err) { $('#bterr').textContent = err.message; $('#btchart').innerHTML = ''; }
+};
+
+// ---------- SVG line chart with crosshair tooltip ----------
+function lineChart(series, opt = {}) {
+  const W = 800, H = opt.height || 280, m = { t: 12, r: 16, b: 28, l: 64 };
+  const all = series.flatMap(s => s.pts.filter(p => p[1] != null));
+  if (!all.length) return '<p class="muted">no data</p>';
+  const xs = [...new Set(series[0].pts.map(p => p[0]))].sort();
+  const x0 = new Date(xs[0]), x1 = new Date(xs[xs.length - 1]), span = Math.max(1, x1 - x0);
+  let lo = Math.min(...all.map(p => p[1]), ...(opt.marks || []).map(k => k.y)), hi = Math.max(...all.map(p => p[1]), ...(opt.marks || []).map(k => k.y));
+  if (lo === hi) { lo *= 0.95; hi *= 1.05; } const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+  const X = d => m.l + (new Date(d) - x0) / span * (W - m.l - m.r), Y = v => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
+  const ticks = niceTicks(lo, hi, 5);
+  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" data-x0="${x0.toISOString()}" data-span="${span}" data-l="${m.l}" data-r="${m.r}" data-w="${W}"><g class="grid">${ticks.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/>`).join('')}</g>
+  <g class="axis">${ticks.map(t => `<text x="${m.l - 8}" y="${Y(t) + 4}" text-anchor="end">${(opt.fmt || fmtM)(t)}</text>`).join('')}
+  ${xTicks(x0, x1).map(d => `<text x="${X(d)}" y="${H - 8}" text-anchor="middle">${d.toLocaleDateString('en-US', span > 400 * 864e5 ? { month: 'short', year: '2-digit' } : { month: 'short', day: 'numeric' })}</text>`).join('')}</g>`;
+  series.forEach(s => {
+    const path = []; let pen = false;
+    s.pts.forEach(p => { if (p[1] == null) { pen = false; return; } path.push(`${pen ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`); pen = true; });
+    g += `<path d="${path.join('')}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
+  });
+  (opt.marks || []).forEach(k => { g += `<circle cx="${X(k.d)}" cy="${Y(k.y)}" r="4.5" fill="${k.side === 'buy' ? 'var(--s3)' : 'var(--s8)'}" stroke="var(--surface)" stroke-width="2" class="hit" data-tip="${fmtD(k.d)}|${k.side} ${fmtN(k.qty, 4)} sh|at ${fmtM(k.y)}"/>`; });
+  g += `<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" stroke="var(--ink-3)" stroke-dasharray="3 3" style="display:none"/>${series.map((s, i) => `<circle class="xd" data-i="${i}" r="4" fill="${s.color}" stroke="var(--surface)" stroke-width="2" style="display:none"/>`).join('')}
+  <rect class="hover" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/></svg>`;
+  // attach data for hover
+  const el = document.createElement('div'); el.innerHTML = g; const svg = el.firstChild;
+  svg._series = series; svg._Y = Y; svg._X = X; svg._fmt = opt.fmt || fmtM; svg._xs = xs;
+  requestAnimationFrame(() => { const live = document.querySelector(`svg[data-x0="${x0.toISOString()}"][data-span="${span}"]`); if (live) { live._series = series; live._Y = Y; live._X = X; live._fmt = opt.fmt || fmtM; live._xs = xs; } });
+  return g;
+}
+function niceTicks(lo, hi, n) { const r = hi - lo, s0 = r / n, p = Math.pow(10, Math.floor(Math.log10(s0))), s = [1, 2, 2.5, 5, 10].map(k => k * p).find(k => k >= s0); const out = []; for (let v = Math.ceil(lo / s) * s; v <= hi; v += s) out.push(+v.toFixed(6)); return out; }
+function xTicks(a, b) { const out = [], n = 6, span = b - a; for (let i = 0; i <= n; i++) out.push(new Date(a.getTime() + span * i / n)); return out; }
+const tip = $('#tip');
+function showTip(html, ev) { tip.innerHTML = html; tip.style.display = 'block'; const w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(window.innerWidth - w - 8, ev.clientX + 14) + 'px'; tip.style.top = Math.max(8, ev.clientY - h - 12) + 'px'; }
+function bindTips(root) {
+  root.querySelectorAll('.hit').forEach(el => { el.onmousemove = ev => { const [a, b, c] = el.dataset.tip.split('|'); showTip(`<b>${a}</b><div class="r"><span>${b}</span></div>${c ? `<div class="r muted"><span>${c}</span></div>` : ''}`, ev); }; el.onmouseleave = () => tip.style.display = 'none'; });
+  root.querySelectorAll('svg.chart').forEach(svg => {
+    const hov = svg.querySelector('rect.hover'); if (!hov) return;
+    hov.onmousemove = ev => {
+      const S = svg._series; if (!S) return;
+      const box = svg.getBoundingClientRect(), W = +svg.dataset.w, l = +svg.dataset.l, r = +svg.dataset.r;
+      const fx = (ev.clientX - box.left) / box.width * W, t = new Date(+new Date(svg.dataset.x0) + (fx - l) / (W - l - r) * +svg.dataset.span);
+      const xs = svg._xs; let lo = 0, hi = xs.length - 1; const ts = t.toISOString().slice(0, 10);
+      while (lo < hi) { const mid = (lo + hi) >> 1; if (xs[mid] < ts) lo = mid + 1; else hi = mid; }
+      const d = xs[Math.max(0, Math.min(xs.length - 1, lo))];
+      svg.querySelector('.xh').setAttribute('x1', svg._X(d)); svg.querySelector('.xh').setAttribute('x2', svg._X(d)); svg.querySelector('.xh').style.display = '';
+      const rows = S.map((s, i) => { const p = s.pts.find(p => p[0] === d); const c = svg.querySelector(`.xd[data-i="${i}"]`); if (p && p[1] != null) { c.setAttribute('cx', svg._X(d)); c.setAttribute('cy', svg._Y(p[1])); c.style.display = ''; } else c.style.display = 'none'; return `<div class="r"><span><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${s.color};margin-right:6px"></i>${s.name}</span><span>${p && p[1] != null ? svg._fmt(p[1]) : '--'}</span></div>`; });
+      showTip(`<b>${fmtD(d)}</b>${rows.join('')}`, ev);
+    };
+    hov.onmouseleave = () => { tip.style.display = 'none'; svg.querySelector('.xh').style.display = 'none'; svg.querySelectorAll('.xd').forEach(c => c.style.display = 'none'); };
+  });
+}
+
+// ---------- controls ----------
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); });
+$('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
+$('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
+$('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };
+try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; const a = localStorage.getItem('auto'); if (a) { $('#auto').value = a; $('#auto').dispatchEvent(new Event('change')); } } catch (e) { }
+load();
+</script>

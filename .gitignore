@@ -1,3 +1,11 @@
 .cache/
 __pycache__/
 *.pyc
+# your brokerage data never goes in git
+data/portfolio/*
+!data/portfolio/sample_snapshot.json
+data/prices/*
+!data/prices/DEMO_*.csv
+.tokens/
+*.pickle
+.env

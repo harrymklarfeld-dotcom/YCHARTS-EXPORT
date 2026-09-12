@@ -1,53 +1,65 @@
-# ycharts-export
+# ycharts-export → portfolio desk
 
-Fundamental-analysis toolkit built around YCharts' public company pages (no API key)
-plus a cycle-aware intrinsic-value model. First target: **Micron (MU)**.
+Personal investing toolkit. Three pieces:
+
+1. **Live portfolio dashboard** fed by your Robinhood account (`dashboard/`, `portfolio/robinhood_sync.py`).
+2. **Backtester for average-cost / accumulation strategies** and a replay of your own trades (`portfolio/backtest.py`).
+3. **YCharts-flavoured fundamentals + intrinsic-value model** (the original `ycharts_export/` work on Micron).
 
 ```
-data/mu_fundamentals.json          # every input, with sources (includes parsed YCharts statements)
-data/ycharts/*.xlsx                # YCharts Financial Statement exports (income, balance sheet, cash flow)
-ycharts_export/load_xlsx.py        # parse YCharts statement exports -> fundamentals JSON (quarters + fiscal years)
-ycharts_export/scrape.py           # scrape ycharts.com/companies/<T>/<metric> pages
-ycharts_export/valuation.py        # multiples + earnings power + scenario DCF + asset floor + MoS
-ycharts_export/export_csv.py       # flatten fundamentals JSON to CSV
-reports/MU_intrinsic_value_2026-09-09.md
+portfolio/robinhood_sync.py   log in to Robinhood (robin_stocks), pull positions/quotes/orders/dividends/equity history -> data/portfolio/snapshot.json
+portfolio/csv_import.py       same snapshot from Robinhood's activity-report CSV (fallback when the private API breaks)
+portfolio/ledger.py           trades -> average cost, FIFO lots, realized/unrealized P&L, XIRR (pure python, unit-tested)
+portfolio/backtest.py         lump sum / DCA / value averaging / buy-the-dip / below-avg-only / avg-cost bands / 200d MA filter
+portfolio/prices.py           daily prices with a CSV cache: yfinance -> Robinhood -> ycharts.com page -> YCharts exports you drop in
+portfolio/demo_data.py        synthetic snapshot + price series so everything runs offline
+dashboard/serve.py            local stdlib web server + JSON API (127.0.0.1 only)
+dashboard/index.html          the dashboard (no build step, no CDN, light/dark)
+research/                     backtesting_and_average_cost.md, robinhood_access.md
+ycharts_export/               scrape.py (public YCharts pages), load_xlsx.py (YCharts statement exports), valuation.py
+tests/                        python3 tests/test_ledger.py && python3 tests/test_backtest.py
 ```
 
-## Run
+## Quick start
 
 ```bash
-pip install openpyxl                                         # only needed for the xlsx loader
-python -m ycharts_export.load_xlsx data/ycharts MU --merge data/mu_fundamentals.json
-python -m ycharts_export.scrape MU -o data/mu_ycharts.json   # needs network access to ycharts.com
-python -m ycharts_export.valuation --ticker MU --out reports/MU_intrinsic_value.md
-python -m ycharts_export.valuation --price 650 --discount 0.11  # what-if
-python -m ycharts_export.export_csv data/mu_fundamentals.json data/mu_fundamentals.csv
+pip install -r requirements.txt
+
+# 1. see it working with fake data
+python -m dashboard.serve --demo            # open http://127.0.0.1:8765
+
+# 2. your real account
+python -m portfolio.robinhood_sync          # prompts for login; approve the device push in the Robinhood app
+python -m dashboard.serve --refresh 300     # re-syncs every 5 min during market hours; "Refresh" button any time
+
+# 3. backtests
+python -m portfolio.backtest MU VOO --start 2016-01-01 --amount 500 --freq M -o reports/backtest.md
+python -m portfolio.backtest --replay data/portfolio/snapshot.json -o reports/replay.md   # your trades vs DCA of the same dollars
 ```
 
-Valuation and scraper are stdlib-only (Python 3.9+); the xlsx loader needs openpyxl.
+Credentials come from the prompt or `RH_USERNAME` / `RH_PASSWORD` / `RH_TOTP_SECRET` (authenticator-app seed, optional).
+The session token is cached in `~/.tokens/`; `data/portfolio/` and `data/prices/` are git-ignored. Nothing about your
+account is ever committed. Read `research/robinhood_access.md` first: robin_stocks uses Robinhood's private API, which is
+against their terms of service and breaks from time to time; the CSV importer is the sanctioned fallback.
 
-## Method
+## What the dashboard shows
 
-A single DCF on a memory company near a cycle peak is meaningless, so the model
-values the business four ways and reports margin of safety against each:
+* **Hero tiles**: total equity, day change, unrealized P&L, total return (unrealized + realized + dividends), cash.
+* **Holdings**: YCharts-style sortable table (shares, average cost, price, day %, market value, weight, unrealized, P/E, dividend yield, position in 52-week range). Click a row for the price chart with your running average cost and every buy/sell marked, FIFO lots with holding period, and recent fills.
+* **Average cost**: price vs. your average per holding, allocation, and what adding $1,000 does to each average.
+* **Performance**: Robinhood's equity curve vs. net contributions, plus the daily snapshot history the sync builds up.
+* **Trades & income**: every fill and dividend.
+* **Backtest**: run the seven strategies on any ticker from the browser.
 
-1. **Multiples** — trailing, forward, EV-based, and price/book.
-2. **Through-cycle earnings power** — normalized mid-cycle net income × a
-   through-cycle multiple, plus net cash (Graham).
-3. **Scenario DCF** — bear / base / bull FCF paths through FY31 with an explicit
-   down-cycle; terminal value is struck on *mid-cycle* FCF, then probability-weighted.
-4. **Asset floor** — book value and net cash per share, projected forward, because
-   memory drawdowns historically bottom near 1–1.5× book.
-5. **Earnings-quality diagnostics** from the YCharts statements (inventory days, DSO,
-   working-capital drag, capex vs. D&A, net debt) and a **pre-earnings section** with
-   event math for the next print when `pre_earnings` is present in the JSON.
+## YCharts data
 
-Scenario assumptions live at the top of `ycharts_export/valuation.py`; edit and re-run.
+The Micron work still runs as before:
 
-## Data provenance
+```bash
+python -m ycharts_export.load_xlsx data/ycharts MU --merge data/mu_fundamentals.json
+python -m ycharts_export.scrape MU -o data/mu_ycharts.json       # public ycharts.com pages, needs network
+python -m ycharts_export.valuation --ticker MU --out reports/MU_intrinsic_value.md
+```
 
-Financial statements come from the YCharts exports in `data/ycharts/` (quarterly back
-to 1983). Guidance, consensus, industry pricing and pre-earnings context were gathered
-from Micron press releases, TrendForce and sell-side coverage because ycharts.com itself
-was not reachable from the analysis environment; `scrape.py` is provided to refresh
-those fields from YCharts on an unrestricted network.
+For price history the backtester will also read any YCharts Timeseries export saved as `data/prices/<SYM>.csv` or `.xlsx`
+(date column + price/close column), which is the way to get total-return or very long histories in.

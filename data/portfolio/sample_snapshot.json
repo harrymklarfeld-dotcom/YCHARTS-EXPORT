@@ -1,0 +1,6780 @@
+{
+ "source": "DEMO synthetic data (portfolio.demo_data)",
+ "as_of": "2026-09-11T20:00:00+00:00",
+ "account": {
+  "equity_rh": 145619.6002,
+  "extended_hours_equity": null,
+  "equity_previous_close": 142272.94559999998,
+  "market_value_rh": 143305.0502,
+  "cash": 2314.55,
+  "buying_power": 2314.55,
+  "withdrawable": 2314.55
+ },
+ "summary": {
+  "cash": 2314.55,
+  "equity": 145619.6002,
+  "market_value": 143305.0502,
+  "cost_basis": 110787.22119234083,
+  "unrealized": 32517.829007659166,
+  "unrealized_pct": 29.3516063113489,
+  "day_change": 3346.654599999997,
+  "day_change_pct": 2.3911781680926882,
+  "realized": 899.2391923408277,
+  "dividends": 258.5,
+  "total_return": 33675.568199999994
+ },
+ "holdings": [
+  {
+   "symbol": "AAPL",
+   "qty": 88.22,
+   "avg_cost": 219.73580624080017,
+   "price": 270.52,
+   "prev_close": 275.93,
+   "day_change": -477.2702000000022,
+   "day_change_pct": -1.9606421918602623,
+   "market_value": 23865.2744,
+   "cost_basis": 19385.092826563392,
+   "unrealized": 4480.181573436606,
+   "unrealized_pct": 23.11147856510347,
+   "realized": 324.7765265633924,
+   "dividends": 60.5,
+   "first_buy": "2023-10-10",
+   "buys": 29,
+   "sells": 7,
+   "weight_pct": 16.388778960539955,
+   "name": "Apple",
+   "rh_avg_cost": 219.73580624080017,
+   "rh_qty": 88.22,
+   "pe_ratio": 32.0,
+   "market_cap": 3500000000000.0,
+   "dividend_yield": 0.45,
+   "pb_ratio": 50.0,
+   "high_52_weeks": 260.0,
+   "low_52_weeks": 170.0,
+   "sector": "Technology",
+   "industry": "Consumer Electronics"
+  },
+  {
+   "symbol": "AMD",
+   "qty": 92.69,
+   "avg_cost": 158.3609721082462,
+   "price": 126.17,
+   "prev_close": 128.41,
+   "day_change": -207.6255999999995,
+   "day_change_pct": -1.7444124289385576,
+   "market_value": 11694.6973,
+   "cost_basis": 14678.47850471334,
+   "unrealized": -2983.7812047133393,
+   "unrealized_pct": -20.327591880556493,
+   "realized": -37.79379528666142,
+   "dividends": 0.0,
+   "first_buy": "2023-10-10",
+   "buys": 28,
+   "sells": 5,
+   "weight_pct": 8.030991215425685,
+   "name": "Advanced Micro Devices",
+   "rh_avg_cost": 158.3609721082462,
+   "rh_qty": 92.69,
+   "pe_ratio": 95.0,
+   "market_cap": 250000000000.0,
+   "dividend_yield": 0.0,
+   "pb_ratio": 4.0,
+   "high_52_weeks": 190.0,
+   "low_52_weeks": 80.0,
+   "sector": "Technology",
+   "industry": "Semiconductors"
+  },
+  {
+   "symbol": "MU",
+   "qty": 100.08000000000001,
+   "avg_cost": 287.78581768850927,
+   "price": 661.91,
+   "prev_close": 625.01,
+   "day_change": 3692.9519999999984,
+   "day_change_pct": 5.903905537511389,
+   "market_value": 66243.9528,
+   "cost_basis": 28801.604634266012,
+   "unrealized": 37442.34816573399,
+   "unrealized_pct": 130.00091016174795,
+   "realized": 655.6394342660108,
+   "dividends": 0.0,
+   "first_buy": "2023-10-10",
+   "buys": 32,
+   "sells": 4,
+   "weight_pct": 45.491096465735254,
+   "name": "Micron Technology",
+   "rh_avg_cost": 287.78581768850927,
+   "rh_qty": 100.08000000000001,
+   "pe_ratio": 22.6,
+   "market_cap": 1145000000000.0,
+   "dividend_yield": 0.1,
+   "pb_ratio": 11.2,
+   "high_52_weeks": 1255.0,
+   "low_52_weeks": 138.0,
+   "sector": "Technology",
+   "industry": "Semiconductors"
+  },
+  {
+   "symbol": "NVDA",
+   "qty": 111.76999999999998,
+   "avg_cost": 90.32744250153533,
+   "price": 47.41,
+   "prev_close": 44.89,
+   "day_change": 281.6603999999995,
+   "day_change_pct": 5.613722432613044,
+   "market_value": 5299.015699999999,
+   "cost_basis": 10095.898248396603,
+   "unrealized": -4796.882548396604,
+   "unrealized_pct": -47.51318238729703,
+   "realized": -18.66445160339255,
+   "dividends": 0.0,
+   "first_buy": "2023-10-10",
+   "buys": 34,
+   "sells": 2,
+   "weight_pct": 3.6389439970458044,
+   "name": "NVIDIA",
+   "rh_avg_cost": 90.32744250153533,
+   "rh_qty": 111.76999999999998,
+   "pe_ratio": 48.0,
+   "market_cap": 4600000000000.0,
+   "dividend_yield": 0.02,
+   "pb_ratio": 40.0,
+   "high_52_weeks": 210.0,
+   "low_52_weeks": 90.0,
+   "sector": "Technology",
+   "industry": "Semiconductors"
+  },
+  {
+   "symbol": "VOO",
+   "qty": 116.20000000000003,
+   "avg_cost": 325.52622184510733,
+   "price": 311.55,
+   "prev_close": 311.06,
+   "day_change": 56.938000000001075,
+   "day_change_pct": 0.15752587925159656,
+   "market_value": 36202.11000000001,
+   "cost_basis": 37826.146978401484,
+   "unrealized": -1624.0369784014765,
+   "unrealized_pct": -4.29342427958308,
+   "realized": -24.718521598521534,
+   "dividends": 198.0,
+   "first_buy": "2023-10-10",
+   "buys": 33,
+   "sells": 1,
+   "weight_pct": 24.860739866253258,
+   "name": "Vanguard S&P 500 ETF",
+   "rh_avg_cost": 325.52622184510733,
+   "rh_qty": 116.20000000000003,
+   "pe_ratio": 24.0,
+   "market_cap": null,
+   "dividend_yield": 1.2,
+   "pb_ratio": null,
+   "high_52_weeks": 600.0,
+   "low_52_weeks": 450.0,
+   "sector": "ETF",
+   "industry": "Large Blend"
+  }
+ ],
+ "trades": [
+  {
+   "symbol": "MU",
+   "date": "2023-10-10",
+   "side": "buy",
+   "qty": 1.75,
+   "price": 85.85,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2023-10-10",
+   "side": "buy",
+   "qty": 4.32,
+   "price": 57.84,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2023-10-10",
+   "side": "buy",
+   "qty": 2.74,
+   "price": 165.58,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2023-10-10",
+   "side": "buy",
+   "qty": 4.75,
+   "price": 367.2,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2023-10-10",
+   "side": "buy",
+   "qty": 4.8,
+   "price": 103.11,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2023-11-08",
+   "side": "buy",
+   "qty": 1.36,
+   "price": 92.36,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2023-11-08",
+   "side": "buy",
+   "qty": 4.51,
+   "price": 71.73,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2023-11-08",
+   "side": "buy",
+   "qty": 1.61,
+   "price": 175.46,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2023-11-08",
+   "side": "buy",
+   "qty": 1.89,
+   "price": 381.48,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2023-12-07",
+   "side": "buy",
+   "qty": 2.83,
+   "price": 91.02,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2023-12-07",
+   "side": "buy",
+   "qty": 5.97,
+   "price": 78.71,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2023-12-07",
+   "side": "buy",
+   "qty": 5.97,
+   "price": 160.2,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2023-12-07",
+   "side": "buy",
+   "qty": 2.66,
+   "price": 373.19,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2023-12-07",
+   "side": "buy",
+   "qty": 4.06,
+   "price": 125.61,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-01-05",
+   "side": "buy",
+   "qty": 3.54,
+   "price": 83.38,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-01-05",
+   "side": "buy",
+   "qty": 2.42,
+   "price": 85.11,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-01-05",
+   "side": "buy",
+   "qty": 3.42,
+   "price": 162.71,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-01-05",
+   "side": "buy",
+   "qty": 5.86,
+   "price": 378.24,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-01-05",
+   "side": "buy",
+   "qty": 3.56,
+   "price": 160.39,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-02-05",
+   "side": "buy",
+   "qty": 3.17,
+   "price": 91.75,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-02-05",
+   "side": "buy",
+   "qty": 4.34,
+   "price": 90.21,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-02-05",
+   "side": "buy",
+   "qty": 1.51,
+   "price": 167.69,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-02-05",
+   "side": "buy",
+   "qty": 3.01,
+   "price": 373.77,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-02-05",
+   "side": "buy",
+   "qty": 3.26,
+   "price": 200.62,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-03-05",
+   "side": "buy",
+   "qty": 1.45,
+   "price": 103.32,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-03-05",
+   "side": "buy",
+   "qty": 3.31,
+   "price": 105.36,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-03-05",
+   "side": "buy",
+   "qty": 2.32,
+   "price": 188.67,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-03-05",
+   "side": "buy",
+   "qty": 3.39,
+   "price": 252.36,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-04-03",
+   "side": "buy",
+   "qty": 5.13,
+   "price": 122.77,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-04-03",
+   "side": "buy",
+   "qty": 1.59,
+   "price": 106.65,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-04-03",
+   "side": "buy",
+   "qty": 1.81,
+   "price": 177.88,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-04-03",
+   "side": "buy",
+   "qty": 1.85,
+   "price": 330.08,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-05-02",
+   "side": "buy",
+   "qty": 2.12,
+   "price": 126.35,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-05-02",
+   "side": "buy",
+   "qty": 4.84,
+   "price": 105.18,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-05-02",
+   "side": "buy",
+   "qty": 5.75,
+   "price": 170.03,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-05-02",
+   "side": "buy",
+   "qty": 1.76,
+   "price": 317.3,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-05-02",
+   "side": "buy",
+   "qty": 5.38,
+   "price": 256.23,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-05-31",
+   "side": "buy",
+   "qty": 5.74,
+   "price": 153.12,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-05-31",
+   "side": "buy",
+   "qty": 2.24,
+   "price": 94.49,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-05-31",
+   "side": "buy",
+   "qty": 1.73,
+   "price": 164.07,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-07-01",
+   "side": "buy",
+   "qty": 2.98,
+   "price": 158.21,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-07-01",
+   "side": "buy",
+   "qty": 5.36,
+   "price": 120.25,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-07-01",
+   "side": "buy",
+   "qty": 1.14,
+   "price": 164.99,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-07-01",
+   "side": "buy",
+   "qty": 1.73,
+   "price": 320.43,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-07-01",
+   "side": "buy",
+   "qty": 3.8,
+   "price": 217.41,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-07-30",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 188.56,
+   "fees": 0.02
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-07-30",
+   "side": "buy",
+   "qty": 3.25,
+   "price": 114.24,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-07-30",
+   "side": "buy",
+   "qty": 5.89,
+   "price": 178.33,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-07-30",
+   "side": "buy",
+   "qty": 5.9,
+   "price": 313.38,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-07-30",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 197.53,
+   "fees": 0.02
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-08-28",
+   "side": "buy",
+   "qty": 5.29,
+   "price": 192.93,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-08-28",
+   "side": "buy",
+   "qty": 5.42,
+   "price": 107.49,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-08-28",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 191.89,
+   "fees": 0.02
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-08-28",
+   "side": "buy",
+   "qty": 2.75,
+   "price": 300.13,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-08-28",
+   "side": "buy",
+   "qty": 1.69,
+   "price": 208.91,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-09-26",
+   "side": "buy",
+   "qty": 1.72,
+   "price": 196.99,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-09-26",
+   "side": "buy",
+   "qty": 5.32,
+   "price": 107.67,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-09-26",
+   "side": "buy",
+   "qty": 2.31,
+   "price": 188.13,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-09-26",
+   "side": "buy",
+   "qty": 1.65,
+   "price": 315.49,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-09-26",
+   "side": "buy",
+   "qty": 3.21,
+   "price": 175.44,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-10-25",
+   "side": "buy",
+   "qty": 2.54,
+   "price": 142.37,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-10-25",
+   "side": "buy",
+   "qty": 3.08,
+   "price": 102.86,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-10-25",
+   "side": "buy",
+   "qty": 1.84,
+   "price": 182.95,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-10-25",
+   "side": "buy",
+   "qty": 5.85,
+   "price": 320.89,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-10-25",
+   "side": "buy",
+   "qty": 2.2,
+   "price": 160.18,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-11-25",
+   "side": "buy",
+   "qty": 1.9,
+   "price": 193.88,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-11-25",
+   "side": "buy",
+   "qty": 5.42,
+   "price": 101.47,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-11-25",
+   "side": "buy",
+   "qty": 3.66,
+   "price": 186.83,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-11-25",
+   "side": "buy",
+   "qty": 3.63,
+   "price": 318.48,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-11-25",
+   "side": "buy",
+   "qty": 4.35,
+   "price": 149.14,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2024-12-24",
+   "side": "buy",
+   "qty": 4.19,
+   "price": 232.17,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2024-12-24",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 120.46,
+   "fees": 0.02
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-12-24",
+   "side": "buy",
+   "qty": 2.65,
+   "price": 205.26,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-12-24",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 316.05,
+   "fees": 0.02
+  },
+  {
+   "symbol": "AMD",
+   "date": "2024-12-24",
+   "side": "buy",
+   "qty": 5.49,
+   "price": 158.55,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-01-22",
+   "side": "buy",
+   "qty": 3.74,
+   "price": 275.21,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-01-22",
+   "side": "buy",
+   "qty": 1.88,
+   "price": 135.92,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-01-22",
+   "side": "buy",
+   "qty": 5.06,
+   "price": 206.69,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-01-22",
+   "side": "buy",
+   "qty": 5.36,
+   "price": 321.03,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-01-22",
+   "side": "buy",
+   "qty": 4.58,
+   "price": 150.2,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-02-20",
+   "side": "buy",
+   "qty": 1.3,
+   "price": 264.84,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-02-20",
+   "side": "buy",
+   "qty": 2.17,
+   "price": 101.69,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-02-20",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 199.86,
+   "fees": 0.02
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-02-20",
+   "side": "buy",
+   "qty": 2.06,
+   "price": 331.68,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-02-20",
+   "side": "buy",
+   "qty": 1.71,
+   "price": 159.2,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-03-21",
+   "side": "buy",
+   "qty": 4.4,
+   "price": 215.65,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-03-21",
+   "side": "buy",
+   "qty": 3.95,
+   "price": 115.22,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-03-21",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 206.88,
+   "fees": 0.02
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-03-21",
+   "side": "buy",
+   "qty": 2.46,
+   "price": 311.01,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-03-21",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 172.88,
+   "fees": 0.02
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-04-21",
+   "side": "buy",
+   "qty": 2.57,
+   "price": 367.31,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-04-21",
+   "side": "buy",
+   "qty": 1.02,
+   "price": 112.2,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-04-21",
+   "side": "buy",
+   "qty": 5.09,
+   "price": 211.28,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-04-21",
+   "side": "buy",
+   "qty": 3.93,
+   "price": 323.28,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-04-21",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 199.76,
+   "fees": 0.02
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-05-20",
+   "side": "buy",
+   "qty": 3.27,
+   "price": 397.96,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-05-20",
+   "side": "buy",
+   "qty": 2.85,
+   "price": 102.83,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-05-20",
+   "side": "buy",
+   "qty": 2.13,
+   "price": 232.89,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-05-20",
+   "side": "buy",
+   "qty": 3.1,
+   "price": 307.09,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-05-20",
+   "side": "buy",
+   "qty": 5.76,
+   "price": 166.26,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-06-18",
+   "side": "buy",
+   "qty": 4.97,
+   "price": 323.19,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-06-18",
+   "side": "buy",
+   "qty": 5.77,
+   "price": 86.91,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-06-18",
+   "side": "buy",
+   "qty": 2.78,
+   "price": 233.48,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-06-18",
+   "side": "buy",
+   "qty": 5.55,
+   "price": 308.5,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-06-18",
+   "side": "buy",
+   "qty": 3.44,
+   "price": 155.53,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-07-17",
+   "side": "buy",
+   "qty": 2.22,
+   "price": 283.81,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-07-17",
+   "side": "buy",
+   "qty": 3.58,
+   "price": 88.62,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-07-17",
+   "side": "buy",
+   "qty": 1.14,
+   "price": 251.7,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-07-17",
+   "side": "buy",
+   "qty": 3.29,
+   "price": 318.07,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-07-17",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 152.5,
+   "fees": 0.02
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-08-15",
+   "side": "buy",
+   "qty": 3.63,
+   "price": 226.82,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-08-15",
+   "side": "buy",
+   "qty": 4.38,
+   "price": 92.52,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-08-15",
+   "side": "buy",
+   "qty": 2.3,
+   "price": 254.42,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-08-15",
+   "side": "buy",
+   "qty": 5.52,
+   "price": 323.28,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-08-15",
+   "side": "buy",
+   "qty": 1.81,
+   "price": 133.67,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-09-15",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 221.84,
+   "fees": 0.02
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-09-15",
+   "side": "buy",
+   "qty": 5.5,
+   "price": 91.8,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-09-15",
+   "side": "buy",
+   "qty": 5.78,
+   "price": 245.58,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-09-15",
+   "side": "buy",
+   "qty": 5.59,
+   "price": 317.63,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-09-15",
+   "side": "buy",
+   "qty": 3.58,
+   "price": 122.9,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-10-14",
+   "side": "buy",
+   "qty": 2.44,
+   "price": 320.94,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-10-14",
+   "side": "buy",
+   "qty": 5.37,
+   "price": 79.85,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-10-14",
+   "side": "buy",
+   "qty": 5.69,
+   "price": 248.19,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-10-14",
+   "side": "buy",
+   "qty": 3.66,
+   "price": 338.18,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-10-14",
+   "side": "buy",
+   "qty": 1.98,
+   "price": 137.78,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-11-12",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 427.07,
+   "fees": 0.02
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-11-12",
+   "side": "buy",
+   "qty": 2.96,
+   "price": 66.56,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-11-12",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 262.74,
+   "fees": 0.02
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-11-12",
+   "side": "buy",
+   "qty": 1.09,
+   "price": 338.18,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-11-12",
+   "side": "buy",
+   "qty": 4.61,
+   "price": 162.18,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2025-12-11",
+   "side": "buy",
+   "qty": 3.09,
+   "price": 403.45,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2025-12-11",
+   "side": "buy",
+   "qty": 1.52,
+   "price": 63.72,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-12-11",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 271.16,
+   "fees": 0.02
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-12-11",
+   "side": "buy",
+   "qty": 1.92,
+   "price": 347.51,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2025-12-11",
+   "side": "buy",
+   "qty": 3.77,
+   "price": 140.18,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-01-09",
+   "side": "buy",
+   "qty": 1.76,
+   "price": 446.29,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-01-09",
+   "side": "buy",
+   "qty": 1.31,
+   "price": 54.12,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-01-09",
+   "side": "buy",
+   "qty": 2.1,
+   "price": 288.75,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-01-09",
+   "side": "buy",
+   "qty": 5.0,
+   "price": 340.38,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-01-09",
+   "side": "buy",
+   "qty": 1.09,
+   "price": 128.59,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-02-09",
+   "side": "buy",
+   "qty": 1.2,
+   "price": 422.44,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-02-09",
+   "side": "buy",
+   "qty": 2.04,
+   "price": 57.96,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-02-09",
+   "side": "buy",
+   "qty": 1.98,
+   "price": 284.4,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-02-09",
+   "side": "buy",
+   "qty": 3.37,
+   "price": 317.03,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-02-09",
+   "side": "buy",
+   "qty": 4.12,
+   "price": 140.67,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-03-10",
+   "side": "buy",
+   "qty": 4.82,
+   "price": 488.57,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-03-10",
+   "side": "buy",
+   "qty": 2.7,
+   "price": 47.47,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-03-10",
+   "side": "buy",
+   "qty": 4.12,
+   "price": 297.55,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-03-10",
+   "side": "buy",
+   "qty": 3.78,
+   "price": 304.7,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-03-10",
+   "side": "buy",
+   "qty": 1.32,
+   "price": 122.85,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-04-08",
+   "side": "buy",
+   "qty": 5.38,
+   "price": 486.57,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-04-08",
+   "side": "buy",
+   "qty": 1.0,
+   "price": 50.26,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-04-08",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 268.2,
+   "fees": 0.02
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-04-08",
+   "side": "buy",
+   "qty": 3.59,
+   "price": 295.87,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-04-08",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 114.59,
+   "fees": 0.02
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-05-07",
+   "side": "buy",
+   "qty": 4.48,
+   "price": 523.17,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-05-07",
+   "side": "buy",
+   "qty": 1.51,
+   "price": 49.14,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-05-07",
+   "side": "buy",
+   "qty": 3.4,
+   "price": 288.43,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-05-07",
+   "side": "buy",
+   "qty": 4.92,
+   "price": 291.05,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-05-07",
+   "side": "buy",
+   "qty": 5.86,
+   "price": 130.85,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-06-05",
+   "side": "buy",
+   "qty": 3.9,
+   "price": 485.43,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-06-05",
+   "side": "buy",
+   "qty": 1.13,
+   "price": 50.12,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-06-05",
+   "side": "buy",
+   "qty": 5.0,
+   "price": 291.82,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-06-05",
+   "side": "buy",
+   "qty": 3.8,
+   "price": 304.87,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-06-05",
+   "side": "buy",
+   "qty": 2.33,
+   "price": 130.31,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-07-06",
+   "side": "buy",
+   "qty": 5.2,
+   "price": 551.87,
+   "fees": 0.0
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-07-06",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 48.37,
+   "fees": 0.02
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-07-06",
+   "side": "buy",
+   "qty": 4.3,
+   "price": 272.75,
+   "fees": 0.0
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-07-06",
+   "side": "buy",
+   "qty": 2.38,
+   "price": 316.56,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-07-06",
+   "side": "buy",
+   "qty": 4.89,
+   "price": 130.91,
+   "fees": 0.0
+  },
+  {
+   "symbol": "MU",
+   "date": "2026-08-04",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 625.09,
+   "fees": 0.02
+  },
+  {
+   "symbol": "NVDA",
+   "date": "2026-08-04",
+   "side": "buy",
+   "qty": 1.74,
+   "price": 44.14,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-08-04",
+   "side": "sell",
+   "qty": 1.0,
+   "price": 278.07,
+   "fees": 0.02
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-08-04",
+   "side": "buy",
+   "qty": 3.54,
+   "price": 311.86,
+   "fees": 0.0
+  },
+  {
+   "symbol": "AMD",
+   "date": "2026-08-04",
+   "side": "buy",
+   "qty": 1.65,
+   "price": 120.85,
+   "fees": 0.0
+  }
+ ],
+ "dividends": [
+  {
+   "symbol": "VOO",
+   "date": "2023-12-01",
+   "amount": 8,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-03-01",
+   "amount": 10,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-05-31",
+   "amount": 12,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-08-30",
+   "amount": 14,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2024-11-29",
+   "amount": 16,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-02-28",
+   "amount": 18,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-05-30",
+   "amount": 20,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-08-29",
+   "amount": 22,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2025-11-28",
+   "amount": 24,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-02-27",
+   "amount": 26,
+   "reinvested": false
+  },
+  {
+   "symbol": "VOO",
+   "date": "2026-05-29",
+   "amount": 28,
+   "reinvested": false
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2023-10-22",
+   "amount": 3.0,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-01-21",
+   "amount": 3.5,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-04-21",
+   "amount": 4.0,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-07-21",
+   "amount": 4.5,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2024-10-20",
+   "amount": 5.0,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-01-19",
+   "amount": 5.5,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-04-20",
+   "amount": 6.0,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-07-20",
+   "amount": 6.5,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2025-10-19",
+   "amount": 7.0,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-01-18",
+   "amount": 7.5,
+   "reinvested": true
+  },
+  {
+   "symbol": "AAPL",
+   "date": "2026-04-19",
+   "amount": 8.0,
+   "reinvested": true
+  }
+ ],
+ "equity_curve": {
+  "all": [
+   {
+    "t": "2023-09-12",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-13",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-14",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-15",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-18",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-19",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-20",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-21",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-22",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-25",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-26",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-27",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-28",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-09-29",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-02",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-03",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-04",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-05",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-06",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-09",
+    "equity": 2314.55,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-10",
+    "equity": 5407.47,
+    "net_return": 0.0
+   },
+   {
+    "t": "2023-10-11",
+    "equity": 5385.23,
+    "net_return": -22.24
+   },
+   {
+    "t": "2023-10-12",
+    "equity": 5394.75,
+    "net_return": -12.73
+   },
+   {
+    "t": "2023-10-13",
+    "equity": 5442.98,
+    "net_return": 35.51
+   },
+   {
+    "t": "2023-10-16",
+    "equity": 5508.72,
+    "net_return": 101.24
+   },
+   {
+    "t": "2023-10-17",
+    "equity": 5524.82,
+    "net_return": 117.35
+   },
+   {
+    "t": "2023-10-18",
+    "equity": 5521.86,
+    "net_return": 114.39
+   },
+   {
+    "t": "2023-10-19",
+    "equity": 5532.01,
+    "net_return": 124.53
+   },
+   {
+    "t": "2023-10-20",
+    "equity": 5511.15,
+    "net_return": 103.67
+   },
+   {
+    "t": "2023-10-23",
+    "equity": 5541.98,
+    "net_return": 134.5
+   },
+   {
+    "t": "2023-10-24",
+    "equity": 5521.21,
+    "net_return": 113.74
+   },
+   {
+    "t": "2023-10-25",
+    "equity": 5515.28,
+    "net_return": 107.8
+   },
+   {
+    "t": "2023-10-26",
+    "equity": 5477.51,
+    "net_return": 70.03
+   },
+   {
+    "t": "2023-10-27",
+    "equity": 5510.71,
+    "net_return": 103.24
+   },
+   {
+    "t": "2023-10-30",
+    "equity": 5503.22,
+    "net_return": 95.75
+   },
+   {
+    "t": "2023-10-31",
+    "equity": 5544.33,
+    "net_return": 136.85
+   },
+   {
+    "t": "2023-11-01",
+    "equity": 5593.39,
+    "net_return": 185.92
+   },
+   {
+    "t": "2023-11-02",
+    "equity": 5586.7,
+    "net_return": 179.23
+   },
+   {
+    "t": "2023-11-03",
+    "equity": 5570.79,
+    "net_return": 163.32
+   },
+   {
+    "t": "2023-11-06",
+    "equity": 5569.42,
+    "net_return": 161.94
+   },
+   {
+    "t": "2023-11-07",
+    "equity": 5563.16,
+    "net_return": 155.69
+   },
+   {
+    "t": "2023-11-08",
+    "equity": 7032.52,
+    "net_return": 172.44
+   },
+   {
+    "t": "2023-11-09",
+    "equity": 7047.76,
+    "net_return": 187.69
+   },
+   {
+    "t": "2023-11-10",
+    "equity": 7031.7,
+    "net_return": 171.62
+   },
+   {
+    "t": "2023-11-13",
+    "equity": 6965.6,
+    "net_return": 105.53
+   },
+   {
+    "t": "2023-11-14",
+    "equity": 6993.55,
+    "net_return": 133.48
+   },
+   {
+    "t": "2023-11-15",
+    "equity": 6970.19,
+    "net_return": 110.12
+   },
+   {
+    "t": "2023-11-16",
+    "equity": 6948.72,
+    "net_return": 88.65
+   },
+   {
+    "t": "2023-11-17",
+    "equity": 7010.76,
+    "net_return": 150.68
+   },
+   {
+    "t": "2023-11-20",
+    "equity": 7007.71,
+    "net_return": 147.64
+   },
+   {
+    "t": "2023-11-21",
+    "equity": 7000.64,
+    "net_return": 140.57
+   },
+   {
+    "t": "2023-11-22",
+    "equity": 6954.01,
+    "net_return": 93.94
+   },
+   {
+    "t": "2023-11-23",
+    "equity": 6965.71,
+    "net_return": 105.63
+   },
+   {
+    "t": "2023-11-24",
+    "equity": 6941.66,
+    "net_return": 81.59
+   },
+   {
+    "t": "2023-11-27",
+    "equity": 6947.64,
+    "net_return": 87.57
+   },
+   {
+    "t": "2023-11-28",
+    "equity": 6958.26,
+    "net_return": 98.19
+   },
+   {
+    "t": "2023-11-29",
+    "equity": 6984.2,
+    "net_return": 124.13
+   },
+   {
+    "t": "2023-11-30",
+    "equity": 7037.9,
+    "net_return": 177.83
+   },
+   {
+    "t": "2023-12-01",
+    "equity": 7102.58,
+    "net_return": 242.51
+   },
+   {
+    "t": "2023-12-04",
+    "equity": 7087.29,
+    "net_return": 227.22
+   },
+   {
+    "t": "2023-12-05",
+    "equity": 7057.04,
+    "net_return": 196.96
+   },
+   {
+    "t": "2023-12-06",
+    "equity": 7065.99,
+    "net_return": 205.92
+   },
+   {
+    "t": "2023-12-07",
+    "equity": 10256.95,
+    "net_return": 210.34
+   },
+   {
+    "t": "2023-12-08",
+    "equity": 10260.4,
+    "net_return": 213.79
+   },
+   {
+    "t": "2023-12-11",
+    "equity": 10331.21,
+    "net_return": 284.6
+   },
+   {
+    "t": "2023-12-12",
+    "equity": 10370.2,
+    "net_return": 323.59
+   },
+   {
+    "t": "2023-12-13",
+    "equity": 10373.48,
+    "net_return": 326.87
+   },
+   {
+    "t": "2023-12-14",
+    "equity": 10384.04,
+    "net_return": 337.42
+   },
+   {
+    "t": "2023-12-15",
+    "equity": 10278.19,
+    "net_return": 231.57
+   },
+   {
+    "t": "2023-12-18",
+    "equity": 10339.65,
+    "net_return": 293.04
+   },
+   {
+    "t": "2023-12-19",
+    "equity": 10371.86,
+    "net_return": 325.25
+   },
+   {
+    "t": "2023-12-20",
+    "equity": 10323.27,
+    "net_return": 276.65
+   },
+   {
+    "t": "2023-12-21",
+    "equity": 10261.47,
+    "net_return": 214.86
+   },
+   {
+    "t": "2023-12-22",
+    "equity": 10262.21,
+    "net_return": 215.6
+   },
+   {
+    "t": "2023-12-25",
+    "equity": 10309.26,
+    "net_return": 262.65
+   },
+   {
+    "t": "2023-12-26",
+    "equity": 10294.27,
+    "net_return": 247.65
+   },
+   {
+    "t": "2023-12-27",
+    "equity": 10333.93,
+    "net_return": 287.32
+   },
+   {
+    "t": "2023-12-28",
+    "equity": 10464.3,
+    "net_return": 417.69
+   },
+   {
+    "t": "2023-12-29",
+    "equity": 10507.83,
+    "net_return": 461.21
+   },
+   {
+    "t": "2024-01-01",
+    "equity": 10538.63,
+    "net_return": 492.01
+   },
+   {
+    "t": "2024-01-02",
+    "equity": 10590.37,
+    "net_return": 543.75
+   },
+   {
+    "t": "2024-01-03",
+    "equity": 10531.54,
+    "net_return": 484.92
+   },
+   {
+    "t": "2024-01-04",
+    "equity": 10561.02,
+    "net_return": 514.4
+   },
+   {
+    "t": "2024-01-05",
+    "equity": 14532.38,
+    "net_return": 640.7
+   },
+   {
+    "t": "2024-01-08",
+    "equity": 14546.67,
+    "net_return": 654.98
+   },
+   {
+    "t": "2024-01-09",
+    "equity": 14717.96,
+    "net_return": 826.27
+   },
+   {
+    "t": "2024-01-10",
+    "equity": 14676.53,
+    "net_return": 784.84
+   },
+   {
+    "t": "2024-01-11",
+    "equity": 14680.99,
+    "net_return": 789.31
+   },
+   {
+    "t": "2024-01-12",
+    "equity": 14811.18,
+    "net_return": 919.49
+   },
+   {
+    "t": "2024-01-15",
+    "equity": 14914.4,
+    "net_return": 1022.71
+   },
+   {
+    "t": "2024-01-16",
+    "equity": 14837.87,
+    "net_return": 946.18
+   },
+   {
+    "t": "2024-01-17",
+    "equity": 14865.47,
+    "net_return": 973.78
+   },
+   {
+    "t": "2024-01-18",
+    "equity": 14879.83,
+    "net_return": 988.14
+   },
+   {
+    "t": "2024-01-19",
+    "equity": 14852.43,
+    "net_return": 960.74
+   },
+   {
+    "t": "2024-01-22",
+    "equity": 14714.33,
+    "net_return": 822.64
+   },
+   {
+    "t": "2024-01-23",
+    "equity": 14809.22,
+    "net_return": 917.53
+   },
+   {
+    "t": "2024-01-24",
+    "equity": 14790.91,
+    "net_return": 899.22
+   },
+   {
+    "t": "2024-01-25",
+    "equity": 14912.52,
+    "net_return": 1020.83
+   },
+   {
+    "t": "2024-01-26",
+    "equity": 14867.85,
+    "net_return": 976.16
+   },
+   {
+    "t": "2024-01-29",
+    "equity": 15047.3,
+    "net_return": 1155.61
+   },
+   {
+    "t": "2024-01-30",
+    "equity": 15075.09,
+    "net_return": 1183.4
+   },
+   {
+    "t": "2024-01-31",
+    "equity": 15176.86,
+    "net_return": 1285.17
+   },
+   {
+    "t": "2024-02-01",
+    "equity": 15305.36,
+    "net_return": 1413.67
+   },
+   {
+    "t": "2024-02-02",
+    "equity": 15328.0,
+    "net_return": 1436.31
+   },
+   {
+    "t": "2024-02-05",
+    "equity": 17914.51,
+    "net_return": 1308.18
+   },
+   {
+    "t": "2024-02-06",
+    "equity": 17759.48,
+    "net_return": 1153.15
+   },
+   {
+    "t": "2024-02-07",
+    "equity": 17886.82,
+    "net_return": 1280.49
+   },
+   {
+    "t": "2024-02-08",
+    "equity": 17951.01,
+    "net_return": 1344.68
+   },
+   {
+    "t": "2024-02-09",
+    "equity": 18169.91,
+    "net_return": 1563.58
+   },
+   {
+    "t": "2024-02-12",
+    "equity": 18180.63,
+    "net_return": 1574.3
+   },
+   {
+    "t": "2024-02-13",
+    "equity": 18165.82,
+    "net_return": 1559.5
+   },
+   {
+    "t": "2024-02-14",
+    "equity": 18242.76,
+    "net_return": 1636.43
+   },
+   {
+    "t": "2024-02-15",
+    "equity": 18220.9,
+    "net_return": 1614.57
+   },
+   {
+    "t": "2024-02-16",
+    "equity": 17966.8,
+    "net_return": 1360.47
+   },
+   {
+    "t": "2024-02-19",
+    "equity": 18083.15,
+    "net_return": 1476.82
+   },
+   {
+    "t": "2024-02-20",
+    "equity": 18129.52,
+    "net_return": 1523.19
+   },
+   {
+    "t": "2024-02-21",
+    "equity": 18354.77,
+    "net_return": 1748.44
+   },
+   {
+    "t": "2024-02-22",
+    "equity": 18296.52,
+    "net_return": 1690.19
+   },
+   {
+    "t": "2024-02-23",
+    "equity": 18307.74,
+    "net_return": 1701.42
+   },
+   {
+    "t": "2024-02-26",
+    "equity": 18215.67,
+    "net_return": 1609.34
+   },
+   {
+    "t": "2024-02-27",
+    "equity": 18442.04,
+    "net_return": 1835.71
+   },
+   {
+    "t": "2024-02-28",
+    "equity": 18613.65,
+    "net_return": 2007.32
+   },
+   {
+    "t": "2024-02-29",
+    "equity": 18631.78,
+    "net_return": 2025.45
+   },
+   {
+    "t": "2024-03-01",
+    "equity": 18778.88,
+    "net_return": 2172.55
+   },
+   {
+    "t": "2024-03-04",
+    "equity": 18817.07,
+    "net_return": 2210.74
+   },
+   {
+    "t": "2024-03-05",
+    "equity": 20824.82,
+    "net_return": 2426.72
+   },
+   {
+    "t": "2024-03-06",
+    "equity": 20757.88,
+    "net_return": 2359.78
+   },
+   {
+    "t": "2024-03-07",
+    "equity": 20730.67,
+    "net_return": 2332.57
+   },
+   {
+    "t": "2024-03-08",
+    "equity": 20681.95,
+    "net_return": 2283.86
+   },
+   {
+    "t": "2024-03-11",
+    "equity": 20727.08,
+    "net_return": 2328.98
+   },
+   {
+    "t": "2024-03-12",
+    "equity": 20722.18,
+    "net_return": 2324.08
+   },
+   {
+    "t": "2024-03-13",
+    "equity": 20762.21,
+    "net_return": 2364.11
+   },
+   {
+    "t": "2024-03-14",
+    "equity": 20460.19,
+    "net_return": 2062.09
+   },
+   {
+    "t": "2024-03-15",
+    "equity": 20318.27,
+    "net_return": 1920.17
+   },
+   {
+    "t": "2024-03-18",
+    "equity": 20541.19,
+    "net_return": 2143.09
+   },
+   {
+    "t": "2024-03-19",
+    "equity": 20614.41,
+    "net_return": 2216.31
+   },
+   {
+    "t": "2024-03-20",
+    "equity": 20653.7,
+    "net_return": 2255.61
+   },
+   {
+    "t": "2024-03-21",
+    "equity": 20445.87,
+    "net_return": 2047.77
+   },
+   {
+    "t": "2024-03-22",
+    "equity": 20522.71,
+    "net_return": 2124.61
+   },
+   {
+    "t": "2024-03-25",
+    "equity": 20508.48,
+    "net_return": 2110.38
+   },
+   {
+    "t": "2024-03-26",
+    "equity": 20431.17,
+    "net_return": 2033.07
+   },
+   {
+    "t": "2024-03-27",
+    "equity": 20400.21,
+    "net_return": 2002.12
+   },
+   {
+    "t": "2024-03-28",
+    "equity": 20454.75,
+    "net_return": 2056.65
+   },
+   {
+    "t": "2024-03-29",
+    "equity": 20384.49,
+    "net_return": 1986.4
+   },
+   {
+    "t": "2024-04-01",
+    "equity": 20416.18,
+    "net_return": 2018.08
+   },
+   {
+    "t": "2024-04-02",
+    "equity": 20491.85,
+    "net_return": 2093.75
+   },
+   {
+    "t": "2024-04-03",
+    "equity": 22149.14,
+    "net_return": 2019.05
+   },
+   {
+    "t": "2024-04-04",
+    "equity": 22283.4,
+    "net_return": 2153.31
+   },
+   {
+    "t": "2024-04-05",
+    "equity": 22467.01,
+    "net_return": 2336.92
+   },
+   {
+    "t": "2024-04-08",
+    "equity": 22494.53,
+    "net_return": 2364.44
+   },
+   {
+    "t": "2024-04-09",
+    "equity": 22579.14,
+    "net_return": 2449.05
+   },
+   {
+    "t": "2024-04-10",
+    "equity": 22466.83,
+    "net_return": 2336.74
+   },
+   {
+    "t": "2024-04-11",
+    "equity": 22592.34,
+    "net_return": 2462.25
+   },
+   {
+    "t": "2024-04-12",
+    "equity": 22562.54,
+    "net_return": 2432.44
+   },
+   {
+    "t": "2024-04-15",
+    "equity": 22917.99,
+    "net_return": 2787.89
+   },
+   {
+    "t": "2024-04-16",
+    "equity": 22856.84,
+    "net_return": 2726.74
+   },
+   {
+    "t": "2024-04-17",
+    "equity": 22796.53,
+    "net_return": 2666.44
+   },
+   {
+    "t": "2024-04-18",
+    "equity": 22438.48,
+    "net_return": 2308.39
+   },
+   {
+    "t": "2024-04-19",
+    "equity": 22518.65,
+    "net_return": 2388.56
+   },
+   {
+    "t": "2024-04-22",
+    "equity": 22410.7,
+    "net_return": 2280.61
+   },
+   {
+    "t": "2024-04-23",
+    "equity": 22219.22,
+    "net_return": 2089.12
+   },
+   {
+    "t": "2024-04-24",
+    "equity": 22314.43,
+    "net_return": 2184.34
+   },
+   {
+    "t": "2024-04-25",
+    "equity": 21752.48,
+    "net_return": 1622.39
+   },
+   {
+    "t": "2024-04-26",
+    "equity": 22227.31,
+    "net_return": 2097.22
+   },
+   {
+    "t": "2024-04-29",
+    "equity": 22147.04,
+    "net_return": 2016.94
+   },
+   {
+    "t": "2024-04-30",
+    "equity": 22407.42,
+    "net_return": 2277.32
+   },
+   {
+    "t": "2024-05-01",
+    "equity": 22500.15,
+    "net_return": 2370.06
+   },
+   {
+    "t": "2024-05-02",
+    "equity": 25752.73,
+    "net_return": 1931.06
+   },
+   {
+    "t": "2024-05-03",
+    "equity": 25670.18,
+    "net_return": 1848.52
+   },
+   {
+    "t": "2024-05-06",
+    "equity": 25300.78,
+    "net_return": 1479.12
+   },
+   {
+    "t": "2024-05-07",
+    "equity": 25482.61,
+    "net_return": 1660.95
+   },
+   {
+    "t": "2024-05-08",
+    "equity": 24818.26,
+    "net_return": 996.6
+   },
+   {
+    "t": "2024-05-09",
+    "equity": 24833.28,
+    "net_return": 1011.61
+   },
+   {
+    "t": "2024-05-10",
+    "equity": 24926.66,
+    "net_return": 1104.99
+   },
+   {
+    "t": "2024-05-13",
+    "equity": 25096.77,
+    "net_return": 1275.11
+   },
+   {
+    "t": "2024-05-14",
+    "equity": 24777.56,
+    "net_return": 955.89
+   },
+   {
+    "t": "2024-05-15",
+    "equity": 24549.6,
+    "net_return": 727.94
+   },
+   {
+    "t": "2024-05-16",
+    "equity": 24939.51,
+    "net_return": 1117.85
+   },
+   {
+    "t": "2024-05-17",
+    "equity": 24966.24,
+    "net_return": 1144.57
+   },
+   {
+    "t": "2024-05-20",
+    "equity": 24917.57,
+    "net_return": 1095.9
+   },
+   {
+    "t": "2024-05-21",
+    "equity": 24940.15,
+    "net_return": 1118.49
+   },
+   {
+    "t": "2024-05-22",
+    "equity": 24760.91,
+    "net_return": 939.24
+   },
+   {
+    "t": "2024-05-23",
+    "equity": 24574.81,
+    "net_return": 753.15
+   },
+   {
+    "t": "2024-05-24",
+    "equity": 24677.0,
+    "net_return": 855.34
+   },
+   {
+    "t": "2024-05-27",
+    "equity": 25036.92,
+    "net_return": 1215.25
+   },
+   {
+    "t": "2024-05-28",
+    "equity": 25052.05,
+    "net_return": 1230.38
+   },
+   {
+    "t": "2024-05-29",
+    "equity": 25479.7,
+    "net_return": 1658.04
+   },
+   {
+    "t": "2024-05-30",
+    "equity": 25514.04,
+    "net_return": 1692.37
+   },
+   {
+    "t": "2024-05-31",
+    "equity": 26851.14,
+    "net_return": 1655.07
+   },
+   {
+    "t": "2024-06-03",
+    "equity": 26693.41,
+    "net_return": 1497.34
+   },
+   {
+    "t": "2024-06-04",
+    "equity": 26756.05,
+    "net_return": 1559.98
+   },
+   {
+    "t": "2024-06-05",
+    "equity": 26458.93,
+    "net_return": 1262.85
+   },
+   {
+    "t": "2024-06-06",
+    "equity": 26435.08,
+    "net_return": 1239.01
+   },
+   {
+    "t": "2024-06-07",
+    "equity": 26541.69,
+    "net_return": 1345.62
+   },
+   {
+    "t": "2024-06-10",
+    "equity": 26571.08,
+    "net_return": 1375.01
+   },
+   {
+    "t": "2024-06-11",
+    "equity": 26553.26,
+    "net_return": 1357.19
+   },
+   {
+    "t": "2024-06-12",
+    "equity": 27100.2,
+    "net_return": 1904.13
+   },
+   {
+    "t": "2024-06-13",
+    "equity": 27153.83,
+    "net_return": 1957.76
+   },
+   {
+    "t": "2024-06-14",
+    "equity": 26942.14,
+    "net_return": 1746.07
+   },
+   {
+    "t": "2024-06-17",
+    "equity": 26877.56,
+    "net_return": 1681.48
+   },
+   {
+    "t": "2024-06-18",
+    "equity": 26982.21,
+    "net_return": 1786.14
+   },
+   {
+    "t": "2024-06-19",
+    "equity": 26828.64,
+    "net_return": 1632.57
+   },
+   {
+    "t": "2024-06-20",
+    "equity": 26797.78,
+    "net_return": 1601.71
+   },
+   {
+    "t": "2024-06-21",
+    "equity": 26622.91,
+    "net_return": 1426.84
+   },
+   {
+    "t": "2024-06-24",
+    "equity": 26468.63,
+    "net_return": 1272.55
+   },
+   {
+    "t": "2024-06-25",
+    "equity": 26462.79,
+    "net_return": 1266.72
+   },
+   {
+    "t": "2024-06-26",
+    "equity": 26829.63,
+    "net_return": 1633.56
+   },
+   {
+    "t": "2024-06-27",
+    "equity": 27275.28,
+    "net_return": 2079.21
+   },
+   {
+    "t": "2024-06-28",
+    "equity": 27177.23,
+    "net_return": 1981.16
+   },
+   {
+    "t": "2024-07-01",
+    "equity": 30044.51,
+    "net_return": 2163.84
+   },
+   {
+    "t": "2024-07-02",
+    "equity": 30699.19,
+    "net_return": 2818.52
+   },
+   {
+    "t": "2024-07-03",
+    "equity": 30503.38,
+    "net_return": 2622.71
+   },
+   {
+    "t": "2024-07-04",
+    "equity": 29815.6,
+    "net_return": 1934.93
+   },
+   {
+    "t": "2024-07-05",
+    "equity": 29972.7,
+    "net_return": 2092.03
+   },
+   {
+    "t": "2024-07-08",
+    "equity": 29955.24,
+    "net_return": 2074.57
+   },
+   {
+    "t": "2024-07-09",
+    "equity": 29830.24,
+    "net_return": 1949.58
+   },
+   {
+    "t": "2024-07-10",
+    "equity": 30029.94,
+    "net_return": 2149.28
+   },
+   {
+    "t": "2024-07-11",
+    "equity": 30426.35,
+    "net_return": 2545.68
+   },
+   {
+    "t": "2024-07-12",
+    "equity": 30981.52,
+    "net_return": 3100.85
+   },
+   {
+    "t": "2024-07-15",
+    "equity": 30196.03,
+    "net_return": 2315.36
+   },
+   {
+    "t": "2024-07-16",
+    "equity": 30797.06,
+    "net_return": 2916.39
+   },
+   {
+    "t": "2024-07-17",
+    "equity": 30838.72,
+    "net_return": 2958.05
+   },
+   {
+    "t": "2024-07-18",
+    "equity": 31013.86,
+    "net_return": 3133.2
+   },
+   {
+    "t": "2024-07-19",
+    "equity": 31057.71,
+    "net_return": 3177.04
+   },
+   {
+    "t": "2024-07-22",
+    "equity": 31235.77,
+    "net_return": 3355.1
+   },
+   {
+    "t": "2024-07-23",
+    "equity": 31310.91,
+    "net_return": 3430.25
+   },
+   {
+    "t": "2024-07-24",
+    "equity": 31207.34,
+    "net_return": 3326.67
+   },
+   {
+    "t": "2024-07-25",
+    "equity": 31118.24,
+    "net_return": 3237.57
+   },
+   {
+    "t": "2024-07-26",
+    "equity": 31474.37,
+    "net_return": 3593.7
+   },
+   {
+    "t": "2024-07-29",
+    "equity": 30888.19,
+    "net_return": 3007.52
+   },
+   {
+    "t": "2024-07-30",
+    "equity": 33254.01,
+    "net_return": 2488.84
+   },
+   {
+    "t": "2024-07-31",
+    "equity": 33417.98,
+    "net_return": 2652.81
+   },
+   {
+    "t": "2024-08-01",
+    "equity": 33034.65,
+    "net_return": 2269.48
+   },
+   {
+    "t": "2024-08-02",
+    "equity": 33221.02,
+    "net_return": 2455.86
+   },
+   {
+    "t": "2024-08-05",
+    "equity": 33287.19,
+    "net_return": 2522.02
+   },
+   {
+    "t": "2024-08-06",
+    "equity": 33429.18,
+    "net_return": 2664.01
+   },
+   {
+    "t": "2024-08-07",
+    "equity": 33247.48,
+    "net_return": 2482.32
+   },
+   {
+    "t": "2024-08-08",
+    "equity": 33124.61,
+    "net_return": 2359.45
+   },
+   {
+    "t": "2024-08-09",
+    "equity": 33029.75,
+    "net_return": 2264.58
+   },
+   {
+    "t": "2024-08-12",
+    "equity": 33467.16,
+    "net_return": 2702.0
+   },
+   {
+    "t": "2024-08-13",
+    "equity": 33870.8,
+    "net_return": 3105.64
+   },
+   {
+    "t": "2024-08-14",
+    "equity": 33779.18,
+    "net_return": 3014.02
+   },
+   {
+    "t": "2024-08-15",
+    "equity": 34069.44,
+    "net_return": 3304.28
+   },
+   {
+    "t": "2024-08-16",
+    "equity": 34524.66,
+    "net_return": 3759.49
+   },
+   {
+    "t": "2024-08-19",
+    "equity": 34265.41,
+    "net_return": 3500.24
+   },
+   {
+    "t": "2024-08-20",
+    "equity": 34479.93,
+    "net_return": 3714.76
+   },
+   {
+    "t": "2024-08-21",
+    "equity": 34127.47,
+    "net_return": 3362.31
+   },
+   {
+    "t": "2024-08-22",
+    "equity": 33978.25,
+    "net_return": 3213.09
+   },
+   {
+    "t": "2024-08-23",
+    "equity": 33362.11,
+    "net_return": 2596.95
+   },
+   {
+    "t": "2024-08-26",
+    "equity": 33878.41,
+    "net_return": 3113.24
+   },
+   {
+    "t": "2024-08-27",
+    "equity": 33832.66,
+    "net_return": 3067.5
+   },
+   {
+    "t": "2024-08-28",
+    "equity": 36066.22,
+    "net_return": 2711.34
+   },
+   {
+    "t": "2024-08-29",
+    "equity": 36314.6,
+    "net_return": 2959.72
+   },
+   {
+    "t": "2024-08-30",
+    "equity": 36474.43,
+    "net_return": 3119.54
+   },
+   {
+    "t": "2024-09-02",
+    "equity": 36485.36,
+    "net_return": 3130.47
+   },
+   {
+    "t": "2024-09-03",
+    "equity": 36336.27,
+    "net_return": 2981.38
+   },
+   {
+    "t": "2024-09-04",
+    "equity": 36770.09,
+    "net_return": 3415.21
+   },
+   {
+    "t": "2024-09-05",
+    "equity": 36735.15,
+    "net_return": 3380.27
+   },
+   {
+    "t": "2024-09-06",
+    "equity": 36790.81,
+    "net_return": 3435.93
+   },
+   {
+    "t": "2024-09-09",
+    "equity": 37216.21,
+    "net_return": 3861.33
+   },
+   {
+    "t": "2024-09-10",
+    "equity": 37187.72,
+    "net_return": 3832.84
+   },
+   {
+    "t": "2024-09-11",
+    "equity": 37090.45,
+    "net_return": 3735.57
+   },
+   {
+    "t": "2024-09-12",
+    "equity": 37120.41,
+    "net_return": 3765.53
+   },
+   {
+    "t": "2024-09-13",
+    "equity": 37344.76,
+    "net_return": 3989.87
+   },
+   {
+    "t": "2024-09-16",
+    "equity": 36396.4,
+    "net_return": 3041.52
+   },
+   {
+    "t": "2024-09-17",
+    "equity": 36029.11,
+    "net_return": 2674.22
+   },
+   {
+    "t": "2024-09-18",
+    "equity": 36304.03,
+    "net_return": 2949.15
+   },
+   {
+    "t": "2024-09-19",
+    "equity": 36368.61,
+    "net_return": 3013.72
+   },
+   {
+    "t": "2024-09-20",
+    "equity": 36303.71,
+    "net_return": 2948.82
+   },
+   {
+    "t": "2024-09-23",
+    "equity": 36775.57,
+    "net_return": 3420.68
+   },
+   {
+    "t": "2024-09-24",
+    "equity": 36834.69,
+    "net_return": 3479.81
+   },
+   {
+    "t": "2024-09-25",
+    "equity": 36342.85,
+    "net_return": 2987.96
+   },
+   {
+    "t": "2024-09-26",
+    "equity": 38045.9,
+    "net_return": 2261.09
+   },
+   {
+    "t": "2024-09-27",
+    "equity": 37958.44,
+    "net_return": 2173.62
+   },
+   {
+    "t": "2024-09-30",
+    "equity": 38642.45,
+    "net_return": 2857.63
+   },
+   {
+    "t": "2024-10-01",
+    "equity": 38574.38,
+    "net_return": 2789.56
+   },
+   {
+    "t": "2024-10-02",
+    "equity": 38304.78,
+    "net_return": 2519.97
+   },
+   {
+    "t": "2024-10-03",
+    "equity": 38291.32,
+    "net_return": 2506.51
+   },
+   {
+    "t": "2024-10-04",
+    "equity": 37682.83,
+    "net_return": 1898.02
+   },
+   {
+    "t": "2024-10-07",
+    "equity": 37844.86,
+    "net_return": 2060.05
+   },
+   {
+    "t": "2024-10-08",
+    "equity": 37522.92,
+    "net_return": 1738.11
+   },
+   {
+    "t": "2024-10-09",
+    "equity": 37405.81,
+    "net_return": 1621.0
+   },
+   {
+    "t": "2024-10-10",
+    "equity": 37181.78,
+    "net_return": 1396.97
+   },
+   {
+    "t": "2024-10-11",
+    "equity": 37117.77,
+    "net_return": 1332.96
+   },
+   {
+    "t": "2024-10-14",
+    "equity": 37063.07,
+    "net_return": 1278.25
+   },
+   {
+    "t": "2024-10-15",
+    "equity": 36624.19,
+    "net_return": 839.37
+   },
+   {
+    "t": "2024-10-16",
+    "equity": 36750.5,
+    "net_return": 965.69
+   },
+   {
+    "t": "2024-10-17",
+    "equity": 36228.98,
+    "net_return": 444.17
+   },
+   {
+    "t": "2024-10-18",
+    "equity": 35995.54,
+    "net_return": 210.73
+   },
+   {
+    "t": "2024-10-21",
+    "equity": 35526.87,
+    "net_return": -257.94
+   },
+   {
+    "t": "2024-10-22",
+    "equity": 35823.91,
+    "net_return": 39.09
+   },
+   {
+    "t": "2024-10-23",
+    "equity": 35354.07,
+    "net_return": -430.74
+   },
+   {
+    "t": "2024-10-24",
+    "equity": 35242.12,
+    "net_return": -542.7
+   },
+   {
+    "t": "2024-10-25",
+    "equity": 38575.1,
+    "net_return": -454.37
+   },
+   {
+    "t": "2024-10-28",
+    "equity": 38451.58,
+    "net_return": -577.89
+   },
+   {
+    "t": "2024-10-29",
+    "equity": 38428.48,
+    "net_return": -601.0
+   },
+   {
+    "t": "2024-10-30",
+    "equity": 38503.46,
+    "net_return": -526.02
+   },
+   {
+    "t": "2024-10-31",
+    "equity": 38659.87,
+    "net_return": -369.6
+   },
+   {
+    "t": "2024-11-01",
+    "equity": 38598.17,
+    "net_return": -431.3
+   },
+   {
+    "t": "2024-11-04",
+    "equity": 37943.47,
+    "net_return": -1086.01
+   },
+   {
+    "t": "2024-11-05",
+    "equity": 38436.17,
+    "net_return": -593.3
+   },
+   {
+    "t": "2024-11-06",
+    "equity": 38980.61,
+    "net_return": -48.87
+   },
+   {
+    "t": "2024-11-07",
+    "equity": 39729.14,
+    "net_return": 699.67
+   },
+   {
+    "t": "2024-11-08",
+    "equity": 39673.8,
+    "net_return": 644.33
+   },
+   {
+    "t": "2024-11-11",
+    "equity": 39901.89,
+    "net_return": 872.42
+   },
+   {
+    "t": "2024-11-12",
+    "equity": 39236.31,
+    "net_return": 206.83
+   },
+   {
+    "t": "2024-11-13",
+    "equity": 39149.44,
+    "net_return": 119.97
+   },
+   {
+    "t": "2024-11-14",
+    "equity": 40481.26,
+    "net_return": 1451.79
+   },
+   {
+    "t": "2024-11-15",
+    "equity": 40439.84,
+    "net_return": 1410.36
+   },
+   {
+    "t": "2024-11-18",
+    "equity": 39797.0,
+    "net_return": 767.53
+   },
+   {
+    "t": "2024-11-19",
+    "equity": 40301.63,
+    "net_return": 1272.16
+   },
+   {
+    "t": "2024-11-20",
+    "equity": 40232.44,
+    "net_return": 1202.96
+   },
+   {
+    "t": "2024-11-21",
+    "equity": 40304.87,
+    "net_return": 1275.39
+   },
+   {
+    "t": "2024-11-22",
+    "equity": 40597.49,
+    "net_return": 1568.02
+   },
+   {
+    "t": "2024-11-25",
+    "equity": 43562.51,
+    "net_return": 1126.06
+   },
+   {
+    "t": "2024-11-26",
+    "equity": 43954.05,
+    "net_return": 1517.6
+   },
+   {
+    "t": "2024-11-27",
+    "equity": 43774.78,
+    "net_return": 1338.33
+   },
+   {
+    "t": "2024-11-28",
+    "equity": 44170.76,
+    "net_return": 1734.31
+   },
+   {
+    "t": "2024-11-29",
+    "equity": 43988.54,
+    "net_return": 1552.09
+   },
+   {
+    "t": "2024-12-02",
+    "equity": 43834.44,
+    "net_return": 1397.99
+   },
+   {
+    "t": "2024-12-03",
+    "equity": 43497.55,
+    "net_return": 1061.1
+   },
+   {
+    "t": "2024-12-04",
+    "equity": 43859.94,
+    "net_return": 1423.49
+   },
+   {
+    "t": "2024-12-05",
+    "equity": 44470.83,
+    "net_return": 2034.38
+   },
+   {
+    "t": "2024-12-06",
+    "equity": 44709.17,
+    "net_return": 2272.72
+   },
+   {
+    "t": "2024-12-09",
+    "equity": 44871.62,
+    "net_return": 2435.17
+   },
+   {
+    "t": "2024-12-10",
+    "equity": 44925.65,
+    "net_return": 2489.2
+   },
+   {
+    "t": "2024-12-11",
+    "equity": 45907.57,
+    "net_return": 3471.12
+   },
+   {
+    "t": "2024-12-12",
+    "equity": 46331.16,
+    "net_return": 3894.71
+   },
+   {
+    "t": "2024-12-13",
+    "equity": 47203.74,
+    "net_return": 4767.29
+   },
+   {
+    "t": "2024-12-16",
+    "equity": 46278.47,
+    "net_return": 3842.01
+   },
+   {
+    "t": "2024-12-17",
+    "equity": 46622.13,
+    "net_return": 4185.68
+   },
+   {
+    "t": "2024-12-18",
+    "equity": 46924.22,
+    "net_return": 4487.77
+   },
+   {
+    "t": "2024-12-19",
+    "equity": 47230.6,
+    "net_return": 4794.15
+   },
+   {
+    "t": "2024-12-20",
+    "equity": 47359.14,
+    "net_return": 4922.68
+   },
+   {
+    "t": "2024-12-23",
+    "equity": 47056.05,
+    "net_return": 4619.6
+   },
+   {
+    "t": "2024-12-24",
+    "equity": 49239.55,
+    "net_return": 4852.44
+   },
+   {
+    "t": "2024-12-25",
+    "equity": 48785.83,
+    "net_return": 4398.72
+   },
+   {
+    "t": "2024-12-26",
+    "equity": 49082.79,
+    "net_return": 4695.68
+   },
+   {
+    "t": "2024-12-27",
+    "equity": 49183.0,
+    "net_return": 4795.89
+   },
+   {
+    "t": "2024-12-30",
+    "equity": 48904.16,
+    "net_return": 4517.05
+   },
+   {
+    "t": "2024-12-31",
+    "equity": 49236.69,
+    "net_return": 4849.58
+   },
+   {
+    "t": "2025-01-01",
+    "equity": 50333.02,
+    "net_return": 5945.91
+   },
+   {
+    "t": "2025-01-02",
+    "equity": 49852.0,
+    "net_return": 5464.89
+   },
+   {
+    "t": "2025-01-03",
+    "equity": 49351.57,
+    "net_return": 4964.46
+   },
+   {
+    "t": "2025-01-06",
+    "equity": 49607.4,
+    "net_return": 5220.29
+   },
+   {
+    "t": "2025-01-07",
+    "equity": 50157.62,
+    "net_return": 5770.5
+   },
+   {
+    "t": "2025-01-08",
+    "equity": 50236.52,
+    "net_return": 5849.41
+   },
+   {
+    "t": "2025-01-09",
+    "equity": 49785.14,
+    "net_return": 5398.03
+   },
+   {
+    "t": "2025-01-10",
+    "equity": 50791.4,
+    "net_return": 6404.29
+   },
+   {
+    "t": "2025-01-13",
+    "equity": 51516.54,
+    "net_return": 7129.43
+   },
+   {
+    "t": "2025-01-14",
+    "equity": 50809.29,
+    "net_return": 6422.18
+   },
+   {
+    "t": "2025-01-15",
+    "equity": 49747.83,
+    "net_return": 5360.72
+   },
+   {
+    "t": "2025-01-16",
+    "equity": 50657.74,
+    "net_return": 6270.63
+   },
+   {
+    "t": "2025-01-17",
+    "equity": 51260.75,
+    "net_return": 6873.64
+   },
+   {
+    "t": "2025-01-20",
+    "equity": 52223.02,
+    "net_return": 7835.9
+   },
+   {
+    "t": "2025-01-21",
+    "equity": 52637.34,
+    "net_return": 8250.23
+   },
+   {
+    "t": "2025-01-22",
+    "equity": 56740.41,
+    "net_return": 7613.99
+   },
+   {
+    "t": "2025-01-23",
+    "equity": 56466.04,
+    "net_return": 7339.62
+   },
+   {
+    "t": "2025-01-24",
+    "equity": 55405.72,
+    "net_return": 6279.31
+   },
+   {
+    "t": "2025-01-27",
+    "equity": 54526.69,
+    "net_return": 5400.27
+   },
+   {
+    "t": "2025-01-28",
+    "equity": 54676.78,
+    "net_return": 5550.37
+   },
+   {
+    "t": "2025-01-29",
+    "equity": 54564.39,
+    "net_return": 5437.98
+   },
+   {
+    "t": "2025-01-30",
+    "equity": 53873.65,
+    "net_return": 4747.23
+   },
+   {
+    "t": "2025-01-31",
+    "equity": 53637.72,
+    "net_return": 4511.31
+   },
+   {
+    "t": "2025-02-03",
+    "equity": 54424.69,
+    "net_return": 5298.28
+   },
+   {
+    "t": "2025-02-04",
+    "equity": 54443.71,
+    "net_return": 5317.29
+   },
+   {
+    "t": "2025-02-05",
+    "equity": 54819.01,
+    "net_return": 5692.59
+   },
+   {
+    "t": "2025-02-06",
+    "equity": 54986.76,
+    "net_return": 5860.35
+   },
+   {
+    "t": "2025-02-07",
+    "equity": 55141.68,
+    "net_return": 6015.26
+   },
+   {
+    "t": "2025-02-10",
+    "equity": 55400.72,
+    "net_return": 6274.31
+   },
+   {
+    "t": "2025-02-11",
+    "equity": 55653.95,
+    "net_return": 6527.54
+   },
+   {
+    "t": "2025-02-12",
+    "equity": 54900.53,
+    "net_return": 5774.11
+   },
+   {
+    "t": "2025-02-13",
+    "equity": 54310.62,
+    "net_return": 5184.2
+   },
+   {
+    "t": "2025-02-14",
+    "equity": 54103.19,
+    "net_return": 4976.78
+   },
+   {
+    "t": "2025-02-17",
+    "equity": 54286.66,
+    "net_return": 5160.24
+   },
+   {
+    "t": "2025-02-18",
+    "equity": 54928.69,
+    "net_return": 5802.27
+   },
+   {
+    "t": "2025-02-19",
+    "equity": 54608.7,
+    "net_return": 5482.29
+   },
+   {
+    "t": "2025-02-20",
+    "equity": 56042.84,
+    "net_return": 5595.83
+   },
+   {
+    "t": "2025-02-21",
+    "equity": 55849.55,
+    "net_return": 5402.55
+   },
+   {
+    "t": "2025-02-24",
+    "equity": 55558.22,
+    "net_return": 5111.21
+   },
+   {
+    "t": "2025-02-25",
+    "equity": 55991.12,
+    "net_return": 5544.11
+   },
+   {
+    "t": "2025-02-26",
+    "equity": 56270.6,
+    "net_return": 5823.6
+   },
+   {
+    "t": "2025-02-27",
+    "equity": 56686.96,
+    "net_return": 6239.95
+   },
+   {
+    "t": "2025-02-28",
+    "equity": 56730.41,
+    "net_return": 6283.41
+   },
+   {
+    "t": "2025-03-03",
+    "equity": 57022.09,
+    "net_return": 6575.09
+   },
+   {
+    "t": "2025-03-04",
+    "equity": 56847.73,
+    "net_return": 6400.72
+   },
+   {
+    "t": "2025-03-05",
+    "equity": 56163.59,
+    "net_return": 5716.58
+   },
+   {
+    "t": "2025-03-06",
+    "equity": 56210.99,
+    "net_return": 5763.98
+   },
+   {
+    "t": "2025-03-07",
+    "equity": 55900.32,
+    "net_return": 5453.31
+   },
+   {
+    "t": "2025-03-10",
+    "equity": 56275.7,
+    "net_return": 5828.69
+   },
+   {
+    "t": "2025-03-11",
+    "equity": 55979.52,
+    "net_return": 5532.51
+   },
+   {
+    "t": "2025-03-12",
+    "equity": 54938.34,
+    "net_return": 4491.34
+   },
+   {
+    "t": "2025-03-13",
+    "equity": 54417.3,
+    "net_return": 3970.29
+   },
+   {
+    "t": "2025-03-14",
+    "equity": 55013.34,
+    "net_return": 4566.33
+   },
+   {
+    "t": "2025-03-17",
+    "equity": 54679.17,
+    "net_return": 4232.16
+   },
+   {
+    "t": "2025-03-18",
+    "equity": 54092.86,
+    "net_return": 3645.85
+   },
+   {
+    "t": "2025-03-19",
+    "equity": 53620.05,
+    "net_return": 3173.04
+   },
+   {
+    "t": "2025-03-20",
+    "equity": 54289.88,
+    "net_return": 3842.87
+   },
+   {
+    "t": "2025-03-21",
+    "equity": 56252.69,
+    "net_return": 4016.38
+   },
+   {
+    "t": "2025-03-24",
+    "equity": 56237.04,
+    "net_return": 4000.72
+   },
+   {
+    "t": "2025-03-25",
+    "equity": 56264.16,
+    "net_return": 4027.85
+   },
+   {
+    "t": "2025-03-26",
+    "equity": 56397.28,
+    "net_return": 4160.97
+   },
+   {
+    "t": "2025-03-27",
+    "equity": 56890.38,
+    "net_return": 4654.07
+   },
+   {
+    "t": "2025-03-28",
+    "equity": 57036.65,
+    "net_return": 4800.34
+   },
+   {
+    "t": "2025-03-31",
+    "equity": 58042.88,
+    "net_return": 5806.57
+   },
+   {
+    "t": "2025-04-01",
+    "equity": 58561.64,
+    "net_return": 6325.33
+   },
+   {
+    "t": "2025-04-02",
+    "equity": 58437.78,
+    "net_return": 6201.46
+   },
+   {
+    "t": "2025-04-03",
+    "equity": 57955.24,
+    "net_return": 5718.93
+   },
+   {
+    "t": "2025-04-04",
+    "equity": 58967.27,
+    "net_return": 6730.95
+   },
+   {
+    "t": "2025-04-07",
+    "equity": 58993.87,
+    "net_return": 6757.56
+   },
+   {
+    "t": "2025-04-08",
+    "equity": 58768.32,
+    "net_return": 6532.01
+   },
+   {
+    "t": "2025-04-09",
+    "equity": 60341.92,
+    "net_return": 8105.61
+   },
+   {
+    "t": "2025-04-10",
+    "equity": 60391.54,
+    "net_return": 8155.23
+   },
+   {
+    "t": "2025-04-11",
+    "equity": 62274.44,
+    "net_return": 10038.13
+   },
+   {
+    "t": "2025-04-14",
+    "equity": 62002.13,
+    "net_return": 9765.82
+   },
+   {
+    "t": "2025-04-15",
+    "equity": 62891.13,
+    "net_return": 10654.82
+   },
+   {
+    "t": "2025-04-16",
+    "equity": 64058.83,
+    "net_return": 11822.52
+   },
+   {
+    "t": "2025-04-17",
+    "equity": 64358.15,
+    "net_return": 12121.84
+   },
+   {
+    "t": "2025-04-18",
+    "equity": 64293.56,
+    "net_return": 12057.25
+   },
+   {
+    "t": "2025-04-21",
+    "equity": 69637.47,
+    "net_return": 14196.58
+   },
+   {
+    "t": "2025-04-22",
+    "equity": 69200.03,
+    "net_return": 13759.14
+   },
+   {
+    "t": "2025-04-23",
+    "equity": 68938.2,
+    "net_return": 13497.32
+   },
+   {
+    "t": "2025-04-24",
+    "equity": 69683.83,
+    "net_return": 14242.94
+   },
+   {
+    "t": "2025-04-25",
+    "equity": 69427.65,
+    "net_return": 13986.76
+   },
+   {
+    "t": "2025-04-28",
+    "equity": 68133.75,
+    "net_return": 12692.87
+   },
+   {
+    "t": "2025-04-29",
+    "equity": 68357.45,
+    "net_return": 12916.57
+   },
+   {
+    "t": "2025-04-30",
+    "equity": 68819.57,
+    "net_return": 13378.68
+   },
+   {
+    "t": "2025-05-01",
+    "equity": 70310.85,
+    "net_return": 14869.96
+   },
+   {
+    "t": "2025-05-02",
+    "equity": 70535.45,
+    "net_return": 15094.56
+   },
+   {
+    "t": "2025-05-05",
+    "equity": 70232.5,
+    "net_return": 14791.61
+   },
+   {
+    "t": "2025-05-06",
+    "equity": 71445.17,
+    "net_return": 16004.28
+   },
+   {
+    "t": "2025-05-07",
+    "equity": 72009.56,
+    "net_return": 16568.67
+   },
+   {
+    "t": "2025-05-08",
+    "equity": 71534.05,
+    "net_return": 16093.16
+   },
+   {
+    "t": "2025-05-09",
+    "equity": 71791.95,
+    "net_return": 16351.06
+   },
+   {
+    "t": "2025-05-12",
+    "equity": 71227.34,
+    "net_return": 15786.45
+   },
+   {
+    "t": "2025-05-13",
+    "equity": 71917.96,
+    "net_return": 16477.08
+   },
+   {
+    "t": "2025-05-14",
+    "equity": 71215.63,
+    "net_return": 15774.74
+   },
+   {
+    "t": "2025-05-15",
+    "equity": 70932.0,
+    "net_return": 15491.11
+   },
+   {
+    "t": "2025-05-16",
+    "equity": 71162.2,
+    "net_return": 15721.31
+   },
+   {
+    "t": "2025-05-19",
+    "equity": 69816.41,
+    "net_return": 14375.53
+   },
+   {
+    "t": "2025-05-20",
+    "equity": 73306.23,
+    "net_return": 13865.25
+   },
+   {
+    "t": "2025-05-21",
+    "equity": 71971.63,
+    "net_return": 12530.66
+   },
+   {
+    "t": "2025-05-22",
+    "equity": 71813.54,
+    "net_return": 12372.57
+   },
+   {
+    "t": "2025-05-23",
+    "equity": 71834.75,
+    "net_return": 12393.77
+   },
+   {
+    "t": "2025-05-26",
+    "equity": 72515.73,
+    "net_return": 13074.76
+   },
+   {
+    "t": "2025-05-27",
+    "equity": 72373.74,
+    "net_return": 12932.77
+   },
+   {
+    "t": "2025-05-28",
+    "equity": 73417.26,
+    "net_return": 13976.28
+   },
+   {
+    "t": "2025-05-29",
+    "equity": 71566.94,
+    "net_return": 12125.97
+   },
+   {
+    "t": "2025-05-30",
+    "equity": 72622.95,
+    "net_return": 13181.98
+   },
+   {
+    "t": "2025-06-02",
+    "equity": 72935.11,
+    "net_return": 13494.14
+   },
+   {
+    "t": "2025-06-03",
+    "equity": 74110.45,
+    "net_return": 14669.47
+   },
+   {
+    "t": "2025-06-04",
+    "equity": 73570.54,
+    "net_return": 14129.57
+   },
+   {
+    "t": "2025-06-05",
+    "equity": 73244.22,
+    "net_return": 13803.24
+   },
+   {
+    "t": "2025-06-06",
+    "equity": 72346.87,
+    "net_return": 12905.9
+   },
+   {
+    "t": "2025-06-09",
+    "equity": 72480.59,
+    "net_return": 13039.62
+   },
+   {
+    "t": "2025-06-10",
+    "equity": 73527.74,
+    "net_return": 14086.76
+   },
+   {
+    "t": "2025-06-11",
+    "equity": 71846.92,
+    "net_return": 12405.94
+   },
+   {
+    "t": "2025-06-12",
+    "equity": 71637.41,
+    "net_return": 12196.43
+   },
+   {
+    "t": "2025-06-13",
+    "equity": 71905.07,
+    "net_return": 12464.09
+   },
+   {
+    "t": "2025-06-16",
+    "equity": 70436.53,
+    "net_return": 10995.56
+   },
+   {
+    "t": "2025-06-17",
+    "equity": 68460.27,
+    "net_return": 9019.29
+   },
+   {
+    "t": "2025-06-18",
+    "equity": 72207.51,
+    "net_return": 7762.54
+   },
+   {
+    "t": "2025-06-19",
+    "equity": 72010.83,
+    "net_return": 7565.86
+   },
+   {
+    "t": "2025-06-20",
+    "equity": 71103.97,
+    "net_return": 6659.0
+   },
+   {
+    "t": "2025-06-23",
+    "equity": 71403.54,
+    "net_return": 6958.57
+   },
+   {
+    "t": "2025-06-24",
+    "equity": 70936.49,
+    "net_return": 6491.52
+   },
+   {
+    "t": "2025-06-25",
+    "equity": 71726.98,
+    "net_return": 7282.01
+   },
+   {
+    "t": "2025-06-26",
+    "equity": 72588.91,
+    "net_return": 8143.94
+   },
+   {
+    "t": "2025-06-27",
+    "equity": 73849.33,
+    "net_return": 9404.35
+   },
+   {
+    "t": "2025-06-30",
+    "equity": 75113.39,
+    "net_return": 10668.42
+   },
+   {
+    "t": "2025-07-01",
+    "equity": 74527.5,
+    "net_return": 10082.53
+   },
+   {
+    "t": "2025-07-02",
+    "equity": 74360.2,
+    "net_return": 9915.23
+   },
+   {
+    "t": "2025-07-03",
+    "equity": 72726.44,
+    "net_return": 8281.47
+   },
+   {
+    "t": "2025-07-04",
+    "equity": 71347.92,
+    "net_return": 6902.95
+   },
+   {
+    "t": "2025-07-07",
+    "equity": 71469.93,
+    "net_return": 7024.95
+   },
+   {
+    "t": "2025-07-08",
+    "equity": 71829.46,
+    "net_return": 7384.49
+   },
+   {
+    "t": "2025-07-09",
+    "equity": 72293.77,
+    "net_return": 7848.8
+   },
+   {
+    "t": "2025-07-10",
+    "equity": 70928.08,
+    "net_return": 6483.11
+   },
+   {
+    "t": "2025-07-11",
+    "equity": 70529.14,
+    "net_return": 6084.17
+   },
+   {
+    "t": "2025-07-14",
+    "equity": 71028.97,
+    "net_return": 6584.0
+   },
+   {
+    "t": "2025-07-15",
+    "equity": 70985.24,
+    "net_return": 6540.27
+   },
+   {
+    "t": "2025-07-16",
+    "equity": 71216.0,
+    "net_return": 6771.02
+   },
+   {
+    "t": "2025-07-17",
+    "equity": 73383.7,
+    "net_return": 6810.52
+   },
+   {
+    "t": "2025-07-18",
+    "equity": 72877.62,
+    "net_return": 6304.44
+   },
+   {
+    "t": "2025-07-21",
+    "equity": 73750.03,
+    "net_return": 7176.86
+   },
+   {
+    "t": "2025-07-22",
+    "equity": 73950.1,
+    "net_return": 7376.92
+   },
+   {
+    "t": "2025-07-23",
+    "equity": 74215.36,
+    "net_return": 7642.18
+   },
+   {
+    "t": "2025-07-24",
+    "equity": 72776.55,
+    "net_return": 6203.38
+   },
+   {
+    "t": "2025-07-25",
+    "equity": 72252.8,
+    "net_return": 5679.63
+   },
+   {
+    "t": "2025-07-28",
+    "equity": 69779.52,
+    "net_return": 3206.34
+   },
+   {
+    "t": "2025-07-29",
+    "equity": 69522.71,
+    "net_return": 2949.53
+   },
+   {
+    "t": "2025-07-30",
+    "equity": 69518.71,
+    "net_return": 2945.53
+   },
+   {
+    "t": "2025-07-31",
+    "equity": 68391.96,
+    "net_return": 1818.79
+   },
+   {
+    "t": "2025-08-01",
+    "equity": 68478.85,
+    "net_return": 1905.67
+   },
+   {
+    "t": "2025-08-04",
+    "equity": 69371.42,
+    "net_return": 2798.25
+   },
+   {
+    "t": "2025-08-05",
+    "equity": 69397.63,
+    "net_return": 2824.45
+   },
+   {
+    "t": "2025-08-06",
+    "equity": 69849.58,
+    "net_return": 3276.4
+   },
+   {
+    "t": "2025-08-07",
+    "equity": 69665.12,
+    "net_return": 3091.94
+   },
+   {
+    "t": "2025-08-08",
+    "equity": 69301.51,
+    "net_return": 2728.33
+   },
+   {
+    "t": "2025-08-11",
+    "equity": 69587.96,
+    "net_return": 3014.78
+   },
+   {
+    "t": "2025-08-12",
+    "equity": 69667.7,
+    "net_return": 3094.52
+   },
+   {
+    "t": "2025-08-13",
+    "equity": 69899.52,
+    "net_return": 3326.34
+   },
+   {
+    "t": "2025-08-14",
+    "equity": 69591.53,
+    "net_return": 3018.35
+   },
+   {
+    "t": "2025-08-15",
+    "equity": 73157.34,
+    "net_return": 2743.95
+   },
+   {
+    "t": "2025-08-18",
+    "equity": 73630.88,
+    "net_return": 3217.49
+   },
+   {
+    "t": "2025-08-19",
+    "equity": 73236.46,
+    "net_return": 2823.08
+   },
+   {
+    "t": "2025-08-20",
+    "equity": 72017.17,
+    "net_return": 1603.79
+   },
+   {
+    "t": "2025-08-21",
+    "equity": 71582.51,
+    "net_return": 1169.12
+   },
+   {
+    "t": "2025-08-22",
+    "equity": 72301.24,
+    "net_return": 1887.86
+   },
+   {
+    "t": "2025-08-25",
+    "equity": 72589.7,
+    "net_return": 2176.31
+   },
+   {
+    "t": "2025-08-26",
+    "equity": 71541.62,
+    "net_return": 1128.23
+   },
+   {
+    "t": "2025-08-27",
+    "equity": 70904.37,
+    "net_return": 490.98
+   },
+   {
+    "t": "2025-08-28",
+    "equity": 70964.53,
+    "net_return": 551.14
+   },
+   {
+    "t": "2025-08-29",
+    "equity": 71390.48,
+    "net_return": 977.09
+   },
+   {
+    "t": "2025-09-01",
+    "equity": 72493.3,
+    "net_return": 2079.91
+   },
+   {
+    "t": "2025-09-02",
+    "equity": 72383.22,
+    "net_return": 1969.84
+   },
+   {
+    "t": "2025-09-03",
+    "equity": 73173.77,
+    "net_return": 2760.38
+   },
+   {
+    "t": "2025-09-04",
+    "equity": 72712.22,
+    "net_return": 2298.84
+   },
+   {
+    "t": "2025-09-05",
+    "equity": 73658.79,
+    "net_return": 3245.4
+   },
+   {
+    "t": "2025-09-08",
+    "equity": 73587.48,
+    "net_return": 3174.1
+   },
+   {
+    "t": "2025-09-09",
+    "equity": 73693.95,
+    "net_return": 3280.57
+   },
+   {
+    "t": "2025-09-10",
+    "equity": 72166.1,
+    "net_return": 1752.72
+   },
+   {
+    "t": "2025-09-11",
+    "equity": 71739.37,
+    "net_return": 1325.98
+   },
+   {
+    "t": "2025-09-12",
+    "equity": 71804.47,
+    "net_return": 1391.09
+   },
+   {
+    "t": "2025-09-15",
+    "equity": 75086.22,
+    "net_return": 754.78
+   },
+   {
+    "t": "2025-09-16",
+    "equity": 76388.07,
+    "net_return": 2056.64
+   },
+   {
+    "t": "2025-09-17",
+    "equity": 76636.69,
+    "net_return": 2305.26
+   },
+   {
+    "t": "2025-09-18",
+    "equity": 76447.24,
+    "net_return": 2115.8
+   },
+   {
+    "t": "2025-09-19",
+    "equity": 77228.94,
+    "net_return": 2897.5
+   },
+   {
+    "t": "2025-09-22",
+    "equity": 77970.25,
+    "net_return": 3638.82
+   },
+   {
+    "t": "2025-09-23",
+    "equity": 77915.69,
+    "net_return": 3584.26
+   },
+   {
+    "t": "2025-09-24",
+    "equity": 77420.26,
+    "net_return": 3088.82
+   },
+   {
+    "t": "2025-09-25",
+    "equity": 77861.98,
+    "net_return": 3530.55
+   },
+   {
+    "t": "2025-09-26",
+    "equity": 76804.89,
+    "net_return": 2473.46
+   },
+   {
+    "t": "2025-09-29",
+    "equity": 78299.16,
+    "net_return": 3967.72
+   },
+   {
+    "t": "2025-09-30",
+    "equity": 78251.47,
+    "net_return": 3920.04
+   },
+   {
+    "t": "2025-10-01",
+    "equity": 78665.04,
+    "net_return": 4333.61
+   },
+   {
+    "t": "2025-10-02",
+    "equity": 81012.26,
+    "net_return": 6680.83
+   },
+   {
+    "t": "2025-10-03",
+    "equity": 81588.64,
+    "net_return": 7257.21
+   },
+   {
+    "t": "2025-10-06",
+    "equity": 81517.82,
+    "net_return": 7186.39
+   },
+   {
+    "t": "2025-10-07",
+    "equity": 82168.22,
+    "net_return": 7836.79
+   },
+   {
+    "t": "2025-10-08",
+    "equity": 81818.81,
+    "net_return": 7487.38
+   },
+   {
+    "t": "2025-10-09",
+    "equity": 81937.54,
+    "net_return": 7606.11
+   },
+   {
+    "t": "2025-10-10",
+    "equity": 82619.11,
+    "net_return": 8287.67
+   },
+   {
+    "t": "2025-10-13",
+    "equity": 82656.51,
+    "net_return": 8325.08
+   },
+   {
+    "t": "2025-10-14",
+    "equity": 87767.14,
+    "net_return": 9301.08
+   },
+   {
+    "t": "2025-10-15",
+    "equity": 87878.86,
+    "net_return": 9412.8
+   },
+   {
+    "t": "2025-10-16",
+    "equity": 89040.12,
+    "net_return": 10574.06
+   },
+   {
+    "t": "2025-10-17",
+    "equity": 90410.84,
+    "net_return": 11944.77
+   },
+   {
+    "t": "2025-10-20",
+    "equity": 90345.48,
+    "net_return": 11879.42
+   },
+   {
+    "t": "2025-10-21",
+    "equity": 91372.0,
+    "net_return": 12905.93
+   },
+   {
+    "t": "2025-10-22",
+    "equity": 91250.59,
+    "net_return": 12784.52
+   },
+   {
+    "t": "2025-10-23",
+    "equity": 92004.1,
+    "net_return": 13538.04
+   },
+   {
+    "t": "2025-10-24",
+    "equity": 91972.43,
+    "net_return": 13506.37
+   },
+   {
+    "t": "2025-10-27",
+    "equity": 91570.62,
+    "net_return": 13104.55
+   },
+   {
+    "t": "2025-10-28",
+    "equity": 91317.91,
+    "net_return": 12851.84
+   },
+   {
+    "t": "2025-10-29",
+    "equity": 90612.03,
+    "net_return": 12145.97
+   },
+   {
+    "t": "2025-10-30",
+    "equity": 91964.94,
+    "net_return": 13498.87
+   },
+   {
+    "t": "2025-10-31",
+    "equity": 93586.16,
+    "net_return": 15120.1
+   },
+   {
+    "t": "2025-11-03",
+    "equity": 94597.61,
+    "net_return": 16131.55
+   },
+   {
+    "t": "2025-11-04",
+    "equity": 93579.62,
+    "net_return": 15113.56
+   },
+   {
+    "t": "2025-11-05",
+    "equity": 93881.03,
+    "net_return": 15414.97
+   },
+   {
+    "t": "2025-11-06",
+    "equity": 93221.7,
+    "net_return": 14755.63
+   },
+   {
+    "t": "2025-11-07",
+    "equity": 93451.85,
+    "net_return": 14985.79
+   },
+   {
+    "t": "2025-11-10",
+    "equity": 95039.3,
+    "net_return": 16573.24
+   },
+   {
+    "t": "2025-11-11",
+    "equity": 97106.11,
+    "net_return": 18640.05
+   },
+   {
+    "t": "2025-11-12",
+    "equity": 97371.76,
+    "net_return": 18282.23
+   },
+   {
+    "t": "2025-11-13",
+    "equity": 100125.49,
+    "net_return": 21035.95
+   },
+   {
+    "t": "2025-11-14",
+    "equity": 100265.85,
+    "net_return": 21176.31
+   },
+   {
+    "t": "2025-11-17",
+    "equity": 101285.48,
+    "net_return": 22195.95
+   },
+   {
+    "t": "2025-11-18",
+    "equity": 99282.29,
+    "net_return": 20192.75
+   },
+   {
+    "t": "2025-11-19",
+    "equity": 98606.0,
+    "net_return": 19516.46
+   },
+   {
+    "t": "2025-11-20",
+    "equity": 97192.94,
+    "net_return": 18103.4
+   },
+   {
+    "t": "2025-11-21",
+    "equity": 99125.61,
+    "net_return": 20036.07
+   },
+   {
+    "t": "2025-11-24",
+    "equity": 100842.1,
+    "net_return": 21752.56
+   },
+   {
+    "t": "2025-11-25",
+    "equity": 99362.02,
+    "net_return": 20272.48
+   },
+   {
+    "t": "2025-11-26",
+    "equity": 97266.17,
+    "net_return": 18176.63
+   },
+   {
+    "t": "2025-11-27",
+    "equity": 95203.04,
+    "net_return": 16113.5
+   },
+   {
+    "t": "2025-11-28",
+    "equity": 96589.37,
+    "net_return": 17499.83
+   },
+   {
+    "t": "2025-12-01",
+    "equity": 96467.42,
+    "net_return": 17377.88
+   },
+   {
+    "t": "2025-12-02",
+    "equity": 96432.62,
+    "net_return": 17343.08
+   },
+   {
+    "t": "2025-12-03",
+    "equity": 96074.23,
+    "net_return": 16984.69
+   },
+   {
+    "t": "2025-12-04",
+    "equity": 96600.67,
+    "net_return": 17511.13
+   },
+   {
+    "t": "2025-12-05",
+    "equity": 96551.03,
+    "net_return": 17461.49
+   },
+   {
+    "t": "2025-12-08",
+    "equity": 95816.71,
+    "net_return": 16727.17
+   },
+   {
+    "t": "2025-12-09",
+    "equity": 94214.55,
+    "net_return": 15125.01
+   },
+   {
+    "t": "2025-12-10",
+    "equity": 94488.49,
+    "net_return": 15398.95
+   },
+   {
+    "t": "2025-12-11",
+    "equity": 97537.76,
+    "net_return": 16180.17
+   },
+   {
+    "t": "2025-12-12",
+    "equity": 98520.91,
+    "net_return": 17163.32
+   },
+   {
+    "t": "2025-12-15",
+    "equity": 98649.08,
+    "net_return": 17291.49
+   },
+   {
+    "t": "2025-12-16",
+    "equity": 97533.5,
+    "net_return": 16175.91
+   },
+   {
+    "t": "2025-12-17",
+    "equity": 97766.7,
+    "net_return": 16409.11
+   },
+   {
+    "t": "2025-12-18",
+    "equity": 97915.76,
+    "net_return": 16558.17
+   },
+   {
+    "t": "2025-12-19",
+    "equity": 99326.84,
+    "net_return": 17969.25
+   },
+   {
+    "t": "2025-12-22",
+    "equity": 100526.44,
+    "net_return": 19168.85
+   },
+   {
+    "t": "2025-12-23",
+    "equity": 99422.45,
+    "net_return": 18064.86
+   },
+   {
+    "t": "2025-12-24",
+    "equity": 98623.97,
+    "net_return": 17266.38
+   },
+   {
+    "t": "2025-12-25",
+    "equity": 98700.92,
+    "net_return": 17343.33
+   },
+   {
+    "t": "2025-12-26",
+    "equity": 97295.14,
+    "net_return": 15937.55
+   },
+   {
+    "t": "2025-12-29",
+    "equity": 96868.77,
+    "net_return": 15511.18
+   },
+   {
+    "t": "2025-12-30",
+    "equity": 96890.94,
+    "net_return": 15533.35
+   },
+   {
+    "t": "2025-12-31",
+    "equity": 97707.28,
+    "net_return": 16349.69
+   },
+   {
+    "t": "2026-01-01",
+    "equity": 97751.87,
+    "net_return": 16394.28
+   },
+   {
+    "t": "2026-01-02",
+    "equity": 99486.61,
+    "net_return": 18129.02
+   },
+   {
+    "t": "2026-01-05",
+    "equity": 98262.79,
+    "net_return": 16905.2
+   },
+   {
+    "t": "2026-01-06",
+    "equity": 98283.86,
+    "net_return": 16926.26
+   },
+   {
+    "t": "2026-01-07",
+    "equity": 101746.17,
+    "net_return": 20388.58
+   },
+   {
+    "t": "2026-01-08",
+    "equity": 99962.67,
+    "net_return": 18605.08
+   },
+   {
+    "t": "2026-01-09",
+    "equity": 102822.41,
+    "net_return": 18160.01
+   },
+   {
+    "t": "2026-01-12",
+    "equity": 103940.31,
+    "net_return": 19277.92
+   },
+   {
+    "t": "2026-01-13",
+    "equity": 105501.36,
+    "net_return": 20838.96
+   },
+   {
+    "t": "2026-01-14",
+    "equity": 105245.96,
+    "net_return": 20583.56
+   },
+   {
+    "t": "2026-01-15",
+    "equity": 104794.76,
+    "net_return": 20132.36
+   },
+   {
+    "t": "2026-01-16",
+    "equity": 105715.26,
+    "net_return": 21052.87
+   },
+   {
+    "t": "2026-01-19",
+    "equity": 105313.68,
+    "net_return": 20651.28
+   },
+   {
+    "t": "2026-01-20",
+    "equity": 106688.87,
+    "net_return": 22026.47
+   },
+   {
+    "t": "2026-01-21",
+    "equity": 104050.59,
+    "net_return": 19388.19
+   },
+   {
+    "t": "2026-01-22",
+    "equity": 102187.2,
+    "net_return": 17524.81
+   },
+   {
+    "t": "2026-01-23",
+    "equity": 101775.57,
+    "net_return": 17113.17
+   },
+   {
+    "t": "2026-01-26",
+    "equity": 100554.44,
+    "net_return": 15892.05
+   },
+   {
+    "t": "2026-01-27",
+    "equity": 99594.05,
+    "net_return": 14931.65
+   },
+   {
+    "t": "2026-01-28",
+    "equity": 99837.48,
+    "net_return": 15175.09
+   },
+   {
+    "t": "2026-01-29",
+    "equity": 99181.91,
+    "net_return": 14519.51
+   },
+   {
+    "t": "2026-01-30",
+    "equity": 99555.55,
+    "net_return": 14893.15
+   },
+   {
+    "t": "2026-02-02",
+    "equity": 100350.44,
+    "net_return": 15688.04
+   },
+   {
+    "t": "2026-02-03",
+    "equity": 100262.81,
+    "net_return": 15600.42
+   },
+   {
+    "t": "2026-02-04",
+    "equity": 100709.35,
+    "net_return": 16046.95
+   },
+   {
+    "t": "2026-02-05",
+    "equity": 100933.7,
+    "net_return": 16271.3
+   },
+   {
+    "t": "2026-02-06",
+    "equity": 99926.23,
+    "net_return": 15263.83
+   },
+   {
+    "t": "2026-02-09",
+    "equity": 102694.63,
+    "net_return": 15196.0
+   },
+   {
+    "t": "2026-02-10",
+    "equity": 102810.48,
+    "net_return": 15311.85
+   },
+   {
+    "t": "2026-02-11",
+    "equity": 102207.17,
+    "net_return": 14708.54
+   },
+   {
+    "t": "2026-02-12",
+    "equity": 102071.32,
+    "net_return": 14572.69
+   },
+   {
+    "t": "2026-02-13",
+    "equity": 102628.54,
+    "net_return": 15129.92
+   },
+   {
+    "t": "2026-02-16",
+    "equity": 102223.57,
+    "net_return": 14724.95
+   },
+   {
+    "t": "2026-02-17",
+    "equity": 101997.26,
+    "net_return": 14498.64
+   },
+   {
+    "t": "2026-02-18",
+    "equity": 104367.08,
+    "net_return": 16868.45
+   },
+   {
+    "t": "2026-02-19",
+    "equity": 103254.12,
+    "net_return": 15755.49
+   },
+   {
+    "t": "2026-02-20",
+    "equity": 103608.9,
+    "net_return": 16110.28
+   },
+   {
+    "t": "2026-02-23",
+    "equity": 103581.1,
+    "net_return": 16082.48
+   },
+   {
+    "t": "2026-02-24",
+    "equity": 105776.03,
+    "net_return": 18277.4
+   },
+   {
+    "t": "2026-02-25",
+    "equity": 105526.89,
+    "net_return": 18028.26
+   },
+   {
+    "t": "2026-02-26",
+    "equity": 106563.28,
+    "net_return": 19064.66
+   },
+   {
+    "t": "2026-02-27",
+    "equity": 106042.2,
+    "net_return": 18543.57
+   },
+   {
+    "t": "2026-03-02",
+    "equity": 106123.35,
+    "net_return": 18624.72
+   },
+   {
+    "t": "2026-03-03",
+    "equity": 105149.24,
+    "net_return": 17650.61
+   },
+   {
+    "t": "2026-03-04",
+    "equity": 102421.91,
+    "net_return": 14923.28
+   },
+   {
+    "t": "2026-03-05",
+    "equity": 104299.06,
+    "net_return": 16800.43
+   },
+   {
+    "t": "2026-03-06",
+    "equity": 106063.71,
+    "net_return": 18565.08
+   },
+   {
+    "t": "2026-03-09",
+    "equity": 103991.7,
+    "net_return": 16493.07
+   },
+   {
+    "t": "2026-03-10",
+    "equity": 110151.49,
+    "net_return": 17629.96
+   },
+   {
+    "t": "2026-03-11",
+    "equity": 110140.64,
+    "net_return": 17619.11
+   },
+   {
+    "t": "2026-03-12",
+    "equity": 110368.57,
+    "net_return": 17847.04
+   },
+   {
+    "t": "2026-03-13",
+    "equity": 110461.49,
+    "net_return": 17939.95
+   },
+   {
+    "t": "2026-03-16",
+    "equity": 108214.59,
+    "net_return": 15693.05
+   },
+   {
+    "t": "2026-03-17",
+    "equity": 107781.82,
+    "net_return": 15260.29
+   },
+   {
+    "t": "2026-03-18",
+    "equity": 109664.91,
+    "net_return": 17143.38
+   },
+   {
+    "t": "2026-03-19",
+    "equity": 108250.33,
+    "net_return": 15728.79
+   },
+   {
+    "t": "2026-03-20",
+    "equity": 107072.13,
+    "net_return": 14550.6
+   },
+   {
+    "t": "2026-03-23",
+    "equity": 105816.86,
+    "net_return": 13295.32
+   },
+   {
+    "t": "2026-03-24",
+    "equity": 104578.2,
+    "net_return": 12056.66
+   },
+   {
+    "t": "2026-03-25",
+    "equity": 105021.05,
+    "net_return": 12499.52
+   },
+   {
+    "t": "2026-03-26",
+    "equity": 107368.48,
+    "net_return": 14846.94
+   },
+   {
+    "t": "2026-03-27",
+    "equity": 107042.08,
+    "net_return": 14520.54
+   },
+   {
+    "t": "2026-03-30",
+    "equity": 106787.5,
+    "net_return": 14265.96
+   },
+   {
+    "t": "2026-03-31",
+    "equity": 110126.35,
+    "net_return": 17604.81
+   },
+   {
+    "t": "2026-04-01",
+    "equity": 109091.89,
+    "net_return": 16570.35
+   },
+   {
+    "t": "2026-04-02",
+    "equity": 108027.22,
+    "net_return": 15505.69
+   },
+   {
+    "t": "2026-04-03",
+    "equity": 109141.57,
+    "net_return": 16620.03
+   },
+   {
+    "t": "2026-04-06",
+    "equity": 110232.29,
+    "net_return": 17710.75
+   },
+   {
+    "t": "2026-04-07",
+    "equity": 108794.35,
+    "net_return": 16272.81
+   },
+   {
+    "t": "2026-04-08",
+    "equity": 109841.76,
+    "net_return": 13972.84
+   },
+   {
+    "t": "2026-04-09",
+    "equity": 110576.22,
+    "net_return": 14707.29
+   },
+   {
+    "t": "2026-04-10",
+    "equity": 110280.22,
+    "net_return": 14411.29
+   },
+   {
+    "t": "2026-04-13",
+    "equity": 109092.97,
+    "net_return": 13224.04
+   },
+   {
+    "t": "2026-04-14",
+    "equity": 108313.74,
+    "net_return": 12444.81
+   },
+   {
+    "t": "2026-04-15",
+    "equity": 108117.39,
+    "net_return": 12248.47
+   },
+   {
+    "t": "2026-04-16",
+    "equity": 109118.26,
+    "net_return": 13249.33
+   },
+   {
+    "t": "2026-04-17",
+    "equity": 109288.72,
+    "net_return": 13419.79
+   },
+   {
+    "t": "2026-04-20",
+    "equity": 109651.97,
+    "net_return": 13783.05
+   },
+   {
+    "t": "2026-04-21",
+    "equity": 110006.83,
+    "net_return": 14137.9
+   },
+   {
+    "t": "2026-04-22",
+    "equity": 111292.83,
+    "net_return": 15423.9
+   },
+   {
+    "t": "2026-04-23",
+    "equity": 113631.47,
+    "net_return": 17762.55
+   },
+   {
+    "t": "2026-04-24",
+    "equity": 112834.3,
+    "net_return": 16965.37
+   },
+   {
+    "t": "2026-04-27",
+    "equity": 114398.99,
+    "net_return": 18530.07
+   },
+   {
+    "t": "2026-04-28",
+    "equity": 112978.05,
+    "net_return": 17109.12
+   },
+   {
+    "t": "2026-04-29",
+    "equity": 113652.18,
+    "net_return": 17783.25
+   },
+   {
+    "t": "2026-04-30",
+    "equity": 114382.75,
+    "net_return": 18513.82
+   },
+   {
+    "t": "2026-05-01",
+    "equity": 117646.26,
+    "net_return": 21777.33
+   },
+   {
+    "t": "2026-05-04",
+    "equity": 117318.22,
+    "net_return": 21449.3
+   },
+   {
+    "t": "2026-05-05",
+    "equity": 117263.73,
+    "net_return": 21394.8
+   },
+   {
+    "t": "2026-05-06",
+    "equity": 117778.68,
+    "net_return": 21909.75
+   },
+   {
+    "t": "2026-05-07",
+    "equity": 120846.39,
+    "net_return": 19380.05
+   },
+   {
+    "t": "2026-05-08",
+    "equity": 120038.94,
+    "net_return": 18572.6
+   },
+   {
+    "t": "2026-05-11",
+    "equity": 117998.5,
+    "net_return": 16532.16
+   },
+   {
+    "t": "2026-05-12",
+    "equity": 119170.9,
+    "net_return": 17704.57
+   },
+   {
+    "t": "2026-05-13",
+    "equity": 117718.07,
+    "net_return": 16251.74
+   },
+   {
+    "t": "2026-05-14",
+    "equity": 115410.0,
+    "net_return": 13943.67
+   },
+   {
+    "t": "2026-05-15",
+    "equity": 116080.62,
+    "net_return": 14614.28
+   },
+   {
+    "t": "2026-05-18",
+    "equity": 117590.76,
+    "net_return": 16124.42
+   },
+   {
+    "t": "2026-05-19",
+    "equity": 116623.69,
+    "net_return": 15157.35
+   },
+   {
+    "t": "2026-05-20",
+    "equity": 118345.45,
+    "net_return": 16879.11
+   },
+   {
+    "t": "2026-05-21",
+    "equity": 118685.83,
+    "net_return": 17219.49
+   },
+   {
+    "t": "2026-05-22",
+    "equity": 117329.39,
+    "net_return": 15863.05
+   },
+   {
+    "t": "2026-05-25",
+    "equity": 118031.76,
+    "net_return": 16565.42
+   },
+   {
+    "t": "2026-05-26",
+    "equity": 115956.25,
+    "net_return": 14489.91
+   },
+   {
+    "t": "2026-05-27",
+    "equity": 113858.05,
+    "net_return": 12391.71
+   },
+   {
+    "t": "2026-05-28",
+    "equity": 114059.09,
+    "net_return": 12592.75
+   },
+   {
+    "t": "2026-05-29",
+    "equity": 115012.52,
+    "net_return": 13546.18
+   },
+   {
+    "t": "2026-06-01",
+    "equity": 115332.5,
+    "net_return": 13866.16
+   },
+   {
+    "t": "2026-06-02",
+    "equity": 115552.46,
+    "net_return": 14086.12
+   },
+   {
+    "t": "2026-06-03",
+    "equity": 114100.12,
+    "net_return": 12633.78
+   },
+   {
+    "t": "2026-06-04",
+    "equity": 116094.42,
+    "net_return": 14628.08
+   },
+   {
+    "t": "2026-06-05",
+    "equity": 124051.03,
+    "net_return": 17713.65
+   },
+   {
+    "t": "2026-06-08",
+    "equity": 124019.65,
+    "net_return": 17682.27
+   },
+   {
+    "t": "2026-06-09",
+    "equity": 127672.63,
+    "net_return": 21335.25
+   },
+   {
+    "t": "2026-06-10",
+    "equity": 126438.65,
+    "net_return": 20101.27
+   },
+   {
+    "t": "2026-06-11",
+    "equity": 125186.81,
+    "net_return": 18849.43
+   },
+   {
+    "t": "2026-06-12",
+    "equity": 126332.47,
+    "net_return": 19995.09
+   },
+   {
+    "t": "2026-06-15",
+    "equity": 128175.56,
+    "net_return": 21838.18
+   },
+   {
+    "t": "2026-06-16",
+    "equity": 125806.31,
+    "net_return": 19468.93
+   },
+   {
+    "t": "2026-06-17",
+    "equity": 122558.58,
+    "net_return": 16221.2
+   },
+   {
+    "t": "2026-06-18",
+    "equity": 123180.23,
+    "net_return": 16842.85
+   },
+   {
+    "t": "2026-06-19",
+    "equity": 124741.49,
+    "net_return": 18404.11
+   },
+   {
+    "t": "2026-06-22",
+    "equity": 126053.02,
+    "net_return": 19715.64
+   },
+   {
+    "t": "2026-06-23",
+    "equity": 130756.59,
+    "net_return": 24419.21
+   },
+   {
+    "t": "2026-06-24",
+    "equity": 131209.6,
+    "net_return": 24872.22
+   },
+   {
+    "t": "2026-06-25",
+    "equity": 132045.85,
+    "net_return": 25708.47
+   },
+   {
+    "t": "2026-06-26",
+    "equity": 134485.16,
+    "net_return": 28147.78
+   },
+   {
+    "t": "2026-06-29",
+    "equity": 134094.46,
+    "net_return": 27757.08
+   },
+   {
+    "t": "2026-06-30",
+    "equity": 137159.68,
+    "net_return": 30822.3
+   },
+   {
+    "t": "2026-07-01",
+    "equity": 134909.17,
+    "net_return": 28571.79
+   },
+   {
+    "t": "2026-07-02",
+    "equity": 135078.77,
+    "net_return": 28741.39
+   },
+   {
+    "t": "2026-07-03",
+    "equity": 128082.96,
+    "net_return": 21745.58
+   },
+   {
+    "t": "2026-07-06",
+    "equity": 135336.17,
+    "net_return": 23611.05
+   },
+   {
+    "t": "2026-07-07",
+    "equity": 133486.25,
+    "net_return": 21761.13
+   },
+   {
+    "t": "2026-07-08",
+    "equity": 135924.57,
+    "net_return": 24199.45
+   },
+   {
+    "t": "2026-07-09",
+    "equity": 139268.56,
+    "net_return": 27543.44
+   },
+   {
+    "t": "2026-07-10",
+    "equity": 139759.01,
+    "net_return": 28033.89
+   },
+   {
+    "t": "2026-07-13",
+    "equity": 139992.04,
+    "net_return": 28266.92
+   },
+   {
+    "t": "2026-07-14",
+    "equity": 138163.46,
+    "net_return": 26438.34
+   },
+   {
+    "t": "2026-07-15",
+    "equity": 136273.52,
+    "net_return": 24548.4
+   },
+   {
+    "t": "2026-07-16",
+    "equity": 134515.61,
+    "net_return": 22790.49
+   },
+   {
+    "t": "2026-07-17",
+    "equity": 136667.63,
+    "net_return": 24942.51
+   },
+   {
+    "t": "2026-07-20",
+    "equity": 136885.71,
+    "net_return": 25160.58
+   },
+   {
+    "t": "2026-07-21",
+    "equity": 137911.29,
+    "net_return": 26186.16
+   },
+   {
+    "t": "2026-07-22",
+    "equity": 137274.22,
+    "net_return": 25549.1
+   },
+   {
+    "t": "2026-07-23",
+    "equity": 137962.85,
+    "net_return": 26237.73
+   },
+   {
+    "t": "2026-07-24",
+    "equity": 138862.33,
+    "net_return": 27137.21
+   },
+   {
+    "t": "2026-07-27",
+    "equity": 138665.02,
+    "net_return": 26939.9
+   },
+   {
+    "t": "2026-07-28",
+    "equity": 140050.04,
+    "net_return": 28324.92
+   },
+   {
+    "t": "2026-07-29",
+    "equity": 140824.1,
+    "net_return": 29098.98
+   },
+   {
+    "t": "2026-07-30",
+    "equity": 138416.84,
+    "net_return": 26691.71
+   },
+   {
+    "t": "2026-07-31",
+    "equity": 142121.75,
+    "net_return": 30396.63
+   },
+   {
+    "t": "2026-08-03",
+    "equity": 142894.94,
+    "net_return": 31169.82
+   },
+   {
+    "t": "2026-08-04",
+    "equity": 141778.14,
+    "net_return": 29575.99
+   },
+   {
+    "t": "2026-08-05",
+    "equity": 145352.65,
+    "net_return": 33150.5
+   },
+   {
+    "t": "2026-08-06",
+    "equity": 146337.14,
+    "net_return": 34134.99
+   },
+   {
+    "t": "2026-08-07",
+    "equity": 142272.95,
+    "net_return": 30070.79
+   },
+   {
+    "t": "2026-08-10",
+    "equity": 145619.6,
+    "net_return": 33417.45
+   }
+  ],
+  "year": [
+   {
+    "t": "2025-08-22",
+    "equity": 72301.24,
+    "net_return": 1887.86
+   },
+   {
+    "t": "2025-08-25",
+    "equity": 72589.7,
+    "net_return": 2176.31
+   },
+   {
+    "t": "2025-08-26",
+    "equity": 71541.62,
+    "net_return": 1128.23
+   },
+   {
+    "t": "2025-08-27",
+    "equity": 70904.37,
+    "net_return": 490.98
+   },
+   {
+    "t": "2025-08-28",
+    "equity": 70964.53,
+    "net_return": 551.14
+   },
+   {
+    "t": "2025-08-29",
+    "equity": 71390.48,
+    "net_return": 977.09
+   },
+   {
+    "t": "2025-09-01",
+    "equity": 72493.3,
+    "net_return": 2079.91
+   },
+   {
+    "t": "2025-09-02",
+    "equity": 72383.22,
+    "net_return": 1969.84
+   },
+   {
+    "t": "2025-09-03",
+    "equity": 73173.77,
+    "net_return": 2760.38
+   },
+   {
+    "t": "2025-09-04",
+    "equity": 72712.22,
+    "net_return": 2298.84
+   },
+   {
+    "t": "2025-09-05",
+    "equity": 73658.79,
+    "net_return": 3245.4
+   },
+   {
+    "t": "2025-09-08",
+    "equity": 73587.48,
+    "net_return": 3174.1
+   },
+   {
+    "t": "2025-09-09",
+    "equity": 73693.95,
+    "net_return": 3280.57
+   },
+   {
+    "t": "2025-09-10",
+    "equity": 72166.1,
+    "net_return": 1752.72
+   },
+   {
+    "t": "2025-09-11",
+    "equity": 71739.37,
+    "net_return": 1325.98
+   },
+   {
+    "t": "2025-09-12",
+    "equity": 71804.47,
+    "net_return": 1391.09
+   },
+   {
+    "t": "2025-09-15",
+    "equity": 75086.22,
+    "net_return": 754.78
+   },
+   {
+    "t": "2025-09-16",
+    "equity": 76388.07,
+    "net_return": 2056.64
+   },
+   {
+    "t": "2025-09-17",
+    "equity": 76636.69,
+    "net_return": 2305.26
+   },
+   {
+    "t": "2025-09-18",
+    "equity": 76447.24,
+    "net_return": 2115.8
+   },
+   {
+    "t": "2025-09-19",
+    "equity": 77228.94,
+    "net_return": 2897.5
+   },
+   {
+    "t": "2025-09-22",
+    "equity": 77970.25,
+    "net_return": 3638.82
+   },
+   {
+    "t": "2025-09-23",
+    "equity": 77915.69,
+    "net_return": 3584.26
+   },
+   {
+    "t": "2025-09-24",
+    "equity": 77420.26,
+    "net_return": 3088.82
+   },
+   {
+    "t": "2025-09-25",
+    "equity": 77861.98,
+    "net_return": 3530.55
+   },
+   {
+    "t": "2025-09-26",
+    "equity": 76804.89,
+    "net_return": 2473.46
+   },
+   {
+    "t": "2025-09-29",
+    "equity": 78299.16,
+    "net_return": 3967.72
+   },
+   {
+    "t": "2025-09-30",
+    "equity": 78251.47,
+    "net_return": 3920.04
+   },
+   {
+    "t": "2025-10-01",
+    "equity": 78665.04,
+    "net_return": 4333.61
+   },
+   {
+    "t": "2025-10-02",
+    "equity": 81012.26,
+    "net_return": 6680.83
+   },
+   {
+    "t": "2025-10-03",
+    "equity": 81588.64,
+    "net_return": 7257.21
+   },
+   {
+    "t": "2025-10-06",
+    "equity": 81517.82,
+    "net_return": 7186.39
+   },
+   {
+    "t": "2025-10-07",
+    "equity": 82168.22,
+    "net_return": 7836.79
+   },
+   {
+    "t": "2025-10-08",
+    "equity": 81818.81,
+    "net_return": 7487.38
+   },
+   {
+    "t": "2025-10-09",
+    "equity": 81937.54,
+    "net_return": 7606.11
+   },
+   {
+    "t": "2025-10-10",
+    "equity": 82619.11,
+    "net_return": 8287.67
+   },
+   {
+    "t": "2025-10-13",
+    "equity": 82656.51,
+    "net_return": 8325.08
+   },
+   {
+    "t": "2025-10-14",
+    "equity": 87767.14,
+    "net_return": 9301.08
+   },
+   {
+    "t": "2025-10-15",
+    "equity": 87878.86,
+    "net_return": 9412.8
+   },
+   {
+    "t": "2025-10-16",
+    "equity": 89040.12,
+    "net_return": 10574.06
+   },
+   {
+    "t": "2025-10-17",
+    "equity": 90410.84,
+    "net_return": 11944.77
+   },
+   {
+    "t": "2025-10-20",
+    "equity": 90345.48,
+    "net_return": 11879.42
+   },
+   {
+    "t": "2025-10-21",
+    "equity": 91372.0,
+    "net_return": 12905.93
+   },
+   {
+    "t": "2025-10-22",
+    "equity": 91250.59,
+    "net_return": 12784.52
+   },
+   {
+    "t": "2025-10-23",
+    "equity": 92004.1,
+    "net_return": 13538.04
+   },
+   {
+    "t": "2025-10-24",
+    "equity": 91972.43,
+    "net_return": 13506.37
+   },
+   {
+    "t": "2025-10-27",
+    "equity": 91570.62,
+    "net_return": 13104.55
+   },
+   {
+    "t": "2025-10-28",
+    "equity": 91317.91,
+    "net_return": 12851.84
+   },
+   {
+    "t": "2025-10-29",
+    "equity": 90612.03,
+    "net_return": 12145.97
+   },
+   {
+    "t": "2025-10-30",
+    "equity": 91964.94,
+    "net_return": 13498.87
+   },
+   {
+    "t": "2025-10-31",
+    "equity": 93586.16,
+    "net_return": 15120.1
+   },
+   {
+    "t": "2025-11-03",
+    "equity": 94597.61,
+    "net_return": 16131.55
+   },
+   {
+    "t": "2025-11-04",
+    "equity": 93579.62,
+    "net_return": 15113.56
+   },
+   {
+    "t": "2025-11-05",
+    "equity": 93881.03,
+    "net_return": 15414.97
+   },
+   {
+    "t": "2025-11-06",
+    "equity": 93221.7,
+    "net_return": 14755.63
+   },
+   {
+    "t": "2025-11-07",
+    "equity": 93451.85,
+    "net_return": 14985.79
+   },
+   {
+    "t": "2025-11-10",
+    "equity": 95039.3,
+    "net_return": 16573.24
+   },
+   {
+    "t": "2025-11-11",
+    "equity": 97106.11,
+    "net_return": 18640.05
+   },
+   {
+    "t": "2025-11-12",
+    "equity": 97371.76,
+    "net_return": 18282.23
+   },
+   {
+    "t": "2025-11-13",
+    "equity": 100125.49,
+    "net_return": 21035.95
+   },
+   {
+    "t": "2025-11-14",
+    "equity": 100265.85,
+    "net_return": 21176.31
+   },
+   {
+    "t": "2025-11-17",
+    "equity": 101285.48,
+    "net_return": 22195.95
+   },
+   {
+    "t": "2025-11-18",
+    "equity": 99282.29,
+    "net_return": 20192.75
+   },
+   {
+    "t": "2025-11-19",
+    "equity": 98606.0,
+    "net_return": 19516.46
+   },
+   {
+    "t": "2025-11-20",
+    "equity": 97192.94,
+    "net_return": 18103.4
+   },
+   {
+    "t": "2025-11-21",
+    "equity": 99125.61,
+    "net_return": 20036.07
+   },
+   {
+    "t": "2025-11-24",
+    "equity": 100842.1,
+    "net_return": 21752.56
+   },
+   {
+    "t": "2025-11-25",
+    "equity": 99362.02,
+    "net_return": 20272.48
+   },
+   {
+    "t": "2025-11-26",
+    "equity": 97266.17,
+    "net_return": 18176.63
+   },
+   {
+    "t": "2025-11-27",
+    "equity": 95203.04,
+    "net_return": 16113.5
+   },
+   {
+    "t": "2025-11-28",
+    "equity": 96589.37,
+    "net_return": 17499.83
+   },
+   {
+    "t": "2025-12-01",
+    "equity": 96467.42,
+    "net_return": 17377.88
+   },
+   {
+    "t": "2025-12-02",
+    "equity": 96432.62,
+    "net_return": 17343.08
+   },
+   {
+    "t": "2025-12-03",
+    "equity": 96074.23,
+    "net_return": 16984.69
+   },
+   {
+    "t": "2025-12-04",
+    "equity": 96600.67,
+    "net_return": 17511.13
+   },
+   {
+    "t": "2025-12-05",
+    "equity": 96551.03,
+    "net_return": 17461.49
+   },
+   {
+    "t": "2025-12-08",
+    "equity": 95816.71,
+    "net_return": 16727.17
+   },
+   {
+    "t": "2025-12-09",
+    "equity": 94214.55,
+    "net_return": 15125.01
+   },
+   {
+    "t": "2025-12-10",
+    "equity": 94488.49,
+    "net_return": 15398.95
+   },
+   {
+    "t": "2025-12-11",
+    "equity": 97537.76,
+    "net_return": 16180.17
+   },
+   {
+    "t": "2025-12-12",
+    "equity": 98520.91,
+    "net_return": 17163.32
+   },
+   {
+    "t": "2025-12-15",
+    "equity": 98649.08,
+    "net_return": 17291.49
+   },
+   {
+    "t": "2025-12-16",
+    "equity": 97533.5,
+    "net_return": 16175.91
+   },
+   {
+    "t": "2025-12-17",
+    "equity": 97766.7,
+    "net_return": 16409.11
+   },
+   {
+    "t": "2025-12-18",
+    "equity": 97915.76,
+    "net_return": 16558.17
+   },
+   {
+    "t": "2025-12-19",
+    "equity": 99326.84,
+    "net_return": 17969.25
+   },
+   {
+    "t": "2025-12-22",
+    "equity": 100526.44,
+    "net_return": 19168.85
+   },
+   {
+    "t": "2025-12-23",
+    "equity": 99422.45,
+    "net_return": 18064.86
+   },
+   {
+    "t": "2025-12-24",
+    "equity": 98623.97,
+    "net_return": 17266.38
+   },
+   {
+    "t": "2025-12-25",
+    "equity": 98700.92,
+    "net_return": 17343.33
+   },
+   {
+    "t": "2025-12-26",
+    "equity": 97295.14,
+    "net_return": 15937.55
+   },
+   {
+    "t": "2025-12-29",
+    "equity": 96868.77,
+    "net_return": 15511.18
+   },
+   {
+    "t": "2025-12-30",
+    "equity": 96890.94,
+    "net_return": 15533.35
+   },
+   {
+    "t": "2025-12-31",
+    "equity": 97707.28,
+    "net_return": 16349.69
+   },
+   {
+    "t": "2026-01-01",
+    "equity": 97751.87,
+    "net_return": 16394.28
+   },
+   {
+    "t": "2026-01-02",
+    "equity": 99486.61,
+    "net_return": 18129.02
+   },
+   {
+    "t": "2026-01-05",
+    "equity": 98262.79,
+    "net_return": 16905.2
+   },
+   {
+    "t": "2026-01-06",
+    "equity": 98283.86,
+    "net_return": 16926.26
+   },
+   {
+    "t": "2026-01-07",
+    "equity": 101746.17,
+    "net_return": 20388.58
+   },
+   {
+    "t": "2026-01-08",
+    "equity": 99962.67,
+    "net_return": 18605.08
+   },
+   {
+    "t": "2026-01-09",
+    "equity": 102822.41,
+    "net_return": 18160.01
+   },
+   {
+    "t": "2026-01-12",
+    "equity": 103940.31,
+    "net_return": 19277.92
+   },
+   {
+    "t": "2026-01-13",
+    "equity": 105501.36,
+    "net_return": 20838.96
+   },
+   {
+    "t": "2026-01-14",
+    "equity": 105245.96,
+    "net_return": 20583.56
+   },
+   {
+    "t": "2026-01-15",
+    "equity": 104794.76,
+    "net_return": 20132.36
+   },
+   {
+    "t": "2026-01-16",
+    "equity": 105715.26,
+    "net_return": 21052.87
+   },
+   {
+    "t": "2026-01-19",
+    "equity": 105313.68,
+    "net_return": 20651.28
+   },
+   {
+    "t": "2026-01-20",
+    "equity": 106688.87,
+    "net_return": 22026.47
+   },
+   {
+    "t": "2026-01-21",
+    "equity": 104050.59,
+    "net_return": 19388.19
+   },
+   {
+    "t": "2026-01-22",
+    "equity": 102187.2,
+    "net_return": 17524.81
+   },
+   {
+    "t": "2026-01-23",
+    "equity": 101775.57,
+    "net_return": 17113.17
+   },
+   {
+    "t": "2026-01-26",
+    "equity": 100554.44,
+    "net_return": 15892.05
+   },
+   {
+    "t": "2026-01-27",
+    "equity": 99594.05,
+    "net_return": 14931.65
+   },
+   {
+    "t": "2026-01-28",
+    "equity": 99837.48,
+    "net_return": 15175.09
+   },
+   {
+    "t": "2026-01-29",
+    "equity": 99181.91,
+    "net_return": 14519.51
+   },
+   {
+    "t": "2026-01-30",
+    "equity": 99555.55,
+    "net_return": 14893.15
+   },
+   {
+    "t": "2026-02-02",
+    "equity": 100350.44,
+    "net_return": 15688.04
+   },
+   {
+    "t": "2026-02-03",
+    "equity": 100262.81,
+    "net_return": 15600.42
+   },
+   {
+    "t": "2026-02-04",
+    "equity": 100709.35,
+    "net_return": 16046.95
+   },
+   {
+    "t": "2026-02-05",
+    "equity": 100933.7,
+    "net_return": 16271.3
+   },
+   {
+    "t": "2026-02-06",
+    "equity": 99926.23,
+    "net_return": 15263.83
+   },
+   {
+    "t": "2026-02-09",
+    "equity": 102694.63,
+    "net_return": 15196.0
+   },
+   {
+    "t": "2026-02-10",
+    "equity": 102810.48,
+    "net_return": 15311.85
+   },
+   {
+    "t": "2026-02-11",
+    "equity": 102207.17,
+    "net_return": 14708.54
+   },
+   {
+    "t": "2026-02-12",
+    "equity": 102071.32,
+    "net_return": 14572.69
+   },
+   {
+    "t": "2026-02-13",
+    "equity": 102628.54,
+    "net_return": 15129.92
+   },
+   {
+    "t": "2026-02-16",
+    "equity": 102223.57,
+    "net_return": 14724.95
+   },
+   {
+    "t": "2026-02-17",
+    "equity": 101997.26,
+    "net_return": 14498.64
+   },
+   {
+    "t": "2026-02-18",
+    "equity": 104367.08,
+    "net_return": 16868.45
+   },
+   {
+    "t": "2026-02-19",
+    "equity": 103254.12,
+    "net_return": 15755.49
+   },
+   {
+    "t": "2026-02-20",
+    "equity": 103608.9,
+    "net_return": 16110.28
+   },
+   {
+    "t": "2026-02-23",
+    "equity": 103581.1,
+    "net_return": 16082.48
+   },
+   {
+    "t": "2026-02-24",
+    "equity": 105776.03,
+    "net_return": 18277.4
+   },
+   {
+    "t": "2026-02-25",
+    "equity": 105526.89,
+    "net_return": 18028.26
+   },
+   {
+    "t": "2026-02-26",
+    "equity": 106563.28,
+    "net_return": 19064.66
+   },
+   {
+    "t": "2026-02-27",
+    "equity": 106042.2,
+    "net_return": 18543.57
+   },
+   {
+    "t": "2026-03-02",
+    "equity": 106123.35,
+    "net_return": 18624.72
+   },
+   {
+    "t": "2026-03-03",
+    "equity": 105149.24,
+    "net_return": 17650.61
+   },
+   {
+    "t": "2026-03-04",
+    "equity": 102421.91,
+    "net_return": 14923.28
+   },
+   {
+    "t": "2026-03-05",
+    "equity": 104299.06,
+    "net_return": 16800.43
+   },
+   {
+    "t": "2026-03-06",
+    "equity": 106063.71,
+    "net_return": 18565.08
+   },
+   {
+    "t": "2026-03-09",
+    "equity": 103991.7,
+    "net_return": 16493.07
+   },
+   {
+    "t": "2026-03-10",
+    "equity": 110151.49,
+    "net_return": 17629.96
+   },
+   {
+    "t": "2026-03-11",
+    "equity": 110140.64,
+    "net_return": 17619.11
+   },
+   {
+    "t": "2026-03-12",
+    "equity": 110368.57,
+    "net_return": 17847.04
+   },
+   {
+    "t": "2026-03-13",
+    "equity": 110461.49,
+    "net_return": 17939.95
+   },
+   {
+    "t": "2026-03-16",
+    "equity": 108214.59,
+    "net_return": 15693.05
+   },
+   {
+    "t": "2026-03-17",
+    "equity": 107781.82,
+    "net_return": 15260.29
+   },
+   {
+    "t": "2026-03-18",
+    "equity": 109664.91,
+    "net_return": 17143.38
+   },
+   {
+    "t": "2026-03-19",
+    "equity": 108250.33,
+    "net_return": 15728.79
+   },
+   {
+    "t": "2026-03-20",
+    "equity": 107072.13,
+    "net_return": 14550.6
+   },
+   {
+    "t": "2026-03-23",
+    "equity": 105816.86,
+    "net_return": 13295.32
+   },
+   {
+    "t": "2026-03-24",
+    "equity": 104578.2,
+    "net_return": 12056.66
+   },
+   {
+    "t": "2026-03-25",
+    "equity": 105021.05,
+    "net_return": 12499.52
+   },
+   {
+    "t": "2026-03-26",
+    "equity": 107368.48,
+    "net_return": 14846.94
+   },
+   {
+    "t": "2026-03-27",
+    "equity": 107042.08,
+    "net_return": 14520.54
+   },
+   {
+    "t": "2026-03-30",
+    "equity": 106787.5,
+    "net_return": 14265.96
+   },
+   {
+    "t": "2026-03-31",
+    "equity": 110126.35,
+    "net_return": 17604.81
+   },
+   {
+    "t": "2026-04-01",
+    "equity": 109091.89,
+    "net_return": 16570.35
+   },
+   {
+    "t": "2026-04-02",
+    "equity": 108027.22,
+    "net_return": 15505.69
+   },
+   {
+    "t": "2026-04-03",
+    "equity": 109141.57,
+    "net_return": 16620.03
+   },
+   {
+    "t": "2026-04-06",
+    "equity": 110232.29,
+    "net_return": 17710.75
+   },
+   {
+    "t": "2026-04-07",
+    "equity": 108794.35,
+    "net_return": 16272.81
+   },
+   {
+    "t": "2026-04-08",
+    "equity": 109841.76,
+    "net_return": 13972.84
+   },
+   {
+    "t": "2026-04-09",
+    "equity": 110576.22,
+    "net_return": 14707.29
+   },
+   {
+    "t": "2026-04-10",
+    "equity": 110280.22,
+    "net_return": 14411.29
+   },
+   {
+    "t": "2026-04-13",
+    "equity": 109092.97,
+    "net_return": 13224.04
+   },
+   {
+    "t": "2026-04-14",
+    "equity": 108313.74,
+    "net_return": 12444.81
+   },
+   {
+    "t": "2026-04-15",
+    "equity": 108117.39,
+    "net_return": 12248.47
+   },
+   {
+    "t": "2026-04-16",
+    "equity": 109118.26,
+    "net_return": 13249.33
+   },
+   {
+    "t": "2026-04-17",
+    "equity": 109288.72,
+    "net_return": 13419.79
+   },
+   {
+    "t": "2026-04-20",
+    "equity": 109651.97,
+    "net_return": 13783.05
+   },
+   {
+    "t": "2026-04-21",
+    "equity": 110006.83,
+    "net_return": 14137.9
+   },
+   {
+    "t": "2026-04-22",
+    "equity": 111292.83,
+    "net_return": 15423.9
+   },
+   {
+    "t": "2026-04-23",
+    "equity": 113631.47,
+    "net_return": 17762.55
+   },
+   {
+    "t": "2026-04-24",
+    "equity": 112834.3,
+    "net_return": 16965.37
+   },
+   {
+    "t": "2026-04-27",
+    "equity": 114398.99,
+    "net_return": 18530.07
+   },
+   {
+    "t": "2026-04-28",
+    "equity": 112978.05,
+    "net_return": 17109.12
+   },
+   {
+    "t": "2026-04-29",
+    "equity": 113652.18,
+    "net_return": 17783.25
+   },
+   {
+    "t": "2026-04-30",
+    "equity": 114382.75,
+    "net_return": 18513.82
+   },
+   {
+    "t": "2026-05-01",
+    "equity": 117646.26,
+    "net_return": 21777.33
+   },
+   {
+    "t": "2026-05-04",
+    "equity": 117318.22,
+    "net_return": 21449.3
+   },
+   {
+    "t": "2026-05-05",
+    "equity": 117263.73,
+    "net_return": 21394.8
+   },
+   {
+    "t": "2026-05-06",
+    "equity": 117778.68,
+    "net_return": 21909.75
+   },
+   {
+    "t": "2026-05-07",
+    "equity": 120846.39,
+    "net_return": 19380.05
+   },
+   {
+    "t": "2026-05-08",
+    "equity": 120038.94,
+    "net_return": 18572.6
+   },
+   {
+    "t": "2026-05-11",
+    "equity": 117998.5,
+    "net_return": 16532.16
+   },
+   {
+    "t": "2026-05-12",
+    "equity": 119170.9,
+    "net_return": 17704.57
+   },
+   {
+    "t": "2026-05-13",
+    "equity": 117718.07,
+    "net_return": 16251.74
+   },
+   {
+    "t": "2026-05-14",
+    "equity": 115410.0,
+    "net_return": 13943.67
+   },
+   {
+    "t": "2026-05-15",
+    "equity": 116080.62,
+    "net_return": 14614.28
+   },
+   {
+    "t": "2026-05-18",
+    "equity": 117590.76,
+    "net_return": 16124.42
+   },
+   {
+    "t": "2026-05-19",
+    "equity": 116623.69,
+    "net_return": 15157.35
+   },
+   {
+    "t": "2026-05-20",
+    "equity": 118345.45,
+    "net_return": 16879.11
+   },
+   {
+    "t": "2026-05-21",
+    "equity": 118685.83,
+    "net_return": 17219.49
+   },
+   {
+    "t": "2026-05-22",
+    "equity": 117329.39,
+    "net_return": 15863.05
+   },
+   {
+    "t": "2026-05-25",
+    "equity": 118031.76,
+    "net_return": 16565.42
+   },
+   {
+    "t": "2026-05-26",
+    "equity": 115956.25,
+    "net_return": 14489.91
+   },
+   {
+    "t": "2026-05-27",
+    "equity": 113858.05,
+    "net_return": 12391.71
+   },
+   {
+    "t": "2026-05-28",
+    "equity": 114059.09,
+    "net_return": 12592.75
+   },
+   {
+    "t": "2026-05-29",
+    "equity": 115012.52,
+    "net_return": 13546.18
+   },
+   {
+    "t": "2026-06-01",
+    "equity": 115332.5,
+    "net_return": 13866.16
+   },
+   {
+    "t": "2026-06-02",
+    "equity": 115552.46,
+    "net_return": 14086.12
+   },
+   {
+    "t": "2026-06-03",
+    "equity": 114100.12,
+    "net_return": 12633.78
+   },
+   {
+    "t": "2026-06-04",
+    "equity": 116094.42,
+    "net_return": 14628.08
+   },
+   {
+    "t": "2026-06-05",
+    "equity": 124051.03,
+    "net_return": 17713.65
+   },
+   {
+    "t": "2026-06-08",
+    "equity": 124019.65,
+    "net_return": 17682.27
+   },
+   {
+    "t": "2026-06-09",
+    "equity": 127672.63,
+    "net_return": 21335.25
+   },
+   {
+    "t": "2026-06-10",
+    "equity": 126438.65,
+    "net_return": 20101.27
+   },
+   {
+    "t": "2026-06-11",
+    "equity": 125186.81,
+    "net_return": 18849.43
+   },
+   {
+    "t": "2026-06-12",
+    "equity": 126332.47,
+    "net_return": 19995.09
+   },
+   {
+    "t": "2026-06-15",
+    "equity": 128175.56,
+    "net_return": 21838.18
+   },
+   {
+    "t": "2026-06-16",
+    "equity": 125806.31,
+    "net_return": 19468.93
+   },
+   {
+    "t": "2026-06-17",
+    "equity": 122558.58,
+    "net_return": 16221.2
+   },
+   {
+    "t": "2026-06-18",
+    "equity": 123180.23,
+    "net_return": 16842.85
+   },
+   {
+    "t": "2026-06-19",
+    "equity": 124741.49,
+    "net_return": 18404.11
+   },
+   {
+    "t": "2026-06-22",
+    "equity": 126053.02,
+    "net_return": 19715.64
+   },
+   {
+    "t": "2026-06-23",
+    "equity": 130756.59,
+    "net_return": 24419.21
+   },
+   {
+    "t": "2026-06-24",
+    "equity": 131209.6,
+    "net_return": 24872.22
+   },
+   {
+    "t": "2026-06-25",
+    "equity": 132045.85,
+    "net_return": 25708.47
+   },
+   {
+    "t": "2026-06-26",
+    "equity": 134485.16,
+    "net_return": 28147.78
+   },
+   {
+    "t": "2026-06-29",
+    "equity": 134094.46,
+    "net_return": 27757.08
+   },
+   {
+    "t": "2026-06-30",
+    "equity": 137159.68,
+    "net_return": 30822.3
+   },
+   {
+    "t": "2026-07-01",
+    "equity": 134909.17,
+    "net_return": 28571.79
+   },
+   {
+    "t": "2026-07-02",
+    "equity": 135078.77,
+    "net_return": 28741.39
+   },
+   {
+    "t": "2026-07-03",
+    "equity": 128082.96,
+    "net_return": 21745.58
+   },
+   {
+    "t": "2026-07-06",
+    "equity": 135336.17,
+    "net_return": 23611.05
+   },
+   {
+    "t": "2026-07-07",
+    "equity": 133486.25,
+    "net_return": 21761.13
+   },
+   {
+    "t": "2026-07-08",
+    "equity": 135924.57,
+    "net_return": 24199.45
+   },
+   {
+    "t": "2026-07-09",
+    "equity": 139268.56,
+    "net_return": 27543.44
+   },
+   {
+    "t": "2026-07-10",
+    "equity": 139759.01,
+    "net_return": 28033.89
+   },
+   {
+    "t": "2026-07-13",
+    "equity": 139992.04,
+    "net_return": 28266.92
+   },
+   {
+    "t": "2026-07-14",
+    "equity": 138163.46,
+    "net_return": 26438.34
+   },
+   {
+    "t": "2026-07-15",
+    "equity": 136273.52,
+    "net_return": 24548.4
+   },
+   {
+    "t": "2026-07-16",
+    "equity": 134515.61,
+    "net_return": 22790.49
+   },
+   {
+    "t": "2026-07-17",
+    "equity": 136667.63,
+    "net_return": 24942.51
+   },
+   {
+    "t": "2026-07-20",
+    "equity": 136885.71,
+    "net_return": 25160.58
+   },
+   {
+    "t": "2026-07-21",
+    "equity": 137911.29,
+    "net_return": 26186.16
+   },
+   {
+    "t": "2026-07-22",
+    "equity": 137274.22,
+    "net_return": 25549.1
+   },
+   {
+    "t": "2026-07-23",
+    "equity": 137962.85,
+    "net_return": 26237.73
+   },
+   {
+    "t": "2026-07-24",
+    "equity": 138862.33,
+    "net_return": 27137.21
+   },
+   {
+    "t": "2026-07-27",
+    "equity": 138665.02,
+    "net_return": 26939.9
+   },
+   {
+    "t": "2026-07-28",
+    "equity": 140050.04,
+    "net_return": 28324.92
+   },
+   {
+    "t": "2026-07-29",
+    "equity": 140824.1,
+    "net_return": 29098.98
+   },
+   {
+    "t": "2026-07-30",
+    "equity": 138416.84,
+    "net_return": 26691.71
+   },
+   {
+    "t": "2026-07-31",
+    "equity": 142121.75,
+    "net_return": 30396.63
+   },
+   {
+    "t": "2026-08-03",
+    "equity": 142894.94,
+    "net_return": 31169.82
+   },
+   {
+    "t": "2026-08-04",
+    "equity": 141778.14,
+    "net_return": 29575.99
+   },
+   {
+    "t": "2026-08-05",
+    "equity": 145352.65,
+    "net_return": 33150.5
+   },
+   {
+    "t": "2026-08-06",
+    "equity": 146337.14,
+    "net_return": 34134.99
+   },
+   {
+    "t": "2026-08-07",
+    "equity": 142272.95,
+    "net_return": 30070.79
+   },
+   {
+    "t": "2026-08-10",
+    "equity": 145619.6,
+    "net_return": 33417.45
+   }
+  ]
+ }
+}

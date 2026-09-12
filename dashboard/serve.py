@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+"""
+Local dashboard server (stdlib only). Serves dashboard/index.html and a small JSON API
+over the snapshot files written by portfolio.robinhood_sync / portfolio.csv_import.
+
+    python -m dashboard.serve                  # http://127.0.0.1:8765, uses data/portfolio/snapshot.json
+    python -m dashboard.serve --demo           # synthetic sample data, no login needed
+    python -m dashboard.serve --refresh 60     # re-sync from Robinhood every 60s while the market is open
+
+Endpoints:
+    GET  /api/snapshot     current snapshot (holdings, summary, trades, dividends, equity curve)
+    GET  /api/history      one row per day from data/portfolio/history/*.json (your own equity over time)
+    GET  /api/prices/SYM   cached daily closes for SYM from data/prices (for the per-holding chart)
+    POST /api/refresh      run portfolio.robinhood_sync now (uses the cached session token)
+    GET  /api/backtest?symbol=MU&amount=500&freq=M   strategy comparison JSON for the backtest tab
+
+Binds to 127.0.0.1 only: this is your brokerage data. Do not expose it.
+"""
+from __future__ import annotations
+
+import argparse
+import glob
+import json
+import os
+import subprocess
+import sys
+import threading
+import time
+from datetime import datetime, timezone
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import urlparse, parse_qs
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA = os.path.join(ROOT, "data", "portfolio")
+STATE = {"snapshot_path": os.path.join(DATA, "snapshot.json"), "refreshing": False, "last_refresh": None,
+         "last_error": None, "demo": False}
+
+
+def read_snapshot() -> dict:
+    p = STATE["snapshot_path"]
+    if not os.path.exists(p):
+        return {"error": f"{os.path.relpath(p, ROOT)} not found. Run `python -m portfolio.robinhood_sync` "
+                         f"(or `python -m portfolio.csv_import <activity.csv>`), or start with --demo.",
+                "holdings": [], "summary": {}, "trades": [], "dividends": [], "equity_curve": {}}
+    with open(p, encoding="utf-8") as fh:
+        snap = json.load(fh)
+    snap["_server"] = {"refreshing": STATE["refreshing"], "last_refresh": STATE["last_refresh"],
+                       "last_error": STATE["last_error"], "demo": STATE["demo"],
+                       "file_mtime": datetime.fromtimestamp(os.path.getmtime(p), tz=timezone.utc).isoformat(timespec="seconds")}
+    return snap
+
+
+def read_history() -> list[dict]:
+    rows = []
+    for p in sorted(glob.glob(os.path.join(DATA, "history", "*.json"))):
+        try:
+            with open(p, encoding="utf-8") as fh:
+                d = json.load(fh)
+            s = d.get("summary", {})
+            rows.append({"date": os.path.basename(p)[:10], "equity": s.get("equity"), "cost_basis": s.get("cost_basis"),
+                         "unrealized": s.get("unrealized"), "cash": s.get("cash"), "realized": s.get("realized")})
+        except Exception:  # noqa: BLE001
+            continue
+    return rows
+
+
+def read_prices(sym: str) -> list:
+    sys.path.insert(0, ROOT)
+    from portfolio.prices import _read_csv, CACHE
+    p = os.path.join(ROOT, CACHE, f"{sym.upper()}.csv")
+    return _read_csv(p) if os.path.exists(p) else []
+
+
+def run_backtest(q: dict) -> dict:
+    sys.path.insert(0, ROOT)
+    from portfolio.backtest import run, STRATEGIES, LABELS
+    from portfolio.prices import load_prices
+    sym = (q.get("symbol") or ["MU"])[0].upper()
+    amount = float((q.get("amount") or ["500"])[0])
+    freq = (q.get("freq") or ["M"])[0]
+    start = (q.get("start") or ["2016-01-01"])[0]
+    prices = load_prices(sym, start, quiet=True)
+    res = []
+    for k in STRATEGIES:
+        r = run(prices, k, amount, freq)
+        r["label"] = LABELS[k]
+        r["curve"] = [(c[0], round(c[1], 2), round(c[2], 2)) for c in r["curve"][::max(1, len(r["curve"]) // 400)]]
+        res.append(r)
+    return {"symbol": sym, "amount": amount, "freq": freq, "results": res,
+            "price": [(d, v) for d, v in prices[::max(1, len(prices) // 400)]]}
+
+
+def refresh(no_orders: bool = False) -> None:
+    if STATE["refreshing"] or STATE["demo"]:
+        return
+    STATE["refreshing"] = True
+    try:
+        cmd = [sys.executable, "-m", "portfolio.robinhood_sync"] + (["--no-orders"] if no_orders else [])
+        out = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=600)
+        if out.returncode != 0:
+            STATE["last_error"] = (out.stderr or out.stdout)[-2000:]
+        else:
+            STATE["last_error"] = None
+            STATE["last_refresh"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    except Exception as e:  # noqa: BLE001
+        STATE["last_error"] = str(e)
+    finally:
+        STATE["refreshing"] = False
+
+
+def market_open_now() -> bool:
+    """Rough NYSE hours check in US/Eastern without pytz: Mon-Fri 9:30-16:00 ET."""
+    try:
+        from zoneinfo import ZoneInfo
+        now = datetime.now(ZoneInfo("America/New_York"))
+    except Exception:  # noqa: BLE001
+        now = datetime.now()
+    return now.weekday() < 5 and (9, 30) <= (now.hour, now.minute) < (16, 0)
+
+
+class Handler(SimpleHTTPRequestHandler):
+    def __init__(self, *a, **kw):
+        super().__init__(*a, directory=os.path.join(ROOT, "dashboard"), **kw)
+
+    def log_message(self, fmt, *args):  # quieter
+        if args and "/api/" in str(args[0]):
+            return
+        super().log_message(fmt, *args)
+
+    def _json(self, obj, code=200):
+        body = json.dumps(obj).encode()
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        u = urlparse(self.path)
+        if u.path == "/" or u.path == "/index.html":
+            self.path = "/index.html"
+            return super().do_GET()
+        if u.path == "/favicon.ico":
+            self.send_response(204); self.end_headers(); return
+        if u.path == "/api/snapshot":
+            return self._json(read_snapshot())
+        if u.path == "/api/history":
+            return self._json(read_history())
+        if u.path.startswith("/api/prices/"):
+            return self._json(read_prices(u.path.rsplit("/", 1)[1]))
+        if u.path == "/api/backtest":
+            try:
+                return self._json(run_backtest(parse_qs(u.query)))
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}"}, 500)
+        return super().do_GET()
+
+    def do_POST(self):
+        u = urlparse(self.path)
+        if u.path == "/api/refresh":
+            if STATE["demo"]:
+                return self._json({"ok": False, "error": "demo mode: no Robinhood refresh"})
+            threading.Thread(target=refresh, kwargs={"no_orders": "fast" in u.query}, daemon=True).start()
+            return self._json({"ok": True, "started": True})
+        self.send_error(404)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--port", type=int, default=8765)
+    ap.add_argument("--demo", action="store_true", help="serve data/portfolio/sample_snapshot.json")
+    ap.add_argument("--snapshot", help="path to a snapshot.json to serve")
+    ap.add_argument("--refresh", type=int, default=0, help="seconds between automatic Robinhood re-syncs (market hours only)")
+    ap.add_argument("--sync-now", action="store_true", help="run a Robinhood sync before serving")
+    args = ap.parse_args(argv)
+    if args.demo:
+        STATE["demo"] = True
+        STATE["snapshot_path"] = os.path.join(DATA, "sample_snapshot.json")
+        if not os.path.exists(STATE["snapshot_path"]):
+            subprocess.run([sys.executable, "-m", "portfolio.demo_data"], cwd=ROOT, check=True)
+    if args.snapshot:
+        STATE["snapshot_path"] = os.path.abspath(args.snapshot)
+    if args.sync_now:
+        refresh()
+    if args.refresh and not args.demo:
+        def loop():
+            while True:
+                time.sleep(args.refresh)
+                if market_open_now():
+                    refresh(no_orders=True)
+        threading.Thread(target=loop, daemon=True).start()
+    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    print(f"Dashboard: http://127.0.0.1:{args.port}/  (snapshot: {os.path.relpath(STATE['snapshot_path'], ROOT)}"
+          f"{', demo' if args.demo else ''}{f', auto-refresh {args.refresh}s' if args.refresh else ''})")
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        pass
+
+
+if __name__ == "__main__":
+    main()
