@@ -63,3 +63,18 @@ python -m ycharts_export.valuation --ticker MU --out reports/MU_intrinsic_value.
 
 For price history the backtester will also read any YCharts Timeseries export saved as `data/prices/<SYM>.csv` or `.xlsx`
 (date column + price/close column), which is the way to get total-return or very long histories in.
+
+## YCharts research engine
+
+With a YCharts API key (Account -> "Excel Add-in Access Key"), pull deep data for any ticker
+into a local cache and browse it in the dashboard's **Research** tab (a YCharts-style company
+page: key stats + metric charts).
+
+```bash
+export YCHARTS_API_KEY=your_key            # on your machine only; never commit it
+python -m ycharts_export.api --watchlist sl_model --portfolio   # 10 S&L ETFs + your holdings
+python -m dashboard.serve --open           # Research tab reads data/ycharts_cache/
+```
+
+Or just double-click **Pull YCharts (Mac).command**. Watchlists and the three model portfolios
+(de-risk / barbell / growth) live in `portfolio/watchlists.py`; `config/watchlists.json` is editable.

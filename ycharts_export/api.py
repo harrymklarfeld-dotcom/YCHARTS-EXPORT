@@ -58,8 +58,23 @@ def _client(api_key: str):
 
 
 def _unwrap(rsp: dict) -> dict:
-    """pycharts returns {'meta':..., 'response': {SYM: {metric: {'meta':..., 'data': ...}}}}."""
-    return (rsp or {}).get("response", rsp) or {}
+    """YCharts v2 nests: {'meta':.., 'response': {SYM: {'results': {calc: {'meta':.., 'data': [[date,val],..]}}}}}.
+    Some shapes drop the 'results' layer. Return {SYM: {calc: <blob>}} either way."""
+    resp = (rsp or {}).get("response", rsp) or {}
+    out = {}
+    for sym, sec in resp.items():
+        if isinstance(sec, dict) and "results" in sec and isinstance(sec["results"], dict):
+            out[sym] = sec["results"]
+        else:
+            out[sym] = sec if isinstance(sec, dict) else {}
+    return out
+
+
+def _blob_data(blob):
+    """A metric blob is {'data': [[date,val],...]} or the data list/pair itself."""
+    if isinstance(blob, dict):
+        return blob.get("data")
+    return blob
 
 
 def pull(tickers: list[str], api_key: str, years: int = 15,
@@ -67,14 +82,14 @@ def pull(tickers: list[str], api_key: str, years: int = 15,
     client = _client(api_key)
     series_metrics = series_metrics or SERIES_METRICS
     point_metrics = point_metrics or POINT_METRICS
-    start = (date.today() - timedelta(days=int(years * 365.25))).isoformat()
-    end = date.today().isoformat()
+    end_dt = datetime.now()
+    start_dt = end_dt - timedelta(days=int(years * 365.25))
     out = {}
     for i in range(0, len(tickers), 10):          # batch to be polite to the API
         batch = tickers[i:i + 10]
         try:
             s_rsp = _unwrap(client.get_series(batch, series_metrics,
-                                              query_start_date=start, query_end_date=end))
+                                              query_start_date=start_dt, query_end_date=end_dt))
         except Exception as e:  # noqa: BLE001
             print(f"series pull failed for {batch}: {e}", file=sys.stderr); s_rsp = {}
         try:
@@ -85,14 +100,19 @@ def pull(tickers: list[str], api_key: str, years: int = 15,
             rec = {"symbol": sym, "as_of": datetime.now().isoformat(timespec="seconds"),
                    "series": {}, "points": {}}
             for m, blob in (s_rsp.get(sym, {}) or {}).items():
-                data = blob.get("data") if isinstance(blob, dict) else blob
-                if data:
-                    rec["series"][m] = [[str(d)[:10], v] for d, v in data if v is not None]
+                data = _blob_data(blob)
+                if data and isinstance(data, (list, tuple)):
+                    pts = []
+                    for row in data:
+                        if isinstance(row, (list, tuple)) and len(row) == 2 and row[1] is not None:
+                            pts.append([str(row[0])[:10], row[1]])
+                    if pts:
+                        rec["series"][m] = pts
             for m, blob in (p_rsp.get(sym, {}) or {}).items():
-                data = blob.get("data") if isinstance(blob, dict) else blob
+                data = _blob_data(blob)
                 if isinstance(data, (list, tuple)) and len(data) == 2:
                     rec["points"][m] = {"date": str(data[0])[:10], "value": data[1]}
-                elif data is not None:
+                elif isinstance(data, (int, float)):
                     rec["points"][m] = {"value": data}
             out[sym] = rec
         time.sleep(sleep)

@@ -137,6 +137,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="perf">Performance</button>
   <button data-tab="trades">Trades &amp; income</button>
   <button data-tab="compare">Compare</button>
+  <button data-tab="research">Research</button>
   <button data-tab="backtest">Backtest</button>
 </nav>
 
@@ -186,6 +187,19 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
     <div class="legend" id="cmplegend"></div>
     <div id="cmpchart"></div>
     <p class="muted" style="font-size:12px">Each line rebased so you compare <em>performance</em>, not share price. This is how YCharts shows a comparison: pick a start, and everything starts together. Toggle a holding on or off by clicking its chip.</p>
+  </div>
+</section>
+<section class="panel" id="research">
+  <div class="card">
+    <h2>YCharts research <small id="rcsub">reads your local YCharts pull</small></h2>
+    <div id="rcempty" class="notice" hidden></div>
+    <div class="cmpsyms" id="rctickers"></div>
+    <div id="rcbody" hidden>
+      <div class="stats" id="rcstats"></div>
+      <div class="cmpbar"><div class="range" id="rcmetrics"></div></div>
+      <div class="legend" id="rclegend"></div>
+      <div id="rcchart"></div>
+    </div>
   </div>
 </section>
 <section class="panel" id="backtest">
@@ -552,6 +566,63 @@ $('#btform').onsubmit = async e => {
   } catch (err) { $('#bterr').textContent = err.message; $('#btchart').innerHTML = ''; }
 };
 
+// ---------- research (YCharts cache) ----------
+let rcSel = null, rcMetric = null, rcData = {};
+const RC_LABELS = {price:'Price', pe_ratio:'P/E', forward_pe_ratio:'Fwd P/E', ev_to_ebitda:'EV/EBITDA',
+  price_to_book_value:'P/B', price_to_sales_ratio:'P/S', peg_ratio:'PEG', dividend_yield:'Div yield %',
+  revenues:'Revenue', net_income:'Net income', eps_diluted:'EPS', free_cash_flow:'Free cash flow',
+  gross_profit_margin:'Gross margin %', operating_margin:'Operating margin %', profit_margin:'Net margin %',
+  return_on_equity:'ROE %', return_on_invested_capital:'ROIC %', total_debt:'Total debt',
+  cash_and_st_investments:'Cash & ST inv', shares_outstanding:'Shares out'};
+async function renderResearch() {
+  let idx;
+  try { idx = await apiGet('/api/research'); } catch (e) { idx = { tickers: [] }; }
+  const em = $('#rcempty');
+  if (!idx.tickers || !idx.tickers.length) {
+    em.hidden = false;
+    em.innerHTML = 'No YCharts data pulled yet. On your Mac, set your key and run <code>python -m ycharts_export.api --watchlist sl_model --portfolio</code>, then reload. This tab reads <code>' + (idx.cache_dir || 'data/ycharts_cache') + '</code>.';
+    $('#rctickers').innerHTML = ''; $('#rcbody').hidden = true; return;
+  }
+  em.hidden = true; $('#rcbody').hidden = false;
+  $('#rcsub').textContent = `${idx.count} tickers from YCharts`;
+  const syms = idx.tickers.map(t => t.symbol);
+  if (!rcSel || !syms.includes(rcSel)) rcSel = syms[0];
+  $('#rctickers').innerHTML = idx.tickers.map(t => `<span class="chip ${t.symbol === rcSel ? '' : 'off'}" data-s="${t.symbol}"><i style="background:var(--s1)"></i>${t.symbol}</span>`).join('');
+  $('#rctickers').querySelectorAll('.chip').forEach(c => c.onclick = () => { rcSel = c.dataset.s; rcMetric = null; drawResearch(); });
+  await drawResearch();
+}
+async function drawResearch() {
+  $('#rctickers').querySelectorAll('.chip').forEach(c => c.classList.toggle('off', c.dataset.s !== rcSel));
+  let rec = rcData[rcSel];
+  if (!rec) { try { rec = await apiGet('/api/research/' + rcSel); rcData[rcSel] = rec; } catch (e) { return; } }
+  if (rec.error) { $('#rcstats').innerHTML = `<div class="muted">${rec.error}</div>`; $('#rcchart').innerHTML = ''; $('#rcmetrics').innerHTML = ''; return; }
+  const pts = rec.points || {}, ser = rec.series || {};
+  const pv = k => { const v = pts[k]; return v && typeof v === 'object' ? v.value : v; };
+  const stat = (k, lab, fmt) => { const v = pv(k); return v == null ? '' : `<div>${lab}<b>${fmt(v)}</b></div>`; };
+  $('#rcstats').innerHTML = [
+    stat('price', 'Price', v => fmtM(v)), stat('market_cap', 'Market cap', v => fmtM(v)),
+    stat('pe_ratio', 'P/E', v => fmtN(v, 1)), stat('forward_pe_ratio', 'Fwd P/E', v => fmtN(v, 1)),
+    stat('price_to_book_value', 'P/B', v => fmtN(v, 1)), stat('dividend_yield', 'Div yield', v => fmtP(v, 2)),
+    stat('ev_to_ebitda', 'EV/EBITDA', v => fmtN(v, 1)), stat('beta_5y', 'Beta (5y)', v => fmtN(v, 2)),
+    stat('analyst_target_price_mean', 'Analyst target', v => fmtM(v)),
+    `<div>Metrics pulled<b>${Object.keys(ser).length}</b></div>`,
+    `<div>As of<b>${fmtT(rec.as_of)}</b></div>`,
+  ].join('');
+  const avail = Object.keys(ser).filter(m => ser[m] && ser[m].length > 1);
+  if (!rcMetric || !avail.includes(rcMetric)) rcMetric = avail.includes('price') ? 'price' : avail[0];
+  $('#rcmetrics').innerHTML = avail.map(m => `<button class="${m === rcMetric ? 'active' : ''}" data-m="${m}">${RC_LABELS[m] || m}</button>`).join('');
+  $('#rcmetrics').querySelectorAll('button').forEach(b => b.onclick = () => { rcMetric = b.dataset.m; drawResearch(); });
+  if (!rcMetric) { $('#rcchart').innerHTML = '<p class="muted">No time series in this record.</p>'; return; }
+  const rows = ser[rcMetric].map(r => [r[0], r[1]]);
+  const isPct = /margin|yield|roe|roic|return_on/.test(rcMetric);
+  $('#rclegend').innerHTML = `<span><i style="background:var(--s1)"></i>${rcSel} · ${RC_LABELS[rcMetric] || rcMetric}</span>`;
+  $('#rcchart').innerHTML = lineChart([{ name: RC_LABELS[rcMetric] || rcMetric, color: SERIES[0], pts: rows }],
+    { height: 320, area: true, fmt: v => isPct ? fmtP(v, 1) : (Math.abs(v) >= 1000 ? fmtM(v, 0) : fmtN(v, 2)) });
+  bindTips($('#rcchart'));
+}
+
+// ---------- research (YCharts cache) end ----------
+
 // ---------- SVG line chart with crosshair tooltip ----------
 function lineChart(series, opt = {}) {
   const W = 800, H = opt.height || 280, m = { t: 12, r: 16, b: 28, l: 64 };
@@ -615,7 +686,7 @@ function bindTips(root) {
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };

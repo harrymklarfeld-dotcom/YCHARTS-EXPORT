@@ -3,3 +3,4 @@ robin_stocks>=3.4.0      # Robinhood private API (portfolio.robinhood_sync)
 pyotp>=2.9               # only if your Robinhood login uses an authenticator app
 yfinance>=0.2.50         # daily prices for the backtester / CSV import pricing
 openpyxl>=3.1            # YCharts .xlsx exports
+pycharts>=0.1.5           # YCharts API client (needs a YCharts API key)

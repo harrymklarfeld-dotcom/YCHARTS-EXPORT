@@ -115,6 +115,38 @@ def ycharts_metric(sym, metric):
             "as_of": parsed.get("as_of"), "history": sorted(out)}
 
 
+YC_CACHE = os.path.join(ROOT, "data", "ycharts_cache")
+
+
+def list_research() -> dict:
+    """Summarize every ticker pulled from YCharts into the local cache."""
+    out = []
+    if os.path.isdir(YC_CACHE):
+        for fn in sorted(glob.glob(os.path.join(YC_CACHE, "*.json"))):
+            try:
+                with open(fn, encoding="utf-8") as fh:
+                    rec = json.load(fh)
+            except Exception:  # noqa: BLE001
+                continue
+            pts = rec.get("points", {})
+            def pv(k):
+                v = pts.get(k, {})
+                return v.get("value") if isinstance(v, dict) else v
+            out.append({"symbol": rec.get("symbol", os.path.basename(fn)[:-5]),
+                        "as_of": rec.get("as_of"), "price": pv("price"), "market_cap": pv("market_cap"),
+                        "pe_ratio": pv("pe_ratio"), "dividend_yield": pv("dividend_yield"),
+                        "n_series": len(rec.get("series", {}))})
+    return {"cache_dir": os.path.relpath(YC_CACHE, ROOT), "count": len(out), "tickers": out}
+
+
+def read_research(sym: str) -> dict:
+    fn = os.path.join(YC_CACHE, f"{sym.upper()}.json")
+    if not os.path.exists(fn):
+        return {"error": f"{sym} not in YCharts cache. Run: python -m ycharts_export.api {sym}"}
+    with open(fn, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
 def run_backtest(q: dict) -> dict:
     sys.path.insert(0, ROOT)
     from portfolio.backtest import run, STRATEGIES, LABELS
@@ -200,6 +232,10 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(read_all_prices(syms))
         if u.path.startswith("/api/prices/"):
             return self._json(read_prices(u.path.rsplit("/", 1)[1]))
+        if u.path == "/api/research":
+            return self._json(list_research())
+        if u.path.startswith("/api/research/"):
+            return self._json(read_research(u.path.rsplit("/", 1)[1]))
         if u.path == "/api/ycharts":
             q = parse_qs(u.query)
             try:
