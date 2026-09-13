@@ -48,6 +48,41 @@ POINT_METRICS = [
 ]
 
 
+def diagnose(api_key: str):
+    """Show the REAL reason for the 403: the response body, and whether raw endpoints/headers work.
+    YCharts' body usually says exactly why (not entitled / wrong metric / bad auth)."""
+    import urllib.request, urllib.error, json as _json
+    print("=== YCharts API diagnosis ===", file=sys.stderr)
+    # 1) let pycharts try, and surface the HTTPError body it hides
+    try:
+        c = _client(api_key)
+        c.get_points(["AAPL"], ["price"])
+        print("pycharts get_points succeeded (unexpected here).", file=sys.stderr)
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "replace")[:500]
+        print(f"pycharts -> HTTP {e.code} at {e.url}\n  body: {body}", file=sys.stderr)
+    except Exception as e:  # noqa: BLE001
+        print(f"pycharts -> {type(e).__name__}: {e}", file=sys.stderr)
+    # 2) raw calls to candidate v3 endpoints with the documented header, printing status + body
+    hdr_variants = [("X-YCHARTSAUTHORIZATION", api_key), ("Authorization", api_key),
+                    ("Authorization", f"Bearer {api_key}")]
+    urls = ["https://api.ycharts.com/v3/companies/AAPL/points/price",
+            "https://ycharts.com/api/v3/companies/AAPL/points/price"]
+    for url in urls:
+        for hname, hval in hdr_variants:
+            req = urllib.request.Request(url, headers={hname: hval, "Accept": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=20) as r:
+                    body = r.read().decode("utf-8", "replace")[:400]
+                    print(f"OK  {url}  [{hname}] -> {r.status}\n  {body}", file=sys.stderr)
+            except urllib.error.HTTPError as e:
+                body = e.read().decode("utf-8", "replace")[:400]
+                print(f"--  {url}  [{hname}] -> HTTP {e.code}\n  {body}", file=sys.stderr)
+            except Exception as e:  # noqa: BLE001
+                print(f"--  {url}  [{hname}] -> {type(e).__name__}: {e}", file=sys.stderr)
+    print("=== end diagnosis (send this whole block to Claude) ===", file=sys.stderr)
+
+
 def _client(api_key: str):
     try:
         from pycharts import CompanyClient
@@ -161,8 +196,11 @@ def main(argv=None):
         recs = pull(["AAPL"], key, years=1, series_metrics=["price"], point_metrics=["price", "pe_ratio"], sleep=0)
         r = recs.get("AAPL", {})
         n = len(r.get("series", {}).get("price", []))
-        print(f"Key works. AAPL: {n} price rows, points {r.get('points')}" if n or r.get("points")
-              else "Connected, but no data returned — check the metric IDs or your API entitlement.", file=sys.stderr)
+        if n or r.get("points"):
+            print(f"Key works. AAPL: {n} price rows, points {r.get('points')}", file=sys.stderr)
+        else:
+            print("No data via pycharts — running a deeper diagnosis to find the real reason:\n", file=sys.stderr)
+            diagnose(key)
         return 0
     tickers = list(args.tickers) + (portfolio_tickers() if args.portfolio else [])
     if args.watchlist:
