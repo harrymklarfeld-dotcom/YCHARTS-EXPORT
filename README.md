@@ -91,6 +91,20 @@ Books live in `data/paper/` (git-ignored). Each `mark` logs value, return, and a
 benchmark; a scheduled mark (cron, or double-click "Mark Paper Portfolios") builds an equity
 history to study. `python -m ycharts_export.api --probe` quick-tests your API key.
 
+## Fundamentals & macro (free, no YCharts key)
+
+Real company financials from SEC EDGAR + macro/volatility from FRED — the same source data YCharts
+repackages — powering a margin-of-safety gauge and a market-regime read:
+
+```bash
+python -m portfolio.edgar --portfolio --watchlist sl_model   # SEC filings -> data/fundamentals/
+python -m portfolio.macro                                    # VIX, dollar, 10y, credit -> data/macro/
+python -m portfolio.valuation_gauge --portfolio              # cheap / fair / expensive per holding
+```
+
+Or double-click **Update Data (Mac).command**. See it all on the dashboard's **Macro** tab
+(regime banner + indicators + margin-of-safety table). No API keys required.
+
 ## YCharts research engine
 
 Live YCharts numbers without the (Enterprise-only) REST API, by automating the Excel Add-in you

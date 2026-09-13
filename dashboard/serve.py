@@ -240,6 +240,20 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(read_all_prices(syms))
         if u.path.startswith("/api/prices/"):
             return self._json(read_prices(u.path.rsplit("/", 1)[1]))
+        if u.path == "/api/macro":
+            fp = os.path.join(ROOT, "data", "macro", "macro.json")
+            if os.path.exists(fp):
+                return self._json(json.load(open(fp, encoding="utf-8")))
+            return self._json({"error": "No macro data yet. Run: python -m portfolio.macro"})
+        if u.path == "/api/valuation":
+            try:
+                sys.path.insert(0, ROOT)
+                from portfolio.valuation_gauge import gauge
+                snap = read_snapshot()
+                syms = [h["symbol"] for h in snap.get("holdings", [])]
+                return self._json({"results": [gauge(x) for x in syms]})
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}", "results": []})
         if u.path == "/api/research":
             return self._json(list_research())
         if u.path.startswith("/api/research/"):

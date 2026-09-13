@@ -105,6 +105,14 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
 form.bt{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:12px}
 form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-transform:uppercase;letter-spacing:.05em}
 .err{color:var(--bad);font-size:12px}
+.regime{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--surface-2)}
+.regime .lb{font-size:22px;font-weight:700}
+.regime .sc{font-size:12px;color:var(--ink-2)}
+.regime.off{border-color:var(--bad)} .regime.on{border-color:var(--good)} .regime.caut{border-color:var(--warn)}
+.pillv{font-family:inherit;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px}
+.pillv.cheap{background:color-mix(in srgb,var(--good) 20%,transparent);color:var(--good)}
+.pillv.fair{background:var(--surface-2);color:var(--ink-2)}
+.pillv.exp{background:color-mix(in srgb,var(--bad) 20%,transparent);color:var(--bad)}
 .footer{font-size:11px;color:var(--ink-3);margin-top:20px}
 </style>
 
@@ -138,6 +146,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="trades">Trades &amp; income</button>
   <button data-tab="compare">Compare</button>
   <button data-tab="research">Research</button>
+  <button data-tab="macro">Macro</button>
   <button data-tab="backtest">Backtest</button>
 </nav>
 
@@ -201,6 +210,15 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
       <div id="rcchart"></div>
     </div>
   </div>
+</section>
+<section class="panel" id="macro">
+  <div class="card">
+    <h2>Market regime <small id="mrsub">volatility, dollar, rates, credit — free via FRED</small></h2>
+    <div id="mrbanner"></div>
+    <div class="tiles" id="mrtiles" style="margin-top:12px"></div>
+  </div>
+  <div class="card"><h2>Margin of safety <small>cheap / fair / expensive, from SEC filings</small></h2>
+    <div class="tbl" id="mvtable"></div></div>
 </section>
 <section class="panel" id="backtest">
   <div class="card">
@@ -623,6 +641,31 @@ async function drawResearch() {
 
 // ---------- research (YCharts cache) end ----------
 
+// ---------- macro regime + margin of safety ----------
+async function renderMacro() {
+  let m; try { m = await apiGet('/api/macro'); } catch (e) { m = { error: 'offline' }; }
+  const b = $('#mrbanner');
+  if (m.error) { b.innerHTML = `<div class="notice">${m.error}. On your Mac run <code>python3 -m portfolio.macro</code> (free, no key).</div>`; $('#mrtiles').innerHTML = ''; }
+  else {
+    const cls = m.regime === 'Risk-OFF' ? 'off' : m.regime === 'Risk-ON' ? 'on' : m.regime === 'Leaning cautious' ? 'caut' : '';
+    b.innerHTML = `<div class="regime ${cls}"><span class="lb ${m.regime==='Risk-OFF'?'down':m.regime==='Risk-ON'?'up':''}">${m.regime}</span><span class="sc">risk score ${m.score} &middot; as of ${fmtD(m.as_of)}${(m.flags||[]).length ? ' &middot; ' + m.flags.join('; ') : ''}</span></div>`;
+    const S = m.series || {};
+    $('#mrtiles').innerHTML = Object.keys(S).map(k => { const s = S[k]; if (s.error) return '';
+      const spark = s.history ? sparkline(s.history.map(r => [r[0], r[1]]), 260, 120, 30) : '';
+      return `<div class="tile"><div class="k">${s.label}</div><div class="v">${fmtN(s.last, 2)}</div><div class="d ${cls2(s.chg_1m)}">${s.chg_1m>=0?'+':''}${fmtN(s.chg_1m,2)} 1m &middot; ${fmtP(s.pctile_1y,0)} of 1y</div>${spark}</div>`;
+    }).join('');
+  }
+  let v; try { v = await apiGet('/api/valuation'); } catch (e) { v = { results: [] }; }
+  const rs = (v.results || []).filter(r => r);
+  $('#mvtable').innerHTML = rs.length ? `<table><thead><tr><th>Symbol</th><th>Price</th><th>Verdict</th><th>Margin of safety</th><th>Current P/E</th><th>FCF yield</th><th>P/B</th></tr></thead><tbody>` +
+    rs.map(r => { if (r.error) return `<tr><td class="sym">${r.ticker}</td><td colspan="6" class="muted">${r.error}</td></tr>`;
+      const e = (r.lenses||{}).earnings||{}, fc=(r.lenses||{}).fcf||{}, bk=(r.lenses||{}).book||{};
+      const cl = r.verdict==='Cheap'?'cheap':r.verdict==='Expensive'?'exp':'fair';
+      return `<tr><td class="sym">${r.ticker}</td><td>${fmtM(r.price)}</td><td><span class="pillv ${cl}">${r.verdict}</span></td><td class="${cls(r.blended_margin_pct)}">${r.blended_margin_pct==null?'--':fmtP(r.blended_margin_pct,0,true)}</td><td>${e.current_pe?fmtN(e.current_pe,1):'--'}</td><td>${fc.fcf_yield_pct?fmtP(fc.fcf_yield_pct,1):'--'}</td><td>${bk.pb?fmtN(bk.pb,1)+'x':'--'}</td></tr>`;
+    }).join('') + '</tbody></table>' : '<p class="muted">No fundamentals yet. On your Mac run <code>python3 -m portfolio.edgar --portfolio</code> then reload.</p>';
+}
+function cls2(v){return v>0?'up':v<0?'down':'';}
+
 // ---------- SVG line chart with crosshair tooltip ----------
 function lineChart(series, opt = {}) {
   const W = 800, H = opt.height || 280, m = { t: 12, r: 16, b: 28, l: 64 };
@@ -686,7 +729,7 @@ function bindTips(root) {
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'macro') renderMacro(); });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };
