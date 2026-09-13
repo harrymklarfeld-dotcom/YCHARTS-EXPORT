@@ -24,3 +24,6 @@ data/events/
 data/fundamentals/
 data/macro/
 data/paper/
+# YCharts explorer: your login cookies and captured pages stay local
+data/.ycharts_profile/
+research/ycharts_capture/
