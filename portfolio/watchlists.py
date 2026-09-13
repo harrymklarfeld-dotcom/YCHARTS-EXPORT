@@ -39,6 +39,26 @@ SL_MODEL = [
      "role": "floating-rate T-bills, cash-like ~0 beta, dry powder", "sp_corr": "none", "issuer": "WisdomTree"},
 ]
 
+MODEL_PORTFOLIOS = {
+    "de_risk": {"label": "De-Risk (conservative hedge)", "beta": 0.75,
+                "weights": {"VOO":48,"AAPL":6,"NVDA":6,"MU":4,"XLV":5,"XLE":3,"SDCI":8,"USFR":8,"GLD":6,"USAI":3,"CASH":3}},
+    "barbell":  {"label": "Barbell (balanced, recommended)", "beta": 0.90,
+                "weights": {"VOO":46,"NVDA":9,"AAPL":8,"MU":6,"XAR":5,"PATN":4,"IAI":3,"XLV":5,"XLE":3,"SDCI":5,"USFR":3,"GLD":3}},
+    "growth_dc": {"label": "Growth, de-concentrated (aggressive)", "beta": 1.05,
+                "weights": {"VOO":40,"NVDA":11,"MU":8,"AAPL":7,"QQQ":4,"PATN":6,"XAR":5,"IAI":4,"PAVE":3,"XLV":3,"SDCI":5,"USFR":4}},
+}
+
+SEMI = {"MU","NVDA","AVGO","SMH"}
+TRUE_HEDGE = {"SDCI","USFR","GLD","USAI"}
+
+
+def model_exposures(name):
+    w = MODEL_PORTFOLIOS[name]["weights"]
+    return {"semi": sum(v for k,v in w.items() if k in SEMI),
+            "hedge": sum(v for k,v in w.items() if k in TRUE_HEDGE),
+            "core": w.get("VOO",0)}
+
+
 WATCHLISTS = {
     "sl_model": SL_MODEL,
     "sl_model_tickers": [x["ticker"] for x in SL_MODEL],
