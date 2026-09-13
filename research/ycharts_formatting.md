@@ -51,3 +51,25 @@ The honest gap is **metric history at scale**. YCharts' edge is that every one o
 * Metric library scale, ~4,000 metrics / 100k securities / 500k economic indicators, ~30 years of history (https://get.ycharts.com/platform/data/).
 * Company-page tabs (Key Stats, Financials, Fundamental Chart, Multichart, Valuation) (https://ycharts.com/companies/KEY/multichart, https://get.ycharts.com/platform/tools/).
 * Chart types incl. line, area, OHLC/candlestick (https://get.ycharts.com/resources/blog/new-on-ycharts-technical-charts/).
+
+## Update: the API route (Sept 2026)
+
+YCharts ships an official Python client, **pycharts** (`github.com/ycharts/pycharts`), keyed by an API key:
+
+```python
+from pycharts import CompanyClient
+client = CompanyClient(API_KEY)
+client.get_series(['MU','NVDA'], ['price','pe_ratio','free_cash_flow'], query_start_date=..., query_end_date=...)
+client.get_points(['MU'], ['market_cap','analyst_target_price_mean'])
+```
+
+`ycharts_export/api.py` wraps this into the project's data layer: it reads `YCHARTS_API_KEY`
+from the environment (on your machine only), pulls a research metric set for a list of
+tickers, and writes `data/ycharts_cache/<TICKER>.json` plus a flat `data/prices/<TICKER>.csv`
+that the dashboard and backtester already read. The research agents read the cache, so YCharts
+is hit once, in one place, with credentials that never leave the machine.
+
+**Access caveat:** the API key is a YCharts **API/Enterprise** entitlement. A standard login or
+Professional seat includes the Excel Add-in but not always the REST key. Check Account → API,
+or ask your YCharts rep. If there's no key, the Excel Add-in / Timeseries export route above
+produces the same `data/prices/` and statement files, just manually.

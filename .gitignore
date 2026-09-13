@@ -12,3 +12,8 @@ data/prices/*
 .tokens/
 *.pickle
 .env
+# personal financial output stays local (this repo is public)
+reports/portfolio_analysis_*.md
+reports/data_check_*.md
+reports/replay*.md
+data/ycharts_cache/
