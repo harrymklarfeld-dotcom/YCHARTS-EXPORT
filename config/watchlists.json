@@ -31,5 +31,13 @@
     "VYM",
     "DBMF",
     "BIL"
+  ],
+  "macro": [
+    "^VIX",
+    "DX-Y.NYB",
+    "^TNX",
+    "GLD",
+    "USO",
+    "HYG"
   ]
 }

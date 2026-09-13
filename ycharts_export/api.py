@@ -147,6 +147,7 @@ def main(argv=None):
     ap.add_argument("tickers", nargs="*")
     ap.add_argument("--portfolio", action="store_true", help="pull every ticker in your snapshot")
     ap.add_argument("--watchlist", help="pull a named watchlist (e.g. sl_model) from portfolio.watchlists / config/watchlists.json")
+    ap.add_argument("--probe", action="store_true", help="quick key test: pull price+P/E for AAPL only, print result")
     ap.add_argument("--years", type=int, default=15)
     ap.add_argument("--metrics", help="comma-separated series metrics (default: the research set)")
     ap.add_argument("--key", default=None, help="API key (else $YCHARTS_API_KEY)")
@@ -156,6 +157,13 @@ def main(argv=None):
         sys.exit("No API key. Set it on your machine:  export YCHARTS_API_KEY=...\n"
                  "If your YCharts plan has no API key, use the Excel Add-in export route instead "
                  "(see research/ycharts_formatting.md).")
+    if args.probe:
+        recs = pull(["AAPL"], key, years=1, series_metrics=["price"], point_metrics=["price", "pe_ratio"], sleep=0)
+        r = recs.get("AAPL", {})
+        n = len(r.get("series", {}).get("price", []))
+        print(f"Key works. AAPL: {n} price rows, points {r.get('points')}" if n or r.get("points")
+              else "Connected, but no data returned — check the metric IDs or your API entitlement.", file=sys.stderr)
+        return 0
     tickers = list(args.tickers) + (portfolio_tickers() if args.portfolio else [])
     if args.watchlist:
         from portfolio.watchlists import load_user

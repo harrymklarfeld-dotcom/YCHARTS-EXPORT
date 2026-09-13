@@ -77,6 +77,20 @@ Win rate, profit factor, expectancy per trade, max drawdown, time in market, and
 holding. Most setups lose to buy-and-hold on trending names — which is exactly what backtesting is
 for. Indicators are close-based; ATR is a close-to-close proxy, VWAP needs volume (from YCharts).
 
+## Paper-trading simulator
+
+Forward-test a model portfolio with no real money and watch the basis over time:
+
+```bash
+python -m portfolio.paper new barbell --capital 10000     # open a paper book on the Barbell model
+python -m portfolio.paper mark                            # log a snapshot (schedule this to build history)
+python -m portfolio.paper report barbell                 # value, return, vs benchmark, alpha, history
+```
+
+Books live in `data/paper/` (git-ignored). Each `mark` logs value, return, and alpha vs the
+benchmark; a scheduled mark (cron, or double-click "Mark Paper Portfolios") builds an equity
+history to study. `python -m ycharts_export.api --probe` quick-tests your API key.
+
 ## YCharts research engine
 
 With a YCharts API key (Account -> "Excel Add-in Access Key"), pull deep data for any ticker
