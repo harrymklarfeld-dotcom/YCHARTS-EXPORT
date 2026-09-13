@@ -12,5 +12,12 @@ echo "Pulling SEC filings for your holdings + the S&L model..."
 python3 -m portfolio.edgar --portfolio --watchlist sl_model
 python3 -m portfolio.valuation_gauge --portfolio -o reports/valuation.md 2>/dev/null
 echo
-echo "Opening the dashboard — see the Macro tab."
+echo "Building the ETF quote pages for the S&L hedge sleeve (holdings, risk, overlap)..."
+python3 -m portfolio.etf_profile --all
+echo
+echo "Running the hedge-strategy diagnostics (beta, correlation, stress tests)..."
+python3 -m portfolio.hedge_strategy --diagnose --build
+python3 -m portfolio.hedge_strategy --json reports/hedge_strategy.json 2>/dev/null
+echo
+echo "Opening the dashboard — see the ETF profile and Macro tabs."
 python3 -m dashboard.serve --refresh 300 --open

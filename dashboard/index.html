@@ -145,6 +145,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="perf">Performance</button>
   <button data-tab="trades">Trades &amp; income</button>
   <button data-tab="compare">Compare</button>
+  <button data-tab="etf">ETF profile</button>
   <button data-tab="research">Research</button>
   <button data-tab="macro">Macro</button>
   <button data-tab="live">Live 24/7</button>
@@ -197,6 +198,43 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
     <div class="legend" id="cmplegend"></div>
     <div id="cmpchart"></div>
     <p class="muted" style="font-size:12px">Each line rebased so you compare <em>performance</em>, not share price. This is how YCharts shows a comparison: pick a start, and everything starts together. Toggle a holding on or off by clicking its chip.</p>
+  </div>
+</section>
+<section class="panel" id="etf">
+  <div class="card">
+    <h2>ETF quote page <small id="etfsub">YCharts-style fund research — the S&amp;L hedge sleeve</small></h2>
+    <div id="etfempty" class="notice" hidden></div>
+    <div class="cmpsyms" id="etftickers"></div>
+  </div>
+  <div id="etfbody" hidden>
+    <div class="card">
+      <div id="etfhead"></div>
+      <div class="range" id="etfrange" style="margin-top:10px"></div>
+      <div id="etfchart"></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h2>Key stats</h2><div class="stats" id="etfstats"></div></div>
+      <div class="card"><h2>Risk <small>vs S&amp;P 500, from daily returns</small></h2><div class="stats" id="etfrisk"></div></div>
+    </div>
+    <div class="card"><h2>Trailing returns <small>annualized beyond 1Y</small></h2>
+      <div id="etfrets" class="rets"></div>
+      <div class="tbl" id="etfperf" style="margin-top:12px"></div>
+    </div>
+    <div class="card"><h2>Annual returns <small>calendar-year total return</small></h2><div id="etfannual"></div></div>
+    <div class="grid2">
+      <div class="card"><h2>Asset allocation</h2><div id="etfalloc"></div></div>
+      <div class="card"><h2>Sector weightings</h2><div id="etfsectors"></div></div>
+    </div>
+    <div class="card"><h2>Top 10 holdings</h2><div class="tbl" id="etfholdings"></div></div>
+    <div class="card"><h2>Holdings overlap <small>shared-weight vs another fund</small></h2>
+      <div class="cmpbar"><div>Compare <select id="etfovsel"></select> against this fund</div><div id="etfovhdr" class="muted"></div></div>
+      <div class="tbl" id="etfoverlap"></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h2>TTM distributions</h2><div id="etfdist"></div></div>
+      <div class="card"><h2>Basic info &amp; strategy</h2><div id="etfinfo"></div></div>
+    </div>
+    <div class="card"><h2>News</h2><div id="etfnews"></div></div>
   </div>
 </section>
 <section class="panel" id="research">
@@ -604,6 +642,7 @@ $('#btform').onsubmit = async e => {
 
 // ---------- research (YCharts cache) ----------
 let rcSel = null, rcMetric = null, rcData = {};
+let etfSel = null, etfData = {}, etfRange = 'all', etfOv = null, etfModel = [];
 const RC_LABELS = {price:'Price', pe_ratio:'P/E', forward_pe_ratio:'Fwd P/E', ev_to_ebitda:'EV/EBITDA',
   price_to_book_value:'P/B', price_to_sales_ratio:'P/S', peg_ratio:'PEG', dividend_yield:'Div yield %',
   revenues:'Revenue', net_income:'Net income', eps_diluted:'EPS', free_cash_flow:'Free cash flow',
@@ -658,6 +697,180 @@ async function drawResearch() {
 }
 
 // ---------- research (YCharts cache) end ----------
+
+// ---------- ETF quote page (YCharts-style) ----------
+const ETF_RANGES = { '1Y': 252, '3Y': 756, 'all': 1e9 };
+const ALLOC_LABEL = { stockPosition: 'Stocks', bondPosition: 'Bonds', cashPosition: 'Cash',
+  commodityPosition: 'Commodities', preferredPosition: 'Preferred', convertiblePosition: 'Convertible',
+  otherPosition: 'Other' };
+const SECTOR_LABEL = { realestate: 'Real estate', consumer_cyclical: 'Consumer cyclical', basic_materials: 'Materials',
+  consumer_defensive: 'Consumer defensive', technology: 'Technology', communication_services: 'Communications',
+  financial_services: 'Financials', utilities: 'Utilities', industrials: 'Industrials', energy: 'Energy',
+  healthcare: 'Healthcare' };
+const titleCase = s => (s || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+function weightBars(obj, labels) {
+  const ents = Object.entries(obj || {}).filter(([, v]) => v != null).sort((a, b) => b[1] - a[1]);
+  if (!ents.length) return '<p class="muted">Not reported by the data source. Rebuild on your Mac with <code>python -m portfolio.etf_profile ' + (etfSel || 'SMH') + '</code>.</p>';
+  const max = Math.max(...ents.map(e => e[1]));
+  return '<div class="stats" style="grid-template-columns:1fr;gap:6px">' + ents.map(([k, v]) =>
+    `<div style="display:grid;grid-template-columns:150px 1fr 60px;align-items:center;gap:8px;color:var(--ink)">
+       <span style="font-size:13px">${(labels && labels[k]) || titleCase(k)}</span>
+       <span class="bar" style="width:${Math.max(2, v / max * 100)}%;background:var(--s1)"></span>
+       <b style="text-align:right;font-variant-numeric:tabular-nums">${fmtP(v, 1)}</b>
+     </div>`).join('') + '</div>';
+}
+
+async function renderETF() {
+  let idx;
+  try { idx = await apiGet('/api/etf'); } catch (e) { idx = { model: [], cached: [] }; }
+  etfModel = idx.model || [];
+  const roster = etfModel.length ? etfModel : (idx.cached || []).map(t => ({ ticker: t, cached: true }));
+  const em = $('#etfempty');
+  if (!roster.length) {
+    em.hidden = false; em.innerHTML = 'No fund profiles yet. On your Mac run <code>python -m portfolio.etf_profile --all</code>, then reload.';
+    $('#etftickers').innerHTML = ''; $('#etfbody').hidden = true; return;
+  }
+  em.hidden = true;
+  const syms = roster.map(t => t.ticker);
+  if (!etfSel || !syms.includes(etfSel)) etfSel = (roster.find(t => t.cached) || roster[0]).ticker;
+  $('#etftickers').innerHTML = roster.map(t =>
+    `<span class="chip ${t.ticker === etfSel ? '' : 'off'}" data-s="${t.ticker}" title="${t.role || ''}">
+       <i style="background:${t.cached ? 'var(--s3)' : 'var(--ink-3)'}"></i>${t.ticker}</span>`).join('');
+  $('#etftickers').querySelectorAll('.chip').forEach(c => c.onclick = () => { etfSel = c.dataset.s; drawETF(); });
+  await drawETF();
+}
+
+async function drawETF() {
+  $('#etftickers').querySelectorAll('.chip').forEach(c => c.classList.toggle('off', c.dataset.s !== etfSel));
+  let p = etfData[etfSel];
+  if (!p) { try { p = await apiGet('/api/etf/' + etfSel); etfData[etfSel] = p; } catch (e) { p = { error: 'offline' }; } }
+  const body = $('#etfbody');
+  if (!p || p.error) {
+    body.hidden = false;
+    $('#etfhead').innerHTML = `<div class="notice">Couldn't load ${etfSel}. Build it on your Mac: <code>python -m portfolio.etf_profile ${etfSel}</code>.</div>`;
+    ['etfstats','etfrisk','etfrets','etfperf','etfannual','etfalloc','etfsectors','etfholdings','etfoverlap','etfdist','etfinfo','etfnews'].forEach(id => $('#' + id).innerHTML = '');
+    $('#etfchart').innerHTML = ''; $('#etfrange').innerHTML = ''; return;
+  }
+  body.hidden = false;
+  const pr = p.price || {}, ks = p.key_stats || {}, rk = p.risk || {};
+  // header
+  const chg = pr.change_pct;
+  $('#etfhead').innerHTML =
+    `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
+       <div><div style="font-size:22px;font-weight:700">${p.ticker} <span class="muted" style="font-size:14px;font-weight:400">${p.name || ''}</span></div>
+         <div class="muted" style="font-size:12px">${[ks.category, p.info && p.info.issuer, 'as of ' + fmtD(p.as_of)].filter(Boolean).join(' · ')}</div></div>
+       <div style="text-align:right">
+         <div style="font-size:26px;font-weight:650">${pr.last == null ? '--' : fmtM(pr.last)}</div>
+         <div class="${cls(chg)}" style="font-size:13px">${pr.change == null ? '' : fmtSign(pr.change) + ' (' + fmtP(chg, 2, true) + ')'}</div>
+         <div class="muted" style="font-size:12px">52wk ${pr.year_low == null ? '--' : fmtN(pr.year_low, 2)} – ${pr.year_high == null ? '--' : fmtN(pr.year_high, 2)}</div>
+       </div></div>`;
+  // price chart with range buttons
+  $('#etfrange').innerHTML = Object.keys(ETF_RANGES).map(r => `<button class="${r === etfRange ? 'active' : ''}" data-r="${r}">${r}</button>`).join('');
+  $('#etfrange').querySelectorAll('button').forEach(b => b.onclick = () => { etfRange = b.dataset.r; drawETFChart(p); });
+  drawETFChart(p);
+  // key stats
+  const st = (lab, v, mut) => v == null || v === '' ? '' : `<div>${lab}<b>${v}</b>${mut ? `<span class="muted">${mut}</span>` : ''}</div>`;
+  $('#etfstats').innerHTML = [
+    st('Expense ratio', ks.expense_ratio == null ? null : fmtP(ks.expense_ratio, 2)),
+    st('AUM', ks.aum == null ? null : fmtM(ks.aum, 0)),
+    st('Avg volume', ks.avg_volume == null ? null : fmtN(ks.avg_volume, 0)),
+    st('Dividend yield', ks.dividend_yield == null ? null : fmtP(ks.dividend_yield, 2)),
+    st('NAV', ks.nav == null ? null : fmtM(ks.nav)),
+    st('Beta (3y)', ks.beta_3y == null ? null : fmtN(ks.beta_3y, 2)),
+    st('Trailing P/E', ks.trailing_pe == null ? null : fmtN(ks.trailing_pe, 1)),
+    st('Turnover', ks.turnover == null ? null : fmtP(ks.turnover * 100, 0)),
+    st('Inception', ks.inception ? fmtD(ks.inception) : null),
+    st('Category', ks.category || null),
+  ].join('') || '<div class="muted">No fund metadata. Rebuild on your Mac to pull it from yfinance.</div>';
+  // risk
+  $('#etfrisk').innerHTML = [
+    st('Alpha (ann.)', rk.alpha_pct == null ? null : fmtP(rk.alpha_pct, 1, true)),
+    st('Beta', rk.beta == null ? null : fmtN(rk.beta, 2)),
+    st('Std dev (ann.)', rk.vol_pct == null ? null : fmtP(rk.vol_pct, 1)),
+    st('Sharpe', rk.sharpe == null ? null : fmtN(rk.sharpe, 2)),
+    st('Sortino', rk.sortino == null ? null : fmtN(rk.sortino, 2)),
+    st('Value at risk (5%)', rk.var5_pct == null ? null : fmtP(rk.var5_pct, 1)),
+    st('Max drawdown', rk.max_drawdown_pct == null ? null : fmtP(rk.max_drawdown_pct, 1)),
+    st('History', rk.start ? fmtD(rk.start) + ' →' : null),
+  ].join('');
+  // trailing returns tiles
+  const tr = rk.trailing || {};
+  const order = ['1M', '3M', '6M', 'YTD', '1Y', '3Y', '5Y', '10Y'];
+  $('#etfrets').innerHTML = order.filter(k => tr[k] != null).map(k =>
+    `<div class="ret"><div class="p">${k}</div><div class="n ${cls(tr[k])}">${fmtP(tr[k], 1, true)}</div></div>`).join('');
+  // performance vs S&P / category
+  const vs = (p.performance || {}).vs || {}, sp = (vs.sp500 || {}).trailing || {}, cat = (vs.category || {}).trailing || {};
+  const cols = order.filter(k => tr[k] != null || sp[k] != null || cat[k] != null);
+  const rowP = (lab, o) => `<tr><td class="sym">${lab}</td>` + cols.map(k => `<td class="${cls(o[k])}">${o[k] == null ? '--' : fmtP(o[k], 1, true)}</td>`).join('') + '</tr>';
+  $('#etfperf').innerHTML = `<table><thead><tr><th>Total return</th>${cols.map(k => `<th>${k}</th>`).join('')}</tr></thead><tbody>` +
+    rowP(p.ticker, tr) + rowP('S&P 500 (' + ((vs.sp500 || {}).symbol || 'SPY') + ')', sp) +
+    ((vs.category || {}).symbol && (vs.category || {}).symbol !== (vs.sp500 || {}).symbol ? rowP('Category (' + vs.category.symbol + ')', cat) : '') +
+    '</tbody></table>';
+  // annual returns
+  const an = p.annual_returns || {}, yrs = Object.keys(an).sort();
+  $('#etfannual').innerHTML = yrs.length ? '<div class="rets" style="grid-template-columns:repeat(' + Math.min(yrs.length, 8) + ',1fr)">' +
+    yrs.map(y => `<div class="ret"><div class="p">${y}</div><div class="n ${cls(an[y])}">${fmtP(an[y], 1, true)}</div></div>`).join('') + '</div>'
+    : '<p class="muted">no data</p>';
+  // allocation + sectors
+  $('#etfalloc').innerHTML = weightBars(p.asset_allocation, ALLOC_LABEL);
+  $('#etfsectors').innerHTML = weightBars(p.sector_weightings, SECTOR_LABEL);
+  // holdings
+  const th = p.top_holdings || [];
+  $('#etfholdings').innerHTML = th.length ? '<table><thead><tr><th>Symbol</th><th>Name</th><th>Weight</th></tr></thead><tbody>' +
+    th.map(h => `<tr><td class="sym">${h.symbol}</td><td style="text-align:left;color:var(--ink-2)">${h.name || ''}</td><td>${h.weight_pct == null ? '--' : fmtP(h.weight_pct, 2)}</td></tr>`).join('') +
+    '</tbody></table>' : '<p class="muted">Holdings not reported. Rebuild on your Mac to pull them from yfinance.</p>';
+  // overlap picker — default to another *built* fund so the comparison has data
+  const others = etfModel.map(t => t.ticker).filter(t => t !== etfSel);
+  const builtOthers = etfModel.filter(t => t.cached && t.ticker !== etfSel).map(t => t.ticker);
+  if (!etfOv || etfOv === etfSel || !others.includes(etfOv)) etfOv = builtOthers[0] || others[0] || null;
+  $('#etfovsel').innerHTML = others.map(t => `<option value="${t}" ${t === etfOv ? 'selected' : ''}>${t}</option>`).join('');
+  $('#etfovsel').onchange = e => { etfOv = e.target.value; drawOverlap(); };
+  drawOverlap();
+  // distributions
+  const d = p.distributions || {};
+  $('#etfdist').innerHTML = (d.ttm != null || (d.recent || []).length)
+    ? `<div class="stats"><div>TTM distributions<b>${d.ttm == null ? '--' : '$' + fmtN(d.ttm, 4)}</b></div>
+        <div>TTM yield on price<b>${d.ttm != null && pr.last ? fmtP(d.ttm / pr.last * 100, 2) : '--'}</b></div></div>` +
+      ((d.recent || []).length ? '<table style="margin-top:6px"><thead><tr><th>Ex-date</th><th>Amount</th></tr></thead><tbody>' +
+        d.recent.slice().reverse().map(r => `<tr><td class="sym">${fmtD(r.date)}</td><td>$${fmtN(r.amount, 4)}</td></tr>`).join('') + '</tbody></table>' : '')
+    : '<p class="muted">No distribution history reported.</p>';
+  // info + strategy
+  const inf = p.info || {};
+  $('#etfinfo').innerHTML =
+    `<div class="stats">${[['Issuer', inf.issuer], ['Legal type', inf.legal_type], ['Category', inf.category], ['Exchange', inf.exchange], ['Currency', inf.currency]].filter(x => x[1]).map(x => `<div>${x[0]}<b>${x[1]}</b></div>`).join('')}</div>` +
+    (p.strategy ? `<p style="font-size:13px;color:var(--ink-2);margin:8px 0 0">${p.strategy}</p>` : '');
+  // news
+  const nw = p.news || [];
+  $('#etfnews').innerHTML = nw.length ? nw.map(n =>
+    `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
+       <a href="${n.link || '#'}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:500">${n.title}</a>
+       <div class="muted" style="font-size:12px">${[n.publisher, n.date ? fmtT(n.date) : ''].filter(Boolean).join(' · ')}</div></div>`).join('')
+    : '<p class="muted">No recent headlines pulled.</p>';
+}
+
+function drawETFChart(p) {
+  const hist = (p.history || []).slice(-ETF_RANGES[etfRange]).map(r => [r[0], r[1]]);
+  $('#etfchart').innerHTML = hist.length > 1
+    ? lineChart([{ name: p.ticker, color: SERIES[0], pts: hist }], { height: 260, area: true, fmt: v => fmtM(v) })
+    : '<p class="muted">no price history</p>';
+  bindTips($('#etfchart'));
+}
+
+async function drawOverlap() {
+  const box = $('#etfoverlap'), hdr = $('#etfovhdr');
+  if (!etfOv) { box.innerHTML = '<p class="muted">Need a second fund to compare.</p>'; hdr.textContent = ''; return; }
+  let o;
+  try { o = await apiGet('/api/overlap?a=' + etfSel + '&b=' + etfOv); } catch (e) { o = { error: 'offline' }; }
+  if (!o || o.error) { box.innerHTML = `<p class="muted">Build both funds on your Mac first: <code>python -m portfolio.etf_profile ${etfSel} ${etfOv}</code>.</p>`; hdr.textContent = ''; return; }
+  hdr.innerHTML = `<b style="color:var(--ink)">${fmtP(o.weight_overlap_pct, 1)}</b> weight overlap · ${o.shared_count} shared name${o.shared_count === 1 ? '' : 's'}`;
+  box.innerHTML = (o.shared || []).length
+    ? `<table><thead><tr><th>Shared holding</th><th>${etfSel}</th><th>${etfOv}</th><th>Min (overlap)</th></tr></thead><tbody>` +
+      o.shared.map(s => `<tr><td class="sym">${s.symbol}</td><td>${fmtP(s.weight_a, 2)}</td><td>${fmtP(s.weight_b, 2)}</td><td><b>${fmtP(s.min, 2)}</b></td></tr>`).join('') +
+      `<tr class="total"><td>Total weight overlap</td><td></td><td></td><td>${fmtP(o.weight_overlap_pct, 2)}</td></tr></tbody></table>
+       <p class="muted" style="font-size:12px;margin-top:6px">${o.note || ''}</p>`
+    : `<p class="muted">No shared names in the top holdings — ${etfSel} and ${etfOv} are genuinely diversifying against each other.</p>`;
+}
+// ---------- ETF quote page end ----------
 
 // ---------- macro regime + margin of safety ----------
 async function renderMacro() {
@@ -815,7 +1028,7 @@ function bindTips(root) {
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };

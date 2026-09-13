@@ -13,6 +13,9 @@ Endpoints:
     GET  /api/prices/SYM   cached daily closes for SYM from data/prices (for the per-holding chart)
     POST /api/refresh      run portfolio.robinhood_sync now (uses the cached session token)
     GET  /api/backtest?symbol=MU&amount=500&freq=M   strategy comparison JSON for the backtest tab
+    GET  /api/etf                                    roster of the S&L model funds (+ which are cached)
+    GET  /api/etf/SMH                                full YCharts-style profile for one ETF
+    GET  /api/overlap?a=SMH&b=QQQ                    holdings overlap between two funds
 
 Binds to 127.0.0.1 only: this is your brokerage data. Do not expose it.
 """
@@ -147,6 +150,45 @@ def read_research(sym: str) -> dict:
         return json.load(fh)
 
 
+ETF_CACHE = os.path.join(ROOT, "data", "etf_profiles")
+
+
+def list_etf_profiles() -> dict:
+    """Cached ETF quote-page profiles + the S&L model roster (so the tab has a picker)."""
+    sys.path.insert(0, ROOT)
+    from portfolio.watchlists import SL_MODEL
+    cached = set()
+    if os.path.isdir(ETF_CACHE):
+        for fn in glob.glob(os.path.join(ETF_CACHE, "*.json")):
+            cached.add(os.path.basename(fn)[:-5])
+    model = [{"ticker": e["ticker"], "name": e["name"], "sleeve": e["sleeve"],
+              "role": e["role"], "sp_corr": e["sp_corr"], "cached": e["ticker"] in cached}
+             for e in SL_MODEL]
+    return {"model": model, "cached": sorted(cached),
+            "hint": "Build/refresh on your Mac: python -m portfolio.etf_profile --all"}
+
+
+def etf_profile(sym: str, build: bool = False) -> dict:
+    sys.path.insert(0, ROOT)
+    from portfolio.etf_profile import load_cached, build as build_profile
+    prof = None if build else load_cached(sym)
+    if prof is None:
+        prof = build_profile(sym)  # runs yfinance on this machine; risk-only if offline
+    return prof
+
+
+def etf_overlap(a: str, b: str) -> dict:
+    sys.path.insert(0, ROOT)
+    from portfolio.etf_profile import load_cached, build as build_profile, overlap
+    if not a or not b:
+        return {"error": "need ?a=TICKER&b=TICKER"}
+    pa = load_cached(a) or build_profile(a)
+    pb = load_cached(b) or build_profile(b)
+    return {"a": pa["ticker"], "b": pb["ticker"],
+            "a_holdings": pa.get("top_holdings", []), "b_holdings": pb.get("top_holdings", []),
+            **overlap(pa.get("top_holdings", []), pb.get("top_holdings", []))}
+
+
 def run_backtest(q: dict) -> dict:
     sys.path.insert(0, ROOT)
     from portfolio.backtest import run, STRATEGIES, LABELS
@@ -258,6 +300,21 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(list_research())
         if u.path.startswith("/api/research/"):
             return self._json(read_research(u.path.rsplit("/", 1)[1]))
+        if u.path == "/api/etf":
+            return self._json(list_etf_profiles())
+        if u.path == "/api/overlap":
+            q = parse_qs(u.query)
+            try:
+                return self._json(etf_overlap(q.get("a", [""])[0], q.get("b", [""])[0]))
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}"}, 200)
+        if u.path.startswith("/api/etf/"):
+            sym = u.path.rsplit("/", 1)[1]
+            build = parse_qs(u.query).get("build", ["0"])[0] == "1"
+            try:
+                return self._json(etf_profile(sym, build=build))
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}", "ticker": sym.upper()}, 200)
         if u.path == "/api/ycharts":
             q = parse_qs(u.query)
             try:
