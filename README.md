@@ -91,6 +91,16 @@ Books live in `data/paper/` (git-ignored). Each `mark` logs value, return, and a
 benchmark; a scheduled mark (cron, or double-click "Mark Paper Portfolios") builds an equity
 history to study. `python -m ycharts_export.api --probe` quick-tests your API key.
 
+## Live 24/7 crypto (Hyperliquid)
+
+The dashboard's **Live 24/7** tab streams real-time candles from Hyperliquid's public WebSocket
+(`wss://api.hyperliquid.xyz/ws`) — free, no key, read-only market data. Pick a coin (BTC/ETH/SOL/HYPE/XRP)
+and interval; the candlestick chart updates live. Crypto perps are a different, higher-risk asset than a
+stock book — this is for watching and learning intraday patterns, not wired to trade.
+
+For real-time *stock* data (stocks are not 24/7), the free path is Alpaca (real-time IEX feed + free paper
+trading, needs a free key) — ask and I'll wire it in.
+
 ## Fundamentals & macro (free, no YCharts key)
 
 Real company financials from SEC EDGAR + macro/volatility from FRED — the same source data YCharts

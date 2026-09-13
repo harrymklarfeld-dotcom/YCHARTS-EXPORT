@@ -147,6 +147,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="compare">Compare</button>
   <button data-tab="research">Research</button>
   <button data-tab="macro">Macro</button>
+  <button data-tab="live">Live 24/7</button>
   <button data-tab="backtest">Backtest</button>
 </nav>
 
@@ -219,6 +220,23 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   </div>
   <div class="card"><h2>Margin of safety <small>cheap / fair / expensive, from SEC filings</small></h2>
     <div class="tbl" id="mvtable"></div></div>
+</section>
+<section class="panel" id="live">
+  <div class="card">
+    <h2>Live crypto <small>real-time from Hyperliquid — 24/7, free, read-only market data</small>
+      <span style="float:right"><span class="dot" id="lvdot"></span> <span id="lvstatus" style="font-size:12px;color:var(--ink-2)">connecting…</span></span></h2>
+    <div class="cmpbar">
+      <div class="segmented" id="lvcoin"></div>
+      <div class="range" id="lvint"></div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:baseline;margin:6px 0 10px">
+      <span id="lvprice" class="tnum" style="font-size:28px;font-weight:650">—</span>
+      <span id="lvchg" class="tnum" style="font-size:14px"></span>
+      <span class="muted" style="font-size:12px" id="lvmeta"></span>
+    </div>
+    <div id="lvchart"></div>
+    <p class="muted" style="font-size:12px">Streamed live from <code>wss://api.hyperliquid.xyz/ws</code>. Crypto perpetuals are a different, higher-risk asset than your stock portfolio — this tab is for watching and learning intraday patterns, not trading.</p>
+  </div>
 </section>
 <section class="panel" id="backtest">
   <div class="card">
@@ -666,6 +684,74 @@ async function renderMacro() {
 }
 function cls2(v){return v>0?'up':v<0?'down':'';}
 
+// ---------- live crypto (Hyperliquid public websocket) ----------
+const HL_COINS = ['BTC','ETH','SOL','HYPE','XRP'];
+const HL_INTERVALS = ['1m','5m','15m','1h','4h','1d'];
+let hlCoin='BTC', hlInt='1m', hlWs=null, hlCandles=[], hlSubbed=null, hlStarted=false;
+function renderLive(){
+  $('#lvcoin').innerHTML = HL_COINS.map(c=>`<button class="${c===hlCoin?'active':''}" data-c="${c}">${c}</button>`).join('');
+  $('#lvcoin').querySelectorAll('button').forEach(b=>b.onclick=()=>{hlCoin=b.dataset.c; hlReload();});
+  $('#lvint').innerHTML = HL_INTERVALS.map(i=>`<button class="${i===hlInt?'active':''}" data-i="${i}">${i}</button>`).join('');
+  $('#lvint').querySelectorAll('button').forEach(b=>b.onclick=()=>{hlInt=b.dataset.i; hlReload();});
+  if(!hlStarted){ hlStarted=true; hlReload(); }
+}
+async function hlReload(){
+  renderLive();
+  $('#lvstatus').textContent='loading history…'; $('#lvdot').className='dot';
+  try{
+    const end=Date.now(), start=end-500*intMs(hlInt);
+    const r=await fetch('https://api.hyperliquid.xyz/info',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'candleSnapshot',req:{coin:hlCoin,interval:hlInt,startTime:start,endTime:end}})});
+    const raw=await r.json();
+    hlCandles=(raw||[]).map(k=>({t:k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c,v:+k.v}));
+    drawLive();
+  }catch(e){ $('#lvchart').innerHTML='<p class="muted">Could not reach Hyperliquid. If you are offline or a network blocks it, this stays empty. Everything else in the dashboard still works.</p>'; }
+  hlConnect();
+}
+function intMs(i){return {'1m':6e4,'5m':3e5,'15m':9e5,'1h':36e5,'4h':144e5,'1d':864e5}[i]||6e4;}
+function hlConnect(){
+  try{ if(hlWs){ hlWs.onclose=null; hlWs.close(); } }catch(e){}
+  try{ hlWs=new WebSocket('wss://api.hyperliquid.xyz/ws'); }catch(e){ return; }
+  hlWs.onopen=()=>{ $('#lvstatus').textContent='live'; $('#lvdot').className='dot on';
+    hlSubbed={coin:hlCoin,interval:hlInt};
+    hlWs.send(JSON.stringify({method:'subscribe',subscription:{type:'candle',coin:hlCoin,interval:hlInt}})); };
+  hlWs.onmessage=ev=>{ let m; try{m=JSON.parse(ev.data);}catch(e){return;}
+    if(m.channel==='candle'&&m.data){ const k=m.data;
+      if(!hlSubbed||k.s!==hlSubbed.coin||k.i!==hlSubbed.interval) return;
+      const cndl={t:k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c,v:+k.v};
+      if(hlCandles.length&&hlCandles[hlCandles.length-1].t===cndl.t) hlCandles[hlCandles.length-1]=cndl;
+      else hlCandles.push(cndl);
+      if(hlCandles.length>500) hlCandles.shift();
+      drawLive(); } };
+  hlWs.onclose=()=>{ $('#lvstatus').textContent='reconnecting…'; $('#lvdot').className='dot'; setTimeout(()=>{ if($('#live').classList.contains('active')) hlConnect(); },2500); };
+  hlWs.onerror=()=>{ try{hlWs.close();}catch(e){} };
+}
+function drawLive(){
+  if(!hlCandles.length){ return; }
+  const last=hlCandles[hlCandles.length-1], first=hlCandles[0];
+  const chg=(last.c/first.o-1)*100;
+  $('#lvprice').textContent='$'+last.c.toLocaleString('en-US',{maximumFractionDigits:last.c<10?4:2});
+  $('#lvchg').innerHTML=`<span class="${cls(chg)}">${fmtP(chg,2,true)}</span> over ${hlCandles.length} bars`;
+  $('#lvmeta').textContent=`${hlCoin} · ${hlInt} · updated ${new Date(last.t).toLocaleTimeString()}`;
+  $('#lvchart').innerHTML=candlestick(hlCandles,{height:340});
+}
+function candlestick(cs,opt={}){
+  const W=880,H=opt.height||320,m={t:10,r:56,b:22,l:8};
+  const lo=Math.min(...cs.map(c=>c.l)), hi=Math.max(...cs.map(c=>c.h)); const pad=(hi-lo)*0.05||1;
+  const Y=v=>m.t+(hi+pad-v)/((hi-lo)+2*pad)*(H-m.t-m.b);
+  const n=cs.length, cw=(W-m.l-m.r)/n, bw=Math.max(1,cw*0.6);
+  let g=`<svg class="chart" viewBox="0 0 ${W} ${H}">`;
+  const ticks=niceTicks(lo-pad,hi+pad,5);
+  g+=`<g class="grid">${ticks.map(t=>`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}"/>`).join('')}</g>`;
+  g+=`<g class="axis">${ticks.map(t=>`<text x="${W-m.r+6}" y="${Y(t)+4}">${t.toLocaleString('en-US',{maximumFractionDigits:t<10?3:0})}</text>`).join('')}</g>`;
+  cs.forEach((c,i)=>{ const x=m.l+i*cw+cw/2; const up=c.c>=c.o; const col=up?'var(--good)':'var(--bad)';
+    g+=`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${Y(c.h).toFixed(1)}" y2="${Y(c.l).toFixed(1)}" stroke="${col}" stroke-width="1"/>`;
+    const yo=Y(c.o),yc=Y(c.c); g+=`<rect x="${(x-bw/2).toFixed(1)}" y="${Math.min(yo,yc).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1,Math.abs(yc-yo)).toFixed(1)}" fill="${col}"/>`; });
+  const ly=Y(cs[cs.length-1].c);
+  g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${ly.toFixed(1)}" y2="${ly.toFixed(1)}" stroke="var(--accent)" stroke-dasharray="3 3" opacity="0.7"/>`;
+  return g+'</svg>';
+}
+
 // ---------- SVG line chart with crosshair tooltip ----------
 function lineChart(series, opt = {}) {
   const W = 800, H = opt.height || 280, m = { t: 12, r: 16, b: 28, l: 64 };
@@ -729,7 +815,7 @@ function bindTips(root) {
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'macro') renderMacro(); });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };
