@@ -93,6 +93,19 @@ history to study. `python -m ycharts_export.api --probe` quick-tests your API ke
 
 ## YCharts research engine
 
+Live YCharts numbers without the (Enterprise-only) REST API, by automating the Excel Add-in you
+already have — no manual import/export:
+
+```bash
+pip install xlwings openpyxl                                             # one-time
+python -m ycharts_export.excel_bridge --watchlist sl_model --portfolio --build --refresh
+```
+
+`--build` writes a workbook of =YCP/=YCS formulas; `--refresh` drives Excel to fetch live data and
+loads it into data/ycharts_cache/. Or double-click **Refresh YCharts (Mac).command**. Requires Excel
+desktop + the YCharts add-in logged in. (`ycharts_export.api` is the REST-API path for Enterprise keys.)
+
+
 With a YCharts API key (Account -> "Excel Add-in Access Key"), pull deep data for any ticker
 into a local cache and browse it in the dashboard's **Research** tab (a YCharts-style company
 page: key stats + metric charts).

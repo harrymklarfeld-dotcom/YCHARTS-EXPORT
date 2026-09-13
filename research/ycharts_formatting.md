@@ -73,3 +73,21 @@ is hit once, in one place, with credentials that never leave the machine.
 Professional seat includes the Excel Add-in but not always the REST key. Check Account → API,
 or ask your YCharts rep. If there's no key, the Excel Add-in / Timeseries export route above
 produces the same `data/prices/` and statement files, just manually.
+
+
+## Automating the Excel Add-in (live data without the REST API)
+
+The REST API (`ycharts_export/api.py`) needs an API/Enterprise entitlement; a Professional/Steward
+plan returns HTTP 403. But that plan **does** include the Excel Add-in, which pulls the same YCharts
+numbers with `=YCP(ticker, metric)` (current value) and `=YCS(ticker, metric, start)` (history).
+
+`ycharts_export/excel_bridge.py` automates it end to end, so there is no manual import/export:
+
+1. `--build` writes `data/ycharts_pull.xlsx` full of YCP/YCS formulas (one points grid + a sheet per ticker).
+2. `--refresh` uses **xlwings** to open the workbook in Excel, let the add-in fetch live data, read the
+   cells, and write `data/ycharts_cache/*.json` + `data/prices/*.csv` — the files the dashboard reads.
+3. Schedule `--refresh` (launchd/cron) or double-click **Refresh YCharts (Mac).command** for hands-off updates.
+
+Requirements (one-time, on the Mac): Microsoft Excel desktop; the YCharts Excel Add-in installed and
+logged in (User ID + Access Key); `pip install xlwings openpyxl`; grant Terminal permission to control
+Excel when macOS asks. Metric codes live in `POINT_METRICS` / `SERIES_CODES` in `excel_bridge.py`.
