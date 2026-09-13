@@ -64,6 +64,19 @@ python -m ycharts_export.valuation --ticker MU --out reports/MU_intrinsic_value.
 For price history the backtester will also read any YCharts Timeseries export saved as `data/prices/<SYM>.csv` or `.xlsx`
 (date column + price/close column), which is the way to get total-return or very long histories in.
 
+## Swing-trading signals
+
+Test technical setups (EMA crossover, RSI pullback, MACD, Bollinger reversion, Donchian breakout)
+with an ATR stop, long-only, and see the honest scoreboard vs. buy-and-hold:
+
+```bash
+python -m portfolio.signals MU NVDA VOO --all --start 2018-01-01 -o reports/signals.md
+```
+
+Win rate, profit factor, expectancy per trade, max drawdown, time in market, and whether it beat
+holding. Most setups lose to buy-and-hold on trending names — which is exactly what backtesting is
+for. Indicators are close-based; ATR is a close-to-close proxy, VWAP needs volume (from YCharts).
+
 ## YCharts research engine
 
 With a YCharts API key (Account -> "Excel Add-in Access Key"), pull deep data for any ticker
