@@ -174,8 +174,35 @@ def main(argv=None):
     metrics = args.metrics.split(",") if args.metrics else None
     print(f"Pulling {len(tickers)} tickers from YCharts: {', '.join(tickers)}", file=sys.stderr)
     records = pull(tickers, key, years=args.years, series_metrics=metrics)
+
+    # If the YCharts API returned nothing (e.g. HTTP 403 = plan has the Excel Add-in but not the
+    # REST API), fall back to Yahoo for at least the price series so the charts/backtests still work.
+    got_any = any(r.get("series") or r.get("points") for r in records.values())
+    if not got_any:
+        print("\nYCharts API returned no data for any ticker (likely HTTP 403: your plan includes the",
+              file=sys.stderr)
+        print("Excel Add-in but not the REST API). Falling back to Yahoo Finance for PRICE data so the",
+              file=sys.stderr)
+        print("dashboard, Compare and backtests work. Deep fundamentals need the Excel export route", file=sys.stderr)
+        print("(see research/ycharts_formatting.md).\n", file=sys.stderr)
+    from .prices import load_prices
+    start = (date.today() - timedelta(days=int(args.years * 365.25))).isoformat()
+    for sym in tickers:
+        rec = records.setdefault(sym, {"symbol": sym, "series": {}, "points": {}})
+        if not rec["series"].get("price"):
+            try:
+                rows = load_prices(sym, start, quiet=True)
+                if rows:
+                    rec["series"]["price"] = [[d, v] for d, v in rows]
+                    rec["points"]["price"] = {"date": rows[-1][0], "value": rows[-1][1]}
+                    rec.setdefault("as_of", datetime.now().isoformat(timespec="seconds"))
+                    rec["price_source"] = "yahoo (YCharts API unavailable)"
+                    print(f"  {sym:6} price via Yahoo: {len(rows)} rows", file=sys.stderr)
+            except Exception as e:  # noqa: BLE001
+                print(f"  {sym:6} no price from Yahoo either: {e}", file=sys.stderr)
     write(records)
-    print(f"wrote {len(records)} files to {CACHE}/ and prices to {PRICES}/", file=sys.stderr)
+    n_priced = sum(1 for r in records.values() if r.get("series", {}).get("price"))
+    print(f"\nwrote {len(records)} files to {CACHE}/ ; {n_priced}/{len(records)} have price history.", file=sys.stderr)
 
 
 if __name__ == "__main__":

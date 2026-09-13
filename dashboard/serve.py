@@ -195,6 +195,11 @@ def market_open_now() -> bool:
 
 
 class Handler(SimpleHTTPRequestHandler):
+    def handle_one_request(self):
+        try:
+            super().handle_one_request()
+        except (BrokenPipeError, ConnectionResetError):
+            self.close_connection = True
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=os.path.join(ROOT, "dashboard"), **kw)
 
@@ -205,12 +210,15 @@ class Handler(SimpleHTTPRequestHandler):
 
     def _json(self, obj, code=200):
         body = json.dumps(obj).encode()
-        self.send_response(code)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            pass   # browser navigated away mid-response; harmless
 
     def do_GET(self):
         u = urlparse(self.path)
