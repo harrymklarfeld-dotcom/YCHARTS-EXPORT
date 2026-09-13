@@ -32,6 +32,25 @@ from datetime import date, datetime, timedelta
 CACHE = os.path.join("data", "ycharts_cache")
 PRICES = os.path.join("data", "prices")
 
+# The real, current YCharts API. (pycharts ships a dead ycharts.com/api/v3 URL.)
+API_BASE = "https://api.ycharts.com/v3"
+AUTH_HEADER = "X-YCHARTSAUTHORIZATION"   # documented v3 header
+
+
+def _v3(path, key, params=None):
+    import urllib.request, urllib.parse, urllib.error
+    url = f"{API_BASE}/{path}"
+    if params:
+        url += "?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers={AUTH_HEADER: key, "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=40) as r:   # honours HTTPS_PROXY
+        return json.loads(r.read().decode("utf-8", "replace"))
+
+
+def _results(resp, sym):
+    sec = (resp.get("response", {}) or {}).get(sym, {}) or {}
+    return sec.get("results", sec) or {}
+
 # The metric slugs an equity research agent needs. YCharts exposes 4,000+; this is the
 # working set for valuation + trend + quality. Extend freely — the client passes them through.
 SERIES_METRICS = [
@@ -64,10 +83,11 @@ def diagnose(api_key: str):
     except Exception as e:  # noqa: BLE001
         print(f"pycharts -> {type(e).__name__}: {e}", file=sys.stderr)
     # 2) raw calls to candidate v3 endpoints with the documented header, printing status + body
-    hdr_variants = [("X-YCHARTSAUTHORIZATION", api_key), ("Authorization", api_key),
-                    ("Authorization", f"Bearer {api_key}")]
-    urls = ["https://api.ycharts.com/v3/companies/AAPL/points/price",
-            "https://ycharts.com/api/v3/companies/AAPL/points/price"]
+    hdr_variants = [("X-YCHARTSAUTHORIZATION", api_key), ("X-YCHARTS-AUTHORIZATION", api_key),
+                    ("apikey", api_key), ("X-API-KEY", api_key),
+                    ("Authorization", api_key), ("Authorization", f"Bearer {api_key}"),
+                    ("Authorization", f"Token {api_key}")]
+    urls = ["https://api.ycharts.com/v3/companies/AAPL/points/price"]
     for url in urls:
         for hname, hval in hdr_variants:
             req = urllib.request.Request(url, headers={hname: hval, "Accept": "application/json"})
@@ -113,43 +133,46 @@ def _blob_data(blob):
 
 
 def pull(tickers: list[str], api_key: str, years: int = 15,
-         series_metrics=None, point_metrics=None, sleep: float = 0.4) -> dict:
-    client = _client(api_key)
+         series_metrics=None, point_metrics=None, sleep: float = 0.3) -> dict:
+    """Pull points + series straight from api.ycharts.com/v3."""
+    import urllib.error
     series_metrics = series_metrics or SERIES_METRICS
     point_metrics = point_metrics or POINT_METRICS
-    end_dt = datetime.now()
-    start_dt = end_dt - timedelta(days=int(years * 365.25))
+    end = date.today().isoformat()
+    start = (date.today() - timedelta(days=int(years * 365.25))).isoformat()
     out = {}
-    for i in range(0, len(tickers), 10):          # batch to be polite to the API
-        batch = tickers[i:i + 10]
+    for sym in tickers:
+        rec = {"symbol": sym, "as_of": datetime.now().isoformat(timespec="seconds"),
+               "series": {}, "points": {}, "source": "ycharts api v3"}
+        # points (one call, all metrics)
         try:
-            s_rsp = _unwrap(client.get_series(batch, series_metrics,
-                                              query_start_date=start_dt, query_end_date=end_dt))
-        except Exception as e:  # noqa: BLE001
-            print(f"series pull failed for {batch}: {e}", file=sys.stderr); s_rsp = {}
-        try:
-            p_rsp = _unwrap(client.get_points(batch, point_metrics))
-        except Exception as e:  # noqa: BLE001
-            print(f"points pull failed for {batch}: {e}", file=sys.stderr); p_rsp = {}
-        for sym in batch:
-            rec = {"symbol": sym, "as_of": datetime.now().isoformat(timespec="seconds"),
-                   "series": {}, "points": {}}
-            for m, blob in (s_rsp.get(sym, {}) or {}).items():
-                data = _blob_data(blob)
-                if data and isinstance(data, (list, tuple)):
-                    pts = []
-                    for row in data:
-                        if isinstance(row, (list, tuple)) and len(row) == 2 and row[1] is not None:
-                            pts.append([str(row[0])[:10], row[1]])
-                    if pts:
-                        rec["series"][m] = pts
-            for m, blob in (p_rsp.get(sym, {}) or {}).items():
-                data = _blob_data(blob)
+            rsp = _v3(f"companies/{sym}/points/{','.join(point_metrics)}", api_key)
+            for m, blob in _results(rsp, sym).items():
+                data = blob.get("data") if isinstance(blob, dict) else blob
                 if isinstance(data, (list, tuple)) and len(data) == 2:
                     rec["points"][m] = {"date": str(data[0])[:10], "value": data[1]}
                 elif isinstance(data, (int, float)):
                     rec["points"][m] = {"value": data}
-            out[sym] = rec
+        except urllib.error.HTTPError as e:
+            print(f"  {sym} points: HTTP {e.code} {e.read().decode('utf-8','replace')[:120]}", file=sys.stderr)
+        except Exception as e:  # noqa: BLE001
+            print(f"  {sym} points: {type(e).__name__}: {e}", file=sys.stderr)
+        # series (one call, all metrics)
+        try:
+            rsp = _v3(f"companies/{sym}/series/{','.join(series_metrics)}", api_key,
+                      {"start_date": start, "end_date": end})
+            for m, blob in _results(rsp, sym).items():
+                data = blob.get("data") if isinstance(blob, dict) else blob
+                if isinstance(data, (list, tuple)):
+                    pts = [[str(r[0])[:10], r[1]] for r in data
+                           if isinstance(r, (list, tuple)) and len(r) == 2 and r[1] is not None]
+                    if pts:
+                        rec["series"][m] = pts
+        except urllib.error.HTTPError as e:
+            print(f"  {sym} series: HTTP {e.code} {e.read().decode('utf-8','replace')[:120]}", file=sys.stderr)
+        except Exception as e:  # noqa: BLE001
+            print(f"  {sym} series: {type(e).__name__}: {e}", file=sys.stderr)
+        out[sym] = rec
         time.sleep(sleep)
     return out
 
