@@ -19,5 +19,8 @@ echo "Running the hedge-strategy diagnostics (beta, correlation, stress tests)..
 python3 -m portfolio.hedge_strategy --diagnose --build
 python3 -m portfolio.hedge_strategy --json reports/hedge_strategy.json 2>/dev/null
 echo
+echo "Building event timelines (earnings, news, big-move days) for the 'Why it moved' tab..."
+python3 -m portfolio.events --portfolio --watchlist sl_model
+echo
 echo "Opening the dashboard — see the ETF profile and Macro tabs."
 python3 -m dashboard.serve --refresh 300 --open

@@ -20,6 +20,7 @@ reports/hedge_strategy.json
 reports/valuation.md
 data/ycharts_cache/
 data/etf_profiles/
+data/events/
 data/fundamentals/
 data/macro/
 data/paper/

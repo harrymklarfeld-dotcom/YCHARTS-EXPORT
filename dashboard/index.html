@@ -146,6 +146,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="trades">Trades &amp; income</button>
   <button data-tab="compare">Compare</button>
   <button data-tab="etf">ETF profile</button>
+  <button data-tab="why">Why it moved</button>
   <button data-tab="research">Research</button>
   <button data-tab="macro">Macro</button>
   <button data-tab="live">Live 24/7</button>
@@ -235,6 +236,36 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
       <div class="card"><h2>Basic info &amp; strategy</h2><div id="etfinfo"></div></div>
     </div>
     <div class="card"><h2>News</h2><div id="etfnews"></div></div>
+  </div>
+</section>
+<section class="panel" id="why">
+  <div class="card">
+    <h2>Why it moved <small>click any point on the chart to see what happened that day</small></h2>
+    <div id="whyempty" class="notice" hidden></div>
+    <div class="cmpsyms" id="whytickers"></div>
+  </div>
+  <div id="whybody" hidden>
+    <div class="card">
+      <div id="whyhead"></div>
+      <div class="legend" style="margin-top:6px">
+        <span><i style="background:var(--s7)"></i>Earnings</span>
+        <span><i style="background:var(--s2)"></i>Unusual move</span>
+        <span><i style="background:var(--good)"></i>Bullish news</span>
+        <span><i style="background:var(--bad)"></i>Bearish news</span>
+        <span class="muted">— or click anywhere on the line</span>
+      </div>
+      <div id="whychart"></div>
+      <div id="whyday" class="drawer" style="margin-top:12px"><p class="muted">Click a point on the chart above to inspect a day.</p></div>
+    </div>
+    <div class="card">
+      <h2>Sentiment vs. Efficient Market <small>how much of the move is fundamentals vs sentiment/flow</small></h2>
+      <div class="stats" id="whygauge"></div>
+      <p id="whyinterp" style="font-size:13px;color:var(--ink-2)"></p>
+    </div>
+    <div class="card" id="whyrecentcard">
+      <h2>Most recent big day <small>the factor breakdown</small></h2>
+      <div id="whyrecent"></div>
+    </div>
   </div>
 </section>
 <section class="panel" id="research">
@@ -643,6 +674,7 @@ $('#btform').onsubmit = async e => {
 // ---------- research (YCharts cache) ----------
 let rcSel = null, rcMetric = null, rcData = {};
 let etfSel = null, etfData = {}, etfRange = 'all', etfOv = null, etfModel = [];
+let whySel = null, whyEvents = {}, whyPx = {}, whyAttr = {}, whySpy = null;
 const RC_LABELS = {price:'Price', pe_ratio:'P/E', forward_pe_ratio:'Fwd P/E', ev_to_ebitda:'EV/EBITDA',
   price_to_book_value:'P/B', price_to_sales_ratio:'P/S', peg_ratio:'PEG', dividend_yield:'Div yield %',
   revenues:'Revenue', net_income:'Net income', eps_diluted:'EPS', free_cash_flow:'Free cash flow',
@@ -872,6 +904,119 @@ async function drawOverlap() {
 }
 // ---------- ETF quote page end ----------
 
+// ---------- "Why it moved": event-annotated chart + sentiment/EMH attribution ----------
+const EV_PRIORITY = { earnings: 3, move: 2, news: 1, dividend: 0, split: 0 };
+function whyRoster() {
+  const held = (snap && snap.holdings || []).map(h => h.symbol);
+  const model = etfModel.map(t => t.ticker);
+  return [...new Set([...held, ...model])];
+}
+async function renderWhy() {
+  const roster = whyRoster();
+  const em = $('#whyempty');
+  if (!roster.length) {
+    // fall back to fetching the ETF roster if holdings/model not loaded yet
+    try { const idx = await apiGet('/api/etf'); etfModel = idx.model || []; } catch (e) { }
+  }
+  const r2 = whyRoster();
+  if (!r2.length) { em.hidden = false; em.innerHTML = 'No tickers yet. Load your portfolio, or build fund data on your Mac.'; $('#whytickers').innerHTML = ''; $('#whybody').hidden = true; return; }
+  em.hidden = true;
+  if (!whySel || !r2.includes(whySel)) whySel = r2[0];
+  $('#whytickers').innerHTML = r2.map(t => `<span class="chip ${t === whySel ? '' : 'off'}" data-s="${t}"><i style="background:var(--s1)"></i>${t}</span>`).join('');
+  $('#whytickers').querySelectorAll('.chip').forEach(c => c.onclick = () => { whySel = c.dataset.s; drawWhy(); });
+  if (!whySpy) { try { whySpy = await apiGet('/api/prices/SPY'); } catch (e) { whySpy = []; } }
+  await drawWhy();
+}
+async function drawWhy() {
+  $('#whytickers').querySelectorAll('.chip').forEach(c => c.classList.toggle('off', c.dataset.s !== whySel));
+  $('#whybody').hidden = false;
+  const sym = whySel;
+  let ev = whyEvents[sym], px = whyPx[sym];
+  if (!ev) { try { ev = await apiGet('/api/events/' + sym); whyEvents[sym] = ev; } catch (e) { ev = { events: [], by_date: {}, day_sentiment: {} }; } }
+  if (!px) { try { px = await apiGet('/api/prices/' + sym); whyPx[sym] = px; } catch (e) { px = []; } }
+  if (!px || !px.length) { $('#whyhead').innerHTML = `<div class="notice">No price history for ${sym}. On your Mac run <code>python3 -m portfolio.events ${sym}</code>.</div>`; $('#whychart').innerHTML = ''; return; }
+  const last = px[px.length - 1], first = px[0];
+  $('#whyhead').innerHTML = `<div style="font-size:18px;font-weight:650">${sym} <span class="muted" style="font-size:12px;font-weight:400">${first[0]} → ${last[0]} · ${(ev.counts ? (ev.counts.earnings + ' earnings · ' + ev.counts.news + ' news · ' + ev.counts.move + ' unusual days') : '')}</span></div>`;
+  // one marker per event-date, colored by highest-priority event that day
+  const pxMap = Object.fromEntries(px.map(r => [r[0], r[1]]));
+  const priceOn = d => { if (pxMap[d]) return pxMap[d]; const ks = px.filter(r => r[0] <= d); return ks.length ? ks[ks.length - 1][1] : null; };
+  const marks = [];
+  Object.entries(ev.by_date || {}).forEach(([d, evs]) => {
+    const y = priceOn(d); if (y == null) return;
+    const top = evs.slice().sort((a, b) => (EV_PRIORITY[b.type] || 0) - (EV_PRIORITY[a.type] || 0))[0];
+    const detail = evs.map(e => e.detail).filter(Boolean).slice(0, 2).join(' · ');
+    marks.push({ d, y, ev: top.type, sent: ev.day_sentiment[d], detail });
+  });
+  $('#whychart').innerHTML = lineChart([{ name: sym, color: SERIES[0], pts: px.map(r => [r[0], r[1]]) }],
+    { height: 300, area: true, marks, fmt: v => fmtM(v) });
+  bindTips($('#whychart'));
+  const svg = $('#whychart').querySelector('svg.chart'); if (svg) { svg._onDay = inspectDay; svg._xs = px.map(r => r[0]); }
+  // attribution gauge
+  let at = whyAttr[sym];
+  if (!at) { try { at = await apiGet('/api/attribution/' + sym); whyAttr[sym] = at; } catch (e) { at = { error: 'offline' }; } }
+  renderAttr(at);
+  $('#whyday').innerHTML = '<p class="muted">Click a point on the chart above to inspect a day.</p>';
+}
+function inspectDay(d) {
+  const sym = whySel, ev = whyEvents[sym] || { by_date: {} }, px = whyPx[sym] || [];
+  const i = px.findIndex(r => r[0] === d);
+  const price = i >= 0 ? px[i][1] : null, prev = i > 0 ? px[i - 1][1] : null;
+  const ret = price != null && prev ? (price / prev - 1) * 100 : null;
+  // market move that day (context for EMH: is this the whole market or just this name?)
+  let spyRet = null;
+  if (whySpy && whySpy.length) { const j = whySpy.findIndex(r => r[0] === d); if (j > 0) spyRet = (whySpy[j][1] / whySpy[j - 1][1] - 1) * 100; }
+  const evs = (ev.by_date || {})[d] || [];
+  const news = evs.filter(e => e.type === 'news'), earn = evs.filter(e => e.type === 'earnings'), mv = evs.filter(e => e.type === 'move');
+  let rel = '';
+  if (ret != null && spyRet != null) {
+    const resid = ret - spyRet;
+    rel = Math.abs(spyRet) > 0.75 && Math.sign(ret) === Math.sign(spyRet)
+      ? `Broad move — the S&P was ${fmtP(spyRet, 2, true)} too (${sym} ${Math.abs(resid) < Math.abs(spyRet) * 0.6 ? 'mostly the market' : 'moved more than the market'}).`
+      : `Stock-specific — the S&P only did ${fmtP(spyRet, 2, true)}, so ~${fmtP(resid, 1, true)} of this was ${sym}'s own story.`;
+  }
+  $('#whyday').innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:baseline">
+      <b style="font-size:15px">${fmtD(d)}</b>
+      <span class="tnum">${price == null ? '' : fmtM(price)} ${ret == null ? '' : `<span class="${cls(ret)}">${fmtP(ret, 2, true)}</span>`} ${spyRet == null ? '' : `<span class="muted" style="font-size:12px">· S&P ${fmtP(spyRet, 2, true)}</span>`}</span>
+    </div>
+    ${rel ? `<p style="font-size:13px;color:var(--ink-2);margin:6px 0">${rel}</p>` : ''}
+    ${earn.map(e => `<div style="margin:6px 0"><span class="pillv exp" style="background:color-mix(in srgb,var(--s7) 22%,transparent);color:var(--s7)">EARNINGS</span> ${e.detail}</div>`).join('')}
+    ${mv.map(e => `<div class="muted" style="font-size:12px;margin:4px 0">${e.detail}</div>`).join('')}
+    ${news.length ? '<div style="margin-top:8px">' + news.map(e => `<div style="padding:6px 0;border-bottom:1px solid var(--line)"><a href="${e.link || '#'}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">${e.detail}</a> <span class="pillv ${e.sentiment > 0.1 ? 'cheap' : e.sentiment < -0.1 ? 'exp' : 'fair'}">${e.sentiment_label || 'Neutral'}</span> ${e.publisher ? `<span class="muted" style="font-size:11px">${e.publisher}</span>` : ''}</div>`).join('') + '</div>'
+      : (earn.length ? '' : '<p class="muted" style="font-size:12px;margin-top:6px">No news or earnings on file for this day — if it moved, it was likely the market or positioning.</p>')}`;
+}
+function renderAttr(at) {
+  const g = $('#whygauge'), rc = $('#whyrecent'), interp = $('#whyinterp');
+  if (!at || at.error) { g.innerHTML = `<div class="muted">Attribution needs a factor fit. On your Mac run <code>python3 -m portfolio.attribution ${whySel}</code>.</div>`; interp.textContent = ''; rc.innerHTML = ''; $('#whyrecentcard').hidden = true; return; }
+  const ga = at.gauge || {};
+  g.innerHTML = [
+    ga.efficiency_r2 == null ? '' : `<div>Market explains<b>${fmtP((ga.efficiency_r2) * 100, 0)}</b><span class="muted">of daily variance (R²)</span></div>`,
+    ga.beta_mkt == null ? '' : `<div>Beta to S&P<b>${fmtN(ga.beta_mkt, 2)}</b></div>`,
+    ga.beta_sec == null ? '' : `<div>Beta to sector<b>${fmtN(ga.beta_sec, 2)}</b></div>`,
+    ga.sentiment_tilt == null ? '' : `<div>Sentiment tilt<b class="${cls(ga.sentiment_tilt)}">${fmtN(ga.sentiment_tilt, 2)}</b><span class="muted">residual vs news</span></div>`,
+    ga.unexplained_days == null ? '' : `<div>Unexplained days<b>${ga.unexplained_days}</b><span class="muted">of last ${ga.window} (no news)</span></div>`,
+    ga.residual_vol_pct == null ? '' : `<div>Idiosyncratic vol<b>${fmtP(ga.residual_vol_pct, 1)}</b><span class="muted">daily, stock-specific</span></div>`,
+  ].join('') || '<div class="muted">No gauge.</div>';
+  interp.textContent = ga.interpretation || '';
+  const rb = at.recent_big_day;
+  if (!rb) { $('#whyrecentcard').hidden = true; return; }
+  $('#whyrecentcard').hidden = false;
+  const c = rb.components_pct || {};
+  const barRow = (lab, v, col) => `<div style="display:grid;grid-template-columns:110px 1fr 70px;align-items:center;gap:8px">
+      <span style="font-size:13px">${lab}</span>
+      <span class="bar" style="width:${Math.min(100, Math.abs(v) / (Math.abs(rb.ret_pct) + 0.001) * 100)}%;background:${col}"></span>
+      <b class="${cls(v)}" style="text-align:right">${fmtP(v, 2, true)}</b></div>`;
+  rc.innerHTML = `<div style="margin-bottom:8px"><b>${fmtD(rb.date)}</b> — ${whySel} moved <span class="${cls(rb.ret_pct)}">${fmtP(rb.ret_pct, 2, true)}</span></div>
+    <div class="stats" style="grid-template-columns:1fr;gap:6px">
+      ${barRow('Market', c.market, 'var(--s1)')}
+      ${barRow('Sector', c.sector, 'var(--s3)')}
+      ${barRow('Residual', c.residual, 'var(--s2)')}
+    </div>
+    <p style="font-size:13px;color:var(--ink-2);margin:8px 0 0"><b>Read:</b> ${rb.classification}.${rb.news_sentiment == null ? '' : ` News sentiment that day was ${fmtN(rb.news_sentiment, 2)}.`}</p>
+    ${(rb.news || []).length ? '<div style="margin-top:6px">' + rb.news.map(n => `<div class="muted" style="font-size:12px">• ${n.title}</div>`).join('') + '</div>' : ''}`;
+}
+// ---------- "Why it moved" end ----------
+
 // ---------- macro regime + margin of safety ----------
 async function renderMacro() {
   let m; try { m = await apiGet('/api/macro'); } catch (e) { m = { error: 'offline' }; }
@@ -995,7 +1140,15 @@ function lineChart(series, opt = {}) {
     s.pts.forEach(p => { if (p[1] == null) { pen = false; return; } path.push(`${pen ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`); pen = true; });
     g += `<path d="${path.join('')}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
   });
-  (opt.marks || []).forEach(k => { g += `<circle cx="${X(k.d)}" cy="${Y(k.y)}" r="4.5" fill="${k.side === 'buy' ? 'var(--s3)' : 'var(--s8)'}" stroke="var(--surface)" stroke-width="2" class="hit" data-tip="${fmtD(k.d)}|${k.side} ${fmtN(k.qty, 4)} sh|at ${fmtM(k.y)}"/>`; });
+  (opt.marks || []).forEach(k => {
+    if (k.ev) {  // event marker: color by type/sentiment, tooltip carries the detail
+      const col = k.ev === 'earnings' ? 'var(--s7)' : k.ev === 'move' ? 'var(--s2)'
+        : k.sent > 0.1 ? 'var(--good)' : k.sent < -0.1 ? 'var(--bad)' : 'var(--s1)';
+      g += `<circle cx="${X(k.d)}" cy="${Y(k.y)}" r="${k.ev === 'earnings' ? 5 : 3.6}" fill="${col}" stroke="var(--surface)" stroke-width="1.5" class="hit" data-tip="${fmtD(k.d)}|${(k.ev || '').toUpperCase()}|${(k.detail || '').replace(/"/g, '&quot;').replace(/\|/g, '/')}"/>`;
+    } else {
+      g += `<circle cx="${X(k.d)}" cy="${Y(k.y)}" r="4.5" fill="${k.side === 'buy' ? 'var(--s3)' : 'var(--s8)'}" stroke="var(--surface)" stroke-width="2" class="hit" data-tip="${fmtD(k.d)}|${k.side} ${fmtN(k.qty, 4)} sh|at ${fmtM(k.y)}"/>`;
+    }
+  });
   g += `<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" stroke="var(--ink-3)" stroke-dasharray="3 3" style="display:none"/>${series.map((s, i) => `<circle class="xd" data-i="${i}" r="4" fill="${s.color}" stroke="var(--surface)" stroke-width="2" style="display:none"/>`).join('')}
   <rect class="hover" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/></svg>`;
   // attach data for hover
@@ -1024,11 +1177,20 @@ function bindTips(root) {
       showTip(`<b>${fmtD(d)}</b>${rows.join('')}`, ev);
     };
     hov.onmouseleave = () => { tip.style.display = 'none'; svg.querySelector('.xh').style.display = 'none'; svg.querySelectorAll('.xd').forEach(c => c.style.display = 'none'); };
+    hov.style.cursor = 'crosshair';
+    hov.onclick = ev => {
+      if (!svg._onDay || !svg._xs) return;
+      const W = +svg.dataset.w, l = +svg.dataset.l, r = +svg.dataset.r, box = svg.getBoundingClientRect();
+      const fx = (ev.clientX - box.left) / box.width * W, t = new Date(+new Date(svg.dataset.x0) + (fx - l) / (W - l - r) * +svg.dataset.span);
+      const xs = svg._xs; let lo = 0, hi = xs.length - 1; const ts = t.toISOString().slice(0, 10);
+      while (lo < hi) { const mid = (lo + hi) >> 1; if (xs[mid] < ts) lo = mid + 1; else hi = mid; }
+      svg._onDay(xs[Math.max(0, Math.min(xs.length - 1, lo))]);
+    };
   });
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };

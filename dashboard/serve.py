@@ -16,6 +16,8 @@ Endpoints:
     GET  /api/etf                                    roster of the S&L model funds (+ which are cached)
     GET  /api/etf/SMH                                full YCharts-style profile for one ETF
     GET  /api/overlap?a=SMH&b=QQQ                    holdings overlap between two funds
+    GET  /api/events/NVDA                            dated event timeline (earnings, news, big moves)
+    GET  /api/attribution/NVDA                       market/sector/residual attribution + sentiment gauge
 
 Binds to 127.0.0.1 only: this is your brokerage data. Do not expose it.
 """
@@ -189,6 +191,27 @@ def etf_overlap(a: str, b: str) -> dict:
             **overlap(pa.get("top_holdings", []), pb.get("top_holdings", []))}
 
 
+SECTOR_MAP = {  # rough sector ETF per ticker for the attribution factor model
+    "NVDA": "SMH", "MU": "SMH", "AVGO": "SMH", "AMD": "SMH", "SMH": "XLK", "QQQ": "XLK",
+    "AAPL": "XLK", "MSFT": "XLK", "GOOGL": "XLK", "META": "XLK", "TSLA": "XLY",
+    "VOO": "SPY", "QDPL": "SPY", "PATN": "EFA", "IAI": "XLF", "XAR": "ITA", "PAVE": "XLI",
+    "USAI": "XLE", "SDCI": "DBC", "USFR": "BIL", "GLD": "GLD", "XLV": "SPY", "XLE": "SPY",
+}
+
+
+def events_timeline(sym: str) -> dict:
+    sys.path.insert(0, ROOT)
+    from portfolio.events import load_cached, build
+    return load_cached(sym) or build(sym)
+
+
+def attribution_for(sym: str, sector: str = None) -> dict:
+    sys.path.insert(0, ROOT)
+    from portfolio.attribution import build
+    sec = sector or SECTOR_MAP.get(sym.upper())
+    return build(sym, sec)
+
+
 def run_backtest(q: dict) -> dict:
     sys.path.insert(0, ROOT)
     from portfolio.backtest import run, STRATEGIES, LABELS
@@ -313,6 +336,19 @@ class Handler(SimpleHTTPRequestHandler):
             build = parse_qs(u.query).get("build", ["0"])[0] == "1"
             try:
                 return self._json(etf_profile(sym, build=build))
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}", "ticker": sym.upper()}, 200)
+        if u.path.startswith("/api/events/"):
+            sym = u.path.rsplit("/", 1)[1]
+            try:
+                return self._json(events_timeline(sym))
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}", "ticker": sym.upper(), "events": []}, 200)
+        if u.path.startswith("/api/attribution/"):
+            sym = u.path.rsplit("/", 1)[1]
+            sector = parse_qs(u.query).get("sector", [None])[0]
+            try:
+                return self._json(attribution_for(sym, sector))
             except Exception as e:  # noqa: BLE001
                 return self._json({"error": f"{type(e).__name__}: {e}", "ticker": sym.upper()}, 200)
         if u.path == "/api/ycharts":
