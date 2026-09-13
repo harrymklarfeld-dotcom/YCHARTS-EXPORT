@@ -126,6 +126,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("tickers", nargs="*")
     ap.add_argument("--portfolio", action="store_true", help="pull every ticker in your snapshot")
+    ap.add_argument("--watchlist", help="pull a named watchlist (e.g. sl_model) from portfolio.watchlists / config/watchlists.json")
     ap.add_argument("--years", type=int, default=15)
     ap.add_argument("--metrics", help="comma-separated series metrics (default: the research set)")
     ap.add_argument("--key", default=None, help="API key (else $YCHARTS_API_KEY)")
@@ -136,6 +137,9 @@ def main(argv=None):
                  "If your YCharts plan has no API key, use the Excel Add-in export route instead "
                  "(see research/ycharts_formatting.md).")
     tickers = list(args.tickers) + (portfolio_tickers() if args.portfolio else [])
+    if args.watchlist:
+        from portfolio.watchlists import load_user
+        tickers += load_user(args.watchlist)
     tickers = sorted(set(t.upper() for t in tickers))
     if not tickers:
         sys.exit("Give tickers, or --portfolio.")
