@@ -1,3 +1,30 @@
 .cache/
 __pycache__/
 *.pyc
+# your brokerage data never goes in git
+data/portfolio/*
+!data/portfolio/sample_snapshot.json
+!data/portfolio/imports/
+data/portfolio/imports/*
+!data/portfolio/imports/README.txt
+data/prices/*
+!data/prices/DEMO_*.csv
+.tokens/
+*.pickle
+.env
+# personal financial output stays local (this repo is public)
+reports/portfolio_analysis_*.md
+reports/data_check_*.md
+reports/replay*.md
+reports/hedge_strategy.json
+reports/valuation.md
+data/ycharts_cache/
+data/etf_profiles/
+data/events/
+data/fundamentals/
+data/macro/
+data/paper/
+# YCharts explorer: your login cookies and captured pages stay local
+data/.ycharts_profile/
+research/ycharts_capture/
+data/prospects.json

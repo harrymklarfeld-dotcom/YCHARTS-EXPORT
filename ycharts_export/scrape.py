@@ -36,6 +36,7 @@ UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
 
 # metric slug -> (label, units hint)
 DEFAULT_METRICS = {
+    "price": ("Price", "$"),
     "market_cap": ("Market Cap", "$"),
     "enterprise_value": ("Enterprise Value", "$"),
     "pe_ratio": ("PE Ratio (TTM)", "x"),
