@@ -13,14 +13,26 @@
   ],
   "my_holdings": [
     "VOO",
-    "MU",
     "NVDA",
     "AAPL",
+    "MU",
     "XLV",
-    "XLE",
+    "GLD",
     "HACK",
-    "META",
-    "AVGO"
+    "XLE",
+    "META"
+  ],
+  "prospects": [
+    "DBMF",
+    "AVUV",
+    "SCHD",
+    "COWZ",
+    "USMV",
+    "SDCI",
+    "USFR",
+    "XAR",
+    "IAI",
+    "USAI"
   ],
   "hedge_candidates": [
     "GLD",

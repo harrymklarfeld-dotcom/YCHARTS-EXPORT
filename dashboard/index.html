@@ -146,6 +146,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="trades">Trades &amp; income</button>
   <button data-tab="compare">Compare</button>
   <button data-tab="etf">ETF profile</button>
+  <button data-tab="prospects">Prospects</button>
   <button data-tab="why">Why it moved</button>
   <button data-tab="research">Research</button>
   <button data-tab="macro">Macro</button>
@@ -236,6 +237,15 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
       <div class="card"><h2>Basic info &amp; strategy</h2><div id="etfinfo"></div></div>
     </div>
     <div class="card"><h2>News</h2><div id="etfnews"></div></div>
+  </div>
+</section>
+<section class="panel" id="prospects">
+  <div class="card">
+    <h2>ETF prospects <small>ranked by fit to <em>your</em> book — low correlation + low overlap + real return</small></h2>
+    <div id="prospempty" class="notice" hidden></div>
+    <div id="prospsub" class="muted" style="font-size:12px;margin-bottom:8px"></div>
+    <div class="tbl" id="prosptable"></div>
+    <p class="muted" style="font-size:12px;margin-top:8px">Fit score weights correlation-to-your-book (55%), risk-adjusted return (30%), and holdings overlap with what you already own (15%). A high fit means it does a job your portfolio doesn't already have. Research notes: <code>research/etf_prospects.md</code>.</p>
   </div>
 </section>
 <section class="panel" id="why">
@@ -904,6 +914,36 @@ async function drawOverlap() {
 }
 // ---------- ETF quote page end ----------
 
+// ---------- ETF prospects: ranked by fit to the user's book ----------
+const ROLE_LABEL = { hedge: 'Hedge', cash: 'Cash', factor: 'Factor', income: 'Income', growth: 'Growth' };
+async function renderProspects() {
+  let d; try { d = await apiGet('/api/prospects'); } catch (e) { d = { error: 'offline', ranked: [] }; }
+  const em = $('#prospempty');
+  if (d.error || !(d.ranked || []).length) {
+    em.hidden = false;
+    em.innerHTML = (d.error ? d.error : 'No prospect ranking yet.') + ' On your Mac run <code>python3 -m portfolio.prospects</code> to rank the candidate ETFs against your live book.';
+    $('#prosptable').innerHTML = ''; $('#prospsub').textContent = ''; return;
+  }
+  em.hidden = true;
+  $('#prospsub').innerHTML = `Scored against your book (${(d.book || []).join(', ')}) · as of ${fmtD(d.as_of)}`;
+  const fitBar = f => `<span class="bar" style="width:${Math.max(3, f)}%;background:${f >= 60 ? 'var(--good)' : f >= 45 ? 'var(--s4)' : 'var(--ink-3)'}"></span>`;
+  const corrCell = c => c == null ? '--' : `<span class="${c < 0.3 ? 'up' : c > 0.8 ? 'down' : ''}">${fmtN(c, 2)}</span>`;
+  $('#prosptable').innerHTML = '<table><thead><tr><th>ETF</th><th>Role</th><th>Corr to book</th><th>Overlap</th><th>1Y</th><th>Vol</th><th>Sharpe</th><th>Max DD</th><th>Fit</th><th style="text-align:left">Verdict</th></tr></thead><tbody>' +
+    d.ranked.map(r => `<tr class="row">
+      <td class="sym">${r.ticker}<span class="name">${r.role_name || ''}</span></td>
+      <td>${ROLE_LABEL[r.role] || r.role}</td>
+      <td>${corrCell(r.corr_to_book)}</td>
+      <td>${r.overlap_with_book_pct == null ? '--' : fmtP(r.overlap_with_book_pct, 0)}</td>
+      <td class="${cls(r.ret_1y_pct)}">${r.ret_1y_pct == null ? '--' : fmtP(r.ret_1y_pct, 1, true)}</td>
+      <td>${r.vol_pct == null ? '--' : fmtP(r.vol_pct, 0)}</td>
+      <td>${r.sharpe == null ? '--' : fmtN(r.sharpe, 2)}</td>
+      <td class="down">${r.max_dd_pct == null ? '--' : fmtP(r.max_dd_pct, 0)}</td>
+      <td style="min-width:120px">${fitBar(r.fit_score)} <b>${fmtN(r.fit_score, 0)}</b></td>
+      <td style="text-align:left;color:var(--ink-2);white-space:normal;max-width:260px">${r.verdict || ''}</td>
+    </tr>`).join('') + '</tbody></table>';
+}
+// ---------- prospects end ----------
+
 // ---------- "Why it moved": event-annotated chart + sentiment/EMH attribution ----------
 const EV_PRIORITY = { earnings: 3, move: 2, news: 1, dividend: 0, split: 0 };
 function whyRoster() {
@@ -1190,7 +1230,7 @@ function bindTips(root) {
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'prospects') renderProspects(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };

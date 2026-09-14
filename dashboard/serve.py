@@ -16,6 +16,7 @@ Endpoints:
     GET  /api/etf                                    roster of the S&L model funds (+ which are cached)
     GET  /api/etf/SMH                                full YCharts-style profile for one ETF
     GET  /api/overlap?a=SMH&b=QQQ                    holdings overlap between two funds
+    GET  /api/prospects                              candidate ETFs ranked by fit to your book
     GET  /api/events/NVDA                            dated event timeline (earnings, news, big moves)
     GET  /api/attribution/NVDA                       market/sector/residual attribution + sentiment gauge
 
@@ -153,6 +154,21 @@ def read_research(sym: str) -> dict:
 
 
 ETF_CACHE = os.path.join(ROOT, "data", "etf_profiles")
+
+
+def read_prospects() -> dict:
+    """Ranked ETF prospects vs the user's book. Reads the cached ranking, builds it if missing."""
+    sys.path.insert(0, ROOT)
+    fp = os.path.join(ROOT, "data", "prospects.json")
+    if os.path.exists(fp):
+        with open(fp, encoding="utf-8") as fh:
+            return json.load(fh)
+    try:
+        from portfolio.prospects import rank
+        return rank()
+    except Exception as e:  # noqa: BLE001
+        return {"error": f"{type(e).__name__}: {e}. On your Mac run: python3 -m portfolio.prospects",
+                "ranked": [], "book": []}
 
 
 def list_etf_profiles() -> dict:
@@ -323,6 +339,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(list_research())
         if u.path.startswith("/api/research/"):
             return self._json(read_research(u.path.rsplit("/", 1)[1]))
+        if u.path == "/api/prospects":
+            return self._json(read_prospects())
         if u.path == "/api/etf":
             return self._json(list_etf_profiles())
         if u.path == "/api/overlap":

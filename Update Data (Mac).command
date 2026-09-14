@@ -22,5 +22,9 @@ echo
 echo "Building event timelines (earnings, news, big-move days) for the 'Why it moved' tab..."
 python3 -m portfolio.events --portfolio --watchlist sl_model
 echo
+echo "Ranking ETF prospects against your live book (fit / correlation / overlap)..."
+python3 -m portfolio.etf_profile --all >/dev/null 2>&1
+python3 -m portfolio.prospects
+echo
 echo "Opening the dashboard — see the ETF profile and Macro tabs."
 python3 -m dashboard.serve --refresh 300 --open

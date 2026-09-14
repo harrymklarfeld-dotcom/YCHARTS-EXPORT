@@ -27,3 +27,4 @@ data/paper/
 # YCharts explorer: your login cookies and captured pages stay local
 data/.ycharts_profile/
 research/ycharts_capture/
+data/prospects.json
