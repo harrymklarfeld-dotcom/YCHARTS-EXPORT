@@ -17,7 +17,8 @@ Endpoints:
     GET  /api/etf/SMH                                full YCharts-style profile for one ETF
     GET  /api/overlap?a=SMH&b=QQQ                    holdings overlap between two funds
     GET  /api/prospects                              candidate ETFs ranked by fit to your book
-    GET  /api/events/NVDA                            dated event timeline (earnings, news, big moves)
+    GET  /api/events/NVDA                            dated event timeline (earnings, news, big moves + curated notes)
+    POST /api/annotate                               write one curated chart-memory note (portfolio.annotations)
     GET  /api/attribution/NVDA                       market/sector/residual attribution + sentiment gauge
 
 Binds to 127.0.0.1 only: this is your brokerage data. Do not expose it.
@@ -73,8 +74,14 @@ def read_history() -> list[dict]:
 def read_prices(sym: str) -> list:
     sys.path.insert(0, ROOT)
     from portfolio.prices import _read_csv, CACHE
-    p = os.path.join(ROOT, CACHE, f"{sym.upper()}.csv")
-    return _read_csv(p) if os.path.exists(p) else []
+    # try the symbol and its DEMO_ twin, so the per-holding chart works in demo mode too
+    for name in (sym.upper(), "DEMO_" + sym.upper()):
+        p = os.path.join(ROOT, CACHE, f"{name}.csv")
+        if os.path.exists(p):
+            rows = _read_csv(p)
+            if rows:
+                return rows
+    return []
 
 
 def read_all_prices(symbols, start="2015-01-01"):
@@ -218,7 +225,13 @@ SECTOR_MAP = {  # rough sector ETF per ticker for the attribution factor model
 def events_timeline(sym: str) -> dict:
     sys.path.insert(0, ROOT)
     from portfolio.events import load_cached, build
-    return load_cached(sym) or build(sym)
+    tl = load_cached(sym) or build(sym)
+    try:  # fold curated chart-memory notes (ticker + MACRO) on top of the auto timeline
+        from portfolio.annotations import merge_into_timeline
+        tl = merge_into_timeline(tl, sym)
+    except Exception:  # noqa: BLE001 — notes are additive; never let them break the timeline
+        pass
+    return tl
 
 
 def attribution_for(sym: str, sector: str = None) -> dict:
@@ -389,6 +402,17 @@ class Handler(SimpleHTTPRequestHandler):
                 return self._json({"ok": False, "error": "demo mode: no Robinhood refresh"})
             threading.Thread(target=refresh, kwargs={"no_orders": "fast" in u.query}, daemon=True).start()
             return self._json({"ok": True, "started": True})
+        if u.path == "/api/annotate":  # write one curated chart-memory note
+            try:
+                length = int(self.headers.get("Content-Length") or 0)
+                body = self.rfile.read(length) if length else b"{}"
+                note = json.loads(body.decode("utf-8"))
+                sys.path.insert(0, ROOT)
+                from portfolio.annotations import add
+                saved = add(note)
+                return self._json({"ok": True, "note": saved})
+            except Exception as e:  # noqa: BLE001
+                return self._json({"ok": False, "error": f"{type(e).__name__}: {e}"}, 200)
         self.send_error(404)
 
 

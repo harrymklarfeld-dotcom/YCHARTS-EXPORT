@@ -7,7 +7,7 @@
   --bg:#f6f6f4; --surface:#fcfcfb; --surface-2:#f0efec; --line:#e2e1dc; --line-2:#cfceC8;
   --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#7d7c77;
   --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
-  --good:#0ca30c; --bad:#d03b3b; --warn:#fab219; --accent:#2a78d6; --accent-ink:#fff;
+  --good:#0ca30c; --bad:#d03b3b; --warn:#fab219; --accent:#2a78d6; --accent-ink:#fff; --note:#c88a1a;
   --seq-1:#cde2fb; --seq-2:#86b6ef; --seq-3:#3987e5; --seq-4:#1c5cab; --seq-5:#0d366b;
   --mid:#f0efec;
 }
@@ -17,7 +17,7 @@
     --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --line:#2e2e2b; --line-2:#3f3f3b;
     --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#8f8e87;
     --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
-    --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835;
+    --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835; --note:#e0b341;
   }
 }
 :root[data-theme="dark"]{
@@ -25,7 +25,7 @@
   --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --line:#2e2e2b; --line-2:#3f3f3b;
   --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#8f8e87;
   --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
-  --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835;
+  --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835; --note:#e0b341;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-inline:16px;padding-block:0 40px}
@@ -945,7 +945,7 @@ async function renderProspects() {
 // ---------- prospects end ----------
 
 // ---------- "Why it moved": event-annotated chart + sentiment/EMH attribution ----------
-const EV_PRIORITY = { earnings: 3, move: 2, news: 1, dividend: 0, split: 0 };
+const EV_PRIORITY = { note: 4, earnings: 3, move: 2, news: 1, dividend: 0, split: 0 };
 function whyRoster() {
   const held = (snap && snap.holdings || []).map(h => h.symbol);
   const model = etfModel.map(t => t.ticker);
@@ -1006,6 +1006,7 @@ function inspectDay(d) {
   let spyRet = null;
   if (whySpy && whySpy.length) { const j = whySpy.findIndex(r => r[0] === d); if (j > 0) spyRet = (whySpy[j][1] / whySpy[j - 1][1] - 1) * 100; }
   const evs = (ev.by_date || {})[d] || [];
+  const notes = evs.filter(e => e.type === 'note');
   const news = evs.filter(e => e.type === 'news'), earn = evs.filter(e => e.type === 'earnings'), mv = evs.filter(e => e.type === 'move');
   let rel = '';
   if (ret != null && spyRet != null) {
@@ -1020,10 +1021,60 @@ function inspectDay(d) {
       <span class="tnum">${price == null ? '' : fmtM(price)} ${ret == null ? '' : `<span class="${cls(ret)}">${fmtP(ret, 2, true)}</span>`} ${spyRet == null ? '' : `<span class="muted" style="font-size:12px">· S&P ${fmtP(spyRet, 2, true)}</span>`}</span>
     </div>
     ${rel ? `<p style="font-size:13px;color:var(--ink-2);margin:6px 0">${rel}</p>` : ''}
+    ${notes.map(n => `
+      <div style="margin:8px 0;padding:9px 11px;border-left:3px solid var(--note,#e0b341);background:color-mix(in srgb,var(--note,#e0b341) 9%,transparent);border-radius:0 6px 6px 0">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:baseline">
+          <b style="font-size:14px">${esc(n.title || '')}</b>
+          <span class="pillv" style="background:color-mix(in srgb,var(--note,#e0b341) 24%,transparent);color:var(--ink)">${esc((n.category || 'note').toUpperCase())}</span>
+          ${n.scope === 'MACRO' ? '<span class="pillv" style="background:color-mix(in srgb,var(--s1) 22%,transparent)">MACRO</span>' : ''}
+          ${n.end ? `<span class="muted" style="font-size:11px">through ${fmtD(n.end)}</span>` : ''}
+        </div>
+        ${n.note ? `<p style="font-size:13px;color:var(--ink-2);margin:5px 0 4px">${esc(n.note)}</p>` : ''}
+        <div class="muted" style="font-size:11px">${(n.sources || []).map((s, i) => `<a href="${esc(s)}" target="_blank" rel="noopener" style="color:var(--accent)">source${(n.sources.length > 1 ? ' ' + (i + 1) : '')}</a>`).join(' · ')}${n.author ? `${(n.sources || []).length ? ' · ' : ''}noted by ${esc(n.author)}` : ''}</div>
+      </div>`).join('')}
     ${earn.map(e => `<div style="margin:6px 0"><span class="pillv exp" style="background:color-mix(in srgb,var(--s7) 22%,transparent);color:var(--s7)">EARNINGS</span> ${e.detail}</div>`).join('')}
     ${mv.map(e => `<div class="muted" style="font-size:12px;margin:4px 0">${e.detail}</div>`).join('')}
     ${news.length ? '<div style="margin-top:8px">' + news.map(e => `<div style="padding:6px 0;border-bottom:1px solid var(--line)"><a href="${e.link || '#'}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">${e.detail}</a> <span class="pillv ${e.sentiment > 0.1 ? 'cheap' : e.sentiment < -0.1 ? 'exp' : 'fair'}">${e.sentiment_label || 'Neutral'}</span> ${e.publisher ? `<span class="muted" style="font-size:11px">${e.publisher}</span>` : ''}</div>`).join('') + '</div>'
-      : (earn.length ? '' : '<p class="muted" style="font-size:12px;margin-top:6px">No news or earnings on file for this day — if it moved, it was likely the market or positioning.</p>')}`;
+      : (earn.length || notes.length ? '' : '<p class="muted" style="font-size:12px;margin-top:6px">No news or earnings on file for this day — if it moved, it was likely the market or positioning.</p>')}
+    <details style="margin-top:12px" id="notedetails">
+      <summary style="cursor:pointer;font-size:12px;color:var(--accent)">✎ Add a note for ${fmtD(d)}</summary>
+      <div style="display:grid;gap:6px;margin-top:8px">
+        <input id="ntitle" placeholder="Title — e.g. China H20 export ban" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:13px">
+        <textarea id="nnote" placeholder="What happened, in plain English…" rows="2" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:13px;resize:vertical"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+          <select id="ncat" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:12px">
+            ${['product','earnings','guidance','regulatory','fed','macro-print','geopolitical','decision','other'].map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+          <label style="font-size:12px;display:flex;gap:4px;align-items:center"><input type="checkbox" id="nmacro"> market-wide (MACRO)</label>
+          <input id="nsrc" placeholder="source URL (optional)" style="flex:1;min-width:120px;padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:12px">
+          <button id="nsave" style="padding:6px 12px;border:0;border-radius:6px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer">Save</button>
+        </div>
+        <span id="nmsg" class="muted" style="font-size:11px"></span>
+      </div>
+    </details>`;
+  const saveBtn = $('#nsave');
+  if (saveBtn) saveBtn.onclick = () => saveNote(sym, d);
+}
+async function saveNote(sym, d) {
+  const title = ($('#ntitle').value || '').trim();
+  const msg = $('#nmsg');
+  if (!title) { msg.textContent = 'A title is required.'; return; }
+  const macro = $('#nmacro').checked;
+  const src = ($('#nsrc').value || '').trim();
+  const body = {
+    scope: macro ? 'MACRO' : sym, date: d, title,
+    note: ($('#nnote').value || '').trim(), category: $('#ncat').value,
+    sources: src ? [src] : [], author: 'harry',
+  };
+  msg.textContent = 'saving…';
+  try {
+    const r = await fetch('/api/annotate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!j.ok) { msg.textContent = 'error: ' + (j.error || 'failed'); return; }
+    delete whyEvents[sym];              // force a refetch so the new note shows
+    await drawWhy();
+    inspectDay(d);
+  } catch (e) { msg.textContent = 'error: ' + e; }
 }
 function renderAttr(at) {
   const g = $('#whygauge'), rc = $('#whyrecent'), interp = $('#whyinterp');
@@ -1181,7 +1232,10 @@ function lineChart(series, opt = {}) {
     g += `<path d="${path.join('')}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
   });
   (opt.marks || []).forEach(k => {
-    if (k.ev) {  // event marker: color by type/sentiment, tooltip carries the detail
+    if (k.ev === 'note') {  // curated chart-memory note: a gold diamond you can't miss
+      const s = 5.5, x = X(k.d), y = Y(k.y);
+      g += `<path d="M${x} ${y - s}L${x + s} ${y}L${x} ${y + s}L${x - s} ${y}Z" fill="var(--note, #e0b341)" stroke="var(--surface)" stroke-width="1.5" class="hit" data-tip="${fmtD(k.d)}|NOTE|${(k.detail || '').replace(/"/g, '&quot;').replace(/\|/g, '/')}"/>`;
+    } else if (k.ev) {  // event marker: color by type/sentiment, tooltip carries the detail
       const col = k.ev === 'earnings' ? 'var(--s7)' : k.ev === 'move' ? 'var(--s2)'
         : k.sent > 0.1 ? 'var(--good)' : k.sent < -0.1 ? 'var(--bad)' : 'var(--s1)';
       g += `<circle cx="${X(k.d)}" cy="${Y(k.y)}" r="${k.ev === 'earnings' ? 5 : 3.6}" fill="${col}" stroke="var(--surface)" stroke-width="1.5" class="hit" data-tip="${fmtD(k.d)}|${(k.ev || '').toUpperCase()}|${(k.detail || '').replace(/"/g, '&quot;').replace(/\|/g, '/')}"/>`;
