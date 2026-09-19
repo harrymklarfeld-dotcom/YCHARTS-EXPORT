@@ -10,6 +10,7 @@ over the snapshot files written by portfolio.robinhood_sync / portfolio.csv_impo
 Endpoints:
     GET  /api/snapshot     current snapshot (holdings, summary, trades, dividends, equity curve)
     GET  /api/history      one row per day from data/portfolio/history/*.json (your own equity over time)
+    GET  /api/networth     combined net worth across every account (portfolio.accounts)
     GET  /api/prices/SYM   cached daily closes for SYM from data/prices (for the per-holding chart)
     POST /api/refresh      run portfolio.robinhood_sync now (uses the cached session token)
     GET  /api/backtest?symbol=MU&amount=500&freq=M   strategy comparison JSON for the backtest tab
@@ -234,6 +235,13 @@ def events_timeline(sym: str) -> dict:
     return tl
 
 
+def networth_view() -> dict:
+    """Combined net worth across the served (primary) snapshot + any marked sibling accounts."""
+    sys.path.insert(0, ROOT)
+    from portfolio.accounts import networth
+    return networth(primary_snap=read_snapshot(), primary_path=STATE["snapshot_path"])
+
+
 def attribution_for(sym: str, sector: str = None) -> dict:
     sys.path.insert(0, ROOT)
     from portfolio.attribution import build
@@ -325,6 +333,11 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(read_snapshot())
         if u.path == "/api/history":
             return self._json(read_history())
+        if u.path == "/api/networth":
+            try:
+                return self._json(networth_view())
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}", "accounts": [], "holdings": []}, 200)
         if u.path == "/api/prices":
             snap = read_snapshot()
             syms = [h["symbol"] for h in snap.get("holdings", [])]

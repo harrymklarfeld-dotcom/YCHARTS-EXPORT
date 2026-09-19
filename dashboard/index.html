@@ -141,6 +141,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
 
 <nav class="tabs">
   <button data-tab="holdings" class="active">Holdings</button>
+  <button data-tab="networth">Net worth</button>
   <button data-tab="avgcost">Average cost</button>
   <button data-tab="perf">Performance</button>
   <button data-tab="trades">Trades &amp; income</button>
@@ -157,6 +158,18 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
 <section class="panel active" id="holdings">
   <div class="card"><h2>Holdings <small id="hcount"></small></h2><div class="tbl" id="htable"></div></div>
   <div id="drawer" hidden></div>
+</section>
+
+<section class="panel" id="networth">
+  <div class="card">
+    <h2>Net worth <small id="nwsub">every account in one place</small></h2>
+    <div id="nwtop"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>Accounts <small>share of total</small></h2><div class="tbl" id="nwaccts"></div></div>
+    <div class="card"><h2>Blended allocation <small>combined exposure across accounts</small></h2><div id="nwalloc"></div></div>
+  </div>
+  <div class="card"><h2>Combined holdings <small>same ticker across accounts is rolled up</small></h2><div class="tbl" id="nwholdings"></div></div>
 </section>
 
 <section class="panel" id="avgcost">
@@ -617,6 +630,42 @@ function hBars(items) {
       <rect class="hit" data-tip="${esc(it.label)}|${fmtP(it.v, 1)}|${esc(it.extra)}" x="${L}" y="${y + 4}" width="${Math.max(2, w)}" height="${rh - 8}" rx="3" fill="${it.muted ? 'var(--ink-3)' : 'var(--s1)'}"/>
       <text x="${L + w + 6}" y="${y + 15}" font-size="11" fill="var(--ink-2)">${fmtP(it.v, 1)} · ${it.extra}</text>`;
   }).join('') + '</svg>';
+}
+
+// ---------- net worth (all accounts) ----------
+let nwData = null;
+async function renderNetworth() {
+  try { nwData = await apiGet('/api/networth'); } catch (e) { nwData = { error: String(e), accounts: [], holdings: [] }; }
+  const nw = nwData || {};
+  if (nw.error || !(nw.accounts || []).length) {
+    $('#nwtop').innerHTML = `<p class="muted">${nw.error ? esc(nw.error) : 'No accounts yet.'} Your primary snapshot plus any <code>data/portfolio/*.json</code> file with an <code>"account"</code> field are combined here.</p>`;
+    $('#nwaccts').innerHTML = $('#nwholdings').innerHTML = ''; $('#nwalloc').innerHTML = ''; return;
+  }
+  const top = nw.holdings[0];
+  const gain = nw.total_unrealized_gain, gpct = (nw.total_cost_basis ? gain / nw.total_cost_basis * 100 : null);
+  const asof = [...new Set(nw.accounts.map(a => (a.as_of || '').slice(0, 10)).filter(Boolean))];
+  $('#nwsub').textContent = `${nw.n_accounts} accounts · as of ${asof.join(' / ') || '—'}`;
+  $('#nwtop').innerHTML = '<div class="tiles">' + [
+    ['Total net worth', fmtM(nw.total_equity), `${nw.n_accounts} accounts · cash ${fmtM(nw.total_cash)}`],
+    ['Unrealized P&amp;L', gain == null ? '<span class="muted">n/a</span>' : `<span class="${cls(gain)}">${fmtSign(gain)}</span>`,
+      gain == null ? 'add cost basis to every account for a combined figure' : `<span class="${cls(gain)}">${fmtP(gpct, 2, true)}</span> on ${fmtM(nw.total_cost_basis)} cost basis`],
+    ['Largest position', top ? top.symbol : '--', top ? `${fmtP(top.weight, 1)} of net worth · ${fmtM(top.market_value)}` : ''],
+    ['Positions', String(nw.holdings.length), `${nw.holdings.filter(h => h.held_in > 1).length} held in more than one account`],
+  ].map(([k, v, d]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('') + '</div>';
+
+  $('#nwaccts').innerHTML = `<table><thead><tr><th>Account</th><th>Value</th><th>Share</th><th>Gain</th></tr></thead><tbody>` +
+    nw.accounts.map(a => `<tr><td>${esc(a.name)}${a.n_holdings ? ` <span class="muted">(${a.n_holdings})</span>` : ''}</td><td>${fmtM(a.equity)}</td><td>${fmtP(a.weight, 1)}</td><td class="${cls(a.unrealized_gain)}">${a.unrealized_gain == null ? '<span class="muted">--</span>' : fmtSign(a.unrealized_gain)}</td></tr>`).join('') +
+    `<tr style="font-weight:650;border-top:2px solid var(--line-2)"><td>Total</td><td>${fmtM(nw.total_equity)}</td><td>100%</td><td class="${cls(nw.total_unrealized_gain)}">${nw.total_unrealized_gain == null ? '<span class="muted">--</span>' : fmtSign(nw.total_unrealized_gain)}</td></tr>` +
+    `</tbody></table>`;
+
+  const al = nw.holdings.map(h => ({ label: h.symbol, v: h.weight, extra: fmtM(h.market_value) + (h.held_in > 1 ? ` · ${h.held_in} accts` : '') }));
+  if (nw.total_cash) al.push({ label: 'Cash', v: nw.total_equity ? nw.total_cash / nw.total_equity * 100 : 0, extra: fmtM(nw.total_cash), muted: true });
+  $('#nwalloc').innerHTML = hBars(al);
+
+  $('#nwholdings').innerHTML = `<table><thead><tr><th>Symbol</th><th>Shares</th><th>Market value</th><th>% of net worth</th><th>Cost basis</th><th>Gain</th><th>Accounts</th></tr></thead><tbody>` +
+    nw.holdings.map(h => `<tr><td class="sym">${h.symbol}</td><td>${fmtN(h.shares, 4)}</td><td>${fmtM(h.market_value)}</td><td>${fmtP(h.weight, 1)}</td><td>${h.cost_basis == null ? '<span class="muted">--</span>' : fmtM(h.cost_basis)}</td><td class="${cls(h.gain)}">${h.gain == null ? '<span class="muted">--</span>' : fmtSign(h.gain)}</td><td class="muted" style="font-size:12px">${h.accounts.map(esc).join(', ')}</td></tr>`).join('') +
+    `</tbody></table><p class="muted" style="font-size:12px">Same ticker in two accounts is summed here — that's your true exposure. Cost basis shows only where every account holding the ticker reports it.</p>`;
+  bindTips($('#networth'));
 }
 
 // ---------- performance ----------
@@ -1284,7 +1333,7 @@ function bindTips(root) {
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'prospects') renderProspects(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'networth') renderNetworth(); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'prospects') renderProspects(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };
