@@ -1,0 +1,55 @@
+{
+  "sl_model": [
+    "QDPL",
+    "QQQ",
+    "SMH",
+    "PATN",
+    "IAI",
+    "XAR",
+    "PAVE",
+    "USAI",
+    "SDCI",
+    "USFR"
+  ],
+  "my_holdings": [
+    "VOO",
+    "NVDA",
+    "AAPL",
+    "MU",
+    "XLV",
+    "GLD",
+    "HACK",
+    "XLE",
+    "META"
+  ],
+  "prospects": [
+    "DBMF",
+    "AVUV",
+    "SCHD",
+    "COWZ",
+    "USMV",
+    "SDCI",
+    "USFR",
+    "XAR",
+    "IAI",
+    "USAI"
+  ],
+  "hedge_candidates": [
+    "GLD",
+    "SDCI",
+    "USFR",
+    "USAI",
+    "USMV",
+    "VYM",
+    "DBMF",
+    "BIL"
+  ],
+  "macro": [
+    "^VIX",
+    "DX-Y.NYB",
+    "^TNX",
+    "GLD",
+    "USO",
+    "HYG"
+  ]
+}

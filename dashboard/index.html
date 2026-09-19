@@ -1,0 +1,1436 @@
+<meta charset="utf-8">
+<title>Portfolio Desk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f6f4; --surface:#fcfcfb; --surface-2:#f0efec; --line:#e2e1dc; --line-2:#cfceC8;
+  --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#7d7c77;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
+  --good:#0ca30c; --bad:#d03b3b; --warn:#fab219; --accent:#2a78d6; --accent-ink:#fff; --note:#c88a1a;
+  --seq-1:#cde2fb; --seq-2:#86b6ef; --seq-3:#3987e5; --seq-4:#1c5cab; --seq-5:#0d366b;
+  --mid:#f0efec;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --line:#2e2e2b; --line-2:#3f3f3b;
+    --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#8f8e87;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+    --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835; --note:#e0b341;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121211; --surface:#1a1a19; --surface-2:#242422; --line:#2e2e2b; --line-2:#3f3f3b;
+  --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#8f8e87;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+  --good:#0ca30c; --bad:#e66767; --warn:#fab219; --accent:#3987e5; --accent-ink:#fff; --mid:#383835; --note:#e0b341;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-inline:16px;padding-block:0 40px}
+.wrap{max-width:1240px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding:20px 0 12px;border-bottom:1px solid var(--line)}
+h1{font-size:22px;margin:0;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--ink-3);font-size:12px;margin-top:3px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button,select,input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:6px;padding:6px 10px}
+button{cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button:disabled{opacity:.5;cursor:default}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.dot.on{background:var(--good)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:16px 0}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.tile .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.tile .v{font-size:24px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tile .d{font-size:12px;color:var(--ink-2);margin-top:2px;font-variant-numeric:tabular-nums}
+.up{color:var(--good)} .down{color:var(--bad)}
+nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-top:8px;overflow-x:auto}
+nav.tabs button{border:0;background:none;border-radius:0;padding:10px 14px;color:var(--ink-2);border-bottom:2px solid transparent;white-space:nowrap}
+nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+section.panel{display:none;padding-top:16px} section.panel.active{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:14px;margin:0 0 10px;font-weight:600}
+.card h2 small{color:var(--ink-3);font-weight:400;margin-left:8px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:500;text-align:right;cursor:pointer;user-select:none;background:var(--surface)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+td{text-align:right}
+th.sorted{color:var(--ink)}
+tr.row:hover td{background:var(--surface-2)}
+tr.row{cursor:pointer}
+tr.total td{font-weight:600;border-top:2px solid var(--line-2);border-bottom:0}
+.sym{font-weight:600} .name{color:var(--ink-3);font-size:12px;font-weight:400;display:block;margin-top:-2px}
+.muted{color:var(--ink-3)}
+.bar{display:inline-block;height:6px;border-radius:3px;background:var(--s1);vertical-align:middle;margin-right:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+.axis text{fill:var(--ink-3);font-size:11px}
+.axis line,.grid line{stroke:var(--line);stroke-width:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink-2);margin:6px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tip{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--line-2);border-radius:6px;padding:8px 10px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.12);display:none;z-index:20;min-width:140px;font-variant-numeric:tabular-nums}
+.tip b{display:block;margin-bottom:4px}
+.tip .r{display:flex;justify-content:space-between;gap:12px}
+.range{display:flex;gap:4px;margin-bottom:8px}
+.range button{padding:3px 9px;font-size:12px}
+.range button.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.cmpbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.segmented{display:inline-flex;border:1px solid var(--line-2);border-radius:7px;overflow:hidden}
+.segmented button{border:0;background:var(--surface);color:var(--ink-2);padding:5px 11px;font-size:12px;cursor:pointer;border-radius:0}
+.segmented button.active{background:var(--accent);color:var(--accent-ink)}
+.cmpsyms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:20px;padding:4px 11px;font-size:12.5px;cursor:pointer;user-select:none;background:var(--surface);font-variant-numeric:tabular-nums}
+.chip i{width:9px;height:9px;border-radius:50%}
+.chip.off{opacity:.4}
+.chip .rp{font-family:inherit}
+.spark{vertical-align:middle;display:inline-block}
+.notice{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--ink-2);margin:14px 0}
+.notice code{background:var(--surface);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+.drawer{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px 16px;margin:8px 0 12px}
+.stats div{font-size:12px;color:var(--ink-3)} .stats div b{display:block;color:var(--ink);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums} .stats div span.muted{display:block;font-size:11px}
+.rets{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+@media (max-width:720px){.rets{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:420px){.rets{grid-template-columns:repeat(2,1fr)}}
+.ret{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface-2)}
+.ret .p{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.ret .n{font-size:19px;font-weight:650;margin-top:3px;font-variant-numeric:tabular-nums}
+.ret.sel{outline:2px solid var(--accent);outline-offset:-1px}
+form.bt{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:12px}
+form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:column;gap:3px;text-transform:uppercase;letter-spacing:.05em}
+.err{color:var(--bad);font-size:12px}
+.regime{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--surface-2)}
+.regime .lb{font-size:22px;font-weight:700}
+.regime .sc{font-size:12px;color:var(--ink-2)}
+.regime.off{border-color:var(--bad)} .regime.on{border-color:var(--good)} .regime.caut{border-color:var(--warn)}
+.pillv{font-family:inherit;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px}
+.pillv.cheap{background:color-mix(in srgb,var(--good) 20%,transparent);color:var(--good)}
+.pillv.fair{background:var(--surface-2);color:var(--ink-2)}
+.pillv.exp{background:color-mix(in srgb,var(--bad) 20%,transparent);color:var(--bad)}
+.footer{font-size:11px;color:var(--ink-3);margin-top:20px}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <h1>Portfolio Desk</h1>
+    <div class="sub" id="sub">Loading…</div>
+  </div>
+  <div class="controls">
+    <span class="live"><span class="dot" id="dot"></span><span id="livetxt">idle</span></span>
+    <button id="refresh" class="primary" title="Pull fresh numbers from Robinhood (uses the cached session)">Refresh from Robinhood</button>
+    <select id="auto" title="Auto-refresh interval">
+      <option value="0">Manual</option><option value="60">Every 1 min</option><option value="300">Every 5 min</option><option value="900">Every 15 min</option>
+    </select>
+    <button id="theme" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<div id="notice" class="notice" hidden></div>
+<div class="tiles" id="tiles"></div>
+<div class="card" id="retcard" hidden><h2>Return <small>time-weighted, matches Robinhood's headline numbers</small>
+  <span id="retsub" style="float:right;color:var(--ink-3);font-weight:400"></span></h2>
+  <div id="returns" class="rets"></div></div>
+<div class="card" id="ytdcard" hidden><h2>Year to date <small id="ytdsub"></small></h2><div class="stats" id="ytd"></div></div>
+
+<nav class="tabs">
+  <button data-tab="holdings" class="active">Holdings</button>
+  <button data-tab="networth">Net worth</button>
+  <button data-tab="avgcost">Average cost</button>
+  <button data-tab="perf">Performance</button>
+  <button data-tab="trades">Trades &amp; income</button>
+  <button data-tab="compare">Compare</button>
+  <button data-tab="quickflows">Quickflows</button>
+  <button data-tab="etf">ETF profile</button>
+  <button data-tab="prospects">Prospects</button>
+  <button data-tab="why">Why it moved</button>
+  <button data-tab="research">Research</button>
+  <button data-tab="macro">Macro</button>
+  <button data-tab="live">Live 24/7</button>
+  <button data-tab="backtest">Backtest</button>
+</nav>
+
+<section class="panel active" id="holdings">
+  <div class="card"><h2>Holdings <small id="hcount"></small></h2><div class="tbl" id="htable"></div></div>
+  <div id="drawer" hidden></div>
+</section>
+
+<section class="panel" id="networth">
+  <div class="card">
+    <h2>Net worth <small id="nwsub">every account in one place</small></h2>
+    <div id="nwtop"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>Accounts <small>share of total</small></h2><div class="tbl" id="nwaccts"></div></div>
+    <div class="card"><h2>Blended allocation <small>combined exposure across accounts</small></h2><div id="nwalloc"></div></div>
+  </div>
+  <div class="card"><h2>Combined holdings <small>same ticker across accounts is rolled up</small></h2><div class="tbl" id="nwholdings"></div></div>
+</section>
+
+<section class="panel" id="avgcost">
+  <div class="grid2">
+    <div class="card"><h2>Price vs. your average cost <small>% above (blue) or below (red) what you paid</small></h2><div id="vsavg"></div></div>
+    <div class="card"><h2>Allocation <small>% of equity, incl. cash</small></h2><div id="alloc"></div></div>
+  </div>
+  <div class="card"><h2>Cost basis vs. market value by holding</h2><div class="tbl" id="cbtable"></div></div>
+</section>
+
+<section class="panel" id="perf">
+  <div class="card">
+    <h2>Equity curve <small id="perfsrc"></small></h2>
+    <div class="range" id="range"></div>
+    <div class="legend" id="perflegend"></div>
+    <div id="eqchart"></div>
+  </div>
+  <div class="card"><h2>Daily snapshots <small>from data/portfolio/history; grows each time you sync</small></h2><div class="tbl" id="histtable"></div></div>
+</section>
+
+<section class="panel" id="trades">
+  <div class="card"><h2>Closed positions <small id="ccount"></small></h2><div class="tbl" id="ctable"></div></div>
+  <div class="card"><h2>Trades <small id="tcount"></small>
+    <select id="tfilter" style="float:right;padding:3px 8px;font-size:12px"><option value="">All symbols</option></select></h2>
+    <div class="tbl" id="ttable"></div></div>
+  <div class="card"><h2>Dividends <small id="dcount"></small></h2><div class="tbl" id="dtable"></div></div>
+</section>
+
+<section class="panel" id="compare">
+  <div class="card">
+    <h2 id="cmphdr">Compare holdings <small>growth of your positions, YCharts-style</small></h2>
+    <div class="cmpbar">
+      <div class="range" id="cmprange"></div>
+      <div class="segmented" id="cmpmode">
+        <button data-m="norm" class="active">% change</button>
+        <button data-m="price">Indexed to 100</button>
+        <button data-m="growth">Growth of $10k</button>
+      </div>
+    </div>
+    <div class="cmpsyms" id="cmpsyms"></div>
+    <div class="legend" id="cmplegend"></div>
+    <div id="cmpchart"></div>
+    <p class="muted" style="font-size:12px">Each line rebased so you compare <em>performance</em>, not share price. This is how YCharts shows a comparison: pick a start, and everything starts together. Toggle a holding on or off by clicking its chip.</p>
+  </div>
+</section>
+<section class="panel" id="quickflows">
+  <div class="card">
+    <h2>Quickflows <small id="qfsub">YCharts-style comparison tools, built from your own data</small></h2>
+    <div class="segmented" id="qfpick" style="margin:4px 0 10px">
+      <button data-flow="correlation" class="active">Correlation</button>
+      <button data-flow="soon" disabled title="coming next">Relative strength ▸</button>
+      <button data-flow="soon2" disabled title="coming next">Risk / reward ▸</button>
+      <button data-flow="soon3" disabled title="coming next">Annual returns ▸</button>
+    </div>
+    <div class="cmpsyms" id="qfsyms"></div>
+    <div style="display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap">
+      <input id="qfadd" placeholder="add ticker (e.g. QQQ)" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:13px;width:150px">
+      <select id="qfwin" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:12px">
+        <option value="1">1 year</option>
+        <option value="2">2 years</option>
+        <option value="3" selected>3 years</option>
+        <option value="5">5 years</option>
+      </select>
+      <span id="qfmsg" class="muted" style="font-size:12px"></span>
+    </div>
+  </div>
+  <div class="card" id="qfcard">
+    <h2 id="qfhead">Correlation of daily returns</h2>
+    <div id="qfbody"></div>
+  </div>
+</section>
+<section class="panel" id="etf">
+  <div class="card">
+    <h2>ETF quote page <small id="etfsub">YCharts-style fund research — the S&amp;L hedge sleeve</small></h2>
+    <div id="etfempty" class="notice" hidden></div>
+    <div class="cmpsyms" id="etftickers"></div>
+  </div>
+  <div id="etfbody" hidden>
+    <div class="card">
+      <div id="etfhead"></div>
+      <div class="range" id="etfrange" style="margin-top:10px"></div>
+      <div id="etfchart"></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h2>Key stats</h2><div class="stats" id="etfstats"></div></div>
+      <div class="card"><h2>Risk <small>vs S&amp;P 500, from daily returns</small></h2><div class="stats" id="etfrisk"></div></div>
+    </div>
+    <div class="card"><h2>Trailing returns <small>annualized beyond 1Y</small></h2>
+      <div id="etfrets" class="rets"></div>
+      <div class="tbl" id="etfperf" style="margin-top:12px"></div>
+    </div>
+    <div class="card"><h2>Annual returns <small>calendar-year total return</small></h2><div id="etfannual"></div></div>
+    <div class="grid2">
+      <div class="card"><h2>Asset allocation</h2><div id="etfalloc"></div></div>
+      <div class="card"><h2>Sector weightings</h2><div id="etfsectors"></div></div>
+    </div>
+    <div class="card"><h2>Top 10 holdings</h2><div class="tbl" id="etfholdings"></div></div>
+    <div class="card"><h2>Holdings overlap <small>shared-weight vs another fund</small></h2>
+      <div class="cmpbar"><div>Compare <select id="etfovsel"></select> against this fund</div><div id="etfovhdr" class="muted"></div></div>
+      <div class="tbl" id="etfoverlap"></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h2>TTM distributions</h2><div id="etfdist"></div></div>
+      <div class="card"><h2>Basic info &amp; strategy</h2><div id="etfinfo"></div></div>
+    </div>
+    <div class="card"><h2>News</h2><div id="etfnews"></div></div>
+  </div>
+</section>
+<section class="panel" id="prospects">
+  <div class="card">
+    <h2>ETF prospects <small>ranked by fit to <em>your</em> book — low correlation + low overlap + real return</small></h2>
+    <div id="prospempty" class="notice" hidden></div>
+    <div id="prospsub" class="muted" style="font-size:12px;margin-bottom:8px"></div>
+    <div class="tbl" id="prosptable"></div>
+    <p class="muted" style="font-size:12px;margin-top:8px">Fit score weights correlation-to-your-book (55%), risk-adjusted return (30%), and holdings overlap with what you already own (15%). A high fit means it does a job your portfolio doesn't already have. Research notes: <code>research/etf_prospects.md</code>.</p>
+  </div>
+</section>
+<section class="panel" id="why">
+  <div class="card">
+    <h2>Why it moved <small>click any point on the chart to see what happened that day</small></h2>
+    <div id="whyempty" class="notice" hidden></div>
+    <div class="cmpsyms" id="whytickers"></div>
+  </div>
+  <div id="whybody" hidden>
+    <div class="card">
+      <div id="whyhead"></div>
+      <div class="legend" style="margin-top:6px">
+        <span><i style="background:var(--s7)"></i>Earnings</span>
+        <span><i style="background:var(--s2)"></i>Unusual move</span>
+        <span><i style="background:var(--good)"></i>Bullish news</span>
+        <span><i style="background:var(--bad)"></i>Bearish news</span>
+        <span class="muted">— or click anywhere on the line</span>
+      </div>
+      <div id="whychart"></div>
+      <div id="whyday" class="drawer" style="margin-top:12px"><p class="muted">Click a point on the chart above to inspect a day.</p></div>
+    </div>
+    <div class="card">
+      <h2>Sentiment vs. Efficient Market <small>how much of the move is fundamentals vs sentiment/flow</small></h2>
+      <div class="stats" id="whygauge"></div>
+      <p id="whyinterp" style="font-size:13px;color:var(--ink-2)"></p>
+    </div>
+    <div class="card" id="whyrecentcard">
+      <h2>Most recent big day <small>the factor breakdown</small></h2>
+      <div id="whyrecent"></div>
+    </div>
+  </div>
+</section>
+<section class="panel" id="research">
+  <div class="card">
+    <h2>YCharts research <small id="rcsub">reads your local YCharts pull</small></h2>
+    <div id="rcempty" class="notice" hidden></div>
+    <div class="cmpsyms" id="rctickers"></div>
+    <div id="rcbody" hidden>
+      <div class="stats" id="rcstats"></div>
+      <div class="cmpbar"><div class="range" id="rcmetrics"></div></div>
+      <div class="legend" id="rclegend"></div>
+      <div id="rcchart"></div>
+    </div>
+  </div>
+</section>
+<section class="panel" id="macro">
+  <div class="card">
+    <h2>Market regime <small id="mrsub">volatility, dollar, rates, credit — free via FRED</small></h2>
+    <div id="mrbanner"></div>
+    <div class="tiles" id="mrtiles" style="margin-top:12px"></div>
+  </div>
+  <div class="card"><h2>Margin of safety <small>cheap / fair / expensive, from SEC filings</small></h2>
+    <div class="tbl" id="mvtable"></div></div>
+</section>
+<section class="panel" id="live">
+  <div class="card">
+    <h2>Live crypto <small>real-time from Hyperliquid — 24/7, free, read-only market data</small>
+      <span style="float:right"><span class="dot" id="lvdot"></span> <span id="lvstatus" style="font-size:12px;color:var(--ink-2)">connecting…</span></span></h2>
+    <div class="cmpbar">
+      <div class="segmented" id="lvcoin"></div>
+      <div class="range" id="lvint"></div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:baseline;margin:6px 0 10px">
+      <span id="lvprice" class="tnum" style="font-size:28px;font-weight:650">—</span>
+      <span id="lvchg" class="tnum" style="font-size:14px"></span>
+      <span class="muted" style="font-size:12px" id="lvmeta"></span>
+    </div>
+    <div id="lvchart"></div>
+    <p class="muted" style="font-size:12px">Streamed live from <code>wss://api.hyperliquid.xyz/ws</code>. Crypto perpetuals are a different, higher-risk asset than your stock portfolio — this tab is for watching and learning intraday patterns, not trading.</p>
+  </div>
+</section>
+<section class="panel" id="backtest">
+  <div class="card">
+    <h2>Accumulation strategies on one ticker <small>same contribution stream; lump sum invests the total on day one</small></h2>
+    <form class="bt" id="btform">
+      <label>Symbol <input id="btsym" value="" size="6"></label>
+      <label>Start <input id="btstart" type="date" value="2016-01-01"></label>
+      <label>Contribution $ <input id="btamt" type="number" value="500" step="50" style="width:100px"></label>
+      <label>Frequency <select id="btfreq"><option value="W">Weekly</option><option value="2W">Every 2 weeks</option><option value="M" selected>Monthly</option><option value="Q">Quarterly</option></select></label>
+      <button class="primary" type="submit">Run</button>
+      <span id="bterr" class="err"></span>
+    </form>
+    <div class="legend" id="btlegend"></div>
+    <div id="btchart"></div>
+    <div class="tbl" id="bttable" style="margin-top:12px"></div>
+    <p class="muted" style="font-size:12px">Money-weighted return (XIRR) is the honest number for a strategy with contributions; time-weighted CAGR is what the asset did. Read <code>research/backtesting_and_average_cost.md</code> before trusting any of this on a stock you already know went up.</p>
+  </div>
+</section>
+
+<div class="footer" id="foot"></div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script id="embedded-snapshot" type="application/json">null</script>
+<script>
+// ---------- formatting (YCharts-style) ----------
+const $ = s => document.querySelector(s);
+const fmtM = (v, d = 2) => v == null || isNaN(v) ? '--' : (Math.abs(v) >= 1e12 ? (v / 1e12).toFixed(3) + 'T' : Math.abs(v) >= 1e9 ? (v / 1e9).toFixed(3) + 'B' : Math.abs(v) >= 1e6 ? (v / 1e6).toFixed(3) + 'M' : (v < 0 ? '-' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }));
+const fmtSign = (v, d = 2) => v == null || isNaN(v) ? '--' : (v >= 0 ? '+' : '-') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtP = (v, d = 2, sign = false) => v == null || isNaN(v) ? '--' : (sign && v > 0 ? '+' : '') + v.toFixed(d) + '%';
+const fmtN = (v, d = 2) => v == null || isNaN(v) ? '--' : Number(v).toLocaleString('en-US', { maximumFractionDigits: d });
+const fmtD = s => { if (!s) return '--'; const d = new Date(s.length <= 10 ? s + 'T12:00:00' : s); return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }); };
+const fmtT = s => s ? new Date(s).toLocaleString('en-US', { month: 'short', day: '2-digit', hour: 'numeric', minute: '2-digit' }) : '--';
+const cls = v => v > 0 ? 'up' : v < 0 ? 'down' : '';
+const SERIES = ['--s1', '--s2', '--s3', '--s4', '--s5', '--s6', '--s7', '--s8'].map(v => `var(${v})`);
+function sparkline(pts, days = 90, w = 96, h = 26) {
+  if (!pts || pts.length < 2) return '<span class="muted">—</span>';
+  const seg = pts.slice(-days);
+  const ys = seg.map(p => p[1]);
+  let lo = Math.min(...ys), hi = Math.max(...ys); if (lo === hi) { lo *= 0.999; hi *= 1.001; }
+  const up = seg[seg.length - 1][1] >= seg[0][1];
+  const col = up ? 'var(--good)' : 'var(--bad)';
+  const X = i => (i / (seg.length - 1)) * (w - 2) + 1;
+  const Y = v => h - 3 - ((v - lo) / (hi - lo)) * (h - 6);
+  const line = seg.map((p, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(p[1]).toFixed(1)}`).join('');
+  const area = `M${X(0).toFixed(1)},${(h - 1).toFixed(1)} ` + line.slice(1).replace('M', 'L') + ` L${X(seg.length - 1).toFixed(1)},${(h - 1).toFixed(1)} Z`;
+  const gid = 'sg' + Math.random().toString(36).slice(2, 7);
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="0.22"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#${gid})"/><path d="${line}" fill="none" stroke="${col}" stroke-width="1.5"/></svg>`;
+}
+function sparkFor(sym) {
+  const px = PRICES[sym] || PRICES['DEMO_' + sym];
+  return px ? sparkline(px) : '<span class="muted">…</span>';
+}
+
+const EMB = JSON.parse($('#embedded-snapshot').textContent || 'null') || {};
+async function apiGet(path) {
+  try { const r = await fetch(path, { cache: 'no-store' }); if (r.ok) return await r.json(); } catch (e) { }
+  if (EMB.api && EMB.api[path] !== undefined) return EMB.api[path];
+  if (EMB.api) { const k = Object.keys(EMB.api).find(k => path.startsWith(k.split('?')[0]) && k.includes('?') === path.includes('?')); if (k && path.split('?')[0] === k.split('?')[0]) return EMB.api[k]; }
+  throw new Error('offline: ' + path);
+}
+let snap = null, sortKey = 'market_value', sortDir = -1, timer = null, curveSpan = 'year';
+let PRICES = {}, cmpRange = 'all', cmpMode = 'norm', cmpSel = null;
+
+// ---------- data ----------
+async function load() {
+  try {
+    snap = await apiGet('/api/snapshot');
+    if (!snap._server && EMB.snapshot) snap._server = { demo: true, embedded: true };
+  } catch (e) {
+    if (EMB.snapshot) { snap = EMB.snapshot; snap._server = { demo: true, embedded: true }; }
+    else { snap = { error: 'Could not reach the local API. Start it with <code>python -m dashboard.serve</code> (or <code>--demo</code>).', holdings: [], summary: {}, trades: [], dividends: [], equity_curve: {} }; }
+  }
+  render();
+  loadPrices();
+}
+async function loadPrices() {
+  try {
+    PRICES = await apiGet('/api/prices?benchmark=VOO');
+  } catch (e) { PRICES = {}; }
+  renderHoldings();           // fill sparklines
+  renderCompare();            // fill the compare tab
+}
+
+function render() {
+  const s = snap.summary || {}, a = snap.account || {}, srv = snap._server || {};
+  const n = $('#notice');
+  if (snap.error) { n.innerHTML = snap.error; n.hidden = false; }
+  else if (srv.demo) { n.innerHTML = '<b>Demo data.</b> Synthetic holdings from <code>portfolio.demo_data</code>. Run <code>python -m portfolio.robinhood_sync</code> then <code>python -m dashboard.serve</code> for your live Robinhood account.'; n.hidden = false; }
+  else if (srv.last_error) { n.innerHTML = '<b>Last refresh failed:</b> <pre style="white-space:pre-wrap;margin:6px 0 0">' + esc(srv.last_error) + '</pre>'; n.hidden = false; }
+  else n.hidden = true;
+  $('#sub').textContent = `${snap.source || ''} · as of ${fmtT(snap.as_of)}${srv.file_mtime ? ' · file ' + fmtT(srv.file_mtime) : ''}`;
+  $('#refresh').disabled = !!srv.demo || !!srv.refreshing;
+  $('#livetxt').textContent = srv.refreshing ? 'refreshing…' : (timer ? 'auto' : 'idle');
+  $('#dot').className = 'dot' + (srv.refreshing || timer ? ' on' : '');
+
+  const eq = s.equity, day = s.day_change, dayp = s.day_change_pct, un = s.unrealized, unp = s.unrealized_pct;
+  const tr = s.total_return, trp = s.cost_basis ? tr / s.cost_basis * 100 : null;
+  $('#tiles').innerHTML = [
+    ['Total equity', fmtM(eq), `Robinhood: ${fmtM(a.equity_rh)}${a.extended_hours_equity ? ' · ext ' + fmtM(a.extended_hours_equity) : ''}`],
+    ['Day change', `<span class="${cls(day)}">${fmtSign(day)}</span>`, `<span class="${cls(day)}">${fmtP(dayp, 2, true)}</span> vs prev close`],
+    ['Unrealized P&amp;L', `<span class="${cls(un)}">${fmtSign(un)}</span>`, `<span class="${cls(un)}">${fmtP(unp, 2, true)}</span> on ${fmtM(s.cost_basis)} cost basis${s.rh_cost_basis && Math.abs(s.rh_cost_basis - s.cost_basis) > 0.5 ? ` <span class="down" title="Robinhood's own shares × average cost">(Robinhood: ${fmtM(s.rh_cost_basis)})</span>` : ''}`],
+    ['Total return', `<span class="${cls(tr)}">${fmtSign(tr)}</span>`, `${fmtP(trp, 2, true)} · realized ${fmtSign(s.realized)} · dividends ${fmtM(s.dividends)}`],
+    ['Cash', fmtM(s.cash), `buying power ${fmtM(a.buying_power)} · ${fmtP(eq ? s.cash / eq * 100 : null, 1)} of equity`],
+  ].map(([k, v, d]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('');
+
+  renderReturns(); renderYtd(); renderHoldings(); renderAvgCost(); renderPerf(); renderTrades(); renderCompare();
+  const syms = (snap.holdings || []).map(h => h.symbol);
+  if (!$('#btsym').value) $('#btsym').value = syms.includes('MU') ? 'MU' : (syms[0] || 'MU');
+  $('#foot').textContent = `Average cost and P&L are rebuilt from your filled orders (average-cost method; FIFO lots in the drawer). Prices are Robinhood quotes at sync time. Nothing here is investment advice.`;
+}
+const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+// ---------- period returns (Robinhood-style) ----------
+const RET_ORDER = ['1D', '1W', '1M', '3M', 'YTD', '1Y', 'All'];
+function renderReturns() {
+  const r = snap.returns, c = $('#retcard');
+  if (!r || !Object.keys(r).length) { c.hidden = true; return; }
+  c.hidden = false;
+  $('#returns').innerHTML = RET_ORDER.filter(k => r[k]).map(k => {
+    const v = r[k].pct;
+    return `<div class="ret" title="${fmtD(r[k].from)} → ${fmtD(r[k].to)}"><div class="p">${k === '1D' ? 'Past day' : k === 'All' ? 'All time' : k === 'YTD' ? 'Year to date' : k === '1W' ? 'Past week' : k === '1M' ? 'Past month' : k === '3M' ? 'Past 3 mo' : 'Past year'}</div><div class="n ${cls(v)}">${fmtP(v, 2, true)}</div></div>`;
+  }).join('');
+  const all = r.All;
+  if (all) $('#retsub').textContent = `since ${fmtD(all.from)}`;
+}
+
+// ---------- compare (YCharts-style normalized) ----------
+const CMP_RANGES = [['1M',30],['3M',91],['6M',182],['YTD',null],['1Y',365],['3Y',1095],['all',99999]];
+function cmpStartDate(days) {
+  const anchor = new Date(snap.as_of || Date.now());
+  if (days === null) return new Date(anchor.getFullYear(), 0, 1).toISOString().slice(0, 10);
+  if (days >= 99999) return '0000-01-01';
+  return new Date(anchor.getTime() - days * 864e5).toISOString().slice(0, 10);
+}
+function renderCompare() {
+  if (!snap.holdings) return;
+  const holds = snap.holdings.map(h => h.symbol);
+  const avail0 = holds.filter(s => PRICES[s] || PRICES['DEMO_' + s]);
+  if (cmpSel === null) {
+    if (!avail0.length) { $('#cmpchart').innerHTML = '<p class="muted">Loading price history…</p>'; return; }
+    cmpSel = new Set(avail0.slice(0, 6).concat(PRICES['VOO'] ? ['VOO'] : []));
+  }
+  // range buttons
+  $('#cmprange').innerHTML = CMP_RANGES.map(([lab]) => `<button class="${lab === cmpRange ? 'active' : ''}" data-r="${lab}">${lab === 'all' ? 'All' : lab}</button>`).join('');
+  $('#cmprange').querySelectorAll('button').forEach(b => b.onclick = () => { cmpRange = b.dataset.r; renderCompare(); });
+  $('#cmpmode').querySelectorAll('button').forEach(b => { b.classList.toggle('active', b.dataset.m === cmpMode); b.onclick = () => { cmpMode = b.dataset.m; renderCompare(); }; });
+  // symbol chips (holdings + VOO benchmark)
+  const universe = holds.concat(PRICES['VOO'] && !holds.includes('VOO') ? ['VOO'] : []);
+  $('#cmpsyms').innerHTML = universe.map((sym, i) => {
+    const col = SERIES[i % 8], on = cmpSel.has(sym), px = PRICES[sym] || PRICES['DEMO_' + sym];
+    return `<span class="chip ${on ? '' : 'off'}" data-s="${sym}"><i style="background:${col}"></i>${sym}${px ? '' : ' <span class="muted">(no data)</span>'}</span>`;
+  }).join('');
+  $('#cmpsyms').querySelectorAll('.chip').forEach(c => c.onclick = () => { const s = c.dataset.s; cmpSel.has(s) ? cmpSel.delete(s) : cmpSel.add(s); renderCompare(); });
+  // build series
+  const start = cmpStartDate(CMP_RANGES.find(r => r[0] === cmpRange)[1]);
+  const series = [];
+  universe.forEach((sym, i) => {
+    if (!cmpSel.has(sym)) return;
+    const px = PRICES[sym] || PRICES['DEMO_' + sym]; if (!px) return;
+    const seg = px.filter(p => p[0] >= start); if (seg.length < 2) return;
+    const base = seg[0][1];
+    const pts = seg.map(p => [p[0], cmpMode === 'norm' ? (p[1] / base - 1) * 100 : cmpMode === 'growth' ? p[1] / base * 10000 : p[1] / base * 100]);
+    series.push({ name: sym, color: SERIES[i % 8], pts, last: pts[pts.length - 1][1] });
+  });
+  const fmt = cmpMode === 'norm' ? (v => fmtP(v, 1, true)) : cmpMode === 'growth' ? (v => fmtM(v, 0)) : (v => v.toFixed(1));
+  $('#cmphdr').innerHTML = `Compare holdings <small>${cmpMode === 'norm' ? 'percent change' : cmpMode === 'growth' ? 'growth of $10,000' : 'indexed to 100'} since ${fmtD(start === '0000-01-01' ? (series[0] ? series[0].pts[0][0] : start) : start)}</small>`;
+  if (!series.length) { $('#cmpchart').innerHTML = '<p class="muted">Pick at least one holding with price data. Prices load a moment after the page opens; if they stay empty, run a sync so they cache.</p>'; $('#cmplegend').innerHTML = ''; return; }
+  series.sort((a, b) => b.last - a.last);
+  $('#cmplegend').innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.name} <b class="${cls(cmpMode === 'norm' ? s.last : s.last - (cmpMode === 'growth' ? 10000 : 100))}">${fmt(s.last)}</b></span>`).join('');
+  $('#cmpchart').innerHTML = lineChart(series, { height: 340, fmt, zero: cmpMode === 'norm' });
+  bindTips($('#cmpchart'));
+}
+
+// ---------- year to date ----------
+function renderYtd() {
+  const y = snap.ytd, c = $('#ytdcard');
+  if (!y) { c.hidden = true; return; }
+  c.hidden = false;
+  $('#ytdsub').textContent = `${y.year} · since ${y.equity_start_date ? fmtD(y.equity_start_date) : 'Jan 1'}`;
+  const cell = (k, v, sub) => `<div>${k}<b>${v}</b>${sub ? `<span class="muted">${sub}</span>` : ''}</div>`;
+  $('#ytd').innerHTML = [
+    cell('YTD return', y.return == null ? '--' : `<span class="${cls(y.return)}">${fmtSign(y.return)}</span>`, y.return_pct == null ? 'needs equity history' : `<span class="${cls(y.return_pct)}">${fmtP(y.return_pct, 2, true)}</span> on starting equity + deposits`),
+    cell('Equity Jan 1 → now', y.equity_start == null ? '--' : `${fmtM(y.equity_start, 0)} → ${fmtM(y.equity_now, 0)}`, ''),
+    cell('Deposits this year', fmtM(y.net_deposits), 'cash you put in (net of withdrawals)'),
+    cell('Bought this year', fmtM(y.buys), 'cost of purchases = Robinhood\'s "YTD cost basis"'),
+    cell('Sold this year', fmtM(y.sells), 'proceeds'),
+    cell('Realized this year', `<span class="${cls(y.realized)}">${fmtSign(y.realized)}</span>`, `FIFO (tax) ${fmtSign(y.realized_fifo)}`),
+    cell('Dividends this year', fmtM(y.dividends), ''),
+  ].join('');
+}
+
+// ---------- holdings ----------
+const COLS = [
+  ['symbol', 'Symbol', h => `<span class="sym">${h.symbol}</span><span class="name">${esc(h.name || '')}</span>`],
+  ['qty', 'Shares', h => fmtN(h.qty, 4)],
+  ['avg_cost', 'Avg cost', h => fmtM(h.avg_cost)],
+  ['price', 'Price', h => fmtM(h.price)],
+  ['trend', '90-day', h => sparkFor(h.symbol)],
+  ['day_change_pct', 'Day', h => `<span class="${cls(h.day_change_pct)}">${fmtP(h.day_change_pct, 2, true)}</span>`],
+  ['market_value', 'Market value', h => fmtM(h.market_value)],
+  ['weight_pct', 'Weight', h => `<span class="bar" style="width:${Math.max(2, h.weight_pct * 1.4)}px"></span>${fmtP(h.weight_pct, 1)}`],
+  ['unrealized', 'Unrealized', h => `<span class="${cls(h.unrealized)}">${fmtSign(h.unrealized)}</span>`],
+  ['unrealized_pct', 'vs avg cost', h => `<span class="${cls(h.unrealized_pct)}">${fmtP(h.unrealized_pct, 2, true)}</span>`],
+  ['pe_ratio', 'P/E', h => h.pe_ratio == null ? '--' : fmtN(h.pe_ratio, 1)],
+  ['dividend_yield', 'Div yield', h => h.dividend_yield == null ? '--' : fmtP(h.dividend_yield, 2)],
+  ['pos52', '52w range', h => { if (!h.high_52_weeks || !h.low_52_weeks) return '--'; const p = (h.price - h.low_52_weeks) / (h.high_52_weeks - h.low_52_weeks) * 100; return `<span class="bar" style="width:${Math.max(2, Math.min(100, p)) * 0.6}px;background:var(--ink-3)"></span>${fmtP(p, 0)}`; }],
+];
+function renderHoldings() {
+  const rows = (snap.holdings || []).slice();
+  rows.forEach(h => h.pos52 = (h.high_52_weeks && h.low_52_weeks) ? (h.price - h.low_52_weeks) / (h.high_52_weeks - h.low_52_weeks) : null);
+  rows.sort((x, y) => { const a = x[sortKey], b = y[sortKey]; if (a == null) return 1; if (b == null) return -1; return (a > b ? 1 : a < b ? -1 : 0) * sortDir; });
+  $('#hcount').textContent = `${rows.length} positions · sorted by ${COLS.find(c => c[0] === sortKey)[1].toLowerCase()}`;
+  const s = snap.summary || {};
+  $('#htable').innerHTML = rows.length ? `<table><thead><tr>${COLS.map(c => `<th data-k="${c[0]}" class="${c[0] === sortKey ? 'sorted' : ''}">${c[1]}${c[0] === sortKey ? (sortDir < 0 ? ' ▾' : ' ▴') : ''}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(h => `<tr class="row" data-s="${h.symbol}">${COLS.map(c => `<td>${c[2](h)}</td>`).join('')}</tr>`).join('') +
+    `<tr class="total"><td>Total</td><td></td><td></td><td></td><td></td><td class="${cls(s.day_change)}">${fmtP(s.day_change_pct, 2, true)}</td><td>${fmtM(s.market_value)}</td><td>${fmtP(s.market_value / s.equity * 100, 1)}</td><td class="${cls(s.unrealized)}">${fmtSign(s.unrealized)}</td><td class="${cls(s.unrealized_pct)}">${fmtP(s.unrealized_pct, 2, true)}</td><td></td><td></td><td></td></tr></tbody></table>` : '<p class="muted">No holdings in the snapshot.</p>';
+  document.querySelectorAll('#htable th').forEach(th => th.onclick = () => { const k = th.dataset.k; if (k === 'trend') return; sortDir = (sortKey === k) ? -sortDir : -1; sortKey = k; renderHoldings(); });
+  document.querySelectorAll('#htable tr.row').forEach(tr => tr.onclick = () => openDrawer(tr.dataset.s));
+}
+
+async function openDrawer(sym) {
+  const h = snap.holdings.find(x => x.symbol === sym); if (!h) return;
+  const d = $('#drawer'); d.hidden = false; d.className = 'drawer';
+  const trades = (snap.trades || []).filter(t => t.symbol === sym);
+  const lots = fifoLots(trades);
+  const divs = (snap.dividends || []).filter(x => x.symbol === sym).reduce((a, x) => a + x.amount, 0);
+  d.innerHTML = `<h2 style="font-size:16px;margin:0 0 4px">${sym} <small class="muted" style="font-weight:400">${esc(h.name || '')}${h.sector ? ' · ' + esc(h.sector) : ''}${h.industry ? ' · ' + esc(h.industry) : ''}</small>
+    <button style="float:right;padding:2px 8px" id="closed">✕</button></h2>
+    <div class="stats">
+      <div>Price<b>${fmtM(h.price)}</b></div><div>Avg cost (ledger)<b>${fmtM(h.avg_cost)}</b></div><div>Avg cost (Robinhood)<b>${fmtM(h.rh_avg_cost)}</b></div>
+      <div>Shares<b>${fmtN(h.qty, 4)}</b></div><div>Market value<b>${fmtM(h.market_value)}</b></div><div>Cost basis<b>${fmtM(h.cost_basis)}</b></div>
+      <div>Unrealized<b class="${cls(h.unrealized)}">${fmtSign(h.unrealized)} (${fmtP(h.unrealized_pct, 2, true)})</b></div><div>Realized<b class="${cls(h.realized)}">${fmtSign(h.realized)}</b></div><div>Dividends<b>${fmtM(divs)}</b></div>
+      <div>Market cap<b>${fmtM(h.market_cap)}</b></div><div>P/E<b>${h.pe_ratio == null ? '--' : fmtN(h.pe_ratio, 1)}</b></div><div>P/B<b>${h.pb_ratio == null ? '--' : fmtN(h.pb_ratio, 1)}</b></div>
+      <div>52w low / high<b>${fmtM(h.low_52_weeks)} / ${fmtM(h.high_52_weeks)}</b></div><div>First buy<b>${fmtD(h.first_buy)}</b></div><div>Buys / sells<b>${h.buys} / ${h.sells}</b></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>Price</span><span><i style="background:var(--s2)"></i>Your average cost</span><span><i style="background:var(--s3)"></i>Buys</span><span><i style="background:var(--s8)"></i>Sells</span></div>
+    <div id="dchart"><p class="muted">Loading price history…</p></div>
+    <div class="grid2" style="margin-top:12px">
+      <div><h2 style="font-size:13px">Open lots (FIFO)</h2><div class="tbl"><table><thead><tr><th>Bought</th><th>Shares</th><th>Cost/sh</th><th>Gain</th><th>Held</th></tr></thead><tbody>
+      ${lots.map(l => { const g = (h.price / l.price - 1) * 100; const days = Math.round((new Date(snap.as_of) - new Date(l.date)) / 864e5); return `<tr><td>${fmtD(l.date)}</td><td>${fmtN(l.qty, 4)}</td><td>${fmtM(l.price)}</td><td class="${cls(g)}">${fmtP(g, 1, true)}</td><td>${days > 365 ? '<span class="muted">long-term</span> ' : ''}${days}d</td></tr>`; }).join('') || '<tr><td colspan="5" class="muted">no order history in snapshot</td></tr>'}</tbody></table></div></div>
+      <div><h2 style="font-size:13px">Recent trades</h2><div class="tbl"><table><thead><tr><th>Date</th><th>Side</th><th>Shares</th><th>Price</th><th>Value</th></tr></thead><tbody>
+      ${trades.slice(-12).reverse().map(t => `<tr><td>${fmtD(t.date)}</td><td class="${t.side === 'buy' ? 'up' : 'down'}">${t.side}</td><td>${fmtN(t.qty, 4)}</td><td>${fmtM(t.price)}</td><td>${fmtM(t.qty * t.price)}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">none</td></tr>'}</tbody></table></div></div>
+    </div>`;
+  $('#closed').onclick = () => d.hidden = true;
+  d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  let px = [];
+  try { px = await apiGet('/api/prices/' + sym); } catch (e) { }
+  if (!px.length && snap._server && snap._server.demo) { try { px = await apiGet('/api/prices/DEMO_' + sym); } catch (e) { } }
+  if (!px.length) { $('#dchart').innerHTML = `<p class="muted">No cached price history. Run <code>python -m portfolio.prices ${sym}</code> to fetch it.</p>`; return; }
+  // running average cost line from trades
+  const avgLine = [], byDate = {}; trades.forEach(t => (byDate[t.date] = byDate[t.date] || []).push(t));
+  let q = 0, c = 0; px.forEach(([d]) => { (byDate[d] || []).forEach(t => { if (t.side === 'buy') { c += t.qty * t.price; q += t.qty; } else { c -= t.qty * (q ? c / q : 0); q -= t.qty; } }); avgLine.push(q > 1e-9 ? c / q : null); });
+  const marks = trades.map(t => ({ d: t.date, y: t.price, side: t.side, qty: t.qty }));
+  $('#dchart').innerHTML = lineChart([{ name: 'Price', color: SERIES[0], pts: px.map(([d, v]) => [d, v]) }, { name: 'Avg cost', color: SERIES[1], pts: px.map(([d], i) => [d, avgLine[i]]) }], { height: 260, marks, fmt: v => fmtM(v) });
+  bindTips($('#dchart'));
+}
+function fifoLots(trades) {
+  const lots = [];
+  trades.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach(t => {
+    if (t.side === 'buy') lots.push({ date: t.date, qty: t.qty, price: t.price + (t.fees || 0) / t.qty });
+    else { let r = t.qty; while (r > 1e-9 && lots.length) { const l = lots[0], k = Math.min(l.qty, r); l.qty -= k; r -= k; if (l.qty < 1e-9) lots.shift(); } }
+  });
+  return lots;
+}
+
+// ---------- average cost tab ----------
+function renderAvgCost() {
+  const hs = (snap.holdings || []).slice().sort((a, b) => b.unrealized_pct - a.unrealized_pct);
+  if (!hs.length) { $('#vsavg').innerHTML = $('#alloc').innerHTML = '<p class="muted">No holdings.</p>'; $('#cbtable').innerHTML = ''; return; }
+  $('#vsavg').innerHTML = divergingBars(hs.map(h => ({ label: h.symbol, v: h.unrealized_pct, extra: `${fmtM(h.price)} vs ${fmtM(h.avg_cost)} avg` })));
+  const s = snap.summary || {};
+  const al = hs.slice().sort((a, b) => b.weight_pct - a.weight_pct).map(h => ({ label: h.symbol, v: h.weight_pct, extra: fmtM(h.market_value) }));
+  al.push({ label: 'Cash', v: s.equity ? s.cash / s.equity * 100 : 0, extra: fmtM(s.cash), muted: true });
+  $('#alloc').innerHTML = hBars(al);
+  $('#cbtable').innerHTML = `<table><thead><tr><th>Symbol</th><th>Cost basis</th><th>Market value</th><th>Gain</th><th>Gain %</th><th>Share of P&amp;L</th><th>Avg cost if you add $1,000 today</th></tr></thead><tbody>` +
+    hs.map(h => { const tot = s.unrealized || 1; return `<tr><td class="sym">${h.symbol}</td><td>${fmtM(h.cost_basis)}</td><td>${fmtM(h.market_value)}</td><td class="${cls(h.unrealized)}">${fmtSign(h.unrealized)}</td><td class="${cls(h.unrealized_pct)}">${fmtP(h.unrealized_pct, 2, true)}</td><td>${fmtP(h.unrealized / tot * 100, 1)}</td><td>${fmtM((h.cost_basis + 1000) / (h.qty + 1000 / h.price))} <span class="muted">(${fmtP(((h.cost_basis + 1000) / (h.qty + 1000 / h.price) / h.avg_cost - 1) * 100, 2, true)})</span></td></tr>`; }).join('') +
+    `</tbody></table><p class="muted" style="font-size:12px">Adding to a position below your average lowers the average; adding above it raises it. Buying to "fix" an average is the anchoring trap discussed in the research notes; the column shows how little $1,000 moves it.</p>`;
+  bindTips($('#avgcost'));
+}
+function divergingBars(items) {
+  const max = Math.max(1, ...items.map(i => Math.abs(i.v)));
+  const W = 560, L = 60, mid = L + (W - L - 20) / 2, half = (W - L - 20) / 2, rh = 22, H = items.length * rh + 24;
+  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}"><g class="grid"><line x1="${mid}" x2="${mid}" y1="0" y2="${H - 20}" stroke="var(--line-2)"/></g>`;
+  items.forEach((it, i) => {
+    const y = i * rh + 4, w = Math.abs(it.v) / max * (half - 8), x = it.v >= 0 ? mid + 1 : mid - 1 - w;
+    g += `<text x="${L - 8}" y="${y + 15}" text-anchor="end" font-size="12" font-weight="600" fill="var(--ink)">${it.label}</text>
+      <rect class="hit" data-tip="${esc(it.label)}|${fmtP(it.v, 2, true)}|${esc(it.extra)}" x="${x}" y="${y + 4}" width="${Math.max(2, w)}" height="${rh - 8}" rx="3" fill="${it.v >= 0 ? 'var(--s1)' : 'var(--s8)'}"/>
+      <text x="${it.v >= 0 ? x + w + 6 : x - 6}" y="${y + 15}" text-anchor="${it.v >= 0 ? 'start' : 'end'}" font-size="11" fill="var(--ink-2)">${fmtP(it.v, 1, true)}</text>`;
+  });
+  g += `<g class="axis"><text x="${mid}" y="${H - 4}" text-anchor="middle">average cost</text><text x="${W - 20}" y="${H - 4}" text-anchor="end">+${fmtP(max, 0)}</text><text x="${L}" y="${H - 4}">-${fmtP(max, 0)}</text></g></svg>`;
+  return g;
+}
+function hBars(items) {
+  const max = Math.max(1, ...items.map(i => i.v)), W = 560, L = 60, rh = 22, H = items.length * rh + 8;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}">` + items.map((it, i) => {
+    const y = i * rh + 4, w = it.v / max * (W - L - 80);
+    return `<text x="${L - 8}" y="${y + 15}" text-anchor="end" font-size="12" font-weight="600" fill="var(--ink)">${it.label}</text>
+      <rect class="hit" data-tip="${esc(it.label)}|${fmtP(it.v, 1)}|${esc(it.extra)}" x="${L}" y="${y + 4}" width="${Math.max(2, w)}" height="${rh - 8}" rx="3" fill="${it.muted ? 'var(--ink-3)' : 'var(--s1)'}"/>
+      <text x="${L + w + 6}" y="${y + 15}" font-size="11" fill="var(--ink-2)">${fmtP(it.v, 1)} · ${it.extra}</text>`;
+  }).join('') + '</svg>';
+}
+
+// ---------- net worth (all accounts) ----------
+let nwData = null;
+async function renderNetworth() {
+  try { nwData = await apiGet('/api/networth'); } catch (e) { nwData = { error: String(e), accounts: [], holdings: [] }; }
+  const nw = nwData || {};
+  if (nw.error || !(nw.accounts || []).length) {
+    $('#nwtop').innerHTML = `<p class="muted">${nw.error ? esc(nw.error) : 'No accounts yet.'} Your primary snapshot plus any <code>data/portfolio/*.json</code> file with an <code>"account"</code> field are combined here.</p>`;
+    $('#nwaccts').innerHTML = $('#nwholdings').innerHTML = ''; $('#nwalloc').innerHTML = ''; return;
+  }
+  const top = nw.holdings[0];
+  const gain = nw.total_unrealized_gain, gpct = (nw.total_cost_basis ? gain / nw.total_cost_basis * 100 : null);
+  const asof = [...new Set(nw.accounts.map(a => (a.as_of || '').slice(0, 10)).filter(Boolean))];
+  $('#nwsub').textContent = `${nw.n_accounts} accounts · as of ${asof.join(' / ') || '—'}`;
+  $('#nwtop').innerHTML = '<div class="tiles">' + [
+    ['Total net worth', fmtM(nw.total_equity), `${nw.n_accounts} accounts · cash ${fmtM(nw.total_cash)}`],
+    ['Unrealized P&amp;L', gain == null ? '<span class="muted">n/a</span>' : `<span class="${cls(gain)}">${fmtSign(gain)}</span>`,
+      gain == null ? 'add cost basis to every account for a combined figure' : `<span class="${cls(gain)}">${fmtP(gpct, 2, true)}</span> on ${fmtM(nw.total_cost_basis)} cost basis`],
+    ['Largest position', top ? top.symbol : '--', top ? `${fmtP(top.weight, 1)} of net worth · ${fmtM(top.market_value)}` : ''],
+    ['Positions', String(nw.holdings.length), `${nw.holdings.filter(h => h.held_in > 1).length} held in more than one account`],
+  ].map(([k, v, d]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join('') + '</div>';
+
+  $('#nwaccts').innerHTML = `<table><thead><tr><th>Account</th><th>Value</th><th>Share</th><th>Gain</th></tr></thead><tbody>` +
+    nw.accounts.map(a => `<tr><td>${esc(a.name)}${a.n_holdings ? ` <span class="muted">(${a.n_holdings})</span>` : ''}</td><td>${fmtM(a.equity)}</td><td>${fmtP(a.weight, 1)}</td><td class="${cls(a.unrealized_gain)}">${a.unrealized_gain == null ? '<span class="muted">--</span>' : fmtSign(a.unrealized_gain)}</td></tr>`).join('') +
+    `<tr style="font-weight:650;border-top:2px solid var(--line-2)"><td>Total</td><td>${fmtM(nw.total_equity)}</td><td>100%</td><td class="${cls(nw.total_unrealized_gain)}">${nw.total_unrealized_gain == null ? '<span class="muted">--</span>' : fmtSign(nw.total_unrealized_gain)}</td></tr>` +
+    `</tbody></table>`;
+
+  const al = nw.holdings.map(h => ({ label: h.symbol, v: h.weight, extra: fmtM(h.market_value) + (h.held_in > 1 ? ` · ${h.held_in} accts` : '') }));
+  if (nw.total_cash) al.push({ label: 'Cash', v: nw.total_equity ? nw.total_cash / nw.total_equity * 100 : 0, extra: fmtM(nw.total_cash), muted: true });
+  $('#nwalloc').innerHTML = hBars(al);
+
+  $('#nwholdings').innerHTML = `<table><thead><tr><th>Symbol</th><th>Shares</th><th>Market value</th><th>% of net worth</th><th>Cost basis</th><th>Gain</th><th>Accounts</th></tr></thead><tbody>` +
+    nw.holdings.map(h => `<tr><td class="sym">${h.symbol}</td><td>${fmtN(h.shares, 4)}</td><td>${fmtM(h.market_value)}</td><td>${fmtP(h.weight, 1)}</td><td>${h.cost_basis == null ? '<span class="muted">--</span>' : fmtM(h.cost_basis)}</td><td class="${cls(h.gain)}">${h.gain == null ? '<span class="muted">--</span>' : fmtSign(h.gain)}</td><td class="muted" style="font-size:12px">${h.accounts.map(esc).join(', ')}</td></tr>`).join('') +
+    `</tbody></table><p class="muted" style="font-size:12px">Same ticker in two accounts is summed here — that's your true exposure. Cost basis shows only where every account holding the ticker reports it.</p>`;
+  bindTips($('#networth'));
+}
+
+// ---------- quickflows: correlation ----------
+let qfSel = null;
+async function renderQuickflows() {
+  if (!qfSel) {
+    const holds = (snap.holdings || []).map(h => h.symbol);
+    qfSel = new Set(holds.slice(0, 8));
+    if (qfSel.size < 2) ['NVDA', 'VOO', 'QQQ', 'GLD'].forEach(s => qfSel.add(s));
+  }
+  renderQfChips();
+  $('#qfwin').onchange = runCorrelation;
+  $('#qfadd').onkeydown = e => {
+    if (e.key !== 'Enter') return;
+    const s = (e.target.value || '').trim().toUpperCase();
+    if (!s) return;
+    if (qfSel.size >= 12) { $('#qfmsg').textContent = 'Max 12 securities.'; return; }
+    qfSel.add(s); e.target.value = ''; renderQfChips(); runCorrelation();
+  };
+  await runCorrelation();
+}
+function renderQfChips() {
+  const holds = (snap.holdings || []).map(h => h.symbol);
+  const all = [...new Set([...holds, ...qfSel])];
+  $('#qfsyms').innerHTML = all.map(s => `<span class="chip ${qfSel.has(s) ? '' : 'off'}" data-s="${s}"><i style="background:var(--s1)"></i>${s}</span>`).join('');
+  $('#qfsyms').querySelectorAll('.chip').forEach(c => c.onclick = () => {
+    const s = c.dataset.s;
+    if (qfSel.has(s)) { if (qfSel.size > 2) qfSel.delete(s); else { $('#qfmsg').textContent = 'Need at least 2.'; return; } }
+    else { if (qfSel.size >= 12) { $('#qfmsg').textContent = 'Max 12 securities.'; return; } qfSel.add(s); }
+    renderQfChips(); runCorrelation();
+  });
+}
+async function runCorrelation() {
+  const syms = [...qfSel];
+  if (syms.length < 2) { $('#qfbody').innerHTML = '<p class="muted">Pick at least 2 tickers.</p>'; return; }
+  const win = +$('#qfwin').value, start = new Date(Date.now() - win * 365 * 864e5).toISOString().slice(0, 10);
+  $('#qfmsg').textContent = 'computing…';
+  let r;
+  try { r = await apiGet('/api/correlation?symbols=' + encodeURIComponent(syms.join(',')) + '&start=' + start); }
+  catch (e) { $('#qfbody').innerHTML = '<p class="muted">error: ' + esc(String(e)) + '</p>'; $('#qfmsg').textContent = ''; return; }
+  $('#qfmsg').textContent = (r.missing && r.missing.length) ? ('no cached prices for ' + r.missing.join(', ') + ' — build on your Mac') : '';
+  const S = r.symbols || [];
+  if (S.length < 2) { $('#qfbody').innerHTML = `<p class="muted">Not enough overlapping price history. On your Mac run <code>python3 -m portfolio.prices ${syms.join(' ')}</code>, or drop a YCharts CSV export into <code>data/prices/</code>.</p>`; return; }
+  $('#qfhead').innerHTML = `Correlation of daily returns <small>${r.from} → ${r.to} · ${r.n_obs} days</small>`;
+  $('#qfbody').innerHTML = corrHeatmap(S, r.matrix, r.n_obs) + corrLegend() +
+    `<p style="font-size:13px;color:var(--ink-2);margin:10px 2px 0">${esc((r.insight || {}).text || '')}</p>` +
+    `<p class="muted" style="font-size:12px;margin:4px 2px">Blue = the two tend to move <b>apart</b> (diversifying); red = they move <b>together</b>. A grid that's mostly red means your names are really one bet.</p>`;
+  bindTips($('#quickflows'));
+}
+function corrHeatmap(S, M, n) {
+  const th = '<th></th>' + S.map(s => `<th style="font-size:11px;padding:3px 5px;font-weight:600">${s}</th>`).join('');
+  const rows = S.map((s, i) => `<tr><th style="text-align:right;font-size:11px;padding:3px 8px 3px 0;font-weight:600">${s}</th>` + S.map((_, j) => {
+    const c = M[i][j], diag = i === j;
+    const bg = c == null ? 'var(--surface)' : diag ? 'var(--surface-2)'
+      : `color-mix(in srgb, ${c >= 0 ? 'var(--bad)' : 'var(--s1)'} ${Math.round(Math.min(.82, Math.abs(c)) * 100)}%, var(--surface))`;
+    const tc = diag ? 'var(--ink-3)' : (c != null && Math.abs(c) > 0.5 ? '#fff' : 'var(--ink)');
+    const label = c == null ? '·' : diag ? '1.00' : (c > 0 ? '+' : '') + c.toFixed(2);
+    const tip = c == null ? `${S[i]} × ${S[j]}|no overlapping history|` : `${S[i]} × ${S[j]}|${(c > 0 ? '+' : '') + c.toFixed(2)} correlation|${n} days of returns`;
+    return `<td class="hit" data-tip="${tip}" style="background:${bg};color:${tc};text-align:center;font-size:11px;font-weight:600;padding:7px 4px;min-width:42px;font-variant-numeric:tabular-nums;border:1.5px solid var(--surface);cursor:default">${label}</td>`;
+  }).join('') + '</tr>').join('');
+  return `<div style="overflow-x:auto"><table style="border-collapse:collapse;margin-top:6px">${'<thead><tr>' + th + '</tr></thead>'}<tbody>${rows}</tbody></table></div>`;
+}
+function corrLegend() {
+  return `<div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--ink-2)">
+    <span>−1 · diversifying</span>
+    <span style="flex:0 0 200px;height:12px;border-radius:3px;background:linear-gradient(90deg,var(--s1),var(--surface-2),var(--bad));border:1px solid var(--line)"></span>
+    <span>+1 · move together</span></div>`;
+}
+
+// ---------- performance ----------
+function renderPerf() {
+  const ec = snap.equity_curve || {}, spans = Object.keys(ec).filter(k => (ec[k] || []).length);
+  const rg = $('#range');
+  rg.innerHTML = spans.map(k => `<button class="${k === curveSpan ? 'active' : ''}" data-s="${k}">${{ day: '1D', week: '1W', month: '1M', '3month': '3M', year: '1Y', '5year': '5Y', all: 'All' }[k] || k}</button>`).join('');
+  rg.querySelectorAll('button').forEach(b => b.onclick = () => { curveSpan = b.dataset.s; renderPerf(); });
+  if (!spans.length) { $('#eqchart').innerHTML = '<p class="muted">No equity history in the snapshot yet. Robinhood\'s own history is pulled on each sync; the daily snapshot folder fills in over time.</p>'; $('#perflegend').innerHTML = ''; }
+  else {
+    if (!ec[curveSpan]) curveSpan = spans[0];
+    const rows = ec[curveSpan];
+    const eq = rows.map(r => [r.t.slice(0, 10), r.equity]);
+    const contrib = rows.map(r => [r.t.slice(0, 10), r.equity - r.net_return]);
+    const first = rows[0], last = rows[rows.length - 1], ch = last.equity - first.equity;
+    $('#perfsrc').textContent = `${fmtD(first.t)} → ${fmtD(last.t)} · ${fmtSign(ch)} (${fmtP(first.equity ? ch / first.equity * 100 : null, 2, true)})`;
+    $('#perflegend').innerHTML = `<span><i style="background:var(--s1)"></i>Portfolio equity</span><span><i style="background:var(--s2)"></i>Net contributions (equity − net return)</span>`;
+    $('#eqchart').innerHTML = lineChart([{ name: 'Equity', color: SERIES[0], pts: eq }, { name: 'Net contributions', color: SERIES[1], pts: contrib }], { height: 300, fmt: v => fmtM(v, 0) });
+    bindTips($('#eqchart'));
+  }
+  apiGet('/api/history').catch(() => []).then(h => {
+    $('#histtable').innerHTML = h.length ? `<table><thead><tr><th>Date</th><th>Equity</th><th>Cost basis</th><th>Unrealized</th><th>Realized</th><th>Cash</th></tr></thead><tbody>` +
+      h.slice().reverse().map(r => `<tr><td>${fmtD(r.date)}</td><td>${fmtM(r.equity)}</td><td>${fmtM(r.cost_basis)}</td><td class="${cls(r.unrealized)}">${fmtSign(r.unrealized)}</td><td class="${cls(r.realized)}">${fmtSign(r.realized)}</td><td>${fmtM(r.cash)}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">No daily snapshots yet.</p>';
+  });
+}
+
+// ---------- trades ----------
+function renderTrades() {
+  const cl = (snap.closed || []).slice().sort((a, b) => (b.realized_avg || 0) - (a.realized_avg || 0));
+  const tot = cl.reduce((a, x) => a + (x.realized_avg || 0), 0);
+  $('#ccount').textContent = cl.length ? `${cl.length} · realized ${fmtSign(tot)}` : '';
+  $('#ctable').innerHTML = cl.length ? `<table><thead><tr><th>Symbol</th><th>First buy</th><th>Closed</th><th>Invested</th><th>Proceeds</th><th>Realized (avg cost)</th><th>Realized (FIFO)</th><th>Return</th><th>Dividends</th><th>Buys / sells</th></tr></thead><tbody>` +
+    cl.map(x => `<tr><td class="sym">${x.symbol}</td><td>${fmtD(x.first_buy)}</td><td>${fmtD(x.last_trade)}</td><td>${fmtM(x.invested)}</td><td>${fmtM(x.proceeds)}</td><td class="${cls(x.realized_avg)}">${fmtSign(x.realized_avg)}</td><td class="${cls(x.realized_fifo)}">${fmtSign(x.realized_fifo)}</td><td class="${cls(x.realized_avg)}">${fmtP(x.invested ? x.realized_avg / x.invested * 100 : null, 2, true)}</td><td>${fmtM(x.dividends)}</td><td>${x.buys} / ${x.sells}</td></tr>`).join('') + '</tbody></table>' :
+    '<p class="muted">No closed positions in the history yet. Older sells (e.g. a stock you fully exited) only appear once the full activity report is merged in.</p>';
+  const sel = $('#tfilter'), syms = [...new Set((snap.trades || []).map(t => t.symbol))].sort();
+  sel.innerHTML = '<option value="">All symbols</option>' + syms.map(s => `<option>${s}</option>`).join('');
+  sel.onchange = drawTrades; drawTrades();
+  const dv = (snap.dividends || []).slice().sort((a, b) => a.date < b.date ? 1 : -1);
+  $('#dcount').textContent = `${dv.length} payments · ${fmtM(dv.reduce((a, x) => a + x.amount, 0))} total`;
+  $('#dtable').innerHTML = dv.length ? `<table><thead><tr><th>Paid</th><th>Symbol</th><th>Amount</th><th>Rate/sh</th><th>Shares</th><th>Reinvested</th></tr></thead><tbody>` + dv.slice(0, 200).map(x => `<tr><td>${fmtD(x.date)}</td><td class="sym">${x.symbol}</td><td>${fmtM(x.amount)}</td><td>${x.rate ? fmtM(x.rate, 4) : '--'}</td><td>${x.position ? fmtN(x.position, 4) : '--'}</td><td>${x.reinvested ? 'yes' : 'no'}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">No dividends.</p>';
+}
+function drawTrades() {
+  const f = $('#tfilter').value, ts = (snap.trades || []).filter(t => !f || t.symbol === f).slice().sort((a, b) => a.date < b.date ? 1 : -1);
+  const buys = ts.filter(t => t.side === 'buy').reduce((a, t) => a + t.qty * t.price, 0), sells = ts.filter(t => t.side !== 'buy').reduce((a, t) => a + t.qty * t.price, 0);
+  $('#tcount').textContent = `${ts.length} fills · bought ${fmtM(buys)} · sold ${fmtM(sells)}`;
+  $('#ttable').innerHTML = ts.length ? `<table><thead><tr><th>Date</th><th>Symbol</th><th>Side</th><th>Shares</th><th>Price</th><th>Value</th><th>Fees</th></tr></thead><tbody>` + ts.slice(0, 500).map(t => `<tr><td>${fmtD(t.date)}</td><td class="sym">${t.symbol}</td><td class="${t.side === 'buy' ? 'up' : 'down'}">${t.side}</td><td>${fmtN(t.qty, 4)}</td><td>${fmtM(t.price)}</td><td>${fmtM(t.qty * t.price)}</td><td>${t.fees ? fmtM(t.fees) : '--'}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">No trades in the snapshot (sync without --no-orders, or import an activity CSV).</p>';
+}
+
+// ---------- backtest ----------
+$('#btform').onsubmit = async e => {
+  e.preventDefault(); $('#bterr').textContent = ''; $('#btchart').innerHTML = '<p class="muted">Running…</p>';
+  const q = new URLSearchParams({ symbol: $('#btsym').value.trim().toUpperCase(), start: $('#btstart').value, amount: $('#btamt').value, freq: $('#btfreq').value });
+  try {
+    const d = await apiGet('/api/backtest?' + q);
+    if (d.error) throw new Error(d.error);
+    const series = d.results.map((res, i) => ({ name: res.label, color: SERIES[i % 8], pts: res.curve.map(c => [c[0], c[1]]) }));
+    $('#btlegend').innerHTML = series.map(s => `<span><i style="background:${s.color}"></i>${s.name}</span>`).join('');
+    $('#btchart').innerHTML = lineChart(series, { height: 320, fmt: v => fmtM(v, 0) });
+    bindTips($('#btchart'));
+    $('#bttable').innerHTML = `<table><thead><tr><th>Strategy</th><th>Contributed</th><th>Final value</th><th>Profit</th><th>Total return</th><th>XIRR</th><th>TW CAGR</th><th>Max DD</th><th>Sharpe</th><th>Avg cost</th><th>Price vs avg</th><th>Cash drag</th><th>Buys/Sells</th></tr></thead><tbody>` +
+      d.results.map(r => `<tr><td>${r.label}</td><td>${fmtM(r.contributed)}</td><td>${fmtM(r.final_value)}</td><td class="${cls(r.profit)}">${fmtSign(r.profit)}</td><td class="${cls(r.total_return_pct)}">${fmtP(r.total_return_pct, 1, true)}</td><td>${fmtP(r.xirr_pct, 1)}</td><td>${fmtP(r.cagr_twr_pct, 1)}</td><td>${fmtP(r.max_drawdown_pct, 1)}</td><td>${r.sharpe == null ? '--' : r.sharpe.toFixed(2)}</td><td>${r.avg_cost ? fmtM(r.avg_cost) : '--'}</td><td class="${cls(r.price_vs_avg_cost_pct)}">${fmtP(r.price_vs_avg_cost_pct, 1, true)}</td><td>${fmtP(r.cash_drag_pct, 1)}</td><td>${r.buys}/${r.sells}</td></tr>`).join('') + '</tbody></table>';
+  } catch (err) { $('#bterr').textContent = err.message; $('#btchart').innerHTML = ''; }
+};
+
+// ---------- research (YCharts cache) ----------
+let rcSel = null, rcMetric = null, rcData = {};
+let etfSel = null, etfData = {}, etfRange = 'all', etfOv = null, etfModel = [];
+let whySel = null, whyEvents = {}, whyPx = {}, whyAttr = {}, whySpy = null;
+const RC_LABELS = {price:'Price', pe_ratio:'P/E', forward_pe_ratio:'Fwd P/E', ev_to_ebitda:'EV/EBITDA',
+  price_to_book_value:'P/B', price_to_sales_ratio:'P/S', peg_ratio:'PEG', dividend_yield:'Div yield %',
+  revenues:'Revenue', net_income:'Net income', eps_diluted:'EPS', free_cash_flow:'Free cash flow',
+  gross_profit_margin:'Gross margin %', operating_margin:'Operating margin %', profit_margin:'Net margin %',
+  return_on_equity:'ROE %', return_on_invested_capital:'ROIC %', total_debt:'Total debt',
+  cash_and_st_investments:'Cash & ST inv', shares_outstanding:'Shares out'};
+async function renderResearch() {
+  let idx;
+  try { idx = await apiGet('/api/research'); } catch (e) { idx = { tickers: [] }; }
+  const em = $('#rcempty');
+  if (!idx.tickers || !idx.tickers.length) {
+    em.hidden = false;
+    em.innerHTML = 'No YCharts data pulled yet. On your Mac, set your key and run <code>python -m ycharts_export.api --watchlist sl_model --portfolio</code>, then reload. This tab reads <code>' + (idx.cache_dir || 'data/ycharts_cache') + '</code>.';
+    $('#rctickers').innerHTML = ''; $('#rcbody').hidden = true; return;
+  }
+  em.hidden = true; $('#rcbody').hidden = false;
+  $('#rcsub').textContent = `${idx.count} tickers from YCharts`;
+  const syms = idx.tickers.map(t => t.symbol);
+  if (!rcSel || !syms.includes(rcSel)) rcSel = syms[0];
+  $('#rctickers').innerHTML = idx.tickers.map(t => `<span class="chip ${t.symbol === rcSel ? '' : 'off'}" data-s="${t.symbol}"><i style="background:var(--s1)"></i>${t.symbol}</span>`).join('');
+  $('#rctickers').querySelectorAll('.chip').forEach(c => c.onclick = () => { rcSel = c.dataset.s; rcMetric = null; drawResearch(); });
+  await drawResearch();
+}
+async function drawResearch() {
+  $('#rctickers').querySelectorAll('.chip').forEach(c => c.classList.toggle('off', c.dataset.s !== rcSel));
+  let rec = rcData[rcSel];
+  if (!rec) { try { rec = await apiGet('/api/research/' + rcSel); rcData[rcSel] = rec; } catch (e) { return; } }
+  if (rec.error) { $('#rcstats').innerHTML = `<div class="muted">${rec.error}</div>`; $('#rcchart').innerHTML = ''; $('#rcmetrics').innerHTML = ''; return; }
+  const pts = rec.points || {}, ser = rec.series || {};
+  const pv = k => { const v = pts[k]; return v && typeof v === 'object' ? v.value : v; };
+  const stat = (k, lab, fmt) => { const v = pv(k); return v == null ? '' : `<div>${lab}<b>${fmt(v)}</b></div>`; };
+  $('#rcstats').innerHTML = [
+    stat('price', 'Price', v => fmtM(v)), stat('market_cap', 'Market cap', v => fmtM(v)),
+    stat('pe_ratio', 'P/E', v => fmtN(v, 1)), stat('forward_pe_ratio', 'Fwd P/E', v => fmtN(v, 1)),
+    stat('price_to_book_value', 'P/B', v => fmtN(v, 1)), stat('dividend_yield', 'Div yield', v => fmtP(v, 2)),
+    stat('ev_to_ebitda', 'EV/EBITDA', v => fmtN(v, 1)), stat('beta_5y', 'Beta (5y)', v => fmtN(v, 2)),
+    stat('analyst_target_price_mean', 'Analyst target', v => fmtM(v)),
+    `<div>Metrics pulled<b>${Object.keys(ser).length}</b></div>`,
+    `<div>As of<b>${fmtT(rec.as_of)}</b></div>`,
+  ].join('');
+  const avail = Object.keys(ser).filter(m => ser[m] && ser[m].length > 1);
+  if (!rcMetric || !avail.includes(rcMetric)) rcMetric = avail.includes('price') ? 'price' : avail[0];
+  $('#rcmetrics').innerHTML = avail.map(m => `<button class="${m === rcMetric ? 'active' : ''}" data-m="${m}">${RC_LABELS[m] || m}</button>`).join('');
+  $('#rcmetrics').querySelectorAll('button').forEach(b => b.onclick = () => { rcMetric = b.dataset.m; drawResearch(); });
+  if (!rcMetric) { $('#rcchart').innerHTML = '<p class="muted">No time series in this record.</p>'; return; }
+  const rows = ser[rcMetric].map(r => [r[0], r[1]]);
+  const isPct = /margin|yield|roe|roic|return_on/.test(rcMetric);
+  $('#rclegend').innerHTML = `<span><i style="background:var(--s1)"></i>${rcSel} · ${RC_LABELS[rcMetric] || rcMetric}</span>`;
+  $('#rcchart').innerHTML = lineChart([{ name: RC_LABELS[rcMetric] || rcMetric, color: SERIES[0], pts: rows }],
+    { height: 320, area: true, fmt: v => isPct ? fmtP(v, 1) : (Math.abs(v) >= 1000 ? fmtM(v, 0) : fmtN(v, 2)) });
+  bindTips($('#rcchart'));
+}
+
+// ---------- research (YCharts cache) end ----------
+
+// ---------- ETF quote page (YCharts-style) ----------
+const ETF_RANGES = { '1Y': 252, '3Y': 756, 'all': 1e9 };
+const ALLOC_LABEL = { stockPosition: 'Stocks', bondPosition: 'Bonds', cashPosition: 'Cash',
+  commodityPosition: 'Commodities', preferredPosition: 'Preferred', convertiblePosition: 'Convertible',
+  otherPosition: 'Other' };
+const SECTOR_LABEL = { realestate: 'Real estate', consumer_cyclical: 'Consumer cyclical', basic_materials: 'Materials',
+  consumer_defensive: 'Consumer defensive', technology: 'Technology', communication_services: 'Communications',
+  financial_services: 'Financials', utilities: 'Utilities', industrials: 'Industrials', energy: 'Energy',
+  healthcare: 'Healthcare' };
+const titleCase = s => (s || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+function weightBars(obj, labels) {
+  const ents = Object.entries(obj || {}).filter(([, v]) => v != null).sort((a, b) => b[1] - a[1]);
+  if (!ents.length) return '<p class="muted">Not reported by the data source. Rebuild on your Mac with <code>python -m portfolio.etf_profile ' + (etfSel || 'SMH') + '</code>.</p>';
+  const max = Math.max(...ents.map(e => e[1]));
+  return '<div class="stats" style="grid-template-columns:1fr;gap:6px">' + ents.map(([k, v]) =>
+    `<div style="display:grid;grid-template-columns:150px 1fr 60px;align-items:center;gap:8px;color:var(--ink)">
+       <span style="font-size:13px">${(labels && labels[k]) || titleCase(k)}</span>
+       <span class="bar" style="width:${Math.max(2, v / max * 100)}%;background:var(--s1)"></span>
+       <b style="text-align:right;font-variant-numeric:tabular-nums">${fmtP(v, 1)}</b>
+     </div>`).join('') + '</div>';
+}
+
+async function renderETF() {
+  let idx;
+  try { idx = await apiGet('/api/etf'); } catch (e) { idx = { model: [], cached: [] }; }
+  etfModel = idx.model || [];
+  const roster = etfModel.length ? etfModel : (idx.cached || []).map(t => ({ ticker: t, cached: true }));
+  const em = $('#etfempty');
+  if (!roster.length) {
+    em.hidden = false; em.innerHTML = 'No fund profiles yet. On your Mac run <code>python -m portfolio.etf_profile --all</code>, then reload.';
+    $('#etftickers').innerHTML = ''; $('#etfbody').hidden = true; return;
+  }
+  em.hidden = true;
+  const syms = roster.map(t => t.ticker);
+  if (!etfSel || !syms.includes(etfSel)) etfSel = (roster.find(t => t.cached) || roster[0]).ticker;
+  $('#etftickers').innerHTML = roster.map(t =>
+    `<span class="chip ${t.ticker === etfSel ? '' : 'off'}" data-s="${t.ticker}" title="${t.role || ''}">
+       <i style="background:${t.cached ? 'var(--s3)' : 'var(--ink-3)'}"></i>${t.ticker}</span>`).join('');
+  $('#etftickers').querySelectorAll('.chip').forEach(c => c.onclick = () => { etfSel = c.dataset.s; drawETF(); });
+  await drawETF();
+}
+
+async function drawETF() {
+  $('#etftickers').querySelectorAll('.chip').forEach(c => c.classList.toggle('off', c.dataset.s !== etfSel));
+  let p = etfData[etfSel];
+  if (!p) { try { p = await apiGet('/api/etf/' + etfSel); etfData[etfSel] = p; } catch (e) { p = { error: 'offline' }; } }
+  const body = $('#etfbody');
+  if (!p || p.error) {
+    body.hidden = false;
+    $('#etfhead').innerHTML = `<div class="notice">Couldn't load ${etfSel}. Build it on your Mac: <code>python -m portfolio.etf_profile ${etfSel}</code>.</div>`;
+    ['etfstats','etfrisk','etfrets','etfperf','etfannual','etfalloc','etfsectors','etfholdings','etfoverlap','etfdist','etfinfo','etfnews'].forEach(id => $('#' + id).innerHTML = '');
+    $('#etfchart').innerHTML = ''; $('#etfrange').innerHTML = ''; return;
+  }
+  body.hidden = false;
+  const pr = p.price || {}, ks = p.key_stats || {}, rk = p.risk || {};
+  // header
+  const chg = pr.change_pct;
+  $('#etfhead').innerHTML =
+    `<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px">
+       <div><div style="font-size:22px;font-weight:700">${p.ticker} <span class="muted" style="font-size:14px;font-weight:400">${p.name || ''}</span></div>
+         <div class="muted" style="font-size:12px">${[ks.category, p.info && p.info.issuer, 'as of ' + fmtD(p.as_of)].filter(Boolean).join(' · ')}</div></div>
+       <div style="text-align:right">
+         <div style="font-size:26px;font-weight:650">${pr.last == null ? '--' : fmtM(pr.last)}</div>
+         <div class="${cls(chg)}" style="font-size:13px">${pr.change == null ? '' : fmtSign(pr.change) + ' (' + fmtP(chg, 2, true) + ')'}</div>
+         <div class="muted" style="font-size:12px">52wk ${pr.year_low == null ? '--' : fmtN(pr.year_low, 2)} – ${pr.year_high == null ? '--' : fmtN(pr.year_high, 2)}</div>
+       </div></div>`;
+  // price chart with range buttons
+  $('#etfrange').innerHTML = Object.keys(ETF_RANGES).map(r => `<button class="${r === etfRange ? 'active' : ''}" data-r="${r}">${r}</button>`).join('');
+  $('#etfrange').querySelectorAll('button').forEach(b => b.onclick = () => { etfRange = b.dataset.r; drawETFChart(p); });
+  drawETFChart(p);
+  // key stats
+  const st = (lab, v, mut) => v == null || v === '' ? '' : `<div>${lab}<b>${v}</b>${mut ? `<span class="muted">${mut}</span>` : ''}</div>`;
+  $('#etfstats').innerHTML = [
+    st('Expense ratio', ks.expense_ratio == null ? null : fmtP(ks.expense_ratio, 2)),
+    st('AUM', ks.aum == null ? null : fmtM(ks.aum, 0)),
+    st('Avg volume', ks.avg_volume == null ? null : fmtN(ks.avg_volume, 0)),
+    st('Dividend yield', ks.dividend_yield == null ? null : fmtP(ks.dividend_yield, 2)),
+    st('NAV', ks.nav == null ? null : fmtM(ks.nav)),
+    st('Beta (3y)', ks.beta_3y == null ? null : fmtN(ks.beta_3y, 2)),
+    st('Trailing P/E', ks.trailing_pe == null ? null : fmtN(ks.trailing_pe, 1)),
+    st('Turnover', ks.turnover == null ? null : fmtP(ks.turnover * 100, 0)),
+    st('Inception', ks.inception ? fmtD(ks.inception) : null),
+    st('Category', ks.category || null),
+  ].join('') || '<div class="muted">No fund metadata. Rebuild on your Mac to pull it from yfinance.</div>';
+  // risk
+  $('#etfrisk').innerHTML = [
+    st('Alpha (ann.)', rk.alpha_pct == null ? null : fmtP(rk.alpha_pct, 1, true)),
+    st('Beta', rk.beta == null ? null : fmtN(rk.beta, 2)),
+    st('Std dev (ann.)', rk.vol_pct == null ? null : fmtP(rk.vol_pct, 1)),
+    st('Sharpe', rk.sharpe == null ? null : fmtN(rk.sharpe, 2)),
+    st('Sortino', rk.sortino == null ? null : fmtN(rk.sortino, 2)),
+    st('Value at risk (5%)', rk.var5_pct == null ? null : fmtP(rk.var5_pct, 1)),
+    st('Max drawdown', rk.max_drawdown_pct == null ? null : fmtP(rk.max_drawdown_pct, 1)),
+    st('History', rk.start ? fmtD(rk.start) + ' →' : null),
+  ].join('');
+  // trailing returns tiles
+  const tr = rk.trailing || {};
+  const order = ['1M', '3M', '6M', 'YTD', '1Y', '3Y', '5Y', '10Y'];
+  $('#etfrets').innerHTML = order.filter(k => tr[k] != null).map(k =>
+    `<div class="ret"><div class="p">${k}</div><div class="n ${cls(tr[k])}">${fmtP(tr[k], 1, true)}</div></div>`).join('');
+  // performance vs S&P / category
+  const vs = (p.performance || {}).vs || {}, sp = (vs.sp500 || {}).trailing || {}, cat = (vs.category || {}).trailing || {};
+  const cols = order.filter(k => tr[k] != null || sp[k] != null || cat[k] != null);
+  const rowP = (lab, o) => `<tr><td class="sym">${lab}</td>` + cols.map(k => `<td class="${cls(o[k])}">${o[k] == null ? '--' : fmtP(o[k], 1, true)}</td>`).join('') + '</tr>';
+  $('#etfperf').innerHTML = `<table><thead><tr><th>Total return</th>${cols.map(k => `<th>${k}</th>`).join('')}</tr></thead><tbody>` +
+    rowP(p.ticker, tr) + rowP('S&P 500 (' + ((vs.sp500 || {}).symbol || 'SPY') + ')', sp) +
+    ((vs.category || {}).symbol && (vs.category || {}).symbol !== (vs.sp500 || {}).symbol ? rowP('Category (' + vs.category.symbol + ')', cat) : '') +
+    '</tbody></table>';
+  // annual returns
+  const an = p.annual_returns || {}, yrs = Object.keys(an).sort();
+  $('#etfannual').innerHTML = yrs.length ? '<div class="rets" style="grid-template-columns:repeat(' + Math.min(yrs.length, 8) + ',1fr)">' +
+    yrs.map(y => `<div class="ret"><div class="p">${y}</div><div class="n ${cls(an[y])}">${fmtP(an[y], 1, true)}</div></div>`).join('') + '</div>'
+    : '<p class="muted">no data</p>';
+  // allocation + sectors
+  $('#etfalloc').innerHTML = weightBars(p.asset_allocation, ALLOC_LABEL);
+  $('#etfsectors').innerHTML = weightBars(p.sector_weightings, SECTOR_LABEL);
+  // holdings
+  const th = p.top_holdings || [];
+  $('#etfholdings').innerHTML = th.length ? '<table><thead><tr><th>Symbol</th><th>Name</th><th>Weight</th></tr></thead><tbody>' +
+    th.map(h => `<tr><td class="sym">${h.symbol}</td><td style="text-align:left;color:var(--ink-2)">${h.name || ''}</td><td>${h.weight_pct == null ? '--' : fmtP(h.weight_pct, 2)}</td></tr>`).join('') +
+    '</tbody></table>' : '<p class="muted">Holdings not reported. Rebuild on your Mac to pull them from yfinance.</p>';
+  // overlap picker — default to another *built* fund so the comparison has data
+  const others = etfModel.map(t => t.ticker).filter(t => t !== etfSel);
+  const builtOthers = etfModel.filter(t => t.cached && t.ticker !== etfSel).map(t => t.ticker);
+  if (!etfOv || etfOv === etfSel || !others.includes(etfOv)) etfOv = builtOthers[0] || others[0] || null;
+  $('#etfovsel').innerHTML = others.map(t => `<option value="${t}" ${t === etfOv ? 'selected' : ''}>${t}</option>`).join('');
+  $('#etfovsel').onchange = e => { etfOv = e.target.value; drawOverlap(); };
+  drawOverlap();
+  // distributions
+  const d = p.distributions || {};
+  $('#etfdist').innerHTML = (d.ttm != null || (d.recent || []).length)
+    ? `<div class="stats"><div>TTM distributions<b>${d.ttm == null ? '--' : '$' + fmtN(d.ttm, 4)}</b></div>
+        <div>TTM yield on price<b>${d.ttm != null && pr.last ? fmtP(d.ttm / pr.last * 100, 2) : '--'}</b></div></div>` +
+      ((d.recent || []).length ? '<table style="margin-top:6px"><thead><tr><th>Ex-date</th><th>Amount</th></tr></thead><tbody>' +
+        d.recent.slice().reverse().map(r => `<tr><td class="sym">${fmtD(r.date)}</td><td>$${fmtN(r.amount, 4)}</td></tr>`).join('') + '</tbody></table>' : '')
+    : '<p class="muted">No distribution history reported.</p>';
+  // info + strategy
+  const inf = p.info || {};
+  $('#etfinfo').innerHTML =
+    `<div class="stats">${[['Issuer', inf.issuer], ['Legal type', inf.legal_type], ['Category', inf.category], ['Exchange', inf.exchange], ['Currency', inf.currency]].filter(x => x[1]).map(x => `<div>${x[0]}<b>${x[1]}</b></div>`).join('')}</div>` +
+    (p.strategy ? `<p style="font-size:13px;color:var(--ink-2);margin:8px 0 0">${p.strategy}</p>` : '');
+  // news
+  const nw = p.news || [];
+  $('#etfnews').innerHTML = nw.length ? nw.map(n =>
+    `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
+       <a href="${n.link || '#'}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:500">${n.title}</a>
+       <div class="muted" style="font-size:12px">${[n.publisher, n.date ? fmtT(n.date) : ''].filter(Boolean).join(' · ')}</div></div>`).join('')
+    : '<p class="muted">No recent headlines pulled.</p>';
+}
+
+function drawETFChart(p) {
+  const hist = (p.history || []).slice(-ETF_RANGES[etfRange]).map(r => [r[0], r[1]]);
+  $('#etfchart').innerHTML = hist.length > 1
+    ? lineChart([{ name: p.ticker, color: SERIES[0], pts: hist }], { height: 260, area: true, fmt: v => fmtM(v) })
+    : '<p class="muted">no price history</p>';
+  bindTips($('#etfchart'));
+}
+
+async function drawOverlap() {
+  const box = $('#etfoverlap'), hdr = $('#etfovhdr');
+  if (!etfOv) { box.innerHTML = '<p class="muted">Need a second fund to compare.</p>'; hdr.textContent = ''; return; }
+  let o;
+  try { o = await apiGet('/api/overlap?a=' + etfSel + '&b=' + etfOv); } catch (e) { o = { error: 'offline' }; }
+  if (!o || o.error) { box.innerHTML = `<p class="muted">Build both funds on your Mac first: <code>python -m portfolio.etf_profile ${etfSel} ${etfOv}</code>.</p>`; hdr.textContent = ''; return; }
+  hdr.innerHTML = `<b style="color:var(--ink)">${fmtP(o.weight_overlap_pct, 1)}</b> weight overlap · ${o.shared_count} shared name${o.shared_count === 1 ? '' : 's'}`;
+  box.innerHTML = (o.shared || []).length
+    ? `<table><thead><tr><th>Shared holding</th><th>${etfSel}</th><th>${etfOv}</th><th>Min (overlap)</th></tr></thead><tbody>` +
+      o.shared.map(s => `<tr><td class="sym">${s.symbol}</td><td>${fmtP(s.weight_a, 2)}</td><td>${fmtP(s.weight_b, 2)}</td><td><b>${fmtP(s.min, 2)}</b></td></tr>`).join('') +
+      `<tr class="total"><td>Total weight overlap</td><td></td><td></td><td>${fmtP(o.weight_overlap_pct, 2)}</td></tr></tbody></table>
+       <p class="muted" style="font-size:12px;margin-top:6px">${o.note || ''}</p>`
+    : `<p class="muted">No shared names in the top holdings — ${etfSel} and ${etfOv} are genuinely diversifying against each other.</p>`;
+}
+// ---------- ETF quote page end ----------
+
+// ---------- ETF prospects: ranked by fit to the user's book ----------
+const ROLE_LABEL = { hedge: 'Hedge', cash: 'Cash', factor: 'Factor', income: 'Income', growth: 'Growth' };
+async function renderProspects() {
+  let d; try { d = await apiGet('/api/prospects'); } catch (e) { d = { error: 'offline', ranked: [] }; }
+  const em = $('#prospempty');
+  if (d.error || !(d.ranked || []).length) {
+    em.hidden = false;
+    em.innerHTML = (d.error ? d.error : 'No prospect ranking yet.') + ' On your Mac run <code>python3 -m portfolio.prospects</code> to rank the candidate ETFs against your live book.';
+    $('#prosptable').innerHTML = ''; $('#prospsub').textContent = ''; return;
+  }
+  em.hidden = true;
+  $('#prospsub').innerHTML = `Scored against your book (${(d.book || []).join(', ')}) · as of ${fmtD(d.as_of)}`;
+  const fitBar = f => `<span class="bar" style="width:${Math.max(3, f)}%;background:${f >= 60 ? 'var(--good)' : f >= 45 ? 'var(--s4)' : 'var(--ink-3)'}"></span>`;
+  const corrCell = c => c == null ? '--' : `<span class="${c < 0.3 ? 'up' : c > 0.8 ? 'down' : ''}">${fmtN(c, 2)}</span>`;
+  $('#prosptable').innerHTML = '<table><thead><tr><th>ETF</th><th>Role</th><th>Corr to book</th><th>Overlap</th><th>1Y</th><th>Vol</th><th>Sharpe</th><th>Max DD</th><th>Fit</th><th style="text-align:left">Verdict</th></tr></thead><tbody>' +
+    d.ranked.map(r => `<tr class="row">
+      <td class="sym">${r.ticker}<span class="name">${r.role_name || ''}</span></td>
+      <td>${ROLE_LABEL[r.role] || r.role}</td>
+      <td>${corrCell(r.corr_to_book)}</td>
+      <td>${r.overlap_with_book_pct == null ? '--' : fmtP(r.overlap_with_book_pct, 0)}</td>
+      <td class="${cls(r.ret_1y_pct)}">${r.ret_1y_pct == null ? '--' : fmtP(r.ret_1y_pct, 1, true)}</td>
+      <td>${r.vol_pct == null ? '--' : fmtP(r.vol_pct, 0)}</td>
+      <td>${r.sharpe == null ? '--' : fmtN(r.sharpe, 2)}</td>
+      <td class="down">${r.max_dd_pct == null ? '--' : fmtP(r.max_dd_pct, 0)}</td>
+      <td style="min-width:120px">${fitBar(r.fit_score)} <b>${fmtN(r.fit_score, 0)}</b></td>
+      <td style="text-align:left;color:var(--ink-2);white-space:normal;max-width:260px">${r.verdict || ''}</td>
+    </tr>`).join('') + '</tbody></table>';
+}
+// ---------- prospects end ----------
+
+// ---------- "Why it moved": event-annotated chart + sentiment/EMH attribution ----------
+const EV_PRIORITY = { note: 4, earnings: 3, move: 2, news: 1, dividend: 0, split: 0 };
+function whyRoster() {
+  const held = (snap && snap.holdings || []).map(h => h.symbol);
+  const model = etfModel.map(t => t.ticker);
+  return [...new Set([...held, ...model])];
+}
+async function renderWhy() {
+  const roster = whyRoster();
+  const em = $('#whyempty');
+  if (!roster.length) {
+    // fall back to fetching the ETF roster if holdings/model not loaded yet
+    try { const idx = await apiGet('/api/etf'); etfModel = idx.model || []; } catch (e) { }
+  }
+  const r2 = whyRoster();
+  if (!r2.length) { em.hidden = false; em.innerHTML = 'No tickers yet. Load your portfolio, or build fund data on your Mac.'; $('#whytickers').innerHTML = ''; $('#whybody').hidden = true; return; }
+  em.hidden = true;
+  if (!whySel || !r2.includes(whySel)) whySel = r2[0];
+  $('#whytickers').innerHTML = r2.map(t => `<span class="chip ${t === whySel ? '' : 'off'}" data-s="${t}"><i style="background:var(--s1)"></i>${t}</span>`).join('');
+  $('#whytickers').querySelectorAll('.chip').forEach(c => c.onclick = () => { whySel = c.dataset.s; drawWhy(); });
+  if (!whySpy) { try { whySpy = await apiGet('/api/prices/SPY'); } catch (e) { whySpy = []; } }
+  await drawWhy();
+}
+async function drawWhy() {
+  $('#whytickers').querySelectorAll('.chip').forEach(c => c.classList.toggle('off', c.dataset.s !== whySel));
+  $('#whybody').hidden = false;
+  const sym = whySel;
+  let ev = whyEvents[sym], px = whyPx[sym];
+  if (!ev) { try { ev = await apiGet('/api/events/' + sym); whyEvents[sym] = ev; } catch (e) { ev = { events: [], by_date: {}, day_sentiment: {} }; } }
+  if (!px) { try { px = await apiGet('/api/prices/' + sym); whyPx[sym] = px; } catch (e) { px = []; } }
+  if (!px || !px.length) { $('#whyhead').innerHTML = `<div class="notice">No price history for ${sym}. On your Mac run <code>python3 -m portfolio.events ${sym}</code>.</div>`; $('#whychart').innerHTML = ''; return; }
+  const last = px[px.length - 1], first = px[0];
+  $('#whyhead').innerHTML = `<div style="font-size:18px;font-weight:650">${sym} <span class="muted" style="font-size:12px;font-weight:400">${first[0]} → ${last[0]} · ${(ev.counts ? (ev.counts.earnings + ' earnings · ' + ev.counts.news + ' news · ' + ev.counts.move + ' unusual days') : '')}</span></div>`;
+  // one marker per event-date, colored by highest-priority event that day
+  const pxMap = Object.fromEntries(px.map(r => [r[0], r[1]]));
+  const priceOn = d => { if (pxMap[d]) return pxMap[d]; const ks = px.filter(r => r[0] <= d); return ks.length ? ks[ks.length - 1][1] : null; };
+  const marks = [];
+  Object.entries(ev.by_date || {}).forEach(([d, evs]) => {
+    const y = priceOn(d); if (y == null) return;
+    const top = evs.slice().sort((a, b) => (EV_PRIORITY[b.type] || 0) - (EV_PRIORITY[a.type] || 0))[0];
+    const detail = evs.map(e => e.detail).filter(Boolean).slice(0, 2).join(' · ');
+    marks.push({ d, y, ev: top.type, sent: ev.day_sentiment[d], detail });
+  });
+  $('#whychart').innerHTML = lineChart([{ name: sym, color: SERIES[0], pts: px.map(r => [r[0], r[1]]) }],
+    { height: 300, area: true, marks, fmt: v => fmtM(v) });
+  bindTips($('#whychart'));
+  const svg = $('#whychart').querySelector('svg.chart'); if (svg) { svg._onDay = inspectDay; svg._xs = px.map(r => r[0]); }
+  // attribution gauge
+  let at = whyAttr[sym];
+  if (!at) { try { at = await apiGet('/api/attribution/' + sym); whyAttr[sym] = at; } catch (e) { at = { error: 'offline' }; } }
+  renderAttr(at);
+  $('#whyday').innerHTML = '<p class="muted">Click a point on the chart above to inspect a day.</p>';
+}
+function inspectDay(d) {
+  const sym = whySel, ev = whyEvents[sym] || { by_date: {} }, px = whyPx[sym] || [];
+  const i = px.findIndex(r => r[0] === d);
+  const price = i >= 0 ? px[i][1] : null, prev = i > 0 ? px[i - 1][1] : null;
+  const ret = price != null && prev ? (price / prev - 1) * 100 : null;
+  // market move that day (context for EMH: is this the whole market or just this name?)
+  let spyRet = null;
+  if (whySpy && whySpy.length) { const j = whySpy.findIndex(r => r[0] === d); if (j > 0) spyRet = (whySpy[j][1] / whySpy[j - 1][1] - 1) * 100; }
+  const evs = (ev.by_date || {})[d] || [];
+  const notes = evs.filter(e => e.type === 'note');
+  const news = evs.filter(e => e.type === 'news'), earn = evs.filter(e => e.type === 'earnings'), mv = evs.filter(e => e.type === 'move');
+  let rel = '';
+  if (ret != null && spyRet != null) {
+    const resid = ret - spyRet;
+    rel = Math.abs(spyRet) > 0.75 && Math.sign(ret) === Math.sign(spyRet)
+      ? `Broad move — the S&P was ${fmtP(spyRet, 2, true)} too (${sym} ${Math.abs(resid) < Math.abs(spyRet) * 0.6 ? 'mostly the market' : 'moved more than the market'}).`
+      : `Stock-specific — the S&P only did ${fmtP(spyRet, 2, true)}, so ~${fmtP(resid, 1, true)} of this was ${sym}'s own story.`;
+  }
+  $('#whyday').innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:baseline">
+      <b style="font-size:15px">${fmtD(d)}</b>
+      <span class="tnum">${price == null ? '' : fmtM(price)} ${ret == null ? '' : `<span class="${cls(ret)}">${fmtP(ret, 2, true)}</span>`} ${spyRet == null ? '' : `<span class="muted" style="font-size:12px">· S&P ${fmtP(spyRet, 2, true)}</span>`}</span>
+    </div>
+    ${rel ? `<p style="font-size:13px;color:var(--ink-2);margin:6px 0">${rel}</p>` : ''}
+    ${notes.map(n => `
+      <div style="margin:8px 0;padding:9px 11px;border-left:3px solid var(--note,#e0b341);background:color-mix(in srgb,var(--note,#e0b341) 9%,transparent);border-radius:0 6px 6px 0">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:baseline">
+          <b style="font-size:14px">${esc(n.title || '')}</b>
+          <span class="pillv" style="background:color-mix(in srgb,var(--note,#e0b341) 24%,transparent);color:var(--ink)">${esc((n.category || 'note').toUpperCase())}</span>
+          ${n.scope === 'MACRO' ? '<span class="pillv" style="background:color-mix(in srgb,var(--s1) 22%,transparent)">MACRO</span>' : ''}
+          ${n.end ? `<span class="muted" style="font-size:11px">through ${fmtD(n.end)}</span>` : ''}
+        </div>
+        ${n.note ? `<p style="font-size:13px;color:var(--ink-2);margin:5px 0 4px">${esc(n.note)}</p>` : ''}
+        <div class="muted" style="font-size:11px">${(n.sources || []).map((s, i) => `<a href="${esc(s)}" target="_blank" rel="noopener" style="color:var(--accent)">source${(n.sources.length > 1 ? ' ' + (i + 1) : '')}</a>`).join(' · ')}${n.author ? `${(n.sources || []).length ? ' · ' : ''}noted by ${esc(n.author)}` : ''}</div>
+      </div>`).join('')}
+    ${earn.map(e => `<div style="margin:6px 0"><span class="pillv exp" style="background:color-mix(in srgb,var(--s7) 22%,transparent);color:var(--s7)">EARNINGS</span> ${e.detail}</div>`).join('')}
+    ${mv.map(e => `<div class="muted" style="font-size:12px;margin:4px 0">${e.detail}</div>`).join('')}
+    ${news.length ? '<div style="margin-top:8px">' + news.map(e => `<div style="padding:6px 0;border-bottom:1px solid var(--line)"><a href="${e.link || '#'}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">${e.detail}</a> <span class="pillv ${e.sentiment > 0.1 ? 'cheap' : e.sentiment < -0.1 ? 'exp' : 'fair'}">${e.sentiment_label || 'Neutral'}</span> ${e.publisher ? `<span class="muted" style="font-size:11px">${e.publisher}</span>` : ''}</div>`).join('') + '</div>'
+      : (earn.length || notes.length ? '' : '<p class="muted" style="font-size:12px;margin-top:6px">No news or earnings on file for this day — if it moved, it was likely the market or positioning.</p>')}
+    <details style="margin-top:12px" id="notedetails">
+      <summary style="cursor:pointer;font-size:12px;color:var(--accent)">✎ Add a note for ${fmtD(d)}</summary>
+      <div style="display:grid;gap:6px;margin-top:8px">
+        <input id="ntitle" placeholder="Title — e.g. China H20 export ban" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:13px">
+        <textarea id="nnote" placeholder="What happened, in plain English…" rows="2" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:13px;resize:vertical"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+          <select id="ncat" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:12px">
+            ${['product','earnings','guidance','regulatory','fed','macro-print','geopolitical','decision','other'].map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+          <label style="font-size:12px;display:flex;gap:4px;align-items:center"><input type="checkbox" id="nmacro"> market-wide (MACRO)</label>
+          <input id="nsrc" placeholder="source URL (optional)" style="flex:1;min-width:120px;padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:12px">
+          <button id="nsave" style="padding:6px 12px;border:0;border-radius:6px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer">Save</button>
+        </div>
+        <span id="nmsg" class="muted" style="font-size:11px"></span>
+      </div>
+    </details>`;
+  const saveBtn = $('#nsave');
+  if (saveBtn) saveBtn.onclick = () => saveNote(sym, d);
+}
+async function saveNote(sym, d) {
+  const title = ($('#ntitle').value || '').trim();
+  const msg = $('#nmsg');
+  if (!title) { msg.textContent = 'A title is required.'; return; }
+  const macro = $('#nmacro').checked;
+  const src = ($('#nsrc').value || '').trim();
+  const body = {
+    scope: macro ? 'MACRO' : sym, date: d, title,
+    note: ($('#nnote').value || '').trim(), category: $('#ncat').value,
+    sources: src ? [src] : [], author: 'harry',
+  };
+  msg.textContent = 'saving…';
+  try {
+    const r = await fetch('/api/annotate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!j.ok) { msg.textContent = 'error: ' + (j.error || 'failed'); return; }
+    delete whyEvents[sym];              // force a refetch so the new note shows
+    await drawWhy();
+    inspectDay(d);
+  } catch (e) { msg.textContent = 'error: ' + e; }
+}
+function renderAttr(at) {
+  const g = $('#whygauge'), rc = $('#whyrecent'), interp = $('#whyinterp');
+  if (!at || at.error) { g.innerHTML = `<div class="muted">Attribution needs a factor fit. On your Mac run <code>python3 -m portfolio.attribution ${whySel}</code>.</div>`; interp.textContent = ''; rc.innerHTML = ''; $('#whyrecentcard').hidden = true; return; }
+  const ga = at.gauge || {};
+  g.innerHTML = [
+    ga.efficiency_r2 == null ? '' : `<div>Market explains<b>${fmtP((ga.efficiency_r2) * 100, 0)}</b><span class="muted">of daily variance (R²)</span></div>`,
+    ga.beta_mkt == null ? '' : `<div>Beta to S&P<b>${fmtN(ga.beta_mkt, 2)}</b></div>`,
+    ga.beta_sec == null ? '' : `<div>Beta to sector<b>${fmtN(ga.beta_sec, 2)}</b></div>`,
+    ga.sentiment_tilt == null ? '' : `<div>Sentiment tilt<b class="${cls(ga.sentiment_tilt)}">${fmtN(ga.sentiment_tilt, 2)}</b><span class="muted">residual vs news</span></div>`,
+    ga.unexplained_days == null ? '' : `<div>Unexplained days<b>${ga.unexplained_days}</b><span class="muted">of last ${ga.window} (no news)</span></div>`,
+    ga.residual_vol_pct == null ? '' : `<div>Idiosyncratic vol<b>${fmtP(ga.residual_vol_pct, 1)}</b><span class="muted">daily, stock-specific</span></div>`,
+  ].join('') || '<div class="muted">No gauge.</div>';
+  interp.textContent = ga.interpretation || '';
+  const rb = at.recent_big_day;
+  if (!rb) { $('#whyrecentcard').hidden = true; return; }
+  $('#whyrecentcard').hidden = false;
+  const c = rb.components_pct || {};
+  const barRow = (lab, v, col) => `<div style="display:grid;grid-template-columns:110px 1fr 70px;align-items:center;gap:8px">
+      <span style="font-size:13px">${lab}</span>
+      <span class="bar" style="width:${Math.min(100, Math.abs(v) / (Math.abs(rb.ret_pct) + 0.001) * 100)}%;background:${col}"></span>
+      <b class="${cls(v)}" style="text-align:right">${fmtP(v, 2, true)}</b></div>`;
+  rc.innerHTML = `<div style="margin-bottom:8px"><b>${fmtD(rb.date)}</b> — ${whySel} moved <span class="${cls(rb.ret_pct)}">${fmtP(rb.ret_pct, 2, true)}</span></div>
+    <div class="stats" style="grid-template-columns:1fr;gap:6px">
+      ${barRow('Market', c.market, 'var(--s1)')}
+      ${barRow('Sector', c.sector, 'var(--s3)')}
+      ${barRow('Residual', c.residual, 'var(--s2)')}
+    </div>
+    <p style="font-size:13px;color:var(--ink-2);margin:8px 0 0"><b>Read:</b> ${rb.classification}.${rb.news_sentiment == null ? '' : ` News sentiment that day was ${fmtN(rb.news_sentiment, 2)}.`}</p>
+    ${(rb.news || []).length ? '<div style="margin-top:6px">' + rb.news.map(n => `<div class="muted" style="font-size:12px">• ${n.title}</div>`).join('') + '</div>' : ''}`;
+}
+// ---------- "Why it moved" end ----------
+
+// ---------- macro regime + margin of safety ----------
+async function renderMacro() {
+  let m; try { m = await apiGet('/api/macro'); } catch (e) { m = { error: 'offline' }; }
+  const b = $('#mrbanner');
+  if (m.error) { b.innerHTML = `<div class="notice">${m.error}. On your Mac run <code>python3 -m portfolio.macro</code> (free, no key).</div>`; $('#mrtiles').innerHTML = ''; }
+  else {
+    const cls = m.regime === 'Risk-OFF' ? 'off' : m.regime === 'Risk-ON' ? 'on' : m.regime === 'Leaning cautious' ? 'caut' : '';
+    b.innerHTML = `<div class="regime ${cls}"><span class="lb ${m.regime==='Risk-OFF'?'down':m.regime==='Risk-ON'?'up':''}">${m.regime}</span><span class="sc">risk score ${m.score} &middot; as of ${fmtD(m.as_of)}${(m.flags||[]).length ? ' &middot; ' + m.flags.join('; ') : ''}</span></div>`;
+    const S = m.series || {};
+    $('#mrtiles').innerHTML = Object.keys(S).map(k => { const s = S[k]; if (s.error) return '';
+      const spark = s.history ? sparkline(s.history.map(r => [r[0], r[1]]), 260, 120, 30) : '';
+      return `<div class="tile"><div class="k">${s.label}</div><div class="v">${fmtN(s.last, 2)}</div><div class="d ${cls2(s.chg_1m)}">${s.chg_1m>=0?'+':''}${fmtN(s.chg_1m,2)} 1m &middot; ${fmtP(s.pctile_1y,0)} of 1y</div>${spark}</div>`;
+    }).join('');
+  }
+  let v; try { v = await apiGet('/api/valuation'); } catch (e) { v = { results: [] }; }
+  const rs = (v.results || []).filter(r => r);
+  $('#mvtable').innerHTML = rs.length ? `<table><thead><tr><th>Symbol</th><th>Price</th><th>Verdict</th><th>Margin of safety</th><th>Current P/E</th><th>FCF yield</th><th>P/B</th></tr></thead><tbody>` +
+    rs.map(r => { if (r.error) return `<tr><td class="sym">${r.ticker}</td><td colspan="6" class="muted">${r.error}</td></tr>`;
+      const e = (r.lenses||{}).earnings||{}, fc=(r.lenses||{}).fcf||{}, bk=(r.lenses||{}).book||{};
+      const cl = r.verdict==='Cheap'?'cheap':r.verdict==='Expensive'?'exp':'fair';
+      return `<tr><td class="sym">${r.ticker}</td><td>${fmtM(r.price)}</td><td><span class="pillv ${cl}">${r.verdict}</span></td><td class="${cls(r.blended_margin_pct)}">${r.blended_margin_pct==null?'--':fmtP(r.blended_margin_pct,0,true)}</td><td>${e.current_pe?fmtN(e.current_pe,1):'--'}</td><td>${fc.fcf_yield_pct?fmtP(fc.fcf_yield_pct,1):'--'}</td><td>${bk.pb?fmtN(bk.pb,1)+'x':'--'}</td></tr>`;
+    }).join('') + '</tbody></table>' : '<p class="muted">No fundamentals yet. On your Mac run <code>python3 -m portfolio.edgar --portfolio</code> then reload.</p>';
+}
+function cls2(v){return v>0?'up':v<0?'down':'';}
+
+// ---------- live crypto (Hyperliquid public websocket) ----------
+const HL_COINS = ['BTC','ETH','SOL','HYPE','XRP'];
+const HL_INTERVALS = ['1m','5m','15m','1h','4h','1d'];
+let hlCoin='BTC', hlInt='1m', hlWs=null, hlCandles=[], hlSubbed=null, hlStarted=false;
+function renderLive(){
+  $('#lvcoin').innerHTML = HL_COINS.map(c=>`<button class="${c===hlCoin?'active':''}" data-c="${c}">${c}</button>`).join('');
+  $('#lvcoin').querySelectorAll('button').forEach(b=>b.onclick=()=>{hlCoin=b.dataset.c; hlReload();});
+  $('#lvint').innerHTML = HL_INTERVALS.map(i=>`<button class="${i===hlInt?'active':''}" data-i="${i}">${i}</button>`).join('');
+  $('#lvint').querySelectorAll('button').forEach(b=>b.onclick=()=>{hlInt=b.dataset.i; hlReload();});
+  if(!hlStarted){ hlStarted=true; hlReload(); }
+}
+async function hlReload(){
+  renderLive();
+  $('#lvstatus').textContent='loading history…'; $('#lvdot').className='dot';
+  try{
+    const end=Date.now(), start=end-500*intMs(hlInt);
+    const r=await fetch('https://api.hyperliquid.xyz/info',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type:'candleSnapshot',req:{coin:hlCoin,interval:hlInt,startTime:start,endTime:end}})});
+    const raw=await r.json();
+    hlCandles=(raw||[]).map(k=>({t:k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c,v:+k.v}));
+    drawLive();
+  }catch(e){ $('#lvchart').innerHTML='<p class="muted">Could not reach Hyperliquid. If you are offline or a network blocks it, this stays empty. Everything else in the dashboard still works.</p>'; }
+  hlConnect();
+}
+function intMs(i){return {'1m':6e4,'5m':3e5,'15m':9e5,'1h':36e5,'4h':144e5,'1d':864e5}[i]||6e4;}
+function hlConnect(){
+  try{ if(hlWs){ hlWs.onclose=null; hlWs.close(); } }catch(e){}
+  try{ hlWs=new WebSocket('wss://api.hyperliquid.xyz/ws'); }catch(e){ return; }
+  hlWs.onopen=()=>{ $('#lvstatus').textContent='live'; $('#lvdot').className='dot on';
+    hlSubbed={coin:hlCoin,interval:hlInt};
+    hlWs.send(JSON.stringify({method:'subscribe',subscription:{type:'candle',coin:hlCoin,interval:hlInt}})); };
+  hlWs.onmessage=ev=>{ let m; try{m=JSON.parse(ev.data);}catch(e){return;}
+    if(m.channel==='candle'&&m.data){ const k=m.data;
+      if(!hlSubbed||k.s!==hlSubbed.coin||k.i!==hlSubbed.interval) return;
+      const cndl={t:k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c,v:+k.v};
+      if(hlCandles.length&&hlCandles[hlCandles.length-1].t===cndl.t) hlCandles[hlCandles.length-1]=cndl;
+      else hlCandles.push(cndl);
+      if(hlCandles.length>500) hlCandles.shift();
+      drawLive(); } };
+  hlWs.onclose=()=>{ $('#lvstatus').textContent='reconnecting…'; $('#lvdot').className='dot'; setTimeout(()=>{ if($('#live').classList.contains('active')) hlConnect(); },2500); };
+  hlWs.onerror=()=>{ try{hlWs.close();}catch(e){} };
+}
+function drawLive(){
+  if(!hlCandles.length){ return; }
+  const last=hlCandles[hlCandles.length-1], first=hlCandles[0];
+  const chg=(last.c/first.o-1)*100;
+  $('#lvprice').textContent='$'+last.c.toLocaleString('en-US',{maximumFractionDigits:last.c<10?4:2});
+  $('#lvchg').innerHTML=`<span class="${cls(chg)}">${fmtP(chg,2,true)}</span> over ${hlCandles.length} bars`;
+  $('#lvmeta').textContent=`${hlCoin} · ${hlInt} · updated ${new Date(last.t).toLocaleTimeString()}`;
+  $('#lvchart').innerHTML=candlestick(hlCandles,{height:340});
+}
+function candlestick(cs,opt={}){
+  const W=880,H=opt.height||320,m={t:10,r:56,b:22,l:8};
+  const lo=Math.min(...cs.map(c=>c.l)), hi=Math.max(...cs.map(c=>c.h)); const pad=(hi-lo)*0.05||1;
+  const Y=v=>m.t+(hi+pad-v)/((hi-lo)+2*pad)*(H-m.t-m.b);
+  const n=cs.length, cw=(W-m.l-m.r)/n, bw=Math.max(1,cw*0.6);
+  let g=`<svg class="chart" viewBox="0 0 ${W} ${H}">`;
+  const ticks=niceTicks(lo-pad,hi+pad,5);
+  g+=`<g class="grid">${ticks.map(t=>`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}"/>`).join('')}</g>`;
+  g+=`<g class="axis">${ticks.map(t=>`<text x="${W-m.r+6}" y="${Y(t)+4}">${t.toLocaleString('en-US',{maximumFractionDigits:t<10?3:0})}</text>`).join('')}</g>`;
+  cs.forEach((c,i)=>{ const x=m.l+i*cw+cw/2; const up=c.c>=c.o; const col=up?'var(--good)':'var(--bad)';
+    g+=`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${Y(c.h).toFixed(1)}" y2="${Y(c.l).toFixed(1)}" stroke="${col}" stroke-width="1"/>`;
+    const yo=Y(c.o),yc=Y(c.c); g+=`<rect x="${(x-bw/2).toFixed(1)}" y="${Math.min(yo,yc).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1,Math.abs(yc-yo)).toFixed(1)}" fill="${col}"/>`; });
+  const ly=Y(cs[cs.length-1].c);
+  g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${ly.toFixed(1)}" y2="${ly.toFixed(1)}" stroke="var(--accent)" stroke-dasharray="3 3" opacity="0.7"/>`;
+  return g+'</svg>';
+}
+
+// ---------- SVG line chart with crosshair tooltip ----------
+function lineChart(series, opt = {}) {
+  const W = 800, H = opt.height || 280, m = { t: 12, r: 16, b: 28, l: 64 };
+  const all = series.flatMap(s => s.pts.filter(p => p[1] != null));
+  if (!all.length) return '<p class="muted">no data</p>';
+  const xs = [...new Set(series[0].pts.map(p => p[0]))].sort();
+  const x0 = new Date(xs[0]), x1 = new Date(xs[xs.length - 1]), span = Math.max(1, x1 - x0);
+  let lo = Math.min(...all.map(p => p[1]), ...(opt.marks || []).map(k => k.y)), hi = Math.max(...all.map(p => p[1]), ...(opt.marks || []).map(k => k.y));
+  if (lo === hi) { lo *= 0.95; hi *= 1.05; } const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+  const X = d => m.l + (new Date(d) - x0) / span * (W - m.l - m.r), Y = v => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
+  const ticks = niceTicks(lo, hi, 5);
+  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" data-x0="${x0.toISOString()}" data-span="${span}" data-l="${m.l}" data-r="${m.r}" data-w="${W}"><g class="grid">${ticks.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/>`).join('')}</g>`;
+  if (opt.zero && lo < 0 && hi > 0) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--ink-3)" stroke-width="1" opacity="0.55"/>`;
+  if (opt.area && series.length === 1) {
+    const s0 = series[0], seg = s0.pts.filter(p => p[1] != null);
+    if (seg.length > 1) {
+      const gid = 'ar' + Math.random().toString(36).slice(2, 6);
+      const top = seg.map((p, i) => `${i ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join('');
+      g += `<defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${s0.color}" stop-opacity="0.20"/><stop offset="1" stop-color="${s0.color}" stop-opacity="0"/></linearGradient></defs>`;
+      g += `<path d="${top} L${X(seg[seg.length-1][0]).toFixed(1)},${H - m.b} L${X(seg[0][0]).toFixed(1)},${H - m.b} Z" fill="url(#${gid})"/>`;
+    }
+  }
+  g += `
+  <g class="axis">${ticks.map(t => `<text x="${m.l - 8}" y="${Y(t) + 4}" text-anchor="end">${(opt.fmt || fmtM)(t)}</text>`).join('')}
+  ${xTicks(x0, x1).map(d => `<text x="${X(d)}" y="${H - 8}" text-anchor="middle">${d.toLocaleDateString('en-US', span > 400 * 864e5 ? { month: 'short', year: '2-digit' } : { month: 'short', day: 'numeric' })}</text>`).join('')}</g>`;
+  series.forEach(s => {
+    const path = []; let pen = false;
+    s.pts.forEach(p => { if (p[1] == null) { pen = false; return; } path.push(`${pen ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`); pen = true; });
+    g += `<path d="${path.join('')}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
+  });
+  (opt.marks || []).forEach(k => {
+    if (k.ev === 'note') {  // curated chart-memory note: a gold diamond you can't miss
+      const s = 5.5, x = X(k.d), y = Y(k.y);
+      g += `<path d="M${x} ${y - s}L${x + s} ${y}L${x} ${y + s}L${x - s} ${y}Z" fill="var(--note, #e0b341)" stroke="var(--surface)" stroke-width="1.5" class="hit" data-tip="${fmtD(k.d)}|NOTE|${(k.detail || '').replace(/"/g, '&quot;').replace(/\|/g, '/')}"/>`;
+    } else if (k.ev) {  // event marker: color by type/sentiment, tooltip carries the detail
+      const col = k.ev === 'earnings' ? 'var(--s7)' : k.ev === 'move' ? 'var(--s2)'
+        : k.sent > 0.1 ? 'var(--good)' : k.sent < -0.1 ? 'var(--bad)' : 'var(--s1)';
+      g += `<circle cx="${X(k.d)}" cy="${Y(k.y)}" r="${k.ev === 'earnings' ? 5 : 3.6}" fill="${col}" stroke="var(--surface)" stroke-width="1.5" class="hit" data-tip="${fmtD(k.d)}|${(k.ev || '').toUpperCase()}|${(k.detail || '').replace(/"/g, '&quot;').replace(/\|/g, '/')}"/>`;
+    } else {
+      g += `<circle cx="${X(k.d)}" cy="${Y(k.y)}" r="4.5" fill="${k.side === 'buy' ? 'var(--s3)' : 'var(--s8)'}" stroke="var(--surface)" stroke-width="2" class="hit" data-tip="${fmtD(k.d)}|${k.side} ${fmtN(k.qty, 4)} sh|at ${fmtM(k.y)}"/>`;
+    }
+  });
+  g += `<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" stroke="var(--ink-3)" stroke-dasharray="3 3" style="display:none"/>${series.map((s, i) => `<circle class="xd" data-i="${i}" r="4" fill="${s.color}" stroke="var(--surface)" stroke-width="2" style="display:none"/>`).join('')}
+  <rect class="hover" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/></svg>`;
+  // attach data for hover
+  const el = document.createElement('div'); el.innerHTML = g; const svg = el.firstChild;
+  svg._series = series; svg._Y = Y; svg._X = X; svg._fmt = opt.fmt || fmtM; svg._xs = xs;
+  requestAnimationFrame(() => { const live = document.querySelector(`svg[data-x0="${x0.toISOString()}"][data-span="${span}"]`); if (live) { live._series = series; live._Y = Y; live._X = X; live._fmt = opt.fmt || fmtM; live._xs = xs; } });
+  return g;
+}
+function niceTicks(lo, hi, n) { const r = hi - lo, s0 = r / n, p = Math.pow(10, Math.floor(Math.log10(s0))), s = [1, 2, 2.5, 5, 10].map(k => k * p).find(k => k >= s0); const out = []; for (let v = Math.ceil(lo / s) * s; v <= hi; v += s) out.push(+v.toFixed(6)); return out; }
+function xTicks(a, b) { const out = [], n = 6, span = b - a; for (let i = 0; i <= n; i++) out.push(new Date(a.getTime() + span * i / n)); return out; }
+const tip = $('#tip');
+function showTip(html, ev) { tip.innerHTML = html; tip.style.display = 'block'; const w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(window.innerWidth - w - 8, ev.clientX + 14) + 'px'; tip.style.top = Math.max(8, ev.clientY - h - 12) + 'px'; }
+function bindTips(root) {
+  root.querySelectorAll('.hit').forEach(el => { el.onmousemove = ev => { const [a, b, c] = el.dataset.tip.split('|'); showTip(`<b>${a}</b><div class="r"><span>${b}</span></div>${c ? `<div class="r muted"><span>${c}</span></div>` : ''}`, ev); }; el.onmouseleave = () => tip.style.display = 'none'; });
+  root.querySelectorAll('svg.chart').forEach(svg => {
+    const hov = svg.querySelector('rect.hover'); if (!hov) return;
+    hov.onmousemove = ev => {
+      const S = svg._series; if (!S) return;
+      const box = svg.getBoundingClientRect(), W = +svg.dataset.w, l = +svg.dataset.l, r = +svg.dataset.r;
+      const fx = (ev.clientX - box.left) / box.width * W, t = new Date(+new Date(svg.dataset.x0) + (fx - l) / (W - l - r) * +svg.dataset.span);
+      const xs = svg._xs; let lo = 0, hi = xs.length - 1; const ts = t.toISOString().slice(0, 10);
+      while (lo < hi) { const mid = (lo + hi) >> 1; if (xs[mid] < ts) lo = mid + 1; else hi = mid; }
+      const d = xs[Math.max(0, Math.min(xs.length - 1, lo))];
+      svg.querySelector('.xh').setAttribute('x1', svg._X(d)); svg.querySelector('.xh').setAttribute('x2', svg._X(d)); svg.querySelector('.xh').style.display = '';
+      const rows = S.map((s, i) => { const p = s.pts.find(p => p[0] === d); const c = svg.querySelector(`.xd[data-i="${i}"]`); if (p && p[1] != null) { c.setAttribute('cx', svg._X(d)); c.setAttribute('cy', svg._Y(p[1])); c.style.display = ''; } else c.style.display = 'none'; return `<div class="r"><span><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${s.color};margin-right:6px"></i>${s.name}</span><span>${p && p[1] != null ? svg._fmt(p[1]) : '--'}</span></div>`; });
+      showTip(`<b>${fmtD(d)}</b>${rows.join('')}`, ev);
+    };
+    hov.onmouseleave = () => { tip.style.display = 'none'; svg.querySelector('.xh').style.display = 'none'; svg.querySelectorAll('.xd').forEach(c => c.style.display = 'none'); };
+    hov.style.cursor = 'crosshair';
+    hov.onclick = ev => {
+      if (!svg._onDay || !svg._xs) return;
+      const W = +svg.dataset.w, l = +svg.dataset.l, r = +svg.dataset.r, box = svg.getBoundingClientRect();
+      const fx = (ev.clientX - box.left) / box.width * W, t = new Date(+new Date(svg.dataset.x0) + (fx - l) / (W - l - r) * +svg.dataset.span);
+      const xs = svg._xs; let lo = 0, hi = xs.length - 1; const ts = t.toISOString().slice(0, 10);
+      while (lo < hi) { const mid = (lo + hi) >> 1; if (xs[mid] < ts) lo = mid + 1; else hi = mid; }
+      svg._onDay(xs[Math.max(0, Math.min(xs.length - 1, lo))]);
+    };
+  });
+}
+
+// ---------- controls ----------
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'networth') renderNetworth(); if (b.dataset.tab === 'quickflows') renderQuickflows(); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'prospects') renderProspects(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
+$('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
+$('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
+$('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };
+try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; const a = localStorage.getItem('auto'); if (a) { $('#auto').value = a; $('#auto').dispatchEvent(new Event('change')); } } catch (e) { }
+load();
+</script>
