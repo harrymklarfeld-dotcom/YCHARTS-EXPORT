@@ -146,6 +146,7 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
   <button data-tab="perf">Performance</button>
   <button data-tab="trades">Trades &amp; income</button>
   <button data-tab="compare">Compare</button>
+  <button data-tab="quickflows">Quickflows</button>
   <button data-tab="etf">ETF profile</button>
   <button data-tab="prospects">Prospects</button>
   <button data-tab="why">Why it moved</button>
@@ -213,6 +214,32 @@ form.bt label{font-size:11px;color:var(--ink-3);display:flex;flex-direction:colu
     <div class="legend" id="cmplegend"></div>
     <div id="cmpchart"></div>
     <p class="muted" style="font-size:12px">Each line rebased so you compare <em>performance</em>, not share price. This is how YCharts shows a comparison: pick a start, and everything starts together. Toggle a holding on or off by clicking its chip.</p>
+  </div>
+</section>
+<section class="panel" id="quickflows">
+  <div class="card">
+    <h2>Quickflows <small id="qfsub">YCharts-style comparison tools, built from your own data</small></h2>
+    <div class="segmented" id="qfpick" style="margin:4px 0 10px">
+      <button data-flow="correlation" class="active">Correlation</button>
+      <button data-flow="soon" disabled title="coming next">Relative strength ▸</button>
+      <button data-flow="soon2" disabled title="coming next">Risk / reward ▸</button>
+      <button data-flow="soon3" disabled title="coming next">Annual returns ▸</button>
+    </div>
+    <div class="cmpsyms" id="qfsyms"></div>
+    <div style="display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap">
+      <input id="qfadd" placeholder="add ticker (e.g. QQQ)" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:13px;width:150px">
+      <select id="qfwin" style="padding:6px 8px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);color:var(--ink);font-size:12px">
+        <option value="1">1 year</option>
+        <option value="2">2 years</option>
+        <option value="3" selected>3 years</option>
+        <option value="5">5 years</option>
+      </select>
+      <span id="qfmsg" class="muted" style="font-size:12px"></span>
+    </div>
+  </div>
+  <div class="card" id="qfcard">
+    <h2 id="qfhead">Correlation of daily returns</h2>
+    <div id="qfbody"></div>
   </div>
 </section>
 <section class="panel" id="etf">
@@ -666,6 +693,73 @@ async function renderNetworth() {
     nw.holdings.map(h => `<tr><td class="sym">${h.symbol}</td><td>${fmtN(h.shares, 4)}</td><td>${fmtM(h.market_value)}</td><td>${fmtP(h.weight, 1)}</td><td>${h.cost_basis == null ? '<span class="muted">--</span>' : fmtM(h.cost_basis)}</td><td class="${cls(h.gain)}">${h.gain == null ? '<span class="muted">--</span>' : fmtSign(h.gain)}</td><td class="muted" style="font-size:12px">${h.accounts.map(esc).join(', ')}</td></tr>`).join('') +
     `</tbody></table><p class="muted" style="font-size:12px">Same ticker in two accounts is summed here — that's your true exposure. Cost basis shows only where every account holding the ticker reports it.</p>`;
   bindTips($('#networth'));
+}
+
+// ---------- quickflows: correlation ----------
+let qfSel = null;
+async function renderQuickflows() {
+  if (!qfSel) {
+    const holds = (snap.holdings || []).map(h => h.symbol);
+    qfSel = new Set(holds.slice(0, 8));
+    if (qfSel.size < 2) ['NVDA', 'VOO', 'QQQ', 'GLD'].forEach(s => qfSel.add(s));
+  }
+  renderQfChips();
+  $('#qfwin').onchange = runCorrelation;
+  $('#qfadd').onkeydown = e => {
+    if (e.key !== 'Enter') return;
+    const s = (e.target.value || '').trim().toUpperCase();
+    if (!s) return;
+    if (qfSel.size >= 12) { $('#qfmsg').textContent = 'Max 12 securities.'; return; }
+    qfSel.add(s); e.target.value = ''; renderQfChips(); runCorrelation();
+  };
+  await runCorrelation();
+}
+function renderQfChips() {
+  const holds = (snap.holdings || []).map(h => h.symbol);
+  const all = [...new Set([...holds, ...qfSel])];
+  $('#qfsyms').innerHTML = all.map(s => `<span class="chip ${qfSel.has(s) ? '' : 'off'}" data-s="${s}"><i style="background:var(--s1)"></i>${s}</span>`).join('');
+  $('#qfsyms').querySelectorAll('.chip').forEach(c => c.onclick = () => {
+    const s = c.dataset.s;
+    if (qfSel.has(s)) { if (qfSel.size > 2) qfSel.delete(s); else { $('#qfmsg').textContent = 'Need at least 2.'; return; } }
+    else { if (qfSel.size >= 12) { $('#qfmsg').textContent = 'Max 12 securities.'; return; } qfSel.add(s); }
+    renderQfChips(); runCorrelation();
+  });
+}
+async function runCorrelation() {
+  const syms = [...qfSel];
+  if (syms.length < 2) { $('#qfbody').innerHTML = '<p class="muted">Pick at least 2 tickers.</p>'; return; }
+  const win = +$('#qfwin').value, start = new Date(Date.now() - win * 365 * 864e5).toISOString().slice(0, 10);
+  $('#qfmsg').textContent = 'computing…';
+  let r;
+  try { r = await apiGet('/api/correlation?symbols=' + encodeURIComponent(syms.join(',')) + '&start=' + start); }
+  catch (e) { $('#qfbody').innerHTML = '<p class="muted">error: ' + esc(String(e)) + '</p>'; $('#qfmsg').textContent = ''; return; }
+  $('#qfmsg').textContent = (r.missing && r.missing.length) ? ('no cached prices for ' + r.missing.join(', ') + ' — build on your Mac') : '';
+  const S = r.symbols || [];
+  if (S.length < 2) { $('#qfbody').innerHTML = `<p class="muted">Not enough overlapping price history. On your Mac run <code>python3 -m portfolio.prices ${syms.join(' ')}</code>, or drop a YCharts CSV export into <code>data/prices/</code>.</p>`; return; }
+  $('#qfhead').innerHTML = `Correlation of daily returns <small>${r.from} → ${r.to} · ${r.n_obs} days</small>`;
+  $('#qfbody').innerHTML = corrHeatmap(S, r.matrix, r.n_obs) + corrLegend() +
+    `<p style="font-size:13px;color:var(--ink-2);margin:10px 2px 0">${esc((r.insight || {}).text || '')}</p>` +
+    `<p class="muted" style="font-size:12px;margin:4px 2px">Blue = the two tend to move <b>apart</b> (diversifying); red = they move <b>together</b>. A grid that's mostly red means your names are really one bet.</p>`;
+  bindTips($('#quickflows'));
+}
+function corrHeatmap(S, M, n) {
+  const th = '<th></th>' + S.map(s => `<th style="font-size:11px;padding:3px 5px;font-weight:600">${s}</th>`).join('');
+  const rows = S.map((s, i) => `<tr><th style="text-align:right;font-size:11px;padding:3px 8px 3px 0;font-weight:600">${s}</th>` + S.map((_, j) => {
+    const c = M[i][j], diag = i === j;
+    const bg = c == null ? 'var(--surface)' : diag ? 'var(--surface-2)'
+      : `color-mix(in srgb, ${c >= 0 ? 'var(--bad)' : 'var(--s1)'} ${Math.round(Math.min(.82, Math.abs(c)) * 100)}%, var(--surface))`;
+    const tc = diag ? 'var(--ink-3)' : (c != null && Math.abs(c) > 0.5 ? '#fff' : 'var(--ink)');
+    const label = c == null ? '·' : diag ? '1.00' : (c > 0 ? '+' : '') + c.toFixed(2);
+    const tip = c == null ? `${S[i]} × ${S[j]}|no overlapping history|` : `${S[i]} × ${S[j]}|${(c > 0 ? '+' : '') + c.toFixed(2)} correlation|${n} days of returns`;
+    return `<td class="hit" data-tip="${tip}" style="background:${bg};color:${tc};text-align:center;font-size:11px;font-weight:600;padding:7px 4px;min-width:42px;font-variant-numeric:tabular-nums;border:1.5px solid var(--surface);cursor:default">${label}</td>`;
+  }).join('') + '</tr>').join('');
+  return `<div style="overflow-x:auto"><table style="border-collapse:collapse;margin-top:6px">${'<thead><tr>' + th + '</tr></thead>'}<tbody>${rows}</tbody></table></div>`;
+}
+function corrLegend() {
+  return `<div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--ink-2)">
+    <span>−1 · diversifying</span>
+    <span style="flex:0 0 200px;height:12px;border-radius:3px;background:linear-gradient(90deg,var(--s1),var(--surface-2),var(--bad));border:1px solid var(--line)"></span>
+    <span>+1 · move together</span></div>`;
 }
 
 // ---------- performance ----------
@@ -1333,7 +1427,7 @@ function bindTips(root) {
 }
 
 // ---------- controls ----------
-document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'networth') renderNetworth(); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'prospects') renderProspects(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => { document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b)); document.querySelectorAll('section.panel').forEach(p => p.classList.toggle('active', p.id === b.dataset.tab)); if (b.dataset.tab === 'networth') renderNetworth(); if (b.dataset.tab === 'quickflows') renderQuickflows(); if (b.dataset.tab === 'research') renderResearch(); if (b.dataset.tab === 'etf') renderETF(); if (b.dataset.tab === 'prospects') renderProspects(); if (b.dataset.tab === 'why') renderWhy(); if (b.dataset.tab === 'macro') renderMacro(); if (b.dataset.tab === 'live') renderLive(); else if (hlWs) { try { hlWs.onclose=null; hlWs.close(); } catch(e){} } });
 $('#refresh').onclick = async () => { $('#refresh').disabled = true; $('#livetxt').textContent = 'refreshing…'; $('#dot').classList.add('on'); await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); const poll = setInterval(async () => { await load(); if (!(snap._server || {}).refreshing) clearInterval(poll); }, 3000); };
 $('#auto').onchange = e => { clearInterval(timer); timer = null; const s = +e.target.value; if (s) timer = setInterval(async () => { await fetch('/api/refresh?fast', { method: 'POST' }).catch(() => { }); setTimeout(load, 15000); }, s * 1000); try { localStorage.setItem('auto', s); } catch (err) { } render(); };
 $('#theme').onclick = () => { const r = document.documentElement, cur = r.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); r.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', r.dataset.theme); } catch (e) { } };

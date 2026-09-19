@@ -11,6 +11,7 @@ Endpoints:
     GET  /api/snapshot     current snapshot (holdings, summary, trades, dividends, equity curve)
     GET  /api/history      one row per day from data/portfolio/history/*.json (your own equity over time)
     GET  /api/networth     combined net worth across every account (portfolio.accounts)
+    GET  /api/correlation?symbols=NVDA,MU,VOO   Quickflow: correlation matrix of daily returns
     GET  /api/prices/SYM   cached daily closes for SYM from data/prices (for the per-holding chart)
     POST /api/refresh      run portfolio.robinhood_sync now (uses the cached session token)
     GET  /api/backtest?symbol=MU&amount=500&freq=M   strategy comparison JSON for the backtest tab
@@ -235,6 +236,24 @@ def events_timeline(sym: str) -> dict:
     return tl
 
 
+def correlation_view(symbols: list, start: str = "2022-01-01") -> dict:
+    """Correlation matrix of daily returns for the given symbols, from cached prices."""
+    sys.path.insert(0, ROOT)
+    from portfolio.correlation import assemble
+    series = {}
+    for s in symbols:
+        s = s.upper().strip()
+        if not s:
+            continue
+        rows = read_prices(s)  # DEMO_ twin aware
+        if rows:
+            series[s] = [r for r in rows if r[0] >= start]
+    res = assemble(series)
+    res["requested"] = [s.upper().strip() for s in symbols if s.strip()]
+    res["missing"] = [s for s in res["requested"] if s not in res["symbols"]]
+    return res
+
+
 def networth_view() -> dict:
     """Combined net worth across the served (primary) snapshot + any marked sibling accounts."""
     sys.path.insert(0, ROOT)
@@ -338,6 +357,14 @@ class Handler(SimpleHTTPRequestHandler):
                 return self._json(networth_view())
             except Exception as e:  # noqa: BLE001
                 return self._json({"error": f"{type(e).__name__}: {e}", "accounts": [], "holdings": []}, 200)
+        if u.path == "/api/correlation":
+            q = parse_qs(u.query)
+            syms = [s for part in q.get("symbols", []) for s in part.split(",")]
+            start = (q.get("start") or ["2022-01-01"])[0]
+            try:
+                return self._json(correlation_view(syms, start))
+            except Exception as e:  # noqa: BLE001
+                return self._json({"error": f"{type(e).__name__}: {e}", "symbols": [], "matrix": []}, 200)
         if u.path == "/api/prices":
             snap = read_snapshot()
             syms = [h["symbol"] for h in snap.get("holdings", [])]
