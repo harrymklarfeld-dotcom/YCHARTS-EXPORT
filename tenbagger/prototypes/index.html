@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenbagger Directions</title>
+<meta name="description" content="Three visual directions for Tenbagger, compared side by side with pros, cons and links to each clickable prototype.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #F4F2EC; --surface: #FFFFFF; --ink: #17202F; --soft: #5C6473; --line: #DCD7CB; --a: #0B7A57; --b: #D39500; --c: #0A73AD; --pro: #0B7A57; --con: #B8372F; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #10151E; --surface: #171E2B; --ink: #ECEFF4; --soft: #9AA3B3; --line: #2A3344; --a: #34C28E; --b: #FFCB52; --c: #5CC8FF; --pro: #34C28E; --con: #FF7A70; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #10151E; --surface: #171E2B; --ink: #ECEFF4; --soft: #9AA3B3; --line: #2A3344; --a: #34C28E; --b: #FFCB52; --c: #5CC8FF; --pro: #34C28E; --con: #FF7A70; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 "Public Sans", system-ui, sans-serif; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 64px; }
+h1, h2, h3 { font-family: "Newsreader", Georgia, serif; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(30px, 4vw, 44px); line-height: 1.1; }
+.lede { color: var(--soft); max-width: 70ch; margin: 10px 0 0; }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.toggle { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 600 13px inherit; cursor: pointer; white-space: nowrap; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 32px 0 40px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: transform .15s; }
+.card:hover { transform: translateY(-2px); }
+.card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; display: block; border-bottom: 1px solid var(--line); background: var(--bg); }
+.card .body { padding: 16px 18px 18px; display: grid; gap: 6px; }
+.tag { font: 700 11px/1 "Public Sans", sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.card h2 { font-size: 26px; }
+.card p { margin: 0; color: var(--soft); font-size: 14px; }
+.card .go { font-weight: 700; font-size: 14px; margin-top: 6px; }
+.A .tag, .A .go { color: var(--a); } .B .tag, .B .go { color: var(--b); } .C .tag, .C .go { color: var(--c); }
+.swatches { display: flex; gap: 4px; margin-top: 4px; }
+.swatches i { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--line); }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+th { font: 700 11px/1.2 "Public Sans", sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+tbody th { font: 600 17px/1.2 "Newsreader", serif; letter-spacing: 0; text-transform: none; color: var(--ink); width: 150px; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+ul { margin: 0; padding-left: 18px; }
+li + li { margin-top: 4px; }
+td.pro li::marker { color: var(--pro); } td.con li::marker { color: var(--con); }
+h2.sec { font-size: 26px; margin: 0 0 14px; }
+.note { margin-top: 28px; padding: 18px 20px; border-left: 3px solid var(--a); background: var(--surface); border-radius: 0 12px 12px 0; }
+.note p { margin: 6px 0 0; color: var(--soft); }
+.meta { margin-top: 28px; font-size: 13px; color: var(--soft); }
+.meta a { color: inherit; }
+code { font-size: 13px; }
+@media (max-width: 900px) { .cards { grid-template-columns: 1fr; } .wrap { padding: 28px 16px 48px; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>Three directions for Tenbagger</h1>
+      <p class="lede">Each prototype has a clickable phone app (Learn path, a playable 3-question lesson, a screener with presets, a company page and the Money hub) next to a landing hero, and works in light and dark. Lesson, screener and company numbers are real, from <code>data/companies.json</code> and <code>data/lessons.json</code>. Money hub numbers belong to a fictional persona, Alex, 20.</p>
+    </div>
+    <button class="toggle" id="theme" aria-label="Cycle colour theme">Theme: <span>Auto</span></button>
+  </div>
+
+  <div class="cards">
+    <a class="card A" href="a-ledger.html">
+      <img src="../docs/screenshots/proto-a-desktop.png" alt="Direction A, Ledger: serif headlines on warm paper, with the app's table of contents beside the landing hero" loading="lazy">
+      <div class="body"><span class="tag">Direction A</span><h2>Ledger</h2>
+        <p>An evolution of the current app into a calm financial paper: serif headlines, ruled tables, footnoted sources.</p>
+        <div class="swatches" aria-hidden="true"><i style="background:#F5F2EA"></i><i style="background:#14213D"></i><i style="background:#0B7A57"></i><i style="background:#A8690F"></i></div>
+        <span class="go">Open prototype →</span></div>
+    </a>
+    <a class="card B" href="b-arcade.html">
+      <img src="../docs/screenshots/proto-b-desktop.png" alt="Direction B, Arcade: chunky outlined tiles, a league card and a lesson path" loading="lazy">
+      <div class="body"><span class="tag">Direction B</span><h2>Arcade</h2>
+        <p>Bold and game-forward: streaks, leagues, Screener Quests and hard-shadow tiles, with a source chip on every answer.</p>
+        <div class="swatches" aria-hidden="true"><i style="background:#FFF7E8"></i><i style="background:#16213A"></i><i style="background:#1FA35C"></i><i style="background:#FFC23D"></i><i style="background:#FF5B45"></i></div>
+        <span class="go">Open prototype →</span></div>
+    </a>
+    <a class="card C" href="c-terminal-lite.html">
+      <img src="../docs/screenshots/proto-c-desktop.png" alt="Direction C, Terminal Lite: dark, dense screener table beside the app's curriculum and activity heatmap" loading="lazy">
+      <div class="body"><span class="tag">Direction C</span><h2>Terminal Lite</h2>
+        <p>Dark-first and data-dense after YCharts and Koyfin, with a plain-English note on every number. Built for the ambitious student.</p>
+        <div class="swatches" aria-hidden="true"><i style="background:#0A0E0F"></i><i style="background:#E3ECE8"></i><i style="background:#3DD68C"></i><i style="background:#F5B342"></i><i style="background:#5CC8FF"></i></div>
+        <span class="go">Open prototype →</span></div>
+    </a>
+  </div>
+
+  <h2 class="sec">Pros and cons</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Direction</th><th>Best for</th><th>Pros</th><th>Cons</th></tr></thead>
+      <tbody>
+        <tr><th>A · Ledger</th><td>Credibility with students, parents and teachers (the Edu tier); the “read a 10-K” promise.</td>
+          <td class="pro"><ul><li>Cheapest to ship: <code>tokens.ts</code> already uses this palette, so it is mostly type and layout.</li><li>Reads as trustworthy and not “trading app”, which lowers the gamification and advice risk.</li><li>Ruled statements suit the Money hub and the planned Personal 10-K report.</li></ul></td>
+          <td class="con"><ul><li>Calm means less daily pull, which tests red-team risk #1: “finance lessons are homework”.</li><li>Editorial finance brands look alike, so it is harder to stand out in screenshots.</li><li>Needs the streak and league mechanics added without breaking the tone.</li></ul></td></tr>
+        <tr><th>B · Arcade</th><td>Habit and D7 retention (the day-77 gate), beginners, share cards and virality.</td>
+          <td class="pro"><ul><li>Streaks, leagues, quests and hearts are visible on every screen, the mechanics Duolingo's published results rest on.</li><li>Screener Quests make the screener a game rather than a tool.</li><li>Due-date check as a clear “covered / heads up” badge is easy to read at a glance.</li></ul></td>
+          <td class="con"><ul><li>Most regulatory exposure: XP must come only from learning (Mass. v. Robinhood line).</li><li>Can feel juvenile to interview-prep buyers and the $49 Recruiting Pass.</li><li>Most illustration and animation work for a solo founder.</li></ul></td></tr>
+        <tr><th>C · Terminal Lite</th><td>Ambitious students, finance-club and interview-prep buyers; the screener as the “arena”.</td>
+          <td class="pro"><ul><li>Screener and company pages feel like real tools (query view, sparklines, sortable tables, keyboard shortcuts).</li><li>Shows the raw line items behind each question, which builds skill and trust.</li><li>The runway chart makes the coverage check feel analytical, not like budgeting.</li></ul></td>
+          <td class="con"><ul><li>Intimidating for beginners and for the Money-hub student persona.</li><li>Dark-first is harder for App Store and marketing screenshots, and weaker for daily-habit warmth.</li><li>Heavy use of mono type makes long explanations slower to read.</li></ul></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>Designer's note.</strong>
+    <p>These are separate directions, but the parts combine. A common path is A's type and palette as the base, with B's streak, league and quest components in a quieter style, and C's dense table and chart treatment reserved for Pro screener and company views.</p>
+  </div>
+
+  <p class="meta">Tokens for each direction: <a href="tokens/a-ledger.tokens.json">A</a> · <a href="tokens/b-arcade.tokens.json">B</a> · <a href="tokens/c-terminal-lite.tokens.json">C</a>. See <a href="tokens/README.md">tokens/README.md</a> for how they map into <code>mobile/src/theme/</code> and a future website config. Prices shown are samples. Educational content, not investment advice.</p>
+</div>
+<script>
+(function () {
+  const b = document.getElementById('theme'), r = document.documentElement;
+  b.addEventListener('click', () => {
+    const cur = r.dataset.theme || 'system', next = { system: 'light', light: 'dark', dark: 'system' }[cur];
+    if (next === 'system') delete r.dataset.theme; else r.dataset.theme = next;
+    b.querySelector('span').textContent = next === 'system' ? 'Auto' : next[0].toUpperCase() + next.slice(1);
+  });
+})();
+</script>
+</body>
+</html>
