@@ -1189,7 +1189,7 @@
       "updated": "2026-09-25",
       "widgetCount": 4,
       "sampleTickers": [],
-      "wordCount": 905,
+      "wordCount": 907,
       "blocks": [
         {
           "type": "markdown",
@@ -1213,13 +1213,12 @@
           "params": {
             "kind": "liquidity",
             "cash": 3000,
-            "card": 1500,
-            "caption": "Grades use the same bands as the Money hub. Nothing you enter here leaves your device."
+            "card": 1500
           }
         },
         {
           "type": "markdown",
-          "md": "The grade bands are a rough guide, not a verdict: a ratio of 2 or more (or no card balance at all) is an A, 1.5 to 2 a B, 1 to 1.5 a C, and below that the cushion gets thin. Try one experiment: move $500 from cash to the card (lower both sliders by $500). When cash already exceeds the balance, the ratio rises. When it doesn't, the same payment makes the ratio *fall*, even though the debt shrank. A ratio is a lens, so read it alongside the balance itself.\n\n## Statement two: free cash flow (what's left each month)\n\nA company's free cash flow is cash from operations minus capital spending. The personal version:\n\n> personal free cash flow = take-home pay − regular spending − big one-off purchases\n\nHere's why the company version is instructive. Micron's operations brought in a lot of cash last year, but it spent most of it on new factories:"
+          "md": "The grade bands are a rough guide, not a verdict: a ratio of 2 or more (or no card balance at all) is an A, 1.5 to 2 a B, 1 to 1.5 a C, and below that the cushion gets thin. Try one experiment: use $500 of cash to pay down the card (lower both sliders by $500). When cash already exceeds the balance, the ratio rises. When it doesn't, the same payment makes the ratio *fall*, even though the debt shrank. A ratio is a lens, so read it alongside the balance itself.\n\n## Statement two: free cash flow (what's left each month)\n\nA company's free cash flow is cash from operations minus capital spending. The personal version:\n\n> personal free cash flow = take-home pay − regular spending − big one-off purchases\n\nHere's why the company version is instructive. Micron's operations brought in a lot of cash last year, but it spent most of it on new factories:"
         },
         {
           "type": "widget",

@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LibraryCard } from '../../articles';
 import { GoalRing } from '../../components/GoalRing';
 import { Icon } from '../../components/Icon';
 import { TopStats } from '../../components/TopStats';
@@ -85,6 +86,8 @@ export default function LearnScreen() {
             )}
           </View>
         </View>
+
+        <LibraryCard />
 
         {units.map((u, ui) => (
           <View key={u.id} style={{ gap: 6 }}>

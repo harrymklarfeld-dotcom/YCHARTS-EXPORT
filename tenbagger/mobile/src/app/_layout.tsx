@@ -2,6 +2,7 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { MonetizationProvider } from '../monetization';
 import { useApp } from '../state/store';
 import { useTheme } from '../theme';
 
@@ -24,6 +25,7 @@ export default function RootLayout() {
   };
   return (
     <SafeAreaProvider>
+      <MonetizationProvider>
       <ThemeProvider value={navTheme}>
         <StatusBar style={t.dark ? 'light' : 'dark'} />
         <HeartsTicker />
@@ -39,8 +41,11 @@ export default function RootLayout() {
           <Stack.Screen name="lesson/[id]" options={{ headerShown: false, presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="practice/[ticker]" options={{ headerShown: false, presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
           <Stack.Screen name="company/[ticker]" options={{ title: '', headerBackTitle: 'Back' }} />
+          <Stack.Screen name="paywall" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="settings/subscription" options={{ title: 'Subscription', headerBackTitle: 'Back' }} />
         </Stack>
       </ThemeProvider>
+      </MonetizationProvider>
     </SafeAreaProvider>
   );
 }

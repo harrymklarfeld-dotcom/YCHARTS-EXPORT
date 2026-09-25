@@ -64,7 +64,7 @@ const avg = pts.length ? vals.reduce((a, b) => a + b, 0) / pts.length : 0;
       {average && (
         <g class="chart-avg">
           <line x1={padL} x2={W - padR} y1={y(avg)} y2={y(avg)} />
-          <text x={W - padR} y={y(avg) - 5} text-anchor="end">avg {fmt(avg)}</text>
+          <text x={padL + 2} y={y(avg) - 5} text-anchor="start">avg {fmt(avg)}</text>
         </g>
       )}
       {pts.map((p, i) => (

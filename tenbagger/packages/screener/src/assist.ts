@@ -118,7 +118,9 @@ const OP_WORDS: Record<FilterOp, string> = { '>': 'above', '>=': 'at least', '<'
 /** "P/E below 15x" */
 export function describeFilterPlain(f: Filter): string {
   const info = getMetricInfo(f.metric);
-  const name = info?.shortLabel ?? f.metric;
+  const short = info?.shortLabel ?? f.metric;
+  // "Net margin" → "net margin", but keep "P/E", "ROIC", "EV/EBITDA".
+  const name = /^[A-Z][a-z]/.test(short) ? short[0]!.toLowerCase() + short.slice(1) : short;
   const fmt = (v: number) => (info ? formatByUnit(info.unit, v) : String(v));
   if (f.op === 'between' && Array.isArray(f.value)) return `${name} between ${fmt(f.value[0])} and ${fmt(f.value[1])}`;
   return `${name} ${OP_WORDS[f.op]} ${fmt(f.value as number)}`;
@@ -331,7 +333,7 @@ export function buildAssistSystemPrompt(): string {
   const catalog = METRIC_CATALOG.map(
     (m) => `- ${m.key} | ${m.shortLabel} | ${m.label} | unit: ${unitHint(m.unit)} | ${m.explainer}`,
   ).join('\n');
-  const conventions = ASSIST_SYNONYMS.map((s) => `- "${s.phrases.slice(0, 4).join('", "')}" → ${s.meaning}: ${JSON.stringify(s.filters)}`).join('\n');
+  const conventions = ASSIST_SYNONYMS.map((s) => `- "${s.phrases.join('", "')}" → ${s.meaning}: ${JSON.stringify(s.filters)}`).join('\n');
   return `You turn a person's plain-English description into stock-screener filters for Tenbagger, an investing-education app. You only build filters. You never see company data, and you never state facts, numbers, opinions or advice about any company.
 
 Call the ${ASSIST_TOOL_NAME} tool exactly once.
@@ -372,7 +374,39 @@ Request: "big dividend payers in Europe that will go up"
 → filters [{"metric":"dividend_yield","op":">","value":0.03,"high":null}], restatement "Companies with dividend yield above 3%.", assumptions ["big dividend → dividend yield above 3%"], unsupported ["in Europe (no country data)","will go up (no one can screen for future prices)"]
 
 Request: "tiny companies that generate cash, market cap below 2 billion"
-→ filters [{"metric":"market_cap","op":"<","value":2000000000,"high":null},{"metric":"free_cash_flow","op":">","value":0,"high":null}], restatement "Companies with market cap below $2B and positive free cash flow.", assumptions ["generate cash → free cash flow above $0"], unsupported []`;
+→ filters [{"metric":"market_cap","op":"<","value":2000000000,"high":null},{"metric":"free_cash_flow","op":">","value":0,"high":null}], restatement "Companies with market cap below $2B and positive free cash flow.", assumptions ["generate cash → free cash flow above $0"], unsupported []
+
+Request: "companies that turn a lot of revenue into cash and have more cash than debt"
+→ filters [{"metric":"fcf_margin","op":">","value":0.15,"high":null},{"metric":"net_cash","op":">","value":0,"high":null}], restatement "Companies with FCF margin above 15% and net cash above $0.", assumptions ["a lot of revenue into cash → FCF margin above 15%","more cash than debt → net cash above $0"], unsupported []
+
+Request: "P/E between 10 and 20, ROE at least 20 percent"
+→ filters [{"metric":"pe","op":"between","value":10,"high":20},{"metric":"roe","op":">=","value":0.2,"high":null}], restatement "Companies with P/E between 10x and 20x and ROE of at least 20%.", assumptions [], unsupported []
+
+Request: "which stock should I buy for retirement?"
+→ filters [], restatement "", assumptions [], unsupported ["which stock to pick (Tenbagger teaches how to read the numbers; it does not pick stocks)"]
+
+Request: "businesses with sales over 50 billion and shrinking debt, not loss makers"
+→ filters [{"metric":"revenue","op":">","value":50000000000,"high":null},{"metric":"net_margin","op":">","value":0,"high":null}], restatement "Companies with revenue above $50B and net margin above 0%.", assumptions ["not loss makers → net margin above 0%"], unsupported ["shrinking debt (only the latest year is screenable)"]
+
+Request: "semiconductor companies with EV/EBITDA under 12 and gross margins above 45%"
+→ filters [{"metric":"ev_ebitda","op":"<","value":12,"high":null},{"metric":"gross_margin","op":">","value":0.45,"high":null}], restatement "Companies with EV/EBITDA below 12x and gross margin above 45%.", assumptions [], unsupported ["semiconductor (industry is not a filter here; use the sector view)"]
+
+Request: "safe, liquid companies that can pay their short-term bills twice over"
+→ filters [{"metric":"current_ratio","op":">=","value":2,"high":null}], restatement "Companies with a current ratio of at least 2.", assumptions ["pay short-term bills twice over → current ratio of at least 2"], unsupported []
+
+Request: "earnings yield higher than 6% and FCF yield higher than 5%"
+→ filters [{"metric":"earnings_yield","op":">","value":0.06,"high":null},{"metric":"fcf_yield","op":">","value":0.05,"high":null}], restatement "Companies with earnings yield above 6% and FCF yield above 5%.", assumptions [], unsupported []
+
+Request: "revenue compounding 10-25% a year for three years with EPS growing too"
+→ filters [{"metric":"revenue_cagr_3y","op":"between","value":0.1,"high":0.25},{"metric":"eps_growth_yoy","op":">","value":0,"high":null}], restatement "Companies with 3-year revenue CAGR between 10% and 25% and EPS growth above 0%.", assumptions ["EPS growing → EPS growth (1 year) above 0%"], unsupported []
+
+## Reminders on common mistakes
+- "15%" is 0.15, never 15. "$2B" is 2000000000, never 2.
+- "under", "below", "less than" → "<"; "at most", "no more than" → "<="; "over", "above", "more than" → ">"; "at least" → ">=".
+- Growth over several years → revenue_cagr_3y; "this year" or "last year" growth → revenue_growth_yoy or eps_growth_yoy.
+- "Profit" alone usually means net income or net margin; "cash flow" alone usually means free cash flow.
+- "Debt-free" is net_cash > 0 (companies may still owe a little), not total_debt == 0.
+- Never add a filter the person did not ask for, and never drop one they did ask for.`;
 }
 
 // ------------------------------------------------------------ validation

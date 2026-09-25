@@ -8,6 +8,8 @@ import { Slider } from '../components/Slider';
 import { isSampleFundamentals } from '../provenance';
 import { Stat, Unsupported, WidgetFrame } from './WidgetFrame';
 
+/** $1.67B · $100M · $0 (compact, trailing .00 dropped). */
+const usd = (v: number, digits = 2) => (v === 0 ? '$0' : formatUsdCompact(v, digits).replace(/\.0+(?=[KMBT]$)/, ''));
 const money2 = (v: number) => (Math.abs(v) >= 1000 ? formatUsdCompact(v, 2) : `${v < 0 ? '−' : ''}$${Math.abs(v).toFixed(2)}`);
 const mult = (v: number) => `${v.toFixed(1)}×`;
 
@@ -96,13 +98,13 @@ export function DcfCalculator(p: DcfProps) {
       caption={p.caption}
       sample={c ? isSampleFundamentals(c) : false}
     >
-      <Slider label="Starting free cash flow (per year)" value={fcf} range={ranges.fcf} format={(v) => formatUsdCompact(v, 2)} onChange={setFcf} disabled={useNorm} />
+      <Slider label="Starting free cash flow (per year)" value={fcf} range={ranges.fcf} format={(v) => usd(v)} onChange={setFcf} disabled={useNorm} />
       {norm !== null && (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: useNorm ? t.c.accentSoft : t.c.surfaceAlt, borderRadius: 12, padding: 12 }}>
           <View style={{ flex: 1, gap: 2 }}>
             <Text style={{ color: t.c.ink, fontWeight: '800', fontSize: 14 }}>Cyclical: use normalized FCF</Text>
             <Text style={{ color: t.c.inkSoft, fontSize: 12, lineHeight: 16 }}>
-              {c && histYears ? `${histYears}-year average` : 'Through-cycle estimate'}: {formatUsdCompact(norm, 2)}
+              {c && histYears ? `${histYears}-year average` : 'Through-cycle estimate'}: {usd(norm)}
             </Text>
           </View>
           <Switch
@@ -119,13 +121,13 @@ export function DcfCalculator(p: DcfProps) {
       <Slider label={`Terminal multiple (× year-${p.years} FCF)`} value={terminal} range={ranges.terminal} format={mult} onChange={setTerminal} />
       <View style={{ height: 1, backgroundColor: t.c.line }} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-        <Stat big label="Estimated value" value={formatUsdCompact(res.equityValue, 1)} tone={res.equityValue < 0 ? 'bad' : undefined} />
+        <Stat big label="Estimated value" value={usd(res.equityValue, 1)} tone={res.equityValue < 0 ? 'bad' : undefined} />
         {res.perShare !== null && <Stat big label="Per share" value={money2(res.perShare)} tone={res.perShare < 0 ? 'bad' : undefined} />}
       </View>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-        <Stat label={`PV of ${p.years} years`} value={formatUsdCompact(res.pvYears, 1)} />
-        <Stat label="PV of terminal" value={formatUsdCompact(res.pvTerminal, 1)} />
-        <Stat label={netCash >= 0 ? 'Net cash' : 'Net debt'} value={formatUsdCompact(Math.abs(netCash), 1)} />
+        <Stat label={`PV of ${p.years} years`} value={usd(res.pvYears, 1)} />
+        <Stat label="PV of terminal" value={usd(res.pvTerminal, 1)} />
+        <Stat label={netCash >= 0 ? 'Net cash' : 'Net debt'} value={usd(Math.abs(netCash), 1)} />
       </View>
       <Text style={{ color: t.c.inkSoft, fontSize: 13 }}>
         Share from terminal value:{' '}
@@ -155,16 +157,16 @@ export function LiquidityCalculator({ cash: cash0, card: card0, caption }: { cas
   const [cash, setCash] = useState(cash0);
   const [card, setCard] = useState(card0);
   const res = liquidityCalc(cash, card);
-  const usd = (v: number) => `${v < 0 ? '−' : ''}$${Math.round(Math.abs(v)).toLocaleString('en-US')}`;
+  const dollars = (v: number) => `${v < 0 ? '−' : ''}$${Math.round(Math.abs(v)).toLocaleString('en-US')}`;
   const tone = res.grade === 'A' || res.grade === 'B' ? 'good' : res.grade === 'C' ? 'warn' : 'bad';
   return (
     <WidgetFrame eyebrow="Calculator · Your money" title="Personal liquidity ratio" caption={caption}>
-      <Slider label="Cash (checking + savings)" value={cash} range={ranges.cash} format={usd} onChange={setCash} />
-      <Slider label="Credit card balance" value={card} range={ranges.card} format={usd} onChange={setCard} />
+      <Slider label="Cash (checking + savings)" value={cash} range={ranges.cash} format={dollars} onChange={setCash} />
+      <Slider label="Credit card balance" value={card} range={ranges.card} format={dollars} onChange={setCard} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
         <Stat big label="Liquidity ratio" value={res.ratio === null ? 'No balance' : `${res.ratio.toFixed(2)}×`} tone={tone} />
         <Stat big label="Grade" value={res.grade} tone={tone} />
-        <Stat label="Cash − card" value={usd(res.cushion)} tone={res.cushion < 0 ? 'bad' : undefined} />
+        <Stat label="Cash − card" value={dollars(res.cushion)} tone={res.cushion < 0 ? 'bad' : undefined} />
       </View>
       <Text style={{ color: t.c.ink, fontSize: 14 }}>{res.ratio === null ? 'No card balance: nothing short-term to cover.' : GRADE_NOTE[res.grade]}</Text>
       <Formula>{'liquidity ratio = cash ÷ card balance (your personal current ratio)\nA ≥ 2.0 · B 1.5–2 · C 1–1.5 · D 0.75–1 · F < 0.75'}</Formula>

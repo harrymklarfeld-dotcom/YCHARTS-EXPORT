@@ -45,6 +45,8 @@ export type Account = {
   available?: number;
   asOf: ISODate;
   basis: AccountBasis;
+  /** credit_card only: the credit limit (for utilization). */
+  creditLimit?: number;
 };
 
 /** Statement details for a debt account (credit card or loan). */
@@ -55,6 +57,8 @@ export type Liability = {
   dueDate: ISODate;
   /** Decimal (0.2499 = 24.99%). */
   apr?: number;
+  /** The day the statement closed (the balance was "snapshotted" and the bill created). */
+  statementDate?: ISODate;
 };
 
 export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 = Sunday
@@ -132,3 +136,39 @@ export type Snapshot = {
 export type SnapshotLog = readonly Snapshot[];
 
 export type Grade = 'A' | 'B' | 'C' | 'D' | 'F';
+
+/**
+ * One bank/card transaction (matches the backend `transactions` table: signed amount, + = money in).
+ * On a card account, a purchase is negative (it adds to what you owe) and a payment is positive.
+ */
+export type Transaction = {
+  id: string;
+  date: ISODate;
+  accountId: string;
+  /** Signed: + money in, − money out. */
+  amount: number;
+  /** Merchant / descriptor as the bank shows it. */
+  name: string;
+  /** Category from the provider, if any. The rule-based categorizer fills it in otherwise. */
+  category?: string | null;
+  pending?: boolean;
+  basis?: 'verified' | 'manual';
+};
+
+export type HoldingKind = 'stock' | 'etf' | 'fund' | 'cash' | 'crypto' | 'other';
+
+/** One position in an investment account. */
+export type Holding = {
+  accountId: string;
+  /** null for cash and positions without a ticker. */
+  ticker: string | null;
+  name: string;
+  kind: HoldingKind;
+  /** Display bucket for the allocation chart, e.g. "US stock index fund", "Single stock", "Cash". */
+  assetClass?: string;
+  shares: number;
+  price: number;
+  /** Total cost paid for the position; null when unknown (common for linked accounts). */
+  costBasis: number | null;
+  basis: 'verified' | 'manual';
+};

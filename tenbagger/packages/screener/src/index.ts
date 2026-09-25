@@ -72,3 +72,57 @@ export {
   suggestMetric,
 } from './query.ts';
 export type { ParseResult, QueryIssue } from './query.ts';
+
+// ---------------------------------------------------------------- v2
+
+export { funnel } from './funnel.ts';
+export type { FunnelOutput, FunnelStep } from './funnel.ts';
+
+export { concentration, GENERIC_SECTOR_NOTE, SECTOR_NOTES } from './concentration.ts';
+export type { ConcentrationOptions, ConcentrationOutput, SectorNote, SectorShare } from './concentration.ts';
+
+export { SCORE_FAMILIES, SCORE_FAMILY_IDS, getScoreFamily, scores, scoresByTicker } from './scores.ts';
+export type {
+  CompanyScores,
+  FamilyScore,
+  ScoreComponent,
+  ScoreComponentDef,
+  ScoreFamilyId,
+  ScoreFamilyInfo,
+} from './scores.ts';
+
+export {
+  SIZE_BUCKETS,
+  STYLE_BOX_CONFIG,
+  STYLE_BUCKETS,
+  filterByStyle,
+  sizeBucket,
+  styleBox,
+  styleBoxes,
+} from './style.ts';
+export type { SizeBucket, StyleBoxConfig, StyleBoxResult, StyleBucket, StyleFilter } from './style.ts';
+
+export { BANNED_PHRASES, findBannedPhrases, isCleanLanguage } from './language.ts';
+
+export {
+  ASSIST_DISCLAIMER,
+  ASSIST_LIMITS,
+  ASSIST_SYNONYMS,
+  ASSIST_TOOL,
+  ASSIST_TOOL_NAME,
+  buildAssistSystemPrompt,
+  coerceAssistResult,
+  describeFilterPlain,
+  filtersAreFinite,
+  mergeFilters,
+  mockAssist,
+  needsModel,
+  normalizeAssistText,
+  restateFilters,
+  restatementNumbersMatch,
+  validateAssistOutput,
+} from './assist.ts';
+export type { AssistInterpretation, AssistResult, AssistSource, AssistSynonym, AssistValidation } from './assist.ts';
+
+export { CSV_ID_COLUMNS, catalogCsvColumn, csvCell, toCsv } from './export.ts';
+export type { CsvColumn, CsvOptions } from './export.ts';

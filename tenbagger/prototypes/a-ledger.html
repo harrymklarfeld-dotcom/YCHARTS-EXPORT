@@ -231,7 +231,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   .feat + .feat { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); }
 }
 @media (max-width: 860px) {
-  .stage { grid-template-columns: 1fr; padding: 0 0 48px; gap: 24px; }
+  .stage { grid-template-columns: minmax(0, 1fr); padding: 0 0 48px; gap: 24px; }
   .device { position: static; order: -1; }
   .phone { width: 100%; height: min(760px, calc(100svh - 64px)); border-radius: 0; border: 0; border-bottom: 1px solid var(--rule); box-shadow: none; }
   .device-cap { display: none; }

@@ -48,7 +48,7 @@ export function LibraryCard({ style }: { style?: StyleProp<ViewStyle> }) {
       <View style={{ flexDirection: 'row', gap: 10 }}>
         {focus && (
           <Button
-            label={sum.continueSlug ? 'Continue' : 'Start reading'}
+            label={sum.continueSlug ? 'Continue' : 'Start'}
             onPress={() => router.push(`/articles/${focus.slug}`)}
             style={{ flex: 1, paddingVertical: 11 }}
           />

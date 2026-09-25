@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -5,6 +6,7 @@ import { Icon } from '../../components/Icon';
 import { Body, Card, Chip, Disclaimer, Eyebrow, ProgressBar, Title } from '../../components/ui';
 import { dataInfo } from '../../data';
 import { DAILY_GOAL_OPTIONS, displayedStreak, levelForXp } from '../../game';
+import { useEntitlement, usePurchaseActions } from '../../monetization';
 import { today, useApp, type ThemePref } from '../../state/store';
 import { useTheme } from '../../theme';
 
@@ -47,6 +49,9 @@ export default function ProfileScreen() {
   const t = useTheme();
   const s = useApp();
   const [confirmReset, setConfirmReset] = useState(false);
+  const ent = useEntitlement();
+  const { restore, busy } = usePurchaseActions();
+  const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
   const lvl = levelForXp(s.totalXp);
   const streak = displayedStreak(s.streak, today());
   const lessonsDone = Object.keys(s.completed).length;
@@ -103,6 +108,25 @@ export default function ProfileScreen() {
         </View>
 
         <Card style={{ paddingVertical: 4 }}>
+          <Row
+            icon="star"
+            label={ent.isPro ? (ent.isTrial ? 'Tenbagger Pro (trial)' : 'Tenbagger Pro') : 'Upgrade to Pro'}
+            detail={ent.isPro ? 'Manage your subscription' : 'Unlimited lessons, every screen, no ads'}
+            badge={ent.isPro ? 'Active' : undefined}
+            onPress={() => router.push('/settings/subscription')}
+          />
+          <View style={{ height: 1, backgroundColor: t.c.line }} />
+          <Row
+            icon="check"
+            label={busy === 'restore' ? 'Restoring…' : 'Restore purchases'}
+            detail={restoreMsg ?? 'Already subscribed on this store account?'}
+            disabled={!!busy}
+            onPress={async () => {
+              const snap = await restore();
+              setRestoreMsg(snap.tier === 'pro' ? 'Restored. Pro is active.' : 'No active subscription found.');
+            }}
+          />
+          <View style={{ height: 1, backgroundColor: t.c.line }} />
           <Row icon="link" label="Link brokerage" detail="See your own holdings next to lessons" disabled badge="Coming soon" />
           <View style={{ height: 1, backgroundColor: t.c.line }} />
           <Row icon="book" label="Data source" detail={`${dataInfo.companiesSource}${dataInfo.isSample ? ' (sample numbers)' : ''} · SEC EDGAR filings`} disabled />

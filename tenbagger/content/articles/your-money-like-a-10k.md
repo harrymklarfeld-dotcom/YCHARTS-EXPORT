@@ -39,10 +39,9 @@ Micron's short-term assets cover its short-term obligations about two and a half
 A ratio of 2 means you have twice as much cash as the card balance you owe. Below 1 means that if every card balance came due today, cash alone couldn't cover it. Try it with your own numbers or with the example amounts below:
 
 ```widget:calculator kind=liquidity cash=3000 card=1500
-caption="Grades use the same bands as the Money hub. Nothing you enter here leaves your device."
 ```
 
-The grade bands are a rough guide, not a verdict: a ratio of 2 or more (or no card balance at all) is an A, 1.5 to 2 a B, 1 to 1.5 a C, and below that the cushion gets thin. Try one experiment: move $500 from cash to the card (lower both sliders by $500). When cash already exceeds the balance, the ratio rises. When it doesn't, the same payment makes the ratio *fall*, even though the debt shrank. A ratio is a lens, so read it alongside the balance itself.
+The grade bands are a rough guide, not a verdict: a ratio of 2 or more (or no card balance at all) is an A, 1.5 to 2 a B, 1 to 1.5 a C, and below that the cushion gets thin. Try one experiment: use $500 of cash to pay down the card (lower both sliders by $500). When cash already exceeds the balance, the ratio rises. When it doesn't, the same payment makes the ratio *fall*, even though the debt shrank. A ratio is a lens, so read it alongside the balance itself.
 
 ## Statement two: free cash flow (what's left each month)
 
