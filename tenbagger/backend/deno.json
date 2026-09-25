@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "test": "deno test --allow-read --allow-env tests/",
+    "check": "deno check supabase/functions/*/index.ts tests/*.ts scripts/*.ts",
+    "seed": "deno run --allow-read --allow-write scripts/build_seed.ts"
+  },
+  "lock": false,
+  "fmt": { "lineWidth": 140 },
+  "compilerOptions": { "strict": true }
+}

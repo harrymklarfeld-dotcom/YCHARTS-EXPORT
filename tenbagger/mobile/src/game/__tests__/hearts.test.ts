@@ -1,4 +1,4 @@
-import { HEART_REGEN_MS, INITIAL_HEARTS, loseHeart, MAX_HEARTS, msUntilNextHeart, regenHearts } from '../hearts';
+import { type HeartsState, HEART_REGEN_MS, INITIAL_HEARTS, loseHeart, MAX_HEARTS, msUntilNextHeart, regenHearts } from '../hearts';
 
 const T0 = 1_800_000_000_000;
 
@@ -21,7 +21,7 @@ describe('hearts', () => {
   });
 
   it('regenerates one heart per interval and carries remainder', () => {
-    let s = { count: 1, regenFrom: T0 };
+    let s: HeartsState = { count: 1, regenFrom: T0 };
     s = regenHearts(s, T0 + 2.5 * HEART_REGEN_MS);
     expect(s).toEqual({ count: 3, regenFrom: T0 + 2 * HEART_REGEN_MS });
   });

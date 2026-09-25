@@ -1,11 +1,12 @@
 import Tabs from 'expo-router/js-tabs';
+import type { ColorValue } from 'react-native';
 import { Icon, type IconName } from '../../components/Icon';
 import { useTheme } from '../../theme';
 
 const tab = (title: string, icon: IconName, a11y: string) => ({
   title,
   tabBarAccessibilityLabel: a11y,
-  tabBarIcon: ({ color }: { color: string }) => <Icon name={icon} color={color} size={24} />,
+  tabBarIcon: ({ color }: { color: ColorValue }) => <Icon name={icon} color={String(color)} size={24} />,
 });
 
 export default function TabsLayout() {

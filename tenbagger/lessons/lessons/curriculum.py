@@ -63,7 +63,7 @@ companies and to feed a growth assumption into a valuation later in the course."
     UnitSpec("u2-margins", 2, "Margins",
              "Margins show how many cents of each sales dollar a company keeps at each step of the income statement.", [
         L("u2-l1", "Gross profit & gross margin", """
-**Gross profit** is revenue minus the **cost of revenue**: what it cost to make or buy the things the
+**Gross profit** is revenue minus the **cost of revenue**: what it cost to make or purchase the things the
 company sold. **Gross margin** is gross profit ÷ revenue. A software company with a 70% gross margin keeps
 70 cents of each sales dollar after delivering its product; a warehouse retailer might keep 12 cents.
 Neither is automatically better. Low-margin retailers can win on volume, while high gross margins leave
@@ -112,7 +112,7 @@ instead of creating it.""",
 If you own one share, your slice of the profit is **earnings per share (EPS)** = net income ÷ shares
 outstanding. Analysts use **diluted** shares, which count stock options and other securities that could
 turn into shares. EPS lets you track profit growth from a single owner's point of view: if a company
-buys back shares, EPS rises even when total profit stays flat. Don't compare EPS *between* companies. A
+repurchases shares, EPS rises even when total profit stays flat. Don't compare EPS *between* companies. A
 $20 EPS isn't better than $2 if the share prices are $900 and $50.""",
           [("mc", "eps_calc"), ("num", "eps_calc"), ("tf", "eps_calc"), ("mc", "eps_calc"),
            ("num", "eps_calc"), ("tf", "eps_calc")]),
@@ -147,7 +147,7 @@ deserve a closer look.""",
         L("u4-l2", "Free cash flow", """
 Operating cash flow isn't all spare cash: a company must also spend on **capital expenditures
 (capex)**, which means factories, equipment, data centers and stores. **Free cash flow (FCF) =
-operating cash flow − capex**. It's the cash left over that could pay dividends, buy back shares,
+operating cash flow − capex**. It's the cash left over that could pay dividends, repurchase shares,
 repay debt or pile up in the bank. The most common slip is adding capex instead of subtracting it. FCF
 can be negative in heavy investment years even for a healthy company. What matters is whether the
 spending eventually pays off.""",
@@ -184,14 +184,14 @@ not a market price, and buybacks can shrink it a lot even at very profitable com
 Debt matters less if a company holds a pile of cash to match it. **Net cash = cash − total debt**.
 If the result is positive, the company could repay every lender tomorrow and still have money left.
 If it's negative, the company has **net debt**. Net debt isn't automatically dangerous: steady
-businesses often borrow cheaply on purpose. But in a downturn, net cash buys time while net debt
+businesses often borrow at low rates on purpose. But in a downturn, net cash gives a company time while net debt
 demands interest payments no matter what. You'll use net cash again when you value a company.""",
           [("mc", "net_cash"), ("num", "net_cash"), ("tf", "net_cash_positive"), ("cmp", "net_cash"),
            ("ord", "net_cash"), ("tf", "net_cash_positive"), ("mc", "net_cash")]),
         L("u5-l3", "Debt-to-equity", """
 **Debt-to-equity (D/E) = total debt ÷ shareholders' equity**. It shows how much the company leans on
 borrowed money compared with the owners' capital. A D/E of 0.2x is conservative; 2x or more is heavy
-leverage, which magnifies both good and bad years. Be careful: companies that buy back lots of stock
+leverage, which magnifies both good and bad years. Be careful: companies that repurchase lots of stock
 shrink their equity, which can push D/E very high even when the debt is easily covered by cash flow.
 Always read D/E alongside net cash and cash flow.""",
           [("mc", "debt_to_equity"), ("num", "debt_to_equity"), ("cmp", "debt_to_equity"),

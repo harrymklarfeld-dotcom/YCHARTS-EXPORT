@@ -302,7 +302,7 @@ metric(key="eps_growth_yoy", label="EPS growth", unit="percent", formula="eps_fy
        mistakes=lambda c, k: [("dividing the change by the new year", (k.ctx['b'] - k.ctx['a']) / k.ctx['b'] if k.ctx['b'] else None),
                               ("forgetting to subtract 1", k.ctx['b'] / k.ctx['a']),
                               ("dividing the wrong way round", k.ctx['a'] / k.ctx['b'] - 1 if k.ctx['b'] else None)],
-       gloss=lambda c, k: "EPS can grow faster than net income when a company buys back shares, because the profit is split across fewer shares.")
+       gloss=lambda c, k: "EPS can grow faster than net income when a company repurchases shares, because the profit is split across fewer shares.")
 
 
 def _tax(c: Co):
@@ -695,7 +695,7 @@ metric(key="pe", label="P/E ratio", unit="multiple", formula="price / eps_dilute
        mistakes=lambda c, k: [("dividing price by revenue per share (that's P/S)", k.ctx['p'] / _per_share(c, "revenue") if pos(_per_share(c, "revenue")) else None),
                               ("dividing price by free cash flow per share", k.ctx['p'] / _per_share(c, "free_cash_flow") if pos(_per_share(c, "free_cash_flow")) else None),
                               ("dividing price by operating income per share", k.ctx['p'] / _per_share(c, "operating_income") if pos(_per_share(c, "operating_income")) else None)],
-       gloss=lambda c, k: f"Buyers of the stock were paying about {usd(k.value, True)} for each $1 of last year's earnings. " + PRICE_NOTE)
+       gloss=lambda c, k: f"The market was paying about {usd(k.value, True)} for each $1 of last year's earnings. " + PRICE_NOTE)
 
 
 def _ey(c: Co):

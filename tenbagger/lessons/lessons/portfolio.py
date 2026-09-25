@@ -222,7 +222,6 @@ def build_question(t: dict, raw: dict, rng: random.Random, qid: str) -> dict:
             q["tolerance"] = {"percent": 0.005, "multiple": round(max(0.1, 0.02 * abs(v)), 3)}.get(t["unit"], round(0.02 * abs(v), 2))
     q["unit"] = t["unit"]
     q["explanation"] = t["explanation"]
-    fund = raw.get("fundamentals") or {}
     q["source"] = {"ticker": raw["ticker"], "fy": raw.get("latest_fy"), "metrics": [t.get("answer_expr", "concept")],
                    "formula": t.get("answer_expr", "concept (fixed answer)"),
                    "example": True}
