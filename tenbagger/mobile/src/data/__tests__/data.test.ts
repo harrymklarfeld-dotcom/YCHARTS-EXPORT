@@ -1,3 +1,10 @@
+// These tests pin the bundled sample files so they stay stable when sources.ts
+// points at the real pipeline output (covered in realData.test.ts).
+jest.mock('../sources', () => ({
+  rawCompanies: require('../../../assets/data/companies.sample.json'),
+  rawLessons: require('../../../assets/data/lessons.sample.json'),
+}));
+
 import { getCompanies, getCompany, getLesson, getUnits, normalizeCompanies, normalizeLessons } from '..';
 
 const KEY_METRICS = ['market_cap', 'pe', 'gross_margin', 'roic', 'revenue_cagr_3y'];

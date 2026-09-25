@@ -1,0 +1,25 @@
+# Minimal Supabase CLI config for Tenbagger backend (merge into `supabase init` output if needed).
+project_id = "tenbagger"
+
+[db]
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[auth]
+enabled = true
+
+[auth.mfa]
+# Brokerage linking requires an aal2 session (FTC Safeguards Rule: MFA for access to customer info).
+max_enrolled_factors = 10
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+# User-facing functions require a valid Supabase JWT at the gateway (default verify_jwt = true).
+# Plaid calls the webhook without a user JWT; it is authenticated by Plaid-Verification JWT instead.
+[functions.plaid-webhook]
+verify_jwt = false

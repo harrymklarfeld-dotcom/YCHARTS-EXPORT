@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 // Provider REST clients exercised against a fake fetch that replays sandbox-shaped JSON.
 // Verifies request construction (endpoints, auth, read-only flags) and error mapping.
 import { assert, assertEquals, assertRejects } from "jsr:@std/assert@1";

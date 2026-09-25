@@ -3,7 +3,15 @@
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": false,
-    "types": ["jest"]
+    "types": [
+      "jest"
+    ],
+    "allowImportingTsExtensions": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "expo-env.d.ts", ".expo/types/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "expo-env.d.ts",
+    ".expo/types/**/*.ts"
+  ]
 }

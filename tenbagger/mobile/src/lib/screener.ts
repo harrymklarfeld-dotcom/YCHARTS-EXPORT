@@ -14,6 +14,12 @@
 import type { Company, Filter, MetricKey, Screen } from '../types/contract';
 import { METRIC_BY_KEY, METRIC_CATALOG } from './metricCatalog';
 import { formatValue } from './format';
+import {
+  PRESET_SCREENS as ENGINE_PRESETS,
+  runScreen as engineRunScreen,
+  type Company as EngineCompany,
+  type Screen as EngineScreen,
+} from '../../../packages/screener/src/index';
 
 export { METRIC_CATALOG };
 
@@ -63,8 +69,9 @@ export function sortCompanies(companies: Company[], metric: string, dir: 'asc' |
 }
 
 export function runScreen(companies: Company[], screen: Screen): Company[] {
-  const hits = companies.filter((c) => screen.filters.every((f) => passesFilter(c, f)));
-  return screen.sort ? sortCompanies(hits, screen.sort.metric, screen.sort.dir) : hits;
+  // Delegates to the shared engine (null-safe, stable sort, nulls last).
+  const out = engineRunScreen(companies as unknown as EngineCompany[], screen as unknown as EngineScreen);
+  return out.results.map((r) => r.company as unknown as Company);
 }
 
 export function describeFilter(f: Filter): string {
@@ -78,53 +85,12 @@ export function describeFilter(f: Filter): string {
   return `${label} ${opText[f.op]} ${typeof f.value === 'number' ? formatValue(f.value, fmt) : ''}`;
 }
 
-export const PRESET_SCREENS: Screen[] = [
-  {
-    id: 'quality-compounders',
-    name: 'Quality compounders',
-    description: 'High returns on capital with healthy margins — businesses that turn money into more money.',
-    filters: [
-      { metric: 'roic', op: '>=', value: 0.15 },
-      { metric: 'operating_margin', op: '>=', value: 0.2 },
-    ],
-    sort: { metric: 'roic', dir: 'desc' },
-  },
-  {
-    id: 'cash-machines',
-    name: 'Cash machines',
-    description: 'Companies producing lots of free cash relative to sales.',
-    filters: [{ metric: 'fcf_margin', op: '>=', value: 0.15 }],
-    sort: { metric: 'fcf_margin', dir: 'desc' },
-  },
-  {
-    id: 'low-pe',
-    name: 'Low P/E, profitable',
-    description: 'Profitable companies priced at under 20× earnings. Cheap-looking can have a reason — dig in.',
-    filters: [{ metric: 'pe', op: 'between', value: [0, 20] }],
-    sort: { metric: 'pe', dir: 'asc' },
-  },
-  {
-    id: 'fast-growers',
-    name: 'Fast growers',
-    description: 'Revenue up 10%+ a year over the last three years.',
-    filters: [{ metric: 'revenue_cagr_3y', op: '>=', value: 0.1 }],
-    sort: { metric: 'revenue_cagr_3y', dir: 'desc' },
-  },
-  {
-    id: 'fortress',
-    name: 'Fortress balance sheet',
-    description: 'More cash than debt and bills comfortably covered.',
-    filters: [
-      { metric: 'net_cash', op: '>', value: 0 },
-      { metric: 'current_ratio', op: '>=', value: 1 },
-    ],
-    sort: { metric: 'net_cash', dir: 'desc' },
-  },
-  {
-    id: 'dividend-payers',
-    name: 'Dividend payers',
-    description: 'Companies returning 2%+ of their value to shareholders as cash each year.',
-    filters: [{ metric: 'dividend_yield', op: '>=', value: 0.02 }],
-    sort: { metric: 'dividend_yield', dir: 'desc' },
-  },
-];
+// Presets come from the shared engine so app and package never drift.
+export const PRESET_SCREENS: (Screen & { caveat?: string })[] = ENGINE_PRESETS.map((p) => ({
+  id: p.id,
+  name: p.name,
+  description: p.description,
+  caveat: p.caveat,
+  filters: p.filters as unknown as Filter[],
+  sort: p.sort as Screen['sort'],
+}));

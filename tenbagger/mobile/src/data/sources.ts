@@ -10,8 +10,8 @@
  * Everything downstream validates/normalizes through ./index.ts.
  * =============================================================
  */
-import companiesJson from '../../assets/data/companies.sample.json';
-import lessonsJson from '../../assets/data/lessons.sample.json';
+import companiesJson from '../../../data/companies.json';
+import lessonsJson from '../../../data/lessons.json';
 
 export const rawCompanies: unknown = companiesJson;
 export const rawLessons: unknown = lessonsJson;

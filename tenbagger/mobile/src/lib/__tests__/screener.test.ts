@@ -1,3 +1,8 @@
+jest.mock('../../data/sources', () => ({
+  rawCompanies: require('../../../assets/data/companies.sample.json'),
+  rawLessons: require('../../../assets/data/lessons.sample.json'),
+}));
+
 import { getCompanies } from '../../data';
 import { describeFilter, passesFilter, PRESET_SCREENS, runScreen, sortCompanies } from '../screener';
 import { formatPercent, formatUsdCompact, sourceLabel } from '../format';
@@ -18,7 +23,7 @@ describe('screener adapter', () => {
 
   it('runs presets and sorts nulls last', () => {
     for (const s of PRESET_SCREENS) expect(Array.isArray(runScreen(companies, s))).toBe(true);
-    const low = runScreen(companies, PRESET_SCREENS.find((p) => p.id === 'low-pe')!);
+    const low = runScreen(companies, PRESET_SCREENS.find((p) => p.id === 'quality-fair-price')!);
     expect(low.map((c) => c.ticker)).not.toContain('F');
     const byPe = sortCompanies(companies, 'pe', 'asc');
     expect(byPe[byPe.length - 1].ticker).toBe('F');

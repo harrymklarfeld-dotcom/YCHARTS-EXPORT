@@ -43,18 +43,22 @@ export class TokenCipher {
     return new TokenCipher(keys, activeKeyId);
   }
 
-  static async fromEnv(get: (k: string) => string | undefined = (k) => Deno.env.get(k)): Promise<TokenCipher> {
+  static fromEnv(get: (k: string) => string | undefined = (k) => Deno.env.get(k)): Promise<TokenCipher> {
     const json = get("TOKEN_ENCRYPTION_KEYS");
     const active = get("TOKEN_ENCRYPTION_ACTIVE_KEY_ID");
-    if (!json || !active) throw new CryptoConfigError("TOKEN_ENCRYPTION_KEYS / TOKEN_ENCRYPTION_ACTIVE_KEY_ID not set");
+    if (!json || !active) return Promise.reject(new CryptoConfigError("TOKEN_ENCRYPTION_KEYS / TOKEN_ENCRYPTION_ACTIVE_KEY_ID not set"));
     let parsed: Record<string, string>;
     try {
       parsed = JSON.parse(json);
     } catch {
-      throw new CryptoConfigError("TOKEN_ENCRYPTION_KEYS is not valid JSON");
+      return Promise.reject(new CryptoConfigError("TOKEN_ENCRYPTION_KEYS is not valid JSON"));
     }
     const raw: Record<string, Uint8Array> = {};
-    for (const [id, v] of Object.entries(parsed)) raw[id] = b64urlDecode(String(v).replace(/=+$/, ""));
+    try {
+      for (const [id, v] of Object.entries(parsed)) raw[id] = b64urlDecode(String(v).replace(/=+$/, ""));
+    } catch {
+      return Promise.reject(new CryptoConfigError("TOKEN_ENCRYPTION_KEYS values must be base64"));
+    }
     return TokenCipher.fromRawKeys(raw, active);
   }
 

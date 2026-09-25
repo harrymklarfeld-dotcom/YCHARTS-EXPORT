@@ -5,6 +5,17 @@
     "seed": "deno run --allow-read --allow-write scripts/build_seed.ts"
   },
   "lock": false,
-  "fmt": { "lineWidth": 140 },
-  "compilerOptions": { "strict": true }
+  "fmt": {
+    "lineWidth": 140
+  },
+  "compilerOptions": {
+    "strict": true
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "no-import-prefix"
+      ]
+    }
+  }
 }

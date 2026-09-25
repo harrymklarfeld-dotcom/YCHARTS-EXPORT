@@ -14,4 +14,7 @@ const extra = ['../data', '../packages']
   .filter((p) => fs.existsSync(p));
 config.watchFolders = [...(config.watchFolders ?? []), ...extra];
 
+// Files under ../packages resolve their imports (e.g. @babel/runtime) from this app's node_modules.
+config.resolver.nodeModulesPaths = [path.resolve(__dirname, 'node_modules')];
+
 module.exports = config;
