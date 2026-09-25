@@ -192,3 +192,5 @@ label { font-weight: 500; }
 calc-widget, lesson-player, screener-app, money-demo { display: block; }
 /* Grid children must be allowed to shrink below their content width (tables scroll inside). */
 .co-layout > *, .art-grid > *, .grid-2 > *, .grid-3 > *, .md-grid > *, .calc-grid > *, .hero-grid > * { min-width: 0; }
+.co-side > *, .art-side > * { min-width: 0; }
+.lp-prompt, .lp-choice, .lp-expl { overflow-wrap: anywhere; }
