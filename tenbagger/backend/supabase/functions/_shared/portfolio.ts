@@ -57,6 +57,10 @@ export interface WeightedMetric {
   coverage: number; // share of invested (non-cash) USD value with data, 0..1
 }
 
+interface RawWeighted extends WeightedMetric {
+  raw: number | null; // unrounded, for derived metrics (P/E = 1 / EY)
+}
+
 export interface PositionSummary {
   key: string;
   ticker: string | null;
@@ -124,7 +128,7 @@ function sectorFor(row: PortfolioRow): string {
   }
 }
 
-export function weightedMean(pairs: Array<{ mv: number; v: number | null | undefined }>, investedTotal: number): WeightedMetric {
+export function weightedMean(pairs: Array<{ mv: number; v: number | null | undefined }>, investedTotal: number): RawWeighted {
   let num = 0;
   let den = 0;
   for (const p of pairs) {
@@ -132,7 +136,8 @@ export function weightedMean(pairs: Array<{ mv: number; v: number | null | undef
     num += p.mv * p.v;
     den += p.mv;
   }
-  return { value: den > 0 ? r6(num / den) : null, coverage: investedTotal > 0 ? r6(den / investedTotal) : 0 };
+  const raw = den > 0 ? num / den : null;
+  return { value: raw === null ? null : r6(raw), raw, coverage: investedTotal > 0 ? r6(den / investedTotal) : 0 };
 }
 
 export function computePortfolioSummary(rows: PortfolioRow[], asOf: string): PortfolioSummary {
@@ -186,14 +191,16 @@ export function computePortfolioSummary(rows: PortfolioRow[], asOf: string): Por
     }),
     invested,
   );
-  const pick = (k: keyof CompanyMetricsLite) =>
-    weightedMean(covered.map((a) => ({ mv: a.mv, v: a.row.company!.metrics[k] })), invested);
+  const pick = (k: keyof CompanyMetricsLite): WeightedMetric => {
+    const { value, coverage } = weightedMean(covered.map((a) => ({ mv: a.mv, v: a.row.company!.metrics[k] })), invested);
+    return { value, coverage };
+  };
 
   const pe: WeightedMetric = {
-    value: ey.value !== null && ey.value > 0 ? r6(1 / ey.value) : null,
+    value: ey.raw !== null && ey.raw > 0 ? r6(1 / ey.raw) : null,
     coverage: ey.coverage,
   };
-  if (ey.value !== null && ey.value <= 0) warnings.push("Portfolio has net losses in aggregate; P/E not meaningful");
+  if (ey.raw !== null && ey.raw <= 0) warnings.push("Portfolio has net losses in aggregate; P/E not meaningful");
 
   // Sector mix
   const sectors = new Map<string, number>();
@@ -244,7 +251,7 @@ export function computePortfolioSummary(rows: PortfolioRow[], asOf: string): Por
     cost_basis_coverage: invested > 0 ? r6(costMv / invested) : 0,
     weighted: {
       pe,
-      earnings_yield: ey,
+      earnings_yield: { value: ey.value, coverage: ey.coverage },
       fcf_yield: pick("fcf_yield"),
       roic: pick("roic"),
       dividend_yield: pick("dividend_yield"),

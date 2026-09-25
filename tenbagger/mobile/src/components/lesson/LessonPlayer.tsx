@@ -231,7 +231,7 @@ export function LessonPlayer({ lesson, mode, initialPhase = 'intro' }: { lesson:
   );
 }
 
-/** Test/screenshot helper hook-free guard */
+/** Apply any heart regen that happened while the app was closed, before a lesson starts. */
 export function useEnsureHeartsFresh() {
   const tick = useApp((s) => s.tickHearts);
   useEffect(() => {

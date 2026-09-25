@@ -32,7 +32,8 @@ def load_companies(doc: dict) -> list[Co]:
 def build_lesson(spec: LessonSpec, cos: list[Co], seed: int) -> tuple[dict, list[str]]:
     rng = random.Random(f"{seed}:{spec.id}")
     questions, used, prompts, skipped = [], set(), set(), []
-    for kind, key in spec.slots:
+    for slot in spec.slots:
+        kind, key, pick = (*slot, None)[:3]
         if len(questions) >= MAX_Q:
             break
         m = get(key)
@@ -42,6 +43,8 @@ def build_lesson(spec: LessonSpec, cos: list[Co], seed: int) -> tuple[dict, list
             fresh = [p for p in pool if p[0].ticker not in used]
             cands = fresh[:] or pool[:]
             rng.shuffle(cands)
+            if pick == "max":  # feature the most extreme example, even if already used
+                cands = sorted(pool, key=lambda p: -p[1].value)
             for c, k in cands:
                 q = SINGLE[kind](m, c, k, rng)
                 if q and q["prompt"] not in prompts:

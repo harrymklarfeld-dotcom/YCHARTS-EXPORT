@@ -24,7 +24,7 @@ def pct(v: float, digits: int = 1) -> str:
 
 
 def mult(v: float) -> str:
-    return f"{v:.2f}x" if abs(v) < 1 else f"{v:.1f}x"
+    return f"{v:.2f}x" if abs(v) < 10 else f"{v:.1f}x"
 
 
 def fmt(v: float, unit: str) -> str:
@@ -53,6 +53,7 @@ def short_name(name: str) -> str:
         if not m:
             break
         n = n[: m.start()].rstrip(", ")
+        n = re.sub(r"\s+(&|and)$", "", n)
     if n.startswith("The "):
         n = n[4:]
     # "NVIDIA" -> "Nvidia"-style casing is a product call; keep issuer spelling.

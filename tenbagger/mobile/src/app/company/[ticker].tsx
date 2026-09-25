@@ -30,7 +30,14 @@ const CHARTS: { key: HistoryKey; title: string; fmt: (v: number | null) => strin
   { key: 'operating_margin', title: 'Operating margin', fmt: (v) => formatPercent(v) },
 ];
 
-const CUE_WORD: Record<Cue, string> = { strong: 'on the strong side', caution: 'worth a closer look', neutral: 'middle of the road', none: '' };
+/** Neutral, descriptive words: "High"/"Low" vs. a rule-of-thumb range. Colour carries the cue. */
+function cueWord(key: string, cue: Cue): string {
+  if (cue === 'none') return '';
+  if (cue === 'neutral') return 'Typical range';
+  const higherIsStrong = METRIC_BY_KEY[key]?.better === 'higher';
+  const high = cue === 'strong' ? higherIsStrong : !higherIsStrong;
+  return high ? 'High vs. typical' : 'Low vs. typical';
+}
 
 export default function CompanyScreen() {
   const { ticker } = useLocalSearchParams<{ ticker: string }>();
@@ -88,16 +95,21 @@ export default function CompanyScreen() {
                   <Pressable
                     key={k}
                     accessibilityRole="button"
-                    accessibilityLabel={`${info.label}: ${formatValue(v, info.format)}${cue !== 'none' ? `, ${CUE_WORD[cue]}` : ''}. Tap for explanation`}
+                    accessibilityLabel={`${info.label}: ${formatValue(v, info.format)}${cue !== 'none' ? `, ${cueWord(k, cue)}` : ''}. Tap for explanation`}
                     onPress={() => setExplain(k)}
-                    style={{ width: tileW, backgroundColor: t.c.surface, borderRadius: t.radius.md, padding: 12, gap: 4, borderWidth: 1, borderColor: t.c.line, borderLeftWidth: 5, borderLeftColor: cueColor[cue] }}
+                    style={{ width: tileW, backgroundColor: t.c.surface, borderRadius: t.radius.md, padding: 12, gap: 4, borderWidth: 1, borderColor: t.c.line, minHeight: 92 }}
                   >
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Text style={{ color: t.c.inkSoft, fontSize: 12, fontWeight: '700' }}>{info.label}</Text>
                       <Icon name="info" color={t.c.locked} size={14} />
                     </View>
                     <Text style={{ color: t.c.ink, fontSize: 20, fontWeight: '800', fontVariant: ['tabular-nums'] }}>{formatValue(v, info.format)}</Text>
-                    {cue !== 'none' && <Text style={{ color: cueColor[cue], fontSize: 11, fontWeight: '700' }}>{CUE_WORD[cue]}</Text>}
+                    {cue !== 'none' && (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: cueColor[cue] }} />
+                        <Text style={{ color: cueColor[cue], fontSize: 11, fontWeight: '800' }}>{cueWord(k, cue)}</Text>
+                      </View>
+                    )}
                   </Pressable>
                 );
               })}

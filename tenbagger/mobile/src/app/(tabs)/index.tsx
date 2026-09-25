@@ -88,7 +88,7 @@ export default function LearnScreen() {
 
         {units.map((u, ui) => (
           <View key={u.id} style={{ gap: 6 }}>
-            <View style={{ backgroundColor: ui % 2 === 0 ? t.c.primary : t.c.accent, borderRadius: t.radius.md, padding: 16, borderBottomWidth: 5, borderBottomColor: 'rgba(0,0,0,0.2)' }}>
+            <View style={{ backgroundColor: ui % 2 === 0 ? t.c.unitA : t.c.unitB, borderRadius: t.radius.md, padding: 16, borderBottomWidth: 5, borderBottomColor: 'rgba(0,0,0,0.2)' }}>
               <Text style={{ color: '#fff', opacity: 0.85, fontWeight: '800', fontSize: 11, letterSpacing: 1.4 }}>UNIT {u.order}</Text>
               <Text accessibilityRole="header" style={{ color: '#fff', fontFamily: t.fonts.display, fontSize: 22, fontWeight: '700' }}>{u.title}</Text>
               <Text style={{ color: '#fff', opacity: 0.9, fontSize: 14, marginTop: 2 }}>{u.summary}</Text>

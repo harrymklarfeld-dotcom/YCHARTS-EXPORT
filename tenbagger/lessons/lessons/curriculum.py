@@ -13,7 +13,7 @@ class LessonSpec:
     id: str
     title: str
     intro: str
-    slots: list[tuple[str, str]]
+    slots: list[tuple]  # (kind, metric_key[, 'max' = feature the company with the highest value])
     xp: int = 10
 
 
@@ -315,7 +315,7 @@ prices and margins soar; when capacity catches up, they collapse, sometimes into
 peak year multiplies that peak into the far future, so it can overstate value many times over. Built on a
 trough year, it can understate it. The fix is to look at the full history and use a **normalized**,
 cycle-average cash flow. This lesson uses real 5-10 year histories to measure how big the swings are.""",
-          [("mc", "fcf_peak_to_avg"), ("num", "fcf_peak_to_avg"), ("mc", "gm_range"), ("num", "gm_range"),
+          [("mc", "fcf_peak_to_avg", "max"), ("num", "fcf_peak_to_avg"), ("mc", "gm_range", "max"), ("num", "gm_range"),
            ("tf", "had_loss_year"), ("cmp", "gm_range"), ("ord", "gm_range"), ("tf", "had_loss_year")], xp=20),
     ]),
 ]

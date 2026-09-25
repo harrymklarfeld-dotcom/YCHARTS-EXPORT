@@ -46,7 +46,7 @@ def rounded(v: float, unit: str) -> float:
 
 def tolerance(v: float, unit: str) -> float:
     if unit == "percent":
-        return 0.005
+        return 0.005 if abs(v) >= 0.05 else 0.001
     if unit == "multiple":
         return round(max(0.1, 0.02 * abs(v)), 3)
     if unit == "usd_share":
@@ -128,7 +128,7 @@ def _nice(t: float, unit: str) -> float:
         step = 0.01 if abs(t) < 0.2 else 0.05
         return round(round(t / step) * step, 4)
     if unit == "multiple":
-        step = 0.1 if abs(t) < 2 else (1 if abs(t) < 20 else 5)
+        step = 0.01 if abs(t) < 0.2 else 0.1 if abs(t) < 2 else (1 if abs(t) < 20 else 5)
         return round(round(t / step) * step, 2)
     mag = 10 ** (math.floor(math.log10(abs(t))) - 1)  # 2 significant figures
     return round(t / mag) * mag
@@ -141,19 +141,26 @@ def true_false(m: Metric, co: Co, k: Calc, rng: random.Random) -> Optional[dict]
                 "explanation": f"{'True' if k.value else 'False'}: {k.arith}. {m.gloss(co, k)}".strip(),
                 "source": source(m, co, k)}
     v = k.value
-    want_true = rng.random() < 0.5
-    for mult_ in (0.3, 0.45, 0.6):
-        delta = max(abs(v) * mult_, 0.03 if m.unit == "percent" else 0)
-        if delta == 0:
-            return None
-        t = _nice(v - delta if want_true else v + delta, m.unit)
-        if (v > t) == want_true and far_enough(v, t, m.unit, COMPARE_REL, 0.02):
+    first = rng.random() < 0.5
+    t = None
+    for want_true in (first, not first):
+        for mult_ in (0.3, 0.45, 0.6):
+            delta = max(abs(v) * mult_, 0.03 if m.unit == "percent" else 0)
+            if delta == 0:
+                break
+            cand = _nice(v - delta if want_true else v + delta, m.unit)
+            same_sign = cand != 0 and (v == 0 or (cand > 0) == (v > 0))
+            if same_sign and (v > cand) == want_true and far_enough(v, cand, m.unit, COMPARE_REL, 0.02):
+                t = cand
+                break
+        if t is not None:
             break
-    else:
+    if t is None:
         return None
     truth = v > t
+    when = (f"from FY{k.ctx['y0']} to FY{k.ctx['y1']}" if m.history_based and "y0" in k.ctx else f"in FY{co.fy}")
     return {"type": "true_false",
-            "prompt": f"True or false? {co.label}'s {m.label} in FY{co.fy} was above {m.f(t)}.",
+            "prompt": f"True or false? {co.label}'s {m.label} {when} was above {m.f(t)}.",
             "answer": truth, "unit": "none",
             "explanation": (f"{'True' if truth else 'False'}. {cap(m.label)} = {m.pretty} = {k.arith}, which is "
                             f"{'above' if truth else 'below'} {m.f(t)}. {m.gloss(co, k)}").strip(),
@@ -161,7 +168,8 @@ def true_false(m: Metric, co: Co, k: Calc, rng: random.Random) -> Optional[dict]
 
 
 def _pair_line(m: Metric, co: Co, k: Calc) -> str:
-    return f"{co.label}, FY{co.fy}: {k.arith}"
+    when = f"FY{k.ctx['y0']}–FY{k.ctx['y1']}" if m.history_based and "y0" in k.ctx else f"FY{co.fy}"
+    return f"{co.label}, {when}: {k.arith}"
 
 
 def _fy_note(cos: list[Co]) -> str:
@@ -184,7 +192,7 @@ def compare(m: Metric, pool: list[tuple[Co, Calc]], rng: random.Random, prefer: 
     win = max((a, b), key=lambda x: x[1].value) if higher else min((a, b), key=lambda x: x[1].value)
     word = "higher" if higher else "lower"
     return {"type": "compare",
-            "prompt": f"Which company had the {word} {m.label} in its latest fiscal year?",
+            "prompt": f"Which company had the {word} {m.label} {'over its reported history' if m.history_based else 'in its latest fiscal year'}?",
             "choices": [a[0].label, b[0].label], "answer": 0 if win is a else 1, "unit": m.json_unit,
             "explanation": (f"{cap(m.label)} = {m.pretty}. {_pair_line(m, *a)}. {_pair_line(m, *b)}. "
                             f"So {win[0].label} is {word}.{_fy_note([a[0], b[0]])}"),
@@ -212,12 +220,13 @@ def order(m: Metric, pool: list[tuple[Co, Calc]], rng: random.Random, prefer: se
     ranked = sorted(range(len(best)), key=lambda i: -best[i][1].value)
     lines = "; ".join(f"{best[i][0].label} {m.f(best[i][1].value)}" for i in ranked)
     return {"type": "order",
-            "prompt": f"Rank these companies from highest to lowest {m.label} (latest fiscal year).",
+            "prompt": f"Rank these companies from highest to lowest {m.label} ({'reported history' if m.history_based else 'latest fiscal year'}).",
             "choices": [c.label for c, _ in best], "answer": ranked, "unit": m.json_unit,
             "explanation": f"{cap(m.label)} = {m.pretty}. Highest to lowest: {lines}.{_fy_note([c for c, _ in best])}",
             "source": {"ticker": best[ranked[0]][0].ticker, "fy": best[ranked[0]][0].fy, "metrics": [m.key],
                        "formula": m.formula, "tickers": [c.ticker for c, _ in best], "fys": [c.fy for c, _ in best],
-                       "values": [rounded(k.value, m.unit) for _, k in best]}}
+                       "values": [rounded(k.value, m.unit) for _, k in best],
+                       **({"params": best[0][1].params} if best[0][1].params else {})}}
 
 
 SINGLE = {"mc": multiple_choice, "num": numeric, "tf": true_false}

@@ -17,6 +17,8 @@ export type Palette = {
   locked: string;
   flame: string;
   heart: string;
+  unitA: string;
+  unitB: string;
 };
 
 /** "Ledger" palette: warm paper, deep navy ink, ledger green, brass accent. */
@@ -30,13 +32,15 @@ export const light: Palette = {
   primary: '#0B7A57',
   primaryInk: '#FFFFFF',
   primarySoft: '#D5EDE3',
-  accent: '#B7791F',
+  accent: '#A8690F',
   accentSoft: '#FBEBC8',
   danger: '#C73E36',
   dangerSoft: '#F8DAD6',
   locked: '#C9C2B3',
   flame: '#E8701A',
   heart: '#D6453D',
+  unitA: '#0B7A57',
+  unitB: '#94600F',
 };
 
 export const dark: Palette = {
@@ -56,6 +60,8 @@ export const dark: Palette = {
   locked: '#3A4660',
   flame: '#FF9A3D',
   heart: '#FF6B61',
+  unitA: '#10563F',
+  unitB: '#6B4E12',
 };
 
 /** Editorial serif for display, system sans for UI. No font downloads needed. */

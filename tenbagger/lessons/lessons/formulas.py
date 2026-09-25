@@ -6,6 +6,7 @@ which common mistakes make good distractors, and a plain-English gloss.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from statistics import mean, median
 from typing import Callable, Optional
@@ -26,6 +27,13 @@ class Calc:
     params: dict = field(default_factory=dict)
     ctx: dict = field(default_factory=dict)
 
+    def __post_init__(self):
+        # "$17.3B − -$11.7B" -> "$17.3B − (-$11.7B)"
+        self.arith = _NEG_OPERAND.sub(r"(\1)", self.arith)
+
+
+_NEG_OPERAND = re.compile(r"(?<=[−+×÷] )(-\$?[\d.,]+[KMBT%x]?)")
+
 
 @dataclass
 class Metric:
@@ -42,6 +50,7 @@ class Metric:
     statement: Callable[[Co, Calc], str] | None = None  # bool metrics only
     comparable: bool = True           # safe to compare across companies
     fields: tuple = ()                # companies.json inputs (for docs / source.metrics)
+    history_based: bool = False       # measured over the multi-year history, not one year
 
     @property
     def json_unit(self) -> str:
@@ -69,7 +78,8 @@ def have(*vals) -> bool:
 
 
 def cents(v: float) -> str:
-    return f"{v * 100:.0f} cents"
+    c = abs(v) * 100
+    return f"{c:.1f} cents" if c < 10 else f"{int(c + 0.5)} cents"
 
 
 def fy(c: Co) -> str:
@@ -289,7 +299,7 @@ def _eps_growth(c: Co):
     if c.fy is None:
         return None
     a, b = c.hist_at("eps_diluted", c.fy - 1), c.hist_at("eps_diluted", c.fy)
-    if not pos(a) or b is None:
+    if not pos(a, b):  # growth from/to a loss is not meaningful
         return None
     g = b / a - 1
     return Calc(g, f"{usd(b, True)} ÷ {usd(a, True)} − 1 = {pct(g)}", {"eps_prior": a, "eps": b}, ctx={"a": a, "b": b})
@@ -333,7 +343,7 @@ def _conv(c: Co):
                 ctx={"ocf": ocf, "ni": ni})
 
 
-metric(key="cash_conversion", label="cash conversion (operating cash flow ÷ net income)", unit="multiple",
+metric(key="cash_conversion", label="cash conversion", unit="multiple",
        formula="operating_cash_flow / net_income", pretty="operating cash flow ÷ net income",
        fields=("operating_cash_flow", "net_income"), compute=_conv,
        given=lambda c, k: f"In {fy(c)}, {c.label} reported net income of {usd(k.ctx['ni'])} and operating cash flow of {usd(k.ctx['ocf'])}.",
@@ -411,7 +421,7 @@ def _capex_int(c: Co):
     return Calc(v, f"{usd(capex)} ÷ {usd(r)} = {pct(v)}", {"capex": capex, "revenue": r}, ctx={"capex": capex, "r": r})
 
 
-metric(key="capex_intensity", label="capex intensity (capex ÷ revenue)", unit="percent", formula="capex / revenue",
+metric(key="capex_intensity", label="capex intensity", unit="percent", formula="capex / revenue",
        pretty="capital expenditures ÷ revenue", fields=("capex", "revenue"), compute=_capex_int,
        given=lambda c, k: f"In {fy(c)}, {c.label} had revenue of {usd(k.ctx['r'])} and capital expenditures of {usd(k.ctx['capex'])}.",
        ask="What was its capex intensity (capex ÷ revenue)?",
@@ -607,7 +617,7 @@ def _em(c: Co):
     return Calc(v, f"{usd(a)} ÷ {usd(e)} = {mult(v)}", {"total_assets": a, "total_equity": e}, ctx={"a": a, "e": e})
 
 
-metric(key="equity_multiplier", label="equity multiplier (assets ÷ equity)", unit="multiple",
+metric(key="equity_multiplier", label="equity multiplier", unit="multiple",
        formula="total_assets / total_equity", pretty="total assets ÷ shareholders' equity",
        fields=("total_assets", "total_equity"), compute=_em,
        given=lambda c, k: f"At the end of {fy(c)}, {c.label} had total assets of {usd(k.ctx['a'])} and shareholders' equity of {usd(k.ctx['e'])}.",
@@ -991,7 +1001,7 @@ def _gm_range(c: Co):
                 ctx={"hi": hi, "lo": lo, "y0": yrs[0][0], "y1": yrs[-1][0], "avg": mean(h), "latest": h[-1]})
 
 
-metric(key="gm_range", label="gross-margin swing over the history", unit="percent",
+metric(key="gm_range", label="gross-margin swing", unit="percent", history_based=True,
        formula="max(history.gross_margin) - min(history.gross_margin)", pretty="highest gross margin − lowest gross margin",
        fields=("history.gross_margin",), compute=_gm_range,
        given=lambda c, k: f"Between FY{k.ctx['y0']} and FY{k.ctx['y1']}, {c.label}'s gross margin peaked at {pct(k.ctx['hi'])} and bottomed at {pct(k.ctx['lo'])}.",
@@ -999,7 +1009,9 @@ metric(key="gm_range", label="gross-margin swing over the history", unit="percen
        mistakes=lambda c, k: [("reporting the peak", k.ctx['hi']),
                               ("reporting the average", k.ctx['avg']),
                               ("dividing peak by trough", k.ctx['hi'] / k.ctx['lo'] - 1 if k.ctx['lo'] > 0 else None)],
-       gloss=lambda c, k: "A wide swing is the signature of a cyclical business: when supply and demand flip, prices, and margins, move together.")
+       gloss=lambda c, k: ("A swing that wide is the signature of a cyclical business: when supply and demand flip, prices and margins move together."
+                           if k.value >= 0.10 else
+                           "That is a fairly steady range; cyclical businesses such as memory chipmakers can swing by 30 points or more."))
 
 
 def _fcf_peak(c: Co):
@@ -1015,7 +1027,7 @@ def _fcf_peak(c: Co):
                                                    "med": median(vals), "latest": vals[-1]})
 
 
-metric(key="fcf_peak_to_avg", label="peak FCF vs. average FCF", unit="multiple",
+metric(key="fcf_peak_to_avg", label="peak FCF vs. average FCF", unit="multiple", history_based=True,
        formula="max(history.free_cash_flow) / mean(history.free_cash_flow)", pretty="peak-year FCF ÷ average FCF across the cycle",
        fields=("history.free_cash_flow",), compute=_fcf_peak,
        given=lambda c, k: (f"{c.label}'s free cash flow peaked at {usd(k.ctx['pk'])} in FY{k.ctx['pk_year']}; its average from "
@@ -1025,7 +1037,9 @@ metric(key="fcf_peak_to_avg", label="peak FCF vs. average FCF", unit="multiple",
                               ("comparing the peak with the median", k.ctx['pk'] / k.ctx['med'] if k.ctx['med'] > 0 else None),
                               ("comparing the peak with the latest year", k.ctx['pk'] / k.ctx['latest'] if k.ctx['latest'] > 0 else None)],
        gloss=lambda c, k: ("Because a DCF value is proportional to its starting cash flow, starting from a peak year would inflate the estimate by the same multiple. "
-                           "For cyclical companies, use a cycle-average (normalized) cash flow instead."))
+                           + ("For a business this cyclical, a cycle-average (normalized) cash flow is a sturdier starting point."
+                              if k.value >= 1.5 else
+                              "Here the peak is close to the average, a sign of steadier cash flows; for cyclical companies the gap can be several times.")))
 
 
 def _loss_year(c: Co):
@@ -1041,7 +1055,8 @@ def _loss_year(c: Co):
 metric(key="had_loss_year", label="loss years", unit="bool", formula="any(history.net_income < 0)",
        pretty="any year with negative net income", fields=("history.net_income",), compute=_loss_year, comparable=False,
        statement=lambda c, k: f"{c.label} reported a net loss in at least one year between FY{k.ctx['y0']} and FY{k.ctx['y1']}.",
-       gloss=lambda c, k: "Losses in down-cycle years are normal for cyclical businesses; one good year's profit is not a steady-state number.")
+       gloss=lambda c, k: ("Losses in down years are common for cyclical businesses, so one good year's profit is not a steady-state number."
+                           if k.value else "Consistent profits across the period suggest steadier earnings, though past years don't promise future ones."))
 
 
 def get(key: str) -> Metric:
