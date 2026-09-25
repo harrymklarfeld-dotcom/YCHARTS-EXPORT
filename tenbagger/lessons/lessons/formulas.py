@@ -827,7 +827,7 @@ metric(key="implied_gt_cagr", label="implied vs. past growth", unit="bool",
        fields=("price", "eps_diluted", "history.revenue"), compute=_implied_vs_cagr, comparable=False,
        statement=lambda c, k: (f"With a {pct(REQUIRED_RETURN, 0)} required return, the growth implied by {c.label}'s P/E is higher "
                                f"than its revenue growth rate over the last 3 years."),
-       gloss=lambda c, k: "Comparing implied growth with past growth is a sanity check on what the price already assumes; past growth does not guarantee future growth.")
+       gloss=lambda c, k: "Comparing implied growth with past growth is a sanity check on what the price already assumes; past growth is no promise of future growth.")
 
 
 # --------------------------------------------------------------------- unit 8

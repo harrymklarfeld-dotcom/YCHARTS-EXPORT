@@ -22,16 +22,21 @@ def cmd_build(a) -> int:
         return 2
     tickers = list(dict.fromkeys(t.strip().upper() for t in tickers))
     doc = build_dataset(tickers, offline=a.offline, prices_path=a.prices)
-    out = write_dataset(doc, a.out or DEFAULT_OUT)
     n = len(doc["companies"])
+    if n == 0:
+        print("no companies built; output not written (offline? try --offline)", file=sys.stderr)
+        return 1
+    out = write_dataset(doc, a.out or DEFAULT_OUT)
     print(f"wrote {n}/{len(tickers)} companies ({doc['source']}) -> {out}")
     for c in doc["companies"]:
         m = c["metrics"]
         pe = "-" if m["pe"] is None else f"{m['pe']:.1f}"
         gm = "-" if m["gross_margin"] is None else f"{100 * m['gross_margin']:.1f}%"
-        print(f"  {c['ticker']:<5} FY{c['latest_fy']}  rev ${c['fundamentals']['revenue'] / 1e9:,.1f}B"
+        rev = c["fundamentals"]["revenue"]
+        rev = "-" if rev is None else f"${rev / 1e9:,.1f}B"
+        print(f"  {c['ticker']:<5} FY{c['latest_fy']}  rev {rev:>8}"
               f"  GM {gm:>6}  P/E {pe:>6}{'  (sample price)' if c['price_is_sample'] else ''}")
-    return 0 if n else 1
+    return 0
 
 
 def cmd_validate(a) -> int:

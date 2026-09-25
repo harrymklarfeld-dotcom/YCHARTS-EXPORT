@@ -114,3 +114,13 @@ export function metricCue(key: string, v: number | null | undefined): Cue {
   if (info.better === 'higher') return v >= b ? 'strong' : v < a ? 'caution' : 'neutral';
   return v <= b ? 'strong' : v > a ? 'caution' : 'neutral';
 }
+
+/** Builder input units: percents typed as 15 (→0.15), dollars typed in $B. */
+export function inputUnitFor(key: string): { suffix: string; prefix: string; toRaw: (n: number) => number; fromRaw: (n: number) => number } {
+  const fmt = METRIC_BY_KEY[key]?.format ?? 'ratio';
+  if (fmt === 'percent') return { prefix: '', suffix: '%', toRaw: (n) => n / 100, fromRaw: (n) => Math.round(n * 100 * 1000) / 1000 };
+  if (fmt === 'usd') return { prefix: '$', suffix: 'B', toRaw: (n) => n * 1e9, fromRaw: (n) => Math.round((n / 1e9) * 1000) / 1000 };
+  if (fmt === 'multiple') return { prefix: '', suffix: '×', toRaw: (n) => n, fromRaw: (n) => n };
+  if (fmt === 'per_share') return { prefix: '$', suffix: '', toRaw: (n) => n, fromRaw: (n) => n };
+  return { prefix: '', suffix: '', toRaw: (n) => n, fromRaw: (n) => n };
+}
