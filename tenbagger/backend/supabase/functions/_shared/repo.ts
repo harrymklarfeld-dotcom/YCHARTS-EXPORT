@@ -1,8 +1,9 @@
 // Data access for edge functions. Runs as the service role over a direct Postgres
 // connection (SUPABASE_DB_URL), so it bypasses RLS — EVERY query is therefore scoped by
 // user_id explicitly. Tests run the same SQL against PGlite with the real migrations.
-import type { NormalizedSnapshot, ProviderName } from "./types.ts";
+import type { Basis, NormalizedSnapshot, ProviderName } from "./types.ts";
 import type { PortfolioRow } from "./portfolio.ts";
+import type { MoneyItemPayload, MoneyRows } from "./money.ts";
 
 /** Minimal parameterized-query executor ($1, $2 … placeholders). */
 export interface SqlExecutor {
@@ -23,6 +24,10 @@ export interface LinkedItemRow {
   status: ItemStatus;
   status_reason: string | null;
   last_synced_at: string | null;
+  money_hub: boolean;
+  money_synced_at: string | null;
+  /** Plaid /transactions/sync cursor. Service-only (not granted to clients). */
+  transactions_cursor: string | null;
 }
 
 /** Client-safe projection: no ciphertext, no key id. */
@@ -33,6 +38,7 @@ export interface PublicLinkedItem {
   status: ItemStatus;
   status_reason: string | null;
   last_synced_at: string | null;
+  money_hub: boolean;
 }
 
 export function toPublicItem(r: LinkedItemRow): PublicLinkedItem {
@@ -43,6 +49,7 @@ export function toPublicItem(r: LinkedItemRow): PublicLinkedItem {
     status: r.status,
     status_reason: r.status_reason,
     last_synced_at: r.last_synced_at ? new Date(r.last_synced_at).toISOString() : null,
+    money_hub: r.money_hub === true,
   };
 }
 
@@ -55,9 +62,12 @@ export interface AggregatorUserRow {
 }
 
 const ITEM_COLS = `id, user_id, provider, provider_item_id, institution_id, institution_name,
-  access_token_ciphertext, access_token_key_id, status, status_reason, last_synced_at`;
+  access_token_ciphertext, access_token_key_id, status, status_reason, last_synced_at,
+  money_hub, money_synced_at, transactions_cursor`;
 
 const toNum = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
+const toIso = (v: unknown): string | null => (v === null || v === undefined ? null : new Date(v as string).toISOString());
+const toJson = (v: unknown): Record<string, unknown> => (typeof v === "string" ? JSON.parse(v) : (v as Record<string, unknown>));
 
 export class Repo {
   constructor(private readonly db: SqlExecutor) {}
@@ -91,21 +101,24 @@ export class Repo {
     tokenCiphertext: string | null;
     tokenKeyId: string | null;
     status?: ItemStatus;
+    /** true => opt the item into the Money hub (never turns it off). */
+    moneyHub?: boolean;
   }): Promise<LinkedItemRow> {
     const rows = await this.db.query<LinkedItemRow>(
       `insert into public.linked_items (user_id, provider, provider_item_id, institution_id, institution_name,
-                                        access_token_ciphertext, access_token_key_id, status)
-       values ($1, $2, $3, $4, $5, $6, $7, coalesce($8, 'active'))
+                                        access_token_ciphertext, access_token_key_id, status, money_hub)
+       values ($1, $2, $3, $4, $5, $6, $7, coalesce($8, 'active'), $9)
        on conflict (provider, provider_item_id) do update set
          institution_id = coalesce(excluded.institution_id, linked_items.institution_id),
          institution_name = coalesce(excluded.institution_name, linked_items.institution_name),
          access_token_ciphertext = coalesce(excluded.access_token_ciphertext, linked_items.access_token_ciphertext),
          access_token_key_id = coalesce(excluded.access_token_key_id, linked_items.access_token_key_id),
          status = case when $8::text is null then linked_items.status else excluded.status end,
+         money_hub = linked_items.money_hub or excluded.money_hub,
          updated_at = now()
        where linked_items.user_id = excluded.user_id
        returning ${ITEM_COLS}`,
-      [i.userId, i.provider, i.providerItemId, i.institutionId, i.institutionName, i.tokenCiphertext, i.tokenKeyId, i.status ?? null],
+      [i.userId, i.provider, i.providerItemId, i.institutionId, i.institutionName, i.tokenCiphertext, i.tokenKeyId, i.status ?? null, i.moneyHub === true],
     );
     if (!rows[0]) throw new Error("linked item belongs to a different user");
     return rows[0];
@@ -142,10 +155,16 @@ export class Repo {
     await this.db.query(`delete from public.aggregator_users where user_id = $1 and provider = $2`, [userId, provider]);
   }
 
-  async startSyncRun(userId: string, itemId: string, provider: ProviderName, trigger: "user" | "webhook" | "link" | "schedule"): Promise<string> {
+  async startSyncRun(
+    userId: string,
+    itemId: string,
+    provider: ProviderName,
+    trigger: "user" | "webhook" | "link" | "schedule",
+    kind: "holdings" | "money" = "holdings",
+  ): Promise<string> {
     const rows = await this.db.query<{ id: string }>(
-      `insert into public.sync_runs (user_id, linked_item_id, provider, trigger) values ($1, $2, $3, $4) returning id`,
-      [userId, itemId, provider, trigger],
+      `insert into public.sync_runs (user_id, linked_item_id, provider, trigger, kind) values ($1, $2, $3, $4, $5) returning id`,
+      [userId, itemId, provider, trigger, kind],
     );
     return rows[0].id;
   }
@@ -208,6 +227,167 @@ export class Repo {
         }
         : null,
     }));
+  }
+
+  // ---- Money hub -----------------------------------------------------------------------
+
+  /** Opt an item in/out. Opting out deletes that item's money data (snapshots are append-only and stay). */
+  async setMoneyHub(userId: string, itemId: string, on: boolean): Promise<void> {
+    await this.db.query(
+      `update public.linked_items set money_hub = $3, transactions_cursor = case when $3 then transactions_cursor else null end,
+              updated_at = now() where id = $1 and user_id = $2`,
+      [itemId, userId, on],
+    );
+    if (!on) {
+      for (const t of ["cash_accounts", "liabilities", "transactions"]) {
+        await this.db.query(`delete from public.${t} where linked_item_id = $1 and user_id = $2`, [itemId, userId]);
+      }
+      await this.db.query(`delete from public.income_streams where linked_item_id = $1 and user_id = $2 and source = 'plaid'`, [itemId, userId]);
+    }
+  }
+
+  async replaceItemMoney(userId: string, itemId: string, payload: MoneyItemPayload): Promise<Record<string, number>> {
+    const rows = await this.db.query<{ r: Record<string, number> | string }>(
+      `select public.replace_item_money($1::uuid, $2::uuid, $3::jsonb) as r`,
+      [userId, itemId, JSON.stringify(payload)],
+    );
+    return toJson(rows[0].r) as Record<string, number>;
+  }
+
+  async appendMoneySnapshot(userId: string, trigger: "sync" | "schedule" | "manual", snapshot: Record<string, unknown>, basis: Record<string, Basis>): Promise<string> {
+    const rows = await this.db.query<{ id: string }>(
+      `insert into public.money_snapshots (user_id, trigger, snapshot, basis) values ($1, $2, $3::jsonb, $4::jsonb) returning id`,
+      [userId, trigger, JSON.stringify(snapshot), JSON.stringify(basis)],
+    );
+    return rows[0].id;
+  }
+
+  /** Everything money-summary needs, scoped to one user. Dates as YYYY-MM-DD text. */
+  async getMoneyRows(userId: string, snapshotLookbackDays: number): Promise<MoneyRows> {
+    const q = <T,>(sql: string, p: unknown[] = [userId]) => this.db.query<T & Record<string, unknown>>(sql, p);
+    const cash = await q<Record<string, unknown>>(
+      `select c.id, c.name, c.mask, c.subtype, c.institution_name, c.balance_current, c.balance_available, c.currency, c.as_of
+         from public.cash_accounts c join public.linked_items i on i.id = c.linked_item_id
+        where c.user_id = $1 and i.money_hub order by c.name, c.id`,
+    );
+    // Investment balances: linked accounts use the provider balance (fallback: sum of holdings);
+    // manual accounts use the sum of manual holdings.
+    const inv = await q<Record<string, unknown>>(
+      `select a.id, a.name, a.mask, a.subtype, a.institution_name,
+              case when a.linked_item_id is null then 'manual' else i.provider end as source,
+              coalesce(a.balance_current, (select sum(h.market_value) from public.holdings h where h.account_id = a.id)) as balance,
+              a.currency, coalesce(i.last_synced_at, a.updated_at) as as_of
+         from public.accounts a left join public.linked_items i on i.id = a.linked_item_id
+        where a.user_id = $1 and (a.linked_item_id is null or coalesce(a.type, 'investment') in ('investment', 'brokerage'))
+        order by a.name, a.id`,
+    );
+    const liab = await q<Record<string, unknown>>(
+      `select l.id, l.kind, l.name, l.mask, l.institution_name, l.balance_current, l.credit_limit, l.last_statement_balance,
+              l.last_statement_date::text, l.minimum_payment_amount, l.next_payment_due_date::text, l.last_payment_amount,
+              l.last_payment_date::text, l.apr_percentage, l.is_overdue, l.currency, l.details_available, l.as_of
+         from public.liabilities l join public.linked_items i on i.id = l.linked_item_id
+        where l.user_id = $1 and i.money_hub order by l.next_payment_due_date nulls last, l.id`,
+    );
+    const streams = await q<Record<string, unknown>>(
+      `select s.id, s.source, s.description, s.category, s.frequency, s.average_amount, s.last_amount, s.last_date::text,
+              s.predicted_next_date::text, s.status, s.pay_type, s.rate, s.units_per_period, s.next_pay_date::text,
+              s.withholding_rate, s.condition, s.currency, s.updated_at
+         from public.income_streams s left join public.linked_items i on i.id = s.linked_item_id
+        where s.user_id = $1 and (s.source = 'manual' or i.money_hub) order by s.source, s.description, s.id`,
+    );
+    const snaps = await this.db.query<Record<string, unknown>>(
+      `select s.id, s.taken_at, s.trigger, s.snapshot, s.basis,
+              coalesce((select jsonb_agg(jsonb_build_object('id', n.id, 'note', n.note, 'created_at', n.created_at) order by n.created_at)
+                          from public.money_snapshot_notes n where n.snapshot_id = s.id), '[]'::jsonb) as notes
+         from public.money_snapshots s
+        where s.user_id = $1 and s.taken_at >= now() - make_interval(days => $2::int)
+        order by s.taken_at desc`,
+      [userId, snapshotLookbackDays],
+    );
+    const sources = await q<Record<string, unknown>>(
+      `select id, institution_name, status, money_hub, money_synced_at from public.linked_items
+        where user_id = $1 and provider = 'plaid' order by created_at`,
+    );
+    const s = (v: unknown) => (v === null || v === undefined ? null : String(v));
+    return {
+      cash: cash.map((r) => ({
+        id: String(r.id),
+        name: String(r.name),
+        mask: s(r.mask),
+        subtype: s(r.subtype),
+        institution_name: s(r.institution_name),
+        balance_current: toNum(r.balance_current),
+        balance_available: toNum(r.balance_available),
+        currency: String(r.currency),
+        as_of: toIso(r.as_of)!,
+      })),
+      investments: inv.map((r) => ({
+        id: String(r.id),
+        name: String(r.name),
+        mask: s(r.mask),
+        subtype: s(r.subtype),
+        institution_name: s(r.institution_name),
+        source: r.source as "plaid" | "snaptrade" | "manual",
+        balance: toNum(r.balance),
+        currency: String(r.currency),
+        as_of: toIso(r.as_of),
+      })),
+      liabilities: liab.map((r) => ({
+        id: String(r.id),
+        kind: r.kind as MoneyRows["liabilities"][number]["kind"],
+        name: String(r.name),
+        mask: s(r.mask),
+        institution_name: s(r.institution_name),
+        balance_current: toNum(r.balance_current),
+        credit_limit: toNum(r.credit_limit),
+        last_statement_balance: toNum(r.last_statement_balance),
+        last_statement_date: s(r.last_statement_date),
+        minimum_payment_amount: toNum(r.minimum_payment_amount),
+        next_payment_due_date: s(r.next_payment_due_date),
+        last_payment_amount: toNum(r.last_payment_amount),
+        last_payment_date: s(r.last_payment_date),
+        apr_percentage: toNum(r.apr_percentage),
+        is_overdue: r.is_overdue === null || r.is_overdue === undefined ? null : Boolean(r.is_overdue),
+        currency: String(r.currency),
+        details_available: Boolean(r.details_available),
+        as_of: toIso(r.as_of)!,
+      })),
+      streams: streams.map((r) => ({
+        id: String(r.id),
+        source: r.source as "plaid" | "manual",
+        description: String(r.description),
+        category: s(r.category),
+        frequency: r.frequency as MoneyRows["streams"][number]["frequency"],
+        average_amount: toNum(r.average_amount),
+        last_amount: toNum(r.last_amount),
+        last_date: s(r.last_date),
+        predicted_next_date: s(r.predicted_next_date),
+        status: String(r.status),
+        pay_type: (r.pay_type ?? null) as MoneyRows["streams"][number]["pay_type"],
+        rate: toNum(r.rate),
+        units_per_period: toNum(r.units_per_period),
+        next_pay_date: s(r.next_pay_date),
+        withholding_rate: toNum(r.withholding_rate),
+        condition: s(r.condition),
+        currency: String(r.currency),
+        updated_at: toIso(r.updated_at)!,
+      })),
+      snapshots: snaps.map((r) => ({
+        id: String(r.id),
+        taken_at: toIso(r.taken_at)!,
+        trigger: String(r.trigger),
+        snapshot: toJson(r.snapshot),
+        basis: toJson(r.basis),
+        notes: (toJson(r.notes) as unknown as Array<{ id: string; note: string; created_at: string }>).map((n) => ({ ...n, created_at: toIso(n.created_at)! })),
+      })),
+      sources: sources.map((r) => ({
+        id: String(r.id),
+        institution_name: s(r.institution_name),
+        status: String(r.status),
+        money_hub: Boolean(r.money_hub),
+        money_synced_at: toIso(r.money_synced_at),
+      })),
+    };
   }
 
   async audit(userId: string | null, action: string, detail: Record<string, unknown> = {}): Promise<void> {
