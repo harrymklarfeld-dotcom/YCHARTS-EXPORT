@@ -72,6 +72,14 @@ describe('mockAssist (offline)', () => {
     expect(needsModel(r)).toBe(true);
   });
 
+  it('flags words left over next to a synonym', () => {
+    const r = mockAssist('cheap companies run by founders');
+    expect(r.filters).toHaveLength(2);
+    expect(r.unrecognized).toEqual(['run founders']);
+    expect(needsModel(r)).toBe(true);
+    expect(mockAssist('cheap profitable companies').unrecognized).toEqual([]);
+  });
+
   it('caps filters and deduplicates', () => {
     const r = mockAssist('cheap and cheap and inexpensive');
     expect(r.filters).toHaveLength(2);
