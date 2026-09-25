@@ -138,7 +138,7 @@ export function PaywallScreen() {
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32, gap: 18 }}>
         <View style={{ gap: 8 }}>
           <Eyebrow color={t.c.accent}>Tenbagger Pro</Eyebrow>
-          <Title size={30}>{isPro || justBought ? "You're Pro." : 'Read every number. No limits.'}</Title>
+          <Title size={28}>{isPro || justBought ? "You're Pro." : 'Read every number. No limits.'}</Title>
           <Text style={{ color: t.c.inkSoft, fontSize: 15, lineHeight: 22 }}>
             {isPro || justBought
               ? isTrial
@@ -148,31 +148,11 @@ export function PaywallScreen() {
           </Text>
         </View>
 
-        {storeKind === 'mock' ? (
-          <View style={{ backgroundColor: t.c.accentSoft, borderRadius: t.radius.sm, padding: 10 }}>
-            <Text style={{ color: t.c.ink, fontSize: 12, fontWeight: '700' }}>Test mode: purchases are simulated and nothing is charged.</Text>
-          </View>
-        ) : null}
-
-        <View style={{ gap: 12 }}>
-          {PRO_BENEFITS.map((b) => (
-            <View key={b.title} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
-              <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: t.c.primarySoft, alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
-                <Icon name="check" size={15} color={t.c.primary} strokeWidth={3} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: t.c.ink, fontWeight: '800', fontSize: 15 }}>{b.title}</Text>
-                <Text style={{ color: t.c.inkSoft, fontSize: 13, lineHeight: 18 }}>{b.detail}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-
         {isPro || justBought ? (
           <Button label="Start learning" onPress={close} />
         ) : (
           <>
-            <View style={{ gap: 14, marginTop: 6 }} accessibilityRole="radiogroup">
+            <View style={{ gap: 14, marginTop: 4 }} accessibilityRole="radiogroup">
               {PAYWALL_PLAN_ORDER.map((id) => {
                 const pkg = byId.get(id);
                 return pkg ? (
@@ -227,6 +207,21 @@ export function PaywallScreen() {
           </>
         )}
 
+        <View style={{ gap: 12 }}>
+          <Eyebrow>Everything in Pro</Eyebrow>
+          {PRO_BENEFITS.map((b) => (
+            <View key={b.title} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+              <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: t.c.primarySoft, alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
+                <Icon name="check" size={15} color={t.c.primary} strokeWidth={3} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: t.c.ink, fontWeight: '800', fontSize: 15 }}>{b.title}</Text>
+                <Text style={{ color: t.c.inkSoft, fontSize: 13, lineHeight: 18 }}>{b.detail}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 18, flexWrap: 'wrap' }}>
           <Pressable
             accessibilityRole="button"
@@ -247,6 +242,12 @@ export function PaywallScreen() {
             <Text style={{ color: t.c.inkSoft, fontWeight: '700', fontSize: 13, textDecorationLine: 'underline' }}>Privacy Policy</Text>
           </Pressable>
         </View>
+
+        {storeKind === 'mock' ? (
+          <View style={{ backgroundColor: t.c.accentSoft, borderRadius: t.radius.sm, padding: 10 }}>
+            <Text style={{ color: t.c.ink, fontSize: 12, fontWeight: '700' }}>Test mode: purchases are simulated and nothing is charged.</Text>
+          </View>
+        ) : null}
 
         <Text style={{ color: t.c.inkSoft, fontSize: 11, lineHeight: 16 }}>{autoRenewDisclosure(Platform.OS)}</Text>
         <Disclaimer compact />

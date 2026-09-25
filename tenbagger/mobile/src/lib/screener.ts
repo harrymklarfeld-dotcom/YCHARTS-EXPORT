@@ -94,3 +94,75 @@ export const PRESET_SCREENS: (Screen & { caveat?: string })[] = ENGINE_PRESETS.m
   filters: p.filters as unknown as Filter[],
   sort: p.sort as Screen['sort'],
 }));
+
+// ---------------------------------------------------------------- screener v2 (package re-exports)
+// Typed for the app's Company. The package is the single source of truth for the math.
+import {
+  concentration as engineConcentration,
+  funnel as engineFunnel,
+  scores as engineScores,
+  styleBoxes as engineStyleBoxes,
+  toCsv as engineToCsv,
+  type CompanyScores,
+  type ConcentrationOutput,
+  type CsvColumn,
+  type FunnelOutput,
+  type StyleBoxResult,
+} from '../../../packages/screener/src/index';
+
+export {
+  ASSIST_DISCLAIMER,
+  SCORE_FAMILIES,
+  SIZE_BUCKETS,
+  STYLE_BUCKETS,
+  STYLE_BOX_CONFIG,
+  catalogCsvColumn,
+  describeFilterPlain,
+  mergeFilters,
+  mockAssist,
+  needsModel,
+  restateFilters,
+  safeParseQuery,
+  getMetricInfo as getEngineMetricInfo,
+} from '../../../packages/screener/src/index';
+export type {
+  AssistResult,
+  CompanyScores,
+  ConcentrationOutput,
+  FamilyScore,
+  FunnelOutput,
+  FunnelStep,
+  ScoreFamilyId,
+  ScoreFamilyInfo,
+  SizeBucket,
+  StyleBoxResult,
+  StyleBucket,
+} from '../../../packages/screener/src/index';
+
+type EngineCompanies = readonly EngineCompany[];
+const asEngine = (cs: readonly Company[]) => cs as unknown as EngineCompanies;
+
+/** Per-filter cumulative counts ("→ 128 left"). */
+export function funnelFor(companies: readonly Company[], screen: Screen): FunnelOutput {
+  return engineFunnel(asEngine(companies), screen as unknown as EngineScreen);
+}
+
+/** Top-sector share of a result list, with a teaching note when > 60%. */
+export function concentrationFor(results: readonly Company[]): ConcentrationOutput {
+  return engineConcentration(asEngine(results));
+}
+
+/** Educational percentile scores keyed by ticker (universe = `companies`). */
+export function scoresFor(companies: readonly Company[]): Map<string, CompanyScores> {
+  return new Map(engineScores(asEngine(companies)).map((s) => [s.ticker, s]));
+}
+
+/** Size × style buckets keyed by ticker (universe = `companies`). */
+export function styleBoxesFor(companies: readonly Company[]): Map<string, StyleBoxResult> {
+  return new Map(engineStyleBoxes(asEngine(companies)).map((s) => [s.ticker, s]));
+}
+
+export function toCsvFor(companies: readonly Company[], columns: readonly CsvColumn[], sourceNote: string): string {
+  return engineToCsv(asEngine(companies), columns, { sourceNote });
+}
+export type { CsvColumn };

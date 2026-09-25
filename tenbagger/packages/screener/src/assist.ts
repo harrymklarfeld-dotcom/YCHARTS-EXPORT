@@ -163,6 +163,22 @@ const SYNONYM_INDEX: ReadonlyArray<{ phrase: string; re: RegExp; syn: AssistSyno
   syn.phrases.map((phrase) => ({ phrase, re: new RegExp(`(?:^|[^a-z0-9-])${escapeRe(phrase)}(?=$|[^a-z0-9-])`, 'i'), syn })),
 ).sort((a, b) => b.phrase.length - a.phrase.length);
 
+const STOP_WORDS = new Set(
+  'a an the and or of in on for to with that which who are is be being been it its their them they some any very really pretty quite ' +
+  'companies company stocks stock businesses business firms firm names ones show me find give get list i we want like looking look ' +
+  'please only also just good nice solid decent strong kind sort type types lots lot much many more most by than than'.split(' '),
+);
+
+/** Words left in `segment` after removing matched phrases and filler; '' when nothing meaningful is left. */
+function leftoverWords(segment: string, phrases: readonly string[]): string {
+  let rest = ` ${segment.toLowerCase()} `;
+  for (const p of [...phrases].sort((a, b) => b.length - a.length)) rest = rest.split(p).join(' ');
+  return rest
+    .split(/[^a-z0-9%$./-]+/)
+    .filter((w) => w && !STOP_WORDS.has(w))
+    .join(' ');
+}
+
 function matchSynonyms(segment: string): Array<{ phrase: string; syn: AssistSynonym }> {
   let rest = ` ${segment.toLowerCase()} `;
   const hits: Array<{ phrase: string; syn: AssistSynonym; at: number }> = [];
@@ -247,6 +263,8 @@ export function mockAssist(text: string): AssistResult {
         notes.push(note);
         interpreted.push({ phrase: h.phrase, filters: added, note });
       }
+      const left = leftoverWords(seg, hits.map((h) => h.phrase));
+      if (left) unrecognized.push(left);
       continue;
     }
     unrecognized.push(seg);

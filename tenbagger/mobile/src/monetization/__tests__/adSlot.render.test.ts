@@ -2,6 +2,7 @@
  * Render-level check that <AdSlot> produces nothing on money screens or for Pro users.
  */
 jest.mock('@react-native-async-storage/async-storage', () => require('@react-native-async-storage/async-storage/jest/async-storage-mock'));
+jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() } }));
 
 import { createElement } from 'react';
 import TestRenderer, { act } from 'react-test-renderer';

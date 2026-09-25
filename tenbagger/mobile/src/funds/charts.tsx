@@ -121,3 +121,12 @@ export function WeightBar({
     </Pressable>
   );
 }
+
+export function SampleBadge() {
+  const t = useTheme();
+  return (
+    <View accessibilityLabel="Sample data: approximate, not from a live filing" style={{ backgroundColor: t.c.accentSoft, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 }}>
+      <Text style={{ color: t.c.ink, fontSize: 11, fontWeight: '800' }}>Sample data</Text>
+    </View>
+  );
+}

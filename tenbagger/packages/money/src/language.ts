@@ -13,6 +13,17 @@ export const BANNED_PHRASES: readonly RegExp[] = [
   /\bguarantee(s|d)?\b/i,
   /\bprice\s+targets?\b/i,
   /\binvest\s+in\b/i,
+  // Credit / lending offers: the dashboard never offers or suggests borrowing products.
+  /\bcash\s+advances?\b/i,
+  /\bpayday\s+loans?\b/i,
+  /\bpre-?approved\b/i,
+  /\bapply\s+(now|today|for)\b/i,
+  /\b(credit\s+)?limit\s+increase\b/i,
+  /\bbalance\s+transfer\b/i,
+  /\b(open|get)\s+a\s+(new\s+)?(credit\s+)?card\b/i,
+  // Product picks.
+  /\bbest\s+(stock|fund|etf|card|app)s?\b/i,
+  /\btop\s+picks?\b/i,
 ];
 
 export function findBannedPhrases(text: string): string[] {

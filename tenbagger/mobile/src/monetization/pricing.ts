@@ -85,7 +85,7 @@ export function trialTerms(price: PlanPrice, now: Date = new Date(), locale = 'e
   } catch {
     endStr = end.toDateString();
   }
-  return `Free for ${price.trialDays} days, then ${price.priceString}/${periodLabel(price.period, 'long')}. Cancel before ${endStr} and you won't be charged. We'll remind you 2 days before the trial ends.`;
+  return `Free for ${price.trialDays} days, then ${price.priceString}/${periodLabel(price.period, 'long')}. Cancel before ${endStr} and you won't be charged.`;
 }
 
 /**

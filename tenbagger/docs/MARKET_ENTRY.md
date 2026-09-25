@@ -124,11 +124,14 @@ CAC means customer acquisition cost: what you spend to win one paying user. The 
 
 ## 6. Economics in brief
 
+A finance model is being built in `tenbagger/finance/`. Its `assumptions.yaml` uses a base plan mix of 35% monthly, 50% annual and 15% Student. The 60% Student mix below is a **stress case** for a campus-first launch. Once `finance/out/summary.md` exists, rerun it with the Student share you actually see in beta.
+
+
 | Item | Value | Basis |
 |---|---|---|
 | Net revenue per payer per month | Pro $7.82 (60% annual mix); **Student $2.83**; Recruiting Pass $41.65 one-time net | BENCHMARKS §B2; 15% store fee [S83] |
 | Blended at 60% student / 40% Pro mix | $4.83/mo → base-case month-36 ARR ≈ 3,345 × $4.83 × 12 ≈ **$194k** (vs $330k) | Our arithmetic on BENCHMARKS §C |
-| Lifetime value (net LTV) | Pro ≈ $105; Student ≈ $34 ÷ (1 − 0.44 renewal) ≈ **$61** | BENCHMARKS §B4; 44.1% annual renewal [S14] |
+| Lifetime value (net LTV) | Pro ≈ $105; Student ≈ $34 ÷ (1 − renewal) ≈ **$52–61** (renewal 35–44%) | BENCHMARKS §B4; 44.1% annual renewal [S14]; 35% student renewal in `finance/assumptions.yaml` |
 | Fixed costs | About $600–650/mo in beta (data $250–450, hosting, tools) | DATA_STRATEGY §6 |
 | Break-even | ~80 Pro payers, or ~220 Student payers, cover fixed costs | $620 ÷ $7.82; $620 ÷ $2.83 |
 
