@@ -136,3 +136,9 @@ export function liquidityRanges(cash: number, card: number) {
     card: { min: 0, max: Math.max(10000, 3 * card), step: 50 },
   } satisfies Record<string, Range>;
 }
+
+/** Slider label: 9% · 9.25% · −1.5% (up to 2 decimals, trailing zeros trimmed). */
+export function pct(v: number): string {
+  const s = Math.abs(v * 100).toFixed(2).replace(/\.?0+$/, '');
+  return `${v < 0 && s !== '0' ? '−' : ''}${s}%`;
+}

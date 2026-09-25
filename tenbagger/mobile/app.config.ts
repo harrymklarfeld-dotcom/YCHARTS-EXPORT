@@ -16,6 +16,14 @@
  * See store/README.md for how each decision below maps to the store forms.
  */
 import type { ConfigContext, ExpoConfig } from 'expo/config';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+/** Plugins are only registered for packages actually listed in package.json. */
+const pkg = JSON.parse(readFileSync(join(__dirname, 'package.json'), 'utf8')) as {
+  dependencies?: Record<string, string>;
+};
+const has = (name: string) => Boolean(pkg.dependencies?.[name]);
 
 // ─── The one place ───────────────────────────────────────────────────────────────────────────
 const APP_NAME = process.env.APP_NAME ?? 'Tenbagger';
@@ -81,15 +89,15 @@ const collected = (type: string, linked: boolean, tracking: boolean, purposes: s
   NSPrivacyCollectedDataTypeTracking: tracking,
   NSPrivacyCollectedDataTypePurposes: purposes.map((p) => `NSPrivacyCollectedDataTypePurpose${p}`),
 });
-const adsOn = ADS_MODE !== 'off';
-const tracks = ADS_MODE === 'personalized';
+const adsOn = ADS_MODE !== 'off' && has('react-native-google-mobile-ads');
+const tracks = adsOn && ADS_MODE === 'personalized' && has('expo-tracking-transparency');
 
 const privacyManifests = {
   NSPrivacyTracking: tracks,
   NSPrivacyTrackingDomains: [] as string[], // the Google Mobile Ads pod declares its own domains
   NSPrivacyCollectedDataTypes: [
     // RevenueCat: purchase receipts keyed to an anonymous app user id.
-    collected('PurchaseHistory', false, false, ['AppFunctionality']),
+    ...(has('react-native-purchases') ? [collected('PurchaseHistory', false, false, ['AppFunctionality'])] : []),
     ...(adsOn
       ? [
           collected('DeviceID', false, tracks, ['ThirdPartyAdvertising']),
@@ -118,22 +126,45 @@ const privacyManifests = {
  * development build (not Expo Go) and the In-App Purchase capability, which EAS enables
  * automatically for the bundle id when it creates credentials.
  */
+const SPLASH = { image: './assets/splash-icon.png', backgroundColor: '#F5F2EA', imageWidth: 200 };
+
 const plugins: ExpoConfig['plugins'] = [
   'expo-router',
-  [
-    'react-native-google-mobile-ads',
-    {
-      iosAppId: ADMOB_IOS_APP_ID,
-      androidAppId: ADMOB_ANDROID_APP_ID,
-      // Wait for our consent/ATT flow before the SDK initialises measurement.
-      delayAppMeasurementInit: true,
-    },
-  ],
-  [
-    'expo-tracking-transparency',
-    // false removes NSUserTrackingUsageDescription: never ship the string unless we actually ask.
-    { userTrackingPermission: tracks ? TRACKING_USAGE : false },
-  ],
+  // SDK 57 has no top-level native `splash` key; the splash is configured by this plugin.
+  // Install with `npx expo install expo-splash-screen` (see docs/LAUNCH_CHECKLIST.md).
+  ...(has('expo-splash-screen')
+    ? [
+        [
+          'expo-splash-screen',
+          { ...SPLASH, resizeMode: 'contain', dark: { image: './assets/splash-icon-dark.png', backgroundColor: '#0D1422' } },
+        ] as [string, Record<string, unknown>],
+      ]
+    : []),
+  ...(has('react-native-google-mobile-ads')
+    ? [
+        [
+          'react-native-google-mobile-ads',
+          {
+            iosAppId: ADMOB_IOS_APP_ID,
+            androidAppId: ADMOB_ANDROID_APP_ID,
+            // Wait for our consent/ATT flow before the SDK initialises measurement.
+            delayAppMeasurementInit: true,
+          },
+        ] as [string, Record<string, unknown>],
+      ]
+    : []),
+  ...(has('expo-tracking-transparency')
+    ? [
+        // false removes NSUserTrackingUsageDescription: never ship the string unless we actually ask.
+        ['expo-tracking-transparency', { userTrackingPermission: tracks ? TRACKING_USAGE : false }] as [
+          string,
+          Record<string, unknown>,
+        ],
+      ]
+    : []),
+  // Lines to add when the packages land (run `npx expo install <pkg>` first):
+  //   'expo-dev-client'  → no plugin entry needed; required for the `development` EAS profile.
+  //   'expo-updates'     → no plugin entry needed; `updates.url` below activates it.
 ];
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
@@ -146,11 +177,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  splash: {
-    image: './assets/splash-icon.png',
-    resizeMode: 'contain',
-    backgroundColor: '#F5F2EA',
-  },
   // OTA updates: `eas update --channel <profile channel>`. Requires `npx expo install expo-updates`;
   // until then these keys are inert. appVersion policy = an OTA only reaches builds with the same
   // APP_VERSION, so bump APP_VERSION whenever native code or native config changes.
@@ -184,6 +210,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   web: {
     favicon: './assets/favicon.png',
+    splash: { image: SPLASH.image, backgroundColor: SPLASH.backgroundColor, resizeMode: 'contain' },
     output: 'single',
     bundler: 'metro',
   },

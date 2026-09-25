@@ -79,7 +79,7 @@ const ld = {
         </ul>
       </section>
     )}
-    <p class="m-screen"><a class="btn" href={`/screener/?q=${encodeURIComponent(info.shortLabel + ' > 0')}`}>Screen by {info.shortLabel}</a></p>
+    <p class="m-screen"><a class="btn" href={`/screener/?q=${encodeURIComponent(info.shortLabel.replace(/\./g, '') + ' > 0')}`}>Screen by {info.shortLabel}</a></p>
   </div>
 </Base>
 <style>

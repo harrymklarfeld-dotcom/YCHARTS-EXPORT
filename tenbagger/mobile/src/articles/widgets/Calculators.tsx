@@ -3,16 +3,11 @@ import { Switch, Text, View } from 'react-native';
 import { getCompany } from '../../data';
 import { formatPercent, formatUsdCompact } from '../../lib/format';
 import { useTheme } from '../../theme';
-import { dcfCalc, dcfRanges, liquidityCalc, liquidityRanges, normalizedFcf, peCalc, peRanges } from '../calc';
+import { dcfCalc, dcfRanges, liquidityCalc, liquidityRanges, normalizedFcf, pct, peCalc, peRanges } from '../calc';
 import { Slider } from '../components/Slider';
 import { isSampleFundamentals } from '../provenance';
 import { Stat, Unsupported, WidgetFrame } from './WidgetFrame';
 
-/** 9% · 9.25% · −1.5% (up to 2 decimals, trailing zeros trimmed). */
-export const pct = (v: number) => {
-  const s = Math.abs(v * 100).toFixed(2).replace(/\.?0+$/, '');
-  return `${v < 0 && s !== '0' ? '−' : ''}${s}%`;
-};
 const money2 = (v: number) => (Math.abs(v) >= 1000 ? formatUsdCompact(v, 2) : `${v < 0 ? '−' : ''}$${Math.abs(v).toFixed(2)}`);
 const mult = (v: number) => `${v.toFixed(1)}×`;
 

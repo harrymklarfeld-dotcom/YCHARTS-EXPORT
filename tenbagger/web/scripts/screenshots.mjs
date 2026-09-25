@@ -32,7 +32,7 @@ const server = createServer().listen(0);
 const port = server.address().port;
 const browser = await pw.chromium.launch();
 for (const [vp, size] of [['desktop', { width: 1440, height: 900 }], ['mobile', { width: 390, height: 844 }]]) {
-  const ctx = await browser.newContext({ viewport: size, deviceScaleFactor: 1, colorScheme: process.env.SHOT_DARK ? 'dark' : 'light' });
+  const ctx = await browser.newContext({ ignoreHTTPSErrors: true, viewport: size, deviceScaleFactor: 1, colorScheme: process.env.SHOT_DARK ? 'dark' : 'light' });
   const page = await ctx.newPage();
   for (const p of pages) {
     if (only.length && !only.includes(p.name)) continue;

@@ -16,6 +16,7 @@
  *   assets/android-icon-background.png  1024x1024 RGB solid navy
  *   assets/android-icon-monochrome.png  1024x1024 RGBA, white silhouette (Android 13+ themed icons)
  *   assets/splash-icon.png              1024x1024 RGBA, transparent, shown centred on #F5F2EA
+ *   assets/splash-icon-dark.png         1024x1024 RGBA, transparent, shown centred on #0D1422 (dark mode)
  *   assets/favicon.png                  48x48 RGBA (web)
  *   store/brand/play-feature-graphic.png 1024x500 RGB (Google Play feature graphic)
  *   store/brand/play-icon-512.png       512x512 RGB (Google Play hi-res icon, 32-bit PNG accepted)
@@ -97,14 +98,14 @@ write(
   { alpha: true },
 );
 
-// Splash: transparent image drawn centred on the paper splash background. The legacy `splash`
-// key scales this image to fit the screen (resizeMode contain), so the mark is drawn small
-// with generous transparent padding.
+// Splash (expo-splash-screen plugin, imageWidth 200): transparent image, mark fills most of it.
+// Light: navy/green/brass on paper #F5F2EA. Dark: paper/green/brass on #0D1422.
 write(
   'assets/splash-icon.png',
-  render(svg(1024, 1024, placed(1024, 0.6, { bar: NAVY, top: GREEN_DEEP, rule: BRASS_DEEP })), 1024),
+  render(svg(1024, 1024, placed(1024, 1.3, { bar: NAVY, top: GREEN_DEEP, rule: BRASS_DEEP })), 1024),
   { alpha: true },
 );
+write('assets/splash-icon-dark.png', render(svg(1024, 1024, placed(1024, 1.3)), 1024), { alpha: true });
 write('assets/favicon.png', render(svg(1024, 1024, placed(1024, 1.35), NAVY), 48), { alpha: true });
 
 // Google Play store graphics.

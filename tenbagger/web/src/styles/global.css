@@ -62,7 +62,8 @@ p { margin: 0 0 1em; }
 .header-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .theme-toggle { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--rule); border-radius: 6px; background: transparent; color: var(--ink); cursor: pointer; }
 .theme-toggle:hover { background: var(--surface2); }
-.header-cta { display: none; }
+.header-actions .header-cta { white-space: nowrap; }
+@media (max-width: 440px) { .header-actions .header-cta { display: none; } }
 .nav-mobile { position: relative; }
 .nav-mobile summary { list-style: none; width: 38px; height: 38px; border: 1px solid var(--rule); border-radius: 6px; display: grid; align-content: center; gap: 4px; padding: 0 10px; cursor: pointer; }
 .nav-mobile summary::-webkit-details-marker { display: none; }
@@ -72,7 +73,6 @@ p { margin: 0 0 1em; }
 .nav-mobile nav a:hover { background: var(--surface2); }
 @media (min-width: 900px) {
   .nav-desktop { display: flex; }
-  .header-cta { display: inline-flex; }
   .nav-mobile { display: none; }
 }
 
@@ -121,7 +121,7 @@ table.data a:hover { text-decoration: underline; }
 .ticker { font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.03em; padding: 2px 6px; border-radius: 3px; background: var(--ink); color: var(--bg); }
 
 /* ------------------------------------------------------------ charts */
-.chart { margin: 0; padding: 18px 18px 12px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+.chart { position: relative; overflow: clip; margin: 0; padding: 18px 18px 12px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
 .chart-title { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-weight: 600; font-size: 0.96rem; margin-bottom: 6px; }
 .chart-latest { font-family: var(--font-mono); font-weight: 400; font-size: 0.82rem; color: var(--muted); }
 .chart-latest strong { color: var(--ink); font-weight: 600; }
@@ -190,3 +190,5 @@ label { font-weight: 500; }
 .chart-avg text { font-family: var(--font-mono); font-size: 12px; fill: var(--signal); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }
 /* Custom-element islands are inline by default; make them blocks. */
 calc-widget, lesson-player, screener-app, money-demo { display: block; }
+/* Grid children must be allowed to shrink below their content width (tables scroll inside). */
+.co-layout > *, .art-grid > *, .grid-2 > *, .grid-3 > *, .md-grid > *, .calc-grid > *, .hero-grid > * { min-width: 0; }
