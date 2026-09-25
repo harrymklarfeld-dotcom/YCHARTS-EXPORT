@@ -23,7 +23,15 @@ const bobItem = await newItem(BOB, "item-money-bob");
 const payload = (o: Record<string, unknown> = {}) =>
   JSON.stringify({
     as_of: "2026-09-25",
-    cash_accounts: [{ provider_account_id: "chk", name: "Checking", mask: "0101", subtype: "checking", balance_current: 612.44, balance_available: 587.44, currency: "USD" }],
+    cash_accounts: [{
+      provider_account_id: "chk",
+      name: "Checking",
+      mask: "0101",
+      subtype: "checking",
+      balance_current: 612.44,
+      balance_available: 587.44,
+      currency: "USD",
+    }],
     liabilities: [{
       provider_account_id: "card",
       kind: "credit_card",
@@ -38,39 +46,99 @@ const payload = (o: Record<string, unknown> = {}) =>
     }],
     transactions: {
       added: [
-        { provider_transaction_id: "t1", provider_account_id: "chk", date: "2026-09-18", amount: 386.1, name: "PAYROLL", category: "INCOME", pending: false },
-        { provider_transaction_id: "t2", provider_account_id: "chk", date: "2023-01-15", amount: -12, name: "OLD", category: null, pending: false },
-        { provider_transaction_id: "t3", provider_account_id: "card", date: "2026-09-23", amount: -89.99, name: "BOOKS", category: null, pending: false },
+        {
+          provider_transaction_id: "t1",
+          provider_account_id: "chk",
+          date: "2026-09-18",
+          amount: 386.1,
+          name: "PAYROLL",
+          category: "INCOME",
+          pending: false,
+        },
+        {
+          provider_transaction_id: "t2",
+          provider_account_id: "chk",
+          date: "2023-01-15",
+          amount: -12,
+          name: "OLD",
+          category: null,
+          pending: false,
+        },
+        {
+          provider_transaction_id: "t3",
+          provider_account_id: "card",
+          date: "2026-09-23",
+          amount: -89.99,
+          name: "BOOKS",
+          category: null,
+          pending: false,
+        },
       ],
-      modified: [{ provider_transaction_id: "t1", provider_account_id: "chk", date: "2026-09-18", amount: 390, name: "PAYROLL", category: "INCOME", pending: false }],
+      modified: [{
+        provider_transaction_id: "t1",
+        provider_account_id: "chk",
+        date: "2026-09-18",
+        amount: 390,
+        name: "PAYROLL",
+        category: "INCOME",
+        pending: false,
+      }],
       removed: [],
       next_cursor: "cursor-1",
     },
-    income_streams: [{ provider_stream_id: "st1", provider_account_id: "chk", description: "PAYROLL", frequency: "biweekly", average_amount: 412.37, last_amount: 386.1, last_date: "2026-09-18", predicted_next_date: "2026-10-02", status: "mature" }],
+    income_streams: [{
+      provider_stream_id: "st1",
+      provider_account_id: "chk",
+      description: "PAYROLL",
+      frequency: "biweekly",
+      average_amount: 412.37,
+      last_amount: 386.1,
+      last_date: "2026-09-18",
+      predicted_next_date: "2026-10-02",
+      status: "mature",
+    }],
     ...o,
   });
-const replace = (user: string, item: string, p: string) => db.query<{ r: Record<string, number> }>(`select replace_item_money($1, $2, $3::jsonb) r`, [user, item, p]);
+const replace = (user: string, item: string, p: string) =>
+  db.query<{ r: Record<string, number> }>(`select replace_item_money($1, $2, $3::jsonb) r`, [user, item, p]);
 
 const counts0 = (await replace(ALICE, aliceItem, payload())).rows[0].r;
 await replace(BOB, bobItem, payload());
 const snap = async (user: string) =>
-  (await db.query<{ id: string }>(`insert into money_snapshots (user_id, snapshot, basis) values ($1, '{"takenAt":"2026-09-25T10:00","accounts":[],"liabilities":[],"note":""}', '{"accounts":{}}') returning id`, [user]))
+  (await db.query<{ id: string }>(
+    `insert into money_snapshots (user_id, snapshot, basis) values ($1, '{"takenAt":"2026-09-25T10:00","accounts":[],"liabilities":[],"note":""}', '{"accounts":{}}') returning id`,
+    [user],
+  ))
     .rows[0].id;
 const aliceSnap = await snap(ALICE);
 const bobSnap = await snap(BOB);
 
 Deno.test("money sql: replace_item_money upserts, folds modified, skips >24-month rows, stores cursor", async () => {
-  assertEquals(counts0, { cash_accounts: 1, liabilities: 1, transactions_upserted: 2, transactions_removed: 0, transactions_skipped_retention: 1, income_streams: 1 });
+  assertEquals(counts0, {
+    cash_accounts: 1,
+    liabilities: 1,
+    transactions_upserted: 2,
+    transactions_removed: 0,
+    transactions_skipped_retention: 1,
+    income_streams: 1,
+  });
   const tx = await db.query(`select provider_transaction_id id, amount::float8 a from transactions where user_id = $1 order by 1`, [ALICE]);
   assertEquals(tx.rows, [{ id: "t1", a: 390 }, { id: "t3", a: -89.99 }]);
-  assertEquals((await db.query(`select transactions_cursor c, money_synced_at is not null s from linked_items where id = $1`, [aliceItem])).rows, [{ c: "cursor-1", s: true }]);
+  assertEquals(
+    (await db.query(`select transactions_cursor c, money_synced_at is not null s from linked_items where id = $1`, [aliceItem])).rows,
+    [{ c: "cursor-1", s: true }],
+  );
 
   // Next delta: remove t3; null sections keep existing rows; missing cash account deleted.
-  const r = (await replace(ALICE, aliceItem, payload({
-    cash_accounts: [],
-    transactions: { added: [], modified: [], removed: ["t3"], next_cursor: "cursor-2" },
-    income_streams: null,
-  }))).rows[0].r;
+  const r = (await replace(
+    ALICE,
+    aliceItem,
+    payload({
+      cash_accounts: [],
+      transactions: { added: [], modified: [], removed: ["t3"], next_cursor: "cursor-2" },
+      income_streams: null,
+    }),
+  )).rows[0].r;
   assertEquals([r.transactions_removed, r.cash_accounts], [1, 0]);
   assertEquals((await db.query<{ n: number }>(`select count(*)::int n from cash_accounts where user_id = $1`, [ALICE])).rows[0].n, 0);
   assertEquals((await db.query<{ n: number }>(`select count(*)::int n from income_streams where user_id = $1`, [ALICE])).rows[0].n, 1);
@@ -80,25 +148,53 @@ Deno.test("money sql: replace_item_money upserts, folds modified, skips >24-mont
   await assertRejects(() => replace(BOB, aliceItem, payload()), Error, "not found for user");
 
   // Retention purge (service-only)
-  await db.query(`insert into transactions (user_id, linked_item_id, provider_transaction_id, provider_account_id, date, amount) values ($1, $2, 'ancient', 'chk', current_date - 800, -1)`, [ALICE, aliceItem]);
+  await db.query(
+    `insert into transactions (user_id, linked_item_id, provider_transaction_id, provider_account_id, date, amount) values ($1, $2, 'ancient', 'chk', current_date - 800, -1)`,
+    [ALICE, aliceItem],
+  );
   assertEquals((await db.query<{ n: number }>(`select purge_money_retention() n`)).rows[0].n, 1);
 });
 
 Deno.test("money sql: RLS isolates every new table; token cursor not selectable", async () => {
   const count = (t: string) => db.query<{ n: number }>(`select count(*)::int n from ${t}`).then((r) => r.rows[0].n);
   const tables = ["cash_accounts", "liabilities", "transactions", "income_streams", "money_snapshots", "money_snapshot_notes"];
-  const bobView = await asRole(db, "authenticated", BOB, async () => Object.fromEntries(await Promise.all(tables.map(async (t) => [t, await count(t)]))));
-  assertEquals(bobView, { cash_accounts: 1, liabilities: 1, transactions: 2, income_streams: 1, money_snapshots: 1, money_snapshot_notes: 0 });
-  const bobIds = await asRole(db, "authenticated", BOB, () => db.query<{ user_id: string }>(`select distinct user_id from transactions union select user_id from money_snapshots`));
+  const bobView = await asRole(
+    db,
+    "authenticated",
+    BOB,
+    async () => Object.fromEntries(await Promise.all(tables.map(async (t) => [t, await count(t)]))),
+  );
+  assertEquals(bobView, {
+    cash_accounts: 1,
+    liabilities: 1,
+    transactions: 2,
+    income_streams: 1,
+    money_snapshots: 1,
+    money_snapshot_notes: 0,
+  });
+  const bobIds = await asRole(
+    db,
+    "authenticated",
+    BOB,
+    () => db.query<{ user_id: string }>(`select distinct user_id from transactions union select user_id from money_snapshots`),
+  );
   assertEquals(bobIds.rows.map((r) => r.user_id), [BOB]);
   const stranger = "dddddddd-dddd-4ddd-8ddd-dddddddddddd";
-  const none = await asRole(db, "authenticated", stranger, async () => Object.values(Object.fromEntries(await Promise.all(tables.map(async (t) => [t, await count(t)])))));
+  const none = await asRole(
+    db,
+    "authenticated",
+    stranger,
+    async () => Object.values(Object.fromEntries(await Promise.all(tables.map(async (t) => [t, await count(t)])))),
+  );
   assertEquals(none, [0, 0, 0, 0, 0, 0]);
   for (const t of tables) {
     assertEquals(await asRole(db, "anon", null, () => count(t).then(() => "allowed").catch(() => "denied")), "denied", t);
   }
   await asRole(db, "authenticated", ALICE, async () => {
-    assertEquals((await db.query(`select money_hub, money_synced_at is not null s from linked_items`)).rows, [{ money_hub: true, s: true }]);
+    assertEquals((await db.query(`select money_hub, money_synced_at is not null s from linked_items`)).rows, [{
+      money_hub: true,
+      s: true,
+    }]);
     await assertRejects(() => db.query(`select transactions_cursor from linked_items`), Error, "permission denied");
     await assertRejects(() => db.query(`select replace_item_money($1, $2, '{}'::jsonb)`, [ALICE, aliceItem]), Error, "permission denied");
     await assertRejects(() => db.query(`select purge_money_retention()`), Error, "permission denied");
@@ -107,16 +203,45 @@ Deno.test("money sql: RLS isolates every new table; token cursor not selectable"
 
 Deno.test("money sql: clients cannot write provider data; may manage manual income streams", async () => {
   await asRole(db, "authenticated", ALICE, async () => {
-    await assertRejects(() => db.query(`insert into cash_accounts (user_id, linked_item_id, provider_account_id) values ($1, $2, 'x')`, [ALICE, aliceItem]), Error, "permission denied");
+    await assertRejects(
+      () => db.query(`insert into cash_accounts (user_id, linked_item_id, provider_account_id) values ($1, $2, 'x')`, [ALICE, aliceItem]),
+      Error,
+      "permission denied",
+    );
     await assertRejects(() => db.query(`update liabilities set minimum_payment_amount = 0`), Error, "permission denied");
-    await assertRejects(() => db.query(`insert into transactions (user_id, linked_item_id, provider_transaction_id, provider_account_id, date, amount) values ($1, $2, 'f', 'chk', current_date, 1e6)`, [ALICE, aliceItem]), Error, "permission denied");
+    await assertRejects(
+      () =>
+        db.query(
+          `insert into transactions (user_id, linked_item_id, provider_transaction_id, provider_account_id, date, amount) values ($1, $2, 'f', 'chk', current_date, 1e6)`,
+          [ALICE, aliceItem],
+        ),
+      Error,
+      "permission denied",
+    );
     await assertRejects(() => db.query(`delete from transactions`), Error, "permission denied");
     // forged detected stream -> RLS (source must be manual; linked_item_id not even grantable)
-    await assertRejects(() => db.query(`insert into income_streams (user_id, source, description, frequency) values ($1, 'plaid', 'fake', 'weekly')`, [ALICE]), Error, "row-level security");
-    await assertRejects(() => db.query(`insert into income_streams (user_id, source, linked_item_id, description) values ($1, 'manual', $2, 'x')`, [ALICE, aliceItem]), Error, "permission denied");
+    await assertRejects(
+      () =>
+        db.query(`insert into income_streams (user_id, source, description, frequency) values ($1, 'plaid', 'fake', 'weekly')`, [ALICE]),
+      Error,
+      "row-level security",
+    );
+    await assertRejects(
+      () =>
+        db.query(`insert into income_streams (user_id, source, linked_item_id, description) values ($1, 'manual', $2, 'x')`, [
+          ALICE,
+          aliceItem,
+        ]),
+      Error,
+      "permission denied",
+    );
     // manual stream for someone else -> RLS
     await assertRejects(
-      () => db.query(`insert into income_streams (user_id, source, description, frequency, pay_type, rate, next_pay_date) values ($1, 'manual', 'x', 'weekly', 'hourly', 15, '2026-10-09')`, [BOB]),
+      () =>
+        db.query(
+          `insert into income_streams (user_id, source, description, frequency, pay_type, rate, next_pay_date) values ($1, 'manual', 'x', 'weekly', 'hourly', 15, '2026-10-09')`,
+          [BOB],
+        ),
       Error,
       "row-level security",
     );
@@ -155,13 +280,28 @@ Deno.test("money sql: snapshots are append-only for every role; notes appendable
     await db.query(`insert into money_snapshots (user_id, snapshot, basis) values ($1, '{}', '{}')`, [BOB]); // appends are fine
   });
   await asRole(db, "authenticated", ALICE, async () => {
-    await assertRejects(() => db.query(`insert into money_snapshots (user_id, snapshot, basis) values ($1, '{}', '{}')`, [ALICE]), Error, "permission denied");
+    await assertRejects(
+      () => db.query(`insert into money_snapshots (user_id, snapshot, basis) values ($1, '{}', '{}')`, [ALICE]),
+      Error,
+      "permission denied",
+    );
     await assertRejects(() => db.query(`update money_snapshots set snapshot = '{}'`), Error, "permission denied");
     await assertRejects(() => db.query(`delete from money_snapshots`), Error, "permission denied");
-    await db.query(`insert into money_snapshot_notes (user_id, snapshot_id, note) values ($1, $2, 'Statement posted; due Oct 12')`, [ALICE, aliceSnap]);
-    await assertRejects(() => db.query(`insert into money_snapshot_notes (user_id, snapshot_id, note) values ($1, $2, 'hi')`, [ALICE, bobSnap]), Error, "row-level security");
+    await db.query(`insert into money_snapshot_notes (user_id, snapshot_id, note) values ($1, $2, 'Statement posted; due Oct 12')`, [
+      ALICE,
+      aliceSnap,
+    ]);
+    await assertRejects(
+      () => db.query(`insert into money_snapshot_notes (user_id, snapshot_id, note) values ($1, $2, 'hi')`, [ALICE, bobSnap]),
+      Error,
+      "row-level security",
+    );
     await assertRejects(() => db.query(`update money_snapshot_notes set note = 'edited'`), Error, "permission denied");
-    await assertRejects(() => db.query(`insert into money_snapshot_notes (user_id, snapshot_id, note) values ($1, $2, '')`, [ALICE, aliceSnap]), Error, "check");
+    await assertRejects(
+      () => db.query(`insert into money_snapshot_notes (user_id, snapshot_id, note) values ($1, $2, '')`, [ALICE, aliceSnap]),
+      Error,
+      "check",
+    );
   });
   await assertRejects(() => db.query(`update money_snapshot_notes set note = 'x'`), Error, "append-only");
   await assertRejects(() => db.query(`delete from money_snapshot_notes`), Error, "append-only");
@@ -178,7 +318,10 @@ Deno.test("money sql: account deletion cascades through append-only tables", asy
   await replace(C, item, payload());
   const s = await snap(C);
   await db.query(`insert into money_snapshot_notes (user_id, snapshot_id, note) values ($1, $2, 'note')`, [C, s]);
-  await db.query(`insert into income_streams (user_id, source, description, frequency, pay_type, rate, next_pay_date) values ($1, 'manual', 'Tutoring', 'weekly', 'per_session', 30, '2026-10-01')`, [C]);
+  await db.query(
+    `insert into income_streams (user_id, source, description, frequency, pay_type, rate, next_pay_date) values ($1, 'manual', 'Tutoring', 'weekly', 'per_session', 30, '2026-10-01')`,
+    [C],
+  );
   await db.query(`delete from auth.users where id = $1`, [C]);
   const left = await db.query<{ n: number }>(
     `select ((select count(*) from money_snapshots where user_id = $1) + (select count(*) from money_snapshot_notes where user_id = $1)

@@ -74,7 +74,7 @@ When Micron's revenue roughly halved in fiscal 2023, its operating margin didn't
 
 ## The takeaway
 
-The margin stack turns an income statement into three percentages you can hold in your head. It tells you how much a company keeps, where the rest goes, and how sensitive profit is to a change in sales. Once you can read a stack, every other profitability metric (return on capital, cash conversion, valuation multiples) makes more sense.
+The margin stack turns an income statement into three percentages you can keep in your head. It tells you how much a company keeps, where the rest goes, and how sensitive profit is to a change in sales. Once you can read a stack, every other profitability metric (return on capital, cash conversion, valuation multiples) makes more sense.
 
 Put it into practice with real filings:
 

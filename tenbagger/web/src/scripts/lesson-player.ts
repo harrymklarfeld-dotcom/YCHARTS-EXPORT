@@ -188,7 +188,7 @@ class LessonPlayer extends HTMLElement {
     this.stage.innerHTML = `
       <div class="lp-done">
         <p class="lp-score"><span class="big-number">${this.correct}/${total}</span></p>
-        <p class="lp-done-title">${this.correct === total ? 'Clean sweep.' : this.correct > 0 ? 'Nice work.' : 'Everyone starts somewhere.'} +${this.correct * 10} XP</p>
+        <p class="lp-done-title">${this.correct === total ? 'Clean sweep.' : this.correct > 0 ? 'Nice work.' : 'Everyone starts somewhere.'}${this.hasAttribute('data-no-xp') ? '' : ` +${this.correct * 10} XP`}</p>
         <p class="muted">That was one real lesson, built from real 10-K numbers. The app has ${esc(this.dataset.totalLessons ?? 'dozens of')} more, three minutes each.</p>
         <div class="btn-row">${cta}<button type="button" class="btn" data-again>Play again</button></div>
       </div>`;

@@ -24,7 +24,7 @@ const appHref = `/app/?lesson=${encodeURIComponent(String(lesson))}`;
     </div>
     <details class="w-quiz-try">
       <summary>Try 3 questions right here</summary>
-      <LessonPlayer lesson={found.lesson} questions={found.lesson.questions.filter((q) => q.type !== 'order').slice(0, 3)} showIntro={false} ctaHref={site.features.showWaitlist ? '/#waitlist' : appHref} ctaLabel="Get the full app" />
+      <LessonPlayer lesson={found.lesson} questions={found.lesson.questions.filter((q) => q.type !== 'order').slice(0, 3)} showIntro={false} noXp ctaHref={site.features.showWaitlist ? '/#waitlist' : appHref} ctaLabel="Get the full app" />
     </details>
   </aside>
 )}

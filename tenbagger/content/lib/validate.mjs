@@ -220,7 +220,10 @@ export function scanBanned(text, ctx) {
   const hits = [];
   for (const re of ctx.banned) {
     const m = re.exec(text);
-    if (m) hits.push(m[0]);
+    if (m) {
+      const ctxText = text.slice(Math.max(0, m.index - 30), m.index + m[0].length + 30).replace(/\s+/g, ' ');
+      hits.push(`${m[0]}" in "…${ctxText}…`);
+    }
   }
   return hits;
 }

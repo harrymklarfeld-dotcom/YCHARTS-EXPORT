@@ -41,19 +41,40 @@ Deno.test("money: liabilities keep only payment fields (no account numbers, serv
   assertEquals(l.liabilities.length, 2); // credit entry with null account_id dropped
   const card = l.liabilities.find((x) => x.kind === "credit_card")!;
   assertEquals(
-    [card.last_statement_balance, card.minimum_payment_amount, card.next_payment_due_date, card.last_payment_amount, card.last_payment_date, card.last_statement_date],
+    [
+      card.last_statement_balance,
+      card.minimum_payment_amount,
+      card.next_payment_due_date,
+      card.last_payment_amount,
+      card.last_payment_date,
+      card.last_statement_date,
+    ],
     [689.4, 35, "2026-10-12", 150, "2026-09-08", "2026-09-17"],
   );
   assertEquals([card.apr_percentage, card.is_overdue, card.details_available, card.balance_current], [24.99, false, true, 734.21]); // purchase APR, not cash APR
   const loan = l.liabilities.find((x) => x.kind === "student_loan")!;
-  assertEquals([loan.name, loan.apr_percentage, loan.next_payment_due_date, loan.minimum_payment_amount], ["Direct Unsubsidized", 5.5, null, 0]);
+  assertEquals([loan.name, loan.apr_percentage, loan.next_payment_due_date, loan.minimum_payment_amount], [
+    "Direct Unsubsidized",
+    5.5,
+    null,
+    0,
+  ]);
   const text = JSON.stringify(l);
-  for (const leak of ["FAKE-ACCT", "FAKE-REF", "Servicer", "GUARANTY", "Faketown", "pslf", "origination"]) assertFalse(text.includes(leak), `leaked ${leak}`);
+  for (const leak of ["FAKE-ACCT", "FAKE-REF", "Servicer", "GUARANTY", "Faketown", "pslf", "origination"]) {
+    assertFalse(text.includes(leak), `leaked ${leak}`);
+  }
 
   const merged = mergeLiabilities(normalizePlaidBalances(structuredClone(accountsFx)).debt_accounts, l.liabilities);
-  assertEquals(merged.map((m) => [m.kind, m.details_available, m.credit_limit]), [["credit_card", true, 2000], ["student_loan", true, null]]);
+  assertEquals(merged.map((m) => [m.kind, m.details_available, m.credit_limit]), [["credit_card", true, 2000], [
+    "student_loan",
+    true,
+    null,
+  ]]);
   // Liabilities product unavailable => balance-only rows survive
-  assertEquals(mergeLiabilities(normalizePlaidBalances(structuredClone(accountsFx)).debt_accounts, null).every((m) => !m.details_available), true);
+  assertEquals(
+    mergeLiabilities(normalizePlaidBalances(structuredClone(accountsFx)).debt_accounts, null).every((m) => !m.details_available),
+    true,
+  );
 });
 
 Deno.test("money: /transactions/sync pages fold into one minimized delta (sign flipped)", () => {
@@ -78,14 +99,25 @@ Deno.test("money: /transactions/sync pages fold into one minimized delta (sign f
   const text = JSON.stringify(d);
   assertFalse(text.includes("Fictional Ave") || text.includes("lat") || text.includes("payment_channel"));
   // A later page with only a removal
-  const d2 = foldTransactionsSync([{ added: [], modified: [], removed: [{ transaction_id: "tx_book_0923" }], next_cursor: "c3", has_more: false }], "cur-fictional-page-2");
+  const d2 = foldTransactionsSync([{
+    added: [],
+    modified: [],
+    removed: [{ transaction_id: "tx_book_0923" }],
+    next_cursor: "c3",
+    has_more: false,
+  }], "cur-fictional-page-2");
   assertEquals([d2.removed, d2.next_cursor], [["tx_book_0923"], "c3"]);
   assertEquals(foldTransactionsSync([], "keep").next_cursor, "keep");
 });
 
 Deno.test("money: recurring inflows -> income streams (transfers skipped, irregular payroll kept)", () => {
   const r = normalizePlaidRecurring(structuredClone(recurringFx));
-  assertEquals(r.income_streams.map((s) => s.provider_stream_id), ["stream_payroll_quill", "stream_tutorly", "stream_lab_stipend", "stream_dashcart_old"]);
+  assertEquals(r.income_streams.map((s) => s.provider_stream_id), [
+    "stream_payroll_quill",
+    "stream_tutorly",
+    "stream_lab_stipend",
+    "stream_dashcart_old",
+  ]);
   const pay = r.income_streams[0];
   assertEquals(
     [pay.description, pay.frequency, pay.status, pay.average_amount, pay.last_amount, pay.last_date, pay.predicted_next_date, pay.category],
@@ -126,14 +158,18 @@ Deno.test("money: expected deposits roll predictions forward by cadence within t
     currency: "USD",
     ...o,
   });
-  const out = projectExpectedDeposits([
-    row({ id: "pay" }),
-    row({ id: "stale", frequency: "weekly", predicted_next_date: "2026-09-10", status: "early_detection" }), // stale: 09-17, 09-24 are past -> starts 10-01
-    row({ id: "odd", frequency: "unknown", predicted_next_date: "2026-10-20" }),
-    row({ id: "gone", status: "tombstoned" }),
-    row({ id: "manual", source: "manual" }),
-    row({ id: "cad", currency: "CAD" }),
-  ], "2026-09-25", 21);
+  const out = projectExpectedDeposits(
+    [
+      row({ id: "pay" }),
+      row({ id: "stale", frequency: "weekly", predicted_next_date: "2026-09-10", status: "early_detection" }), // stale: 09-17, 09-24 are past -> starts 10-01
+      row({ id: "odd", frequency: "unknown", predicted_next_date: "2026-10-20" }),
+      row({ id: "gone", status: "tombstoned" }),
+      row({ id: "manual", source: "manual" }),
+      row({ id: "cad", currency: "CAD" }),
+    ],
+    "2026-09-25",
+    21,
+  );
   assertEquals(out.map((d) => `${d.streamId}@${d.date}:${d.confidence}`), [
     "stale@2026-10-01:low",
     "pay@2026-10-02:high",
@@ -142,7 +178,11 @@ Deno.test("money: expected deposits roll predictions forward by cadence within t
     "pay@2026-10-16:high", // horizon end is inclusive
   ]);
   assert(out.every((d) => d.basis === "projected" && d.amount === 100 && d.gross === 100));
-  assertEquals([nextOccurrence("2026-01-31", "monthly"), nextOccurrence("2026-10-01", "semimonthly"), nextOccurrence("2026-10-16", "semimonthly")], [
+  assertEquals([
+    nextOccurrence("2026-01-31", "monthly"),
+    nextOccurrence("2026-10-01", "semimonthly"),
+    nextOccurrence("2026-10-16", "semimonthly"),
+  ], [
     "2026-02-28",
     "2026-10-16",
     "2026-11-01",
@@ -169,12 +209,20 @@ function fakePlaid(routes: Record<string, (body: any, n: number) => { status?: n
 const CRED = { kind: "plaid" as const, accessToken: "access-sandbox-money-SECRET" };
 
 Deno.test("plaid money: link token products (create / update / default unchanged)", async () => {
-  const { f, seen } = fakePlaid({ "/link/token/create": () => ({ json: { link_token: "link-sandbox-m", expiration: "2026-09-25T04:00:00Z" } }) });
+  const { f, seen } = fakePlaid({
+    "/link/token/create": () => ({ json: { link_token: "link-sandbox-m", expiration: "2026-09-25T04:00:00Z" } }),
+  });
   const p = new PlaidProvider({ clientId: "cid", secret: "sec", env: "sandbox", fetch: f });
   await p.createLinkSession({ appUserId: "u1", moneyHub: true });
-  assertEquals([seen[0].body.products, seen[0].body.optional_products, seen[0].body.transactions], [["transactions"], ["liabilities", "investments"], { days_requested: 180 }]);
+  assertEquals([seen[0].body.products, seen[0].body.optional_products, seen[0].body.transactions], [["transactions"], [
+    "liabilities",
+    "investments",
+  ], { days_requested: 180 }]);
   await p.createLinkSession({ appUserId: "u1", credential: CRED, moneyHub: true });
-  assertEquals([seen[1].body.products, seen[1].body.additional_consented_products, seen[1].body.access_token], [undefined, ["transactions", "liabilities"], CRED.accessToken]);
+  assertEquals([seen[1].body.products, seen[1].body.additional_consented_products, seen[1].body.access_token], [undefined, [
+    "transactions",
+    "liabilities",
+  ], CRED.accessToken]);
   await p.createLinkSession({ appUserId: "u1" });
   assertEquals([seen[2].body.products, seen[2].body.optional_products, seen[2].body.transactions], [["investments"], undefined, undefined]);
 });
@@ -221,7 +269,10 @@ Deno.test("plaid money: /transactions/sync pages with cursor and restarts on mut
   assertEquals("cursor" in seen.at(-2)!.body, false);
 
   const { f: f2 } = fakePlaid({ "/transactions/sync": () => ({ status: 400, json: { error_code: "ITEM_LOGIN_REQUIRED" } }) });
-  const e = await assertRejects(() => new PlaidProvider({ clientId: "c", secret: "s", env: "sandbox", fetch: f2 }).syncTransactions(CRED, null), ProviderError);
+  const e = await assertRejects(
+    () => new PlaidProvider({ clientId: "c", secret: "s", env: "sandbox", fetch: f2 }).syncTransactions(CRED, null),
+    ProviderError,
+  );
   assertEquals([e.code, e.needsReauth], ["ITEM_LOGIN_REQUIRED", true]);
   assertFalse(e.message.includes("SECRET"));
 });

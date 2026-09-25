@@ -8,7 +8,14 @@
 //   verified  = returned by the provider (Account.basis, Liability.basis, deposits history)
 //   projected = predicted (ExpectedDeposit.basis, from Plaid predicted_next_date + cadence)
 //   manual    = entered by the user (manual IncomeStream.basis, manual Account.basis)
-import type { Basis, IncomeFrequency, NormalizedCashAccount, NormalizedIncomeStream, NormalizedLiability, TransactionsDelta } from "./types.ts";
+import type {
+  Basis,
+  IncomeFrequency,
+  NormalizedCashAccount,
+  NormalizedIncomeStream,
+  NormalizedLiability,
+  TransactionsDelta,
+} from "./types.ts";
 
 export const MONEY_SCHEMA_VERSION = 1;
 export const MONEY_HORIZON_DAYS = 45;
@@ -133,7 +140,9 @@ export interface MoneySummary {
   /** Income deposits observed in the last 180 days (transactions categorized INCOME). */
   deposits: IncomeDeposit[];
   /** Last 90 days, oldest first (packages/money SnapshotLog order). */
-  snapshots: Array<Snapshot & { id: string; basis: Record<string, unknown>; notes: Array<{ id: string; note: string; createdAt: string }> }>;
+  snapshots: Array<
+    Snapshot & { id: string; basis: Record<string, unknown>; notes: Array<{ id: string; note: string; createdAt: string }> }
+  >;
   sources: Array<{ itemId: string; institution: string | null; status: string; moneyHub: boolean; moneySyncedAt: string | null }>;
   warnings: string[];
 }
@@ -250,9 +259,25 @@ function addMonths(s: string, n: number): string {
 export function localParts(at: Date, timezone: string): { date: ISODate; time: string } {
   let f: Intl.DateTimeFormat;
   try {
-    f = new Intl.DateTimeFormat("en-CA", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+    f = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    });
   } catch {
-    f = new Intl.DateTimeFormat("en-CA", { timeZone: "UTC", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+    f = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "UTC",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    });
   }
   const p = Object.fromEntries(f.formatToParts(at).map((x) => [x.type, x.value]));
   return { date: `${p.year}-${p.month}-${p.day}`, time: `${p.hour}:${p.minute}` };
@@ -313,7 +338,9 @@ function manualStream(s: IncomeStreamRow): IncomeStream {
     source: "manual",
   };
   if (s.condition) out.condition = s.condition;
-  if (s.pending_units !== null && s.pending_period_end) out.pendingUnsubmitted = { units: s.pending_units, periodEnd: s.pending_period_end };
+  if (s.pending_units !== null && s.pending_period_end) {
+    out.pendingUnsubmitted = { units: s.pending_units, periodEnd: s.pending_period_end };
+  }
   if (s.semimonthly_days?.length === 2) out.semimonthlyDays = [s.semimonthly_days[0], s.semimonthly_days[1]];
   if (s.period_lag_days !== null) out.periodLagDays = s.period_lag_days;
   if (s.weekend_rule) out.weekendRule = s.weekend_rule;
@@ -344,13 +371,18 @@ export function projectExpectedDeposits(streams: IncomeStreamRow[], today: strin
         basis: "projected",
         streamId: s.id,
         streamName: s.description,
-        note: confidence === "high" ? "Detected pattern from past deposits; not guaranteed" : "Early or irregular pattern; amount and date may vary",
+        note: confidence === "high"
+          ? "Detected pattern from past deposits; not guaranteed"
+          : "Early or irregular pattern; amount and date may vary",
         confidence,
       });
       d = nextOccurrence(d, s.frequency);
     }
   }
-  return out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.streamName.localeCompare(b.streamName) || a.streamId.localeCompare(b.streamId)));
+  return out.sort((
+    a,
+    b,
+  ) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.streamName.localeCompare(b.streamName) || a.streamId.localeCompare(b.streamId)));
 }
 
 export function buildMoneySummary(rows: MoneyRows, now: Date, horizonDays = MONEY_HORIZON_DAYS): MoneySummary {
@@ -509,7 +541,13 @@ export function buildMoneySummary(rows: MoneyRows, now: Date, horizonDays = MONE
     expectedDeposits: projectExpectedDeposits(rows.streams, asOf, horizonDays),
     deposits: rows.deposits.map((d) => ({ date: d.date, amount: d.amount, basis: "verified" as const })),
     snapshots,
-    sources: rows.sources.map((i) => ({ itemId: i.id, institution: i.institution_name, status: i.status, moneyHub: i.money_hub, moneySyncedAt: i.money_synced_at })),
+    sources: rows.sources.map((i) => ({
+      itemId: i.id,
+      institution: i.institution_name,
+      status: i.status,
+      moneyHub: i.money_hub,
+      moneySyncedAt: i.money_synced_at,
+    })),
     warnings,
   };
 }

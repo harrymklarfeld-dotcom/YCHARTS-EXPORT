@@ -31,13 +31,29 @@ member of staff to oversee them.
 | Email, auth factors | Supabase Auth (`auth.users`) | High | Until account deletion |
 | Plaid `access_token`, SnapTrade `userSecret` | `linked_items.access_token_ciphertext`, `aggregator_users.secret_ciphertext` — **AES-256-GCM ciphertext only** | Critical | Until unlink / account deletion |
 | Holdings, accounts (name, last-4 mask, balances) | `holdings`, `accounts`, `securities` | High | Until unlink / account deletion; snapshot replaced each sync |
+| Bank balances (Money hub, opt-in) | `cash_accounts` (name, last-4 mask, subtype, current/available balance) | High | Until opt-out / unlink / account deletion; replaced each sync |
+| Credit-card / student-loan payment data | `liabilities` (balance, limit, statement balance/date, minimum, due date, last payment, APR, overdue flag) | High | Until opt-out / unlink / account deletion; replaced each sync |
+| Transactions | `transactions` (date, signed amount, display name, top-level category, pending, account id) | High | **24 months**: rows older than 24 months are never stored and are deleted by `purge_money_retention()` (**TODO**: schedule daily); also on opt-out / unlink / account deletion |
+| Income streams | `income_streams` (detected: description, cadence, average/last amount, dates; manual: pay type, rate, schedule, withholding, condition text) | High | Detected: replaced each sync, deleted on opt-out / unlink. Manual: until the user deletes them or the account |
+| Money history | `money_snapshots`, `money_snapshot_notes` (append-only) | High | Until account deletion (append-only by design; **TODO**: counsel to confirm, or add a vetted retention migration) |
+| Transactions sync cursor | `linked_items.transactions_cursor` (service-only column) | Low | Until opt-out / unlink |
 | Sync status / errors | `sync_runs` | Medium | **TODO**: purge after 180 days |
 | Security audit events | `audit_log` (service-role only) | Medium | **TODO**: 1 year |
 | Lesson progress | `lesson_progress`, `daily_activity` | Low | Until account deletion |
 
 We never collect brokerage **login credentials** (the user enters them inside Plaid Link /
 SnapTrade Connection Portal) and never request trading permissions (SnapTrade
-`connectionType: "read"`, Plaid `investments` product only).
+`connectionType: "read"`, Plaid `investments` product only). Plaid `transactions` and
+`liabilities` (read-only) are requested **only** when the user opts into the Money hub.
+
+**Data minimization (Money hub).** Normalizers keep only what the cash-flow check needs. We do
+**not** store: full account or routing numbers, student-loan account numbers, servicer addresses,
+payment reference numbers, guarantor or PSLF details, transaction locations, counterparties,
+payment channels, Plaid transaction-id lists, or outflow (spending) recurring streams. Transaction
+names are truncated to 140 characters and categories to Plaid's top-level category. Internal
+transfers and loan disbursements are not treated as income. Opting out of the Money hub
+(`money-sync {item_id, enable:false}`) deletes that item's cash, debt, transaction and detected
+income rows and its cursor immediately.
 
 ## 3. Risk assessment (§314.4(b))
 
@@ -54,6 +70,8 @@ provider, new data type, new region). Initial risk register:
 | R6 | Token leaks in logs / responses | Med | Critical | Handlers never serialize tokens; tests assert no secrets in responses/logs | Log-drain scrubbing (TODO) |
 | R7 | Vendor compromise (Plaid/SnapTrade/Supabase) | Low | High | Least privilege, read-only scopes, §9 oversight | Incident contacts (TODO) |
 | R8 | Stale data after user revokes access | Med | Low | Webhooks + `snaptrade-sync` mark items revoked/needs_reauth | — |
+| R9 | Transaction history over-collection / over-retention | Med | High | Money hub opt-in only; minimized columns; 24-month cutoff at write time; `purge_money_retention()` | Schedule the purge (TODO) |
+| R10 | Tampering with money history (e.g. hiding a missed payment) | Low | Med | `money_snapshots`/notes append-only via trigger for all roles incl. service_role; clients cannot insert snapshots | Superuser can still drop the trigger: covered by change management §4.7 |
 
 ## 4. Safeguards (§314.4(c))
 
@@ -107,6 +125,11 @@ provider, new data type, new region). Initial risk register:
   (tested). `unlink {all: true}` also deletes the SnapTrade user.
 - Customer information is disposed of no later than 2 years after last use unless needed
   for legal/business reasons (§314.4(c)(6)(i)); holdings are replaced on every sync.
+- **Money hub retention**: transactions older than 24 months are skipped on write
+  (`replace_item_money`) and purged by `purge_money_retention()` (service_role only).
+  **TODO**: schedule it daily (pg_cron or a scheduled edge function) and alert on failure.
+  Snapshots are append-only; they are removed only with the account (FK cascade from
+  `auth.users`; the append-only trigger allows exactly that path).
 - **TODO**: scheduled job purging `sync_runs` and `audit_log` per §2.
 
 ### 4.7 Change management (§314.4(c)(7)) — migrations only via `supabase/migrations`, reviewed.

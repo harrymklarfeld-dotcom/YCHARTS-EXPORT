@@ -19,11 +19,15 @@ backend/
                                            holdings, sync_runs, audit_log, holdings_contract view,
                                            replace_item_holdings()
       20260925000300_companies_screen.sql  companies, company_metrics, run_screen(), load_companies()
+      20260925000400_money_hub.sql         cash_accounts, liabilities, transactions, income_streams,
+                                           money_snapshots + money_snapshot_notes (append-only),
+                                           replace_item_money(), purge_money_retention()
     seed.sql                    5 SAMPLE companies (price_is_sample = true)
     functions/
       _shared/                  all logic (see below); each <fn>/index.ts is a 3-line shim
       plaid-link-token/  plaid-exchange/  plaid-sync-holdings/  plaid-webhook/
       snaptrade-register/  snaptrade-sync/  unlink/  portfolio-summary/
+      money-sync/  money-summary/
   tests/                        Deno tests: PGlite (real Postgres 17 in WASM) + fixtures
 ```
 
@@ -65,14 +69,64 @@ backend/
 
 | Function | Auth | Body | Returns |
 |---|---|---|---|
-| `plaid-link-token` | JWT, **aal2** | `{item_id?}` (update/re-auth mode) | `{link_token, expiration, mode}` |
-| `plaid-exchange` | JWT, **aal2** | `{public_token}` | `{item, sync}` |
+| `plaid-link-token` | JWT, **aal2** | `{item_id?, money_hub?}` (update/re-auth mode; Money hub opt-in) | `{link_token, expiration, mode, money_hub}` |
+| `plaid-exchange` | JWT, **aal2** | `{public_token, money_hub?}` | `{item, sync, money?}` |
 | `plaid-sync-holdings` | JWT | `{item_id?, force?}` | `{results[]}` (60 s throttle unless forced) |
 | `plaid-webhook` | Plaid-Verification JWT | Plaid webhook | `ITEM_LOGIN_REQUIRED`/`PENDING_*` → `needs_reauth`; `USER_PERMISSION_REVOKED` → `revoked`; `LOGIN_REPAIRED` → `active`; `HOLDINGS:DEFAULT_UPDATE` → sync |
 | `snaptrade-register` | JWT, **aal2** | `{broker?}` | `{redirect_url}` (read-only Connection Portal) |
 | `snaptrade-sync` | JWT | `{force?}` | `{items, results}`, with one linked item per brokerage authorization |
 | `unlink` | JWT | `{item_id}` or `{all:true}` | `{removed, provider_errors}` |
 | `portfolio-summary` | JWT | none (GET) | `PortfolioSummary` |
+| `money-sync` | JWT (**aal2** for `enable:true`) | `{item_id?, force?, enable?}` | `{results[], snapshot_id}`; `enable:false` opts out and deletes that item's money data |
+| `money-summary` | JWT | none (GET) | `MoneySummary` (input for `packages/money`, see below) |
+
+`plaid-webhook` also handles `TRANSACTIONS:SYNC_UPDATES_AVAILABLE`, `TRANSACTIONS:RECURRING_TRANSACTIONS_UPDATE`
+and `LIABILITIES:DEFAULT_UPDATE` → money sync, only for items that opted into the Money hub.
+
+### Money hub (opt-in)
+
+For students with irregular income: every balance in one place (cash vs investments vs debt) and a
+forward cash-flow check (cash now + expected income before the card due date − amount due). The math
+lives in `tenbagger/packages/money`; the backend is its data layer.
+
+* **Linking.** `plaid-link-token {money_hub:true}` requests `products: ["transactions"]` plus
+  `optional_products: ["liabilities", "investments"]` and `transactions.days_requested: 180`. With
+  `item_id` it asks for `additional_consented_products: ["transactions", "liabilities"]` on an existing
+  Item (update mode); the app then calls `money-sync {item_id, enable:true}`. Without `money_hub` the
+  request is unchanged (`["investments"]`). Items that did not opt in are never called for money data
+  (Plaid may add and bill a product on first call).
+* **Provider methods** (`AggregatorProvider`, optional; Plaid + Mock implement them): `getBalances`
+  (`/accounts/get`, or `/accounts/balance/get` with `PLAID_REALTIME_BALANCES=true`), `getLiabilities`
+  (`/liabilities/get`), `syncTransactions` (`/transactions/sync`, all pages, restarts from the starting
+  cursor on `TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION`, added/modified/removed folded into one delta),
+  `getRecurring` (`/transactions/recurring/get`, inflow streams only). Normalizers:
+  `normalize_plaid_money.ts`.
+* **`money-sync`** per opted-in item: balances (required) → liabilities, transactions delta, recurring
+  (each optional: `PRODUCTS_NOT_SUPPORTED` / `ADDITIONAL_CONSENT_REQUIRED` / `NO_LIABILITY_ACCOUNTS` /
+  `PRODUCT_NOT_READY` become warnings and a `partial` run) → one atomic `replace_item_money()` call that
+  also stores the new cursor → one appended `money_snapshots` row per call. Throttled like holdings.
+  A bank-only Item with no investments is `skipped` by the holdings sync, not marked `error`.
+* **`money-summary`** returns the `packages/money` shapes (`Account`, `Liability`, `IncomeStream`,
+  `ExpectedDeposit`, `IncomeDeposit`, `Snapshot`; extra fields are additive):
+
+  | Field | Contents | Basis |
+  |---|---|---|
+  | `accounts[]` | checking/savings (`cash_accounts`), brokerage/retirement/crypto (`accounts`), credit_card/loan (`liabilities`, positive owed) | `verified` (provider), `manual` (manual portfolios) |
+  | `liabilities[]` | `{accountId, statementBalance, minimumDue, dueDate, apr (decimal)}` for debts with a due date | `verified` |
+  | `incomeStreams[]` | the user's active manual streams (hourly / per_session / salary / other; rate, schedule, pay frequency, withholding, condition such as "hours submitted", unsubmitted units) | `manual` |
+  | `detectedStreams[]` | Plaid recurring inflows (payroll etc.): average/last amount, cadence, status, and `asIncomeStream` for regular ones | `verified` history |
+  | `expectedDeposits[]` | projections from detected streams within 45 days (`predicted_next_date`, rolled forward by cadence; `confidence` high/low) | `projected` |
+  | `deposits[]` | income deposits seen in the last 180 days | `verified` |
+  | `snapshots[]` | last 90 days, oldest first, `takenAt` in the user's `profiles.timezone` | per-account labels in `basis` |
+
+  Manual streams are **not** pre-projected (`projectIncome` in the package handles pending pay); detected
+  streams are not in `incomeStreams` so they are never counted twice. Non-USD accounts are listed in
+  `warnings` and left out.
+* **Tables** (all RLS, own rows only): `cash_accounts`, `liabilities`, `transactions` (date, signed
+  amount + = in, name, category, pending, account), `income_streams` (`source` plaid|manual; users may
+  insert/update/delete only `manual` rows), `money_snapshots` and `money_snapshot_notes` (append-only:
+  a trigger rejects UPDATE/DELETE/TRUNCATE for every role, including service_role, except the cascade
+  from deleting the auth user; users may append notes to their own snapshots).
 
 Clients can also read their own rows directly through PostgREST under RLS:
 * `holdings_contract` (the contract shape)
@@ -146,9 +200,10 @@ See `.env.example`. Required: `TOKEN_ENCRYPTION_KEYS` (JSON `{keyId: base64 32 b
 ## Tests
 
 ```bash
-deno task test      # 40 tests: normalizers, weighted math, crypto, webhook JWT, provider clients,
-                    # SQL/RLS (real migrations in PGlite), end-to-end handlers
-deno task check     # type-checks all 8 function entrypoints (pulls supabase-js / postgres from npm)
+deno task test      # 60 tests: normalizers, weighted math, crypto, webhook JWT, provider clients,
+                    # SQL/RLS (real migrations in PGlite), end-to-end handlers, Money hub
+                    # (normalizers, append-only + RLS, money-sync/summary e2e, packages/money check)
+deno task check     # type-checks all 10 function entrypoints (pulls supabase-js / postgres from npm)
 deno lint
 ```
 
@@ -170,3 +225,16 @@ Nothing in the tests calls Plaid or SnapTrade. The provider clients are tested a
 * Non-USD positions are flagged and excluded from USD totals. There is no FX conversion.
 * Token re-encryption after key rotation is lazy (`needsRotation`). There is no batch job yet.
 * Scheduled background sync (cron) and retention purges are TODO. See SECURITY.md.
+  `purge_money_retention()` exists (transactions > 24 months) but nothing schedules it yet.
+* Money hub has not run against live Plaid. To confirm first, with real keys:
+  * Transactions and Liabilities must be enabled for the Plaid account (Production access is
+    product-by-product; Transactions and Liabilities are billed separately from Investments, and
+    Recurring Transactions is an add-on to Transactions). Re-check pricing before launch.
+  * That `optional_products: ["liabilities", "investments"]` and `additional_consented_products`
+    behave as expected at the institutions students use (credit unions, neobanks).
+  * The exact error codes Plaid returns when a product is missing on an Item
+    (`PRODUCT_UNAVAILABLE_CODES` in `providers/types.ts`).
+  * Whether `/investments/holdings/get` on a Money-hub Item that did not get Investments adds and
+    bills the product. The code treats "not supported" errors as a skip, but does not avoid the call.
+  * Recurring detection needs history (Plaid suggests 180+ days); new Items return few or
+    `EARLY_DETECTION` streams, which `money-summary` marks `confidence: "low"`.

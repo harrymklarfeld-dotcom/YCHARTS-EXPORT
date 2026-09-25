@@ -1,0 +1,1675 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-25T00:00:00Z",
+  "widget_spec_version": 1,
+  "provenance": {
+    "note": "companies.json has no per-company flag for fundamentals yet. While companies.json source is 'fixture', only these tickers carry real reported numbers; every other company is SAMPLE data. A company-level boolean `fundamentals_is_sample` (if the pipeline adds one) overrides this list.",
+    "real_fixture_tickers": [
+      "MU"
+    ]
+  },
+  "metrics": {
+    "price": {
+      "label": "Share price",
+      "short": "Price",
+      "format": "per_share",
+      "source": "company",
+      "formula": "last share price in the data"
+    },
+    "market_cap": {
+      "label": "Market cap",
+      "short": "Mkt cap",
+      "format": "usd",
+      "source": "metrics",
+      "formula": "price × diluted shares",
+      "terms": [
+        "price",
+        "shares_diluted"
+      ],
+      "op": "×"
+    },
+    "enterprise_value": {
+      "label": "Enterprise value",
+      "short": "EV",
+      "format": "usd",
+      "source": "metrics",
+      "formula": "market cap + debt − cash"
+    },
+    "pe": {
+      "label": "Price / earnings",
+      "short": "P/E",
+      "format": "multiple",
+      "source": "metrics",
+      "formula": "price / diluted EPS",
+      "terms": [
+        "price",
+        "eps_diluted"
+      ]
+    },
+    "ps": {
+      "label": "Price / sales",
+      "short": "P/S",
+      "format": "multiple",
+      "source": "metrics",
+      "formula": "market cap / revenue",
+      "terms": [
+        "market_cap",
+        "revenue"
+      ]
+    },
+    "pb": {
+      "label": "Price / book",
+      "short": "P/B",
+      "format": "multiple",
+      "source": "metrics",
+      "formula": "market cap / shareholders' equity",
+      "terms": [
+        "market_cap",
+        "total_equity"
+      ]
+    },
+    "ev_ebitda": {
+      "label": "EV / EBITDA",
+      "short": "EV/EBITDA",
+      "format": "multiple",
+      "source": "metrics",
+      "formula": "EV / (operating income + D&A)"
+    },
+    "fcf_yield": {
+      "label": "Free cash flow yield",
+      "short": "FCF yield",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "free cash flow / market cap",
+      "terms": [
+        "free_cash_flow",
+        "market_cap"
+      ]
+    },
+    "earnings_yield": {
+      "label": "Earnings yield",
+      "short": "E/P",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "diluted EPS / price",
+      "terms": [
+        "eps_diluted",
+        "price"
+      ]
+    },
+    "dividend_yield": {
+      "label": "Dividend yield",
+      "short": "Div yield",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "dividends paid / market cap",
+      "terms": [
+        "dividends_paid",
+        "market_cap"
+      ]
+    },
+    "gross_margin": {
+      "label": "Gross margin",
+      "short": "Gross mgn",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "gross profit / revenue",
+      "terms": [
+        "gross_profit",
+        "revenue"
+      ]
+    },
+    "operating_margin": {
+      "label": "Operating margin",
+      "short": "Op mgn",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "operating income / revenue",
+      "terms": [
+        "operating_income",
+        "revenue"
+      ]
+    },
+    "net_margin": {
+      "label": "Net margin",
+      "short": "Net mgn",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "net income / revenue",
+      "terms": [
+        "net_income",
+        "revenue"
+      ]
+    },
+    "fcf_margin": {
+      "label": "FCF margin",
+      "short": "FCF mgn",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "free cash flow / revenue",
+      "terms": [
+        "free_cash_flow",
+        "revenue"
+      ]
+    },
+    "roe": {
+      "label": "Return on equity",
+      "short": "ROE",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "net income / shareholders' equity",
+      "terms": [
+        "net_income",
+        "total_equity"
+      ]
+    },
+    "roa": {
+      "label": "Return on assets",
+      "short": "ROA",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "net income / total assets",
+      "terms": [
+        "net_income",
+        "total_assets"
+      ]
+    },
+    "roic": {
+      "label": "Return on invested capital",
+      "short": "ROIC",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "operating income × (1 − tax rate) / (debt + equity − cash)"
+    },
+    "debt_to_equity": {
+      "label": "Debt / equity",
+      "short": "D/E",
+      "format": "ratio",
+      "source": "metrics",
+      "formula": "total debt / shareholders' equity",
+      "terms": [
+        "total_debt",
+        "total_equity"
+      ]
+    },
+    "current_ratio": {
+      "label": "Current ratio",
+      "short": "Current",
+      "format": "ratio",
+      "source": "metrics",
+      "formula": "current assets / current liabilities",
+      "terms": [
+        "current_assets",
+        "current_liabilities"
+      ]
+    },
+    "net_cash": {
+      "label": "Net cash",
+      "short": "Net cash",
+      "format": "usd",
+      "source": "metrics",
+      "formula": "cash − total debt",
+      "terms": [
+        "cash",
+        "total_debt"
+      ],
+      "op": "−"
+    },
+    "revenue_growth_yoy": {
+      "label": "Revenue growth (1y)",
+      "short": "Rev growth",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "revenue this year / last year − 1"
+    },
+    "eps_growth_yoy": {
+      "label": "EPS growth (1y)",
+      "short": "EPS growth",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "EPS this year / last year − 1"
+    },
+    "revenue_cagr_3y": {
+      "label": "Revenue CAGR (3y)",
+      "short": "3y CAGR",
+      "format": "percent",
+      "source": "metrics",
+      "formula": "(revenue / revenue 3y ago)^(1/3) − 1"
+    },
+    "revenue": {
+      "label": "Revenue",
+      "short": "Revenue",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "total sales for the fiscal year"
+    },
+    "cost_of_revenue": {
+      "label": "Cost of revenue",
+      "short": "COGS",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "direct cost of the goods and services sold"
+    },
+    "gross_profit": {
+      "label": "Gross profit",
+      "short": "Gross profit",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "revenue − cost of revenue",
+      "terms": [
+        "revenue",
+        "cost_of_revenue"
+      ],
+      "op": "−"
+    },
+    "operating_income": {
+      "label": "Operating income",
+      "short": "Op income",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "gross profit − operating expenses"
+    },
+    "net_income": {
+      "label": "Net income",
+      "short": "Net income",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "profit after every expense, interest and tax"
+    },
+    "eps_diluted": {
+      "label": "EPS (diluted)",
+      "short": "EPS",
+      "format": "per_share",
+      "source": "fundamentals",
+      "formula": "net income / diluted shares",
+      "terms": [
+        "net_income",
+        "shares_diluted"
+      ]
+    },
+    "shares_diluted": {
+      "label": "Diluted shares",
+      "short": "Shares",
+      "format": "count",
+      "source": "fundamentals",
+      "formula": "average diluted share count"
+    },
+    "operating_cash_flow": {
+      "label": "Cash from operations",
+      "short": "CFO",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "cash the business brought in from running itself"
+    },
+    "capex": {
+      "label": "Capital expenditures",
+      "short": "Capex",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "cash spent on property, plant and equipment"
+    },
+    "free_cash_flow": {
+      "label": "Free cash flow",
+      "short": "FCF",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "operating cash flow − capex",
+      "terms": [
+        "operating_cash_flow",
+        "capex"
+      ],
+      "op": "−"
+    },
+    "dividends_paid": {
+      "label": "Dividends paid",
+      "short": "Dividends",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "cash paid to shareholders as dividends"
+    },
+    "cash": {
+      "label": "Cash",
+      "short": "Cash",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "cash and short-term investments"
+    },
+    "total_assets": {
+      "label": "Total assets",
+      "short": "Assets",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "everything the company owns"
+    },
+    "total_liabilities": {
+      "label": "Total liabilities",
+      "short": "Liabilities",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "everything the company owes"
+    },
+    "total_equity": {
+      "label": "Shareholders' equity",
+      "short": "Equity",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "total assets − total liabilities",
+      "terms": [
+        "total_assets",
+        "total_liabilities"
+      ],
+      "op": "−"
+    },
+    "total_debt": {
+      "label": "Total debt",
+      "short": "Debt",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "short-term + long-term borrowings"
+    },
+    "current_assets": {
+      "label": "Current assets",
+      "short": "Cur. assets",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "assets expected to turn into cash within a year"
+    },
+    "current_liabilities": {
+      "label": "Current liabilities",
+      "short": "Cur. liab.",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "bills due within a year"
+    },
+    "inventory": {
+      "label": "Inventory",
+      "short": "Inventory",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "goods made or bought but not yet sold"
+    },
+    "d_and_a": {
+      "label": "Depreciation & amortization",
+      "short": "D&A",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "the yearly accounting charge for wearing out assets"
+    },
+    "income_tax": {
+      "label": "Income tax",
+      "short": "Tax",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "income tax expense for the year"
+    },
+    "pretax_income": {
+      "label": "Pre-tax income",
+      "short": "Pre-tax",
+      "format": "usd",
+      "source": "fundamentals",
+      "formula": "profit before income tax"
+    }
+  },
+  "articles": [
+    {
+      "slug": "revenue-top-line",
+      "title": "Revenue is the top line — and why it's not profit",
+      "summary": "What revenue measures, why it sits at the top of the income statement, and the three questions to ask before being impressed by a big number.",
+      "minutes": 5,
+      "level": "beginner",
+      "unit": "u1-revenue",
+      "relatedLessons": [
+        "u1-l1",
+        "u1-l2",
+        "u1-l3"
+      ],
+      "metrics": [
+        "revenue",
+        "revenue_growth_yoy",
+        "revenue_cagr_3y"
+      ],
+      "tags": [
+        "income-statement",
+        "basics",
+        "growth"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 4,
+      "sampleTickers": [
+        "AAPL",
+        "COST",
+        "MSFT"
+      ],
+      "wordCount": 789,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "Every annual report opens its income statement with the same line: revenue. It is the total amount customers paid the company during the fiscal year for whatever it makes or does. Analysts call it the **top line** for a boring reason: it is literally the first line. Everything below it is something being subtracted.\n\nThat position is the whole lesson. Revenue is where the money *starts*, not where it ends up.\n\n## What revenue actually counts\n\nRevenue counts sales that were *earned* in the period. A memory-chip maker books revenue when chips ship to a customer. A warehouse club books it when members check out, plus a membership fee spread over the year. A software company that bills a three-year contract up front books only one year's share as revenue each year; the rest waits on the balance sheet.\n\nHere is Micron's top line for its most recent fiscal year, straight from its reported numbers:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "revenue"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "That is a big number. It tells you Micron is a large business. It tells you nothing yet about whether Micron kept any of it.\n\n## Why revenue is not profit\n\nImagine a lemonade stand that takes in $100 on a hot Saturday. That $100 is revenue. Now subtract the lemons, sugar and cups ($40), the rented table ($10), and the helper's wages ($30). What's left, $20, is closer to profit. Same stand, same $100 of revenue, but a very different story depending on the costs.\n\nReal companies work the same way, just with more lines:\n\n1. **Revenue** — what customers paid.\n2. minus **cost of revenue** — the direct cost of making the product.\n3. = **gross profit**.\n4. minus operating costs (salaries, research, marketing, rent).\n5. = **operating income**.\n6. minus interest and taxes.\n7. = **net income**, the bottom line.\n\nTwo companies with identical revenue can end up with wildly different bottom lines. A grocer and a software firm might each bring in $50 billion a year; one keeps a few cents per dollar, the other keeps a third. Revenue alone cannot tell them apart.\n\n## Size is not the same as quality\n\nBecause revenue is the biggest, easiest number to find, it gets quoted constantly. Here is how a few well-known companies compare on the top line:"
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "MSFT",
+              "AAPL"
+            ],
+            "metric": "revenue",
+            "caption": "COST, MSFT and AAPL are sample data; MU is Micron's reported figure."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Notice what this chart can and cannot say. It shows scale: how much business flows through each company. It does not show which one is more profitable, which one uses less capital, or which one is growing faster. Those need other numbers, and the rest of this library walks through them one at a time.\n\n## Revenue over time tells a better story\n\nA single year of revenue is a snapshot. A decade is a film. Micron's history is a good example of why the film matters:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "revenue",
+            "average": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Look at the shape. Revenue more than doubled between fiscal 2016 and 2018, fell for two years, climbed again, then roughly halved in fiscal 2023 before rebounding to a record. Memory chips are a *cyclical* business: when supply is tight, prices jump and revenue soars; when factories catch up, prices fall and revenue drops, even though the company is selling similar products to similar customers.\n\nThat is why you'll see two growth measures in Tenbagger:\n\n- **Revenue growth (1 year)** = this year's revenue ÷ last year's − 1. Fast, but noisy. One great or terrible year distorts it.\n- **3-year CAGR** (compound annual growth rate) = (revenue now ÷ revenue three years ago)^(1/3) − 1. It smooths the bumps into one steady yearly rate.\n\nFor Micron, the one-year number and the three-year number tell very different stories, and neither is \"the\" answer. The one-year figure reflects a sharp recovery from a bad year; the three-year figure compares against a year near the previous peak. When you see a dramatic growth number, always ask *compared to when?*\n\n## Three questions before being impressed by revenue\n\n1. **Is it growing, and from what base?** Growth from a trough looks spectacular; growth from a peak looks sluggish. Check a few years, not one.\n2. **How much of it does the company keep?** That is the margin question, and it's the next article.\n3. **Is it repeatable?** Subscription and membership revenue tends to recur. One-off contracts and commodity-like products swing with the cycle.\n\n## The takeaway\n\nRevenue measures how much customers were willing to pay. It is the raw material for every other number on the income statement, and it's the one line that's hardest to fake over long periods, because someone actually handed over money. But it is only the beginning. A company can grow revenue for years and still never make money, if the cost of each sale is higher than the price.\n\nTry the lesson to practice reading revenue and computing growth from real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u1-l1"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "gross-margin",
+      "title": "Gross margin: what a company keeps",
+      "summary": "The first cut of profit — what's left of each sales dollar after paying for the product itself — and why it says so much about a business model.",
+      "minutes": 5,
+      "level": "beginner",
+      "unit": "u2-margins",
+      "relatedLessons": [
+        "u2-l1"
+      ],
+      "metrics": [
+        "gross_margin",
+        "gross_profit",
+        "cost_of_revenue"
+      ],
+      "tags": [
+        "margins",
+        "income-statement",
+        "basics"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 4,
+      "sampleTickers": [
+        "AAPL",
+        "COST",
+        "MSFT",
+        "NVDA"
+      ],
+      "wordCount": 767,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "Revenue tells you how much customers paid. **Gross margin** tells you how much of each of those dollars was left after paying for the thing that was sold. It is the first and, in many ways, the most revealing cut of profit.\n\n## The formula\n\nStart with two numbers from the income statement:\n\n- **Revenue** — what customers paid.\n- **Cost of revenue** (also called cost of goods sold, or COGS) — the direct cost of producing what was sold: raw materials, factory labor, the electricity running the machines, shipping the product in.\n\nSubtract one from the other and you get **gross profit**. Divide gross profit by revenue and you get gross margin:\n\n> gross margin = gross profit ÷ revenue = (revenue − cost of revenue) ÷ revenue\n\nA bakery that sells $100 of bread and spent $35 on flour, butter, ovens' power and bakers' time has $65 of gross profit, a 65% gross margin. Sixty-five cents of each sales dollar are left to pay for everything else: rent, marketing, the accountant, interest, taxes, and, if anything remains, profit for the owners.\n\nHere is the same calculation on Micron's reported numbers, with the inputs filled in:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "gross_margin"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## What gross margin reveals\n\nGross margin is a fingerprint of the business model. Very different companies land in very different ranges, and the range tells you how they make money."
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "COST",
+              "MU",
+              "AAPL",
+              "MSFT",
+              "NVDA"
+            ],
+            "metric": "gross_margin",
+            "caption": "Only MU is reported data; the others are sample figures for illustration."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Look at the spread:\n\n- **A warehouse retailer** runs on a thin gross margin on purpose. It resells other companies' products at close to cost and makes its money on volume and membership fees. A low gross margin here is the *strategy*, not a warning sign.\n- **A hardware maker** sits in the middle. It pays for chips, screens and assembly, but a strong brand lets it charge well above those costs.\n- **A software company** has high gross margins because copying software costs almost nothing. Once the product exists, each extra sale is nearly all gross profit.\n- **A chip designer with a hot product** can post software-like gross margins while demand exceeds supply.\n- **A memory-chip maker** like Micron sits wherever the cycle puts it. Its costs are mostly fixed factories, so when memory prices rise, nearly all of the increase drops to gross profit, and when prices fall, gross margin collapses.\n\nThe lesson: compare gross margins *within* an industry, not across them. A grocer at 13% and a software firm at 70% could both be excellent businesses.\n\n## Why a change in gross margin matters more than the level\n\nWithin one company, the *direction* of gross margin over time is where the insight lives.\n\nA rising gross margin usually means one of three things: the company raised prices without losing customers (pricing power), its costs fell (scale, better manufacturing), or its mix shifted toward higher-margin products. A falling gross margin can mean competition forced prices down, input costs rose faster than prices, or the product mix shifted the other way.\n\nMicron's history shows how dramatic this can be in a cyclical industry:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "gross_margin",
+            "average": true
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "In the boom year of fiscal 2018, Micron kept well over half of each sales dollar as gross profit. In fiscal 2023, its gross margin actually went *negative*: it cost more to make the chips it sold than customers paid for them, partly because the company wrote down the value of inventory it was holding at prices the market no longer supported. Same company, same factories, same kind of product. The dashed line shows the average across the whole period, which is a far better guide to \"normal\" than any single year.\n\n## What gross margin leaves out\n\nGross margin stops at the factory door. It ignores:\n\n- **Operating costs** like research, sales teams and headquarters. A drug maker can have a sky-high gross margin and still lose money after funding years of research.\n- **Interest and taxes.**\n- **Capital spending.** A company can report a healthy gross margin while pouring cash into new factories. (Depreciation of those factories does show up in cost of revenue, but only gradually.)\n- **Accounting choices.** Companies draw the line between \"cost of revenue\" and \"operating expenses\" slightly differently, so small differences between competitors may be definitional.\n\nThat's why gross margin is the *first* margin, not the only one. The next article walks down the rest of the income statement.\n\n## The takeaway\n\nGross margin answers a simple, powerful question: for every dollar a customer pays, how much is left after making the product? High and stable suggests pricing power or a product that costs almost nothing to copy; low but steady can be a deliberate volume strategy; wild swings point to a cyclical industry where any single year can mislead.\n\nPractice computing it on real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u2-l1"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "margin-stack",
+      "title": "The margin stack",
+      "summary": "Gross, operating and net margin read together, top to bottom, show exactly where each sales dollar goes — and where a business is different from its peers.",
+      "minutes": 6,
+      "level": "beginner",
+      "unit": "u2-margins",
+      "relatedLessons": [
+        "u2-l2",
+        "u2-l3",
+        "u2-l4"
+      ],
+      "metrics": [
+        "gross_margin",
+        "operating_margin",
+        "net_margin"
+      ],
+      "tags": [
+        "margins",
+        "income-statement"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 6,
+      "sampleTickers": [
+        "AAPL",
+        "COST",
+        "KO",
+        "MSFT"
+      ],
+      "wordCount": 787,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "One margin is a data point. Three margins, read in order, are a map. The **margin stack** is simply gross margin, operating margin and net margin lined up top to bottom. Each step down shows one more category of cost being paid, and the gaps between the steps tell you where the money goes.\n\n## The three layers\n\nPicture one dollar of sales flowing down the income statement:\n\n1. **Gross margin** = gross profit ÷ revenue. What's left after the direct cost of the product.\n2. **Operating margin** = operating income ÷ revenue. What's left after *also* paying for running the business: research and development, sales and marketing, general and administrative costs.\n3. **Net margin** = net income ÷ revenue. What's left after *also* paying interest on debt and income taxes (and adding any interest earned or one-off gains).\n\nEach layer can only be lower than the one above it in a normal year, because each one subtracts more costs. (Net margin can occasionally sit *above* operating margin when a company earns a lot of interest on its cash or books a one-time gain; that itself is worth noticing.)\n\n## Micron's stack\n\nHere are Micron's three margins for its latest fiscal year, from reported figures:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "gross_margin"
+          }
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "operating_margin"
+          }
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "net_margin"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Read it as a story. Of every dollar customers paid, about forty cents survived the factory. Roughly thirteen or fourteen more cents went to research, selling and overhead: for a chip maker, research is the big item, because staying competitive in memory means designing a new generation of chips every couple of years. Then interest and taxes took a few more cents, leaving a bit under a quarter of each sales dollar as profit.\n\n## Reading the gaps\n\nThe *gaps* between layers are often more revealing than the layers themselves.\n\n- **A big gap between gross and operating margin** means heavy spending on people and ideas: research, sales forces, marketing. That's typical of software, pharmaceuticals and chips. The question is whether that spending builds something lasting (new products, a sales network) or just keeps the lights on.\n- **A small gap** means lean overhead. A warehouse retailer has a thin gross margin but also spends very little running the stores relative to sales, which is how it survives on a few cents per dollar.\n- **A big gap between operating and net margin** usually points to heavy interest payments (lots of debt) or a high tax rate. It can also be one-time items; always check.\n- **Net margin above operating margin** means something outside the core business added profit. Interest income, investment gains, or a tax benefit. Pleasant, but usually not repeatable.\n\n## Comparing stacks across companies\n\nOperating margin is often the most useful single layer for comparing businesses, because it captures the whole cost of running the company but ignores how it's financed and taxed."
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "AAPL",
+              "MSFT",
+              "KO"
+            ],
+            "metric": "operating_margin",
+            "caption": "MU is reported data; COST, AAPL, MSFT and KO are sample figures."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Two companies can reach similar operating margins by completely different routes. One might have a very high gross margin and spend heavily on marketing (a beverage brand); another might have a modest gross margin and tiny overhead. The stack shows you *which route* each one took, which matters when you ask what could go wrong. A brand that depends on marketing is exposed if that marketing stops working; a lean operator is exposed if its small edge on price disappears.\n\n## The stack moves with the cycle\n\nMargins also change over time, and in a cyclical business the whole stack moves together, with the lower layers moving *more* than the top one. That's **operating leverage**: research and overhead costs are fairly fixed, so when revenue falls, they eat a bigger share of each dollar."
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "operating_margin",
+            "average": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "When Micron's revenue roughly halved in fiscal 2023, its operating margin didn't just shrink; it went deeply negative, because the company kept paying for research and staff while memory prices collapsed. In the recovery, the same fixed costs were spread over far more revenue, and the operating margin snapped back. A small change in sales can cause a large change in operating profit, in both directions.\n\n## Three habits for reading any margin stack\n\n1. **Read top to bottom, then look at the gaps.** Where does most of the dollar disappear?\n2. **Compare with close peers, not with everyone.** Different industries have naturally different stacks.\n3. **Look at several years.** A single year's stack in a cyclical company can describe the peak or the trough, not the business.\n\n## The takeaway\n\nThe margin stack turns an income statement into three percentages you can keep in your head. It tells you how much a company keeps, where the rest goes, and how sensitive profit is to a change in sales. Once you can read a stack, every other profitability metric (return on capital, cash conversion, valuation multiples) makes more sense.\n\nPut it into practice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u2-l4"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "eps-share-count",
+      "title": "EPS and share count tricks",
+      "summary": "Earnings per share turns profit into a per-slice number — which means it moves when the number of slices changes, even if the profit doesn't.",
+      "minutes": 6,
+      "level": "intermediate",
+      "unit": "u3-profit",
+      "relatedLessons": [
+        "u3-l2",
+        "u3-l3"
+      ],
+      "metrics": [
+        "eps_diluted",
+        "shares_diluted",
+        "net_income",
+        "eps_growth_yoy"
+      ],
+      "tags": [
+        "eps",
+        "buybacks",
+        "dilution",
+        "income-statement"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 5,
+      "sampleTickers": [],
+      "wordCount": 830,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "Net income tells you how much the whole company earned. But a shareholder doesn't own the whole company; they own a slice. **Earnings per share (EPS)** answers the question every owner actually cares about: how much profit belongs to *one* share?\n\n> EPS = net income ÷ number of shares\n\nSimple enough. But because EPS is a fraction, it can change for two reasons: the top (profit) or the bottom (shares). Most headlines talk only about the top. This article is about the bottom.\n\n## Basic vs. diluted\n\nCompanies report two versions:\n\n- **Basic EPS** divides by the shares that exist today, on average across the year.\n- **Diluted EPS** divides by the shares that *would* exist if every stock option, restricted stock unit and convertible bond turned into shares.\n\nDiluted is the more conservative and the more honest number, because those extra shares are real claims on future profit. Tenbagger uses diluted EPS everywhere. Here is Micron's, with the division shown:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "eps_diluted"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "(Our figure divides annual net income by average diluted shares, so it can differ from the number printed in the 10-K by a cent.)\n\n## Trick one: buybacks lift EPS without lifting profit\n\nImagine a company earning $100 million with 50 million shares. EPS is $2.00. Now it spends cash to repurchase 5 million of its own shares and retire them. Profit is unchanged at $100 million, but it's now divided among 45 million shares: EPS rises to about $2.22, an 11% \"increase\" with no change in the business.\n\nThat isn't necessarily bad. If the company had spare cash and nothing better to do with it, reducing the share count genuinely increases each remaining owner's slice. But it means **EPS growth and profit growth are different things**, and it pays to know which one you're looking at. A company can report steady EPS growth for years while its actual net income is flat, purely by shrinking the share count.\n\nTry it with the calculator. Start with an illustrative $40 share price and $2.00 of EPS, then slide EPS up to $2.22 to mimic the buyback. At the same price, the P/E falls and the earnings yield rises, though nothing about the underlying business changed:"
+        },
+        {
+          "type": "widget",
+          "kind": "calculator",
+          "params": {
+            "kind": "pe",
+            "price": 40,
+            "eps": 2,
+            "caption": "Illustrative numbers, not a real company.",
+            "required_return": 0.09
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Two questions keep buybacks honest:\n\n1. **What did the shares cost?** Repurchasing shares at a very high price per dollar of earnings adds little per-share value; the same cash might have done more elsewhere.\n2. **Did the share count actually fall?** Many companies repurchase shares mainly to offset new shares issued to employees. The headline \"billions in buybacks\" can coexist with a flat share count.\n\n## Trick two: dilution quietly shrinks your slice\n\nThe opposite happens when the share count grows. Companies issue new shares to raise money, to pay for acquisitions, or to pay employees through stock-based compensation. Each new share is a new claim on the same profit.\n\nStock-based compensation is the subtle one. It's a real cost: employees are being paid with a slice of the company instead of cash. Some companies emphasize \"adjusted\" earnings that add this cost back, which flatters the result. Diluted EPS from the official income statement doesn't do that, which is another reason to prefer it.\n\nA useful habit: look at the diluted share count over several years. Falling means owners' slices are growing; rising means they're being diluted; flat means buybacks and issuance roughly cancel out."
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "shares_diluted"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## Trick three: EPS growth from a tiny base\n\nEPS growth percentages can be wildly misleading when the starting point is near zero. Look at Micron's history:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "eps_diluted",
+            "average": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Micron earned $0.70 per share in fiscal 2024 and $7.59 in fiscal 2025. That's more than ten times as much, or almost 1,000% \"growth.\" True, and nearly meaningless as a forecast: fiscal 2024 was a recovery year following a loss. And when the prior year is *negative*, as fiscal 2023 was, a growth rate can't be calculated at all; our data leaves it blank rather than invent one.\n\nWhen you see a huge EPS growth number, check the starting point. Then check a longer window: average EPS across a full cycle is a much steadier anchor than any single year's change.\n\n## What EPS still tells you\n\nWith those caveats, EPS is genuinely useful. It's the \"E\" in the P/E ratio, it puts companies of different sizes on a per-share basis, and over long periods, growth in EPS is one of the main engines of a share's value. The trick is to read it together with:\n\n- **Net income**, to separate business growth from share-count effects.\n- **Share count history**, to spot buybacks or dilution.\n- **Free cash flow per share**, to check the profit is turning into cash.\n\n## The takeaway\n\nEPS is profit divided by shares, and both halves of that fraction move. Buybacks can lift EPS without growing the business; dilution can shrink it while the business grows; and growth rates off a near-zero base can look spectacular. Use diluted EPS, watch the share count, and always ask what's driving the change.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u3-l2"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "free-cash-flow",
+      "title": "Free cash flow: the number that pays the bills",
+      "summary": "Profit is an accounting opinion; cash is a fact. Free cash flow is the cash a business produces after paying to keep itself running and growing.",
+      "minutes": 6,
+      "level": "beginner",
+      "unit": "u4-cashflow",
+      "relatedLessons": [
+        "u4-l1",
+        "u4-l2",
+        "u4-l3"
+      ],
+      "metrics": [
+        "free_cash_flow",
+        "operating_cash_flow",
+        "capex",
+        "fcf_margin"
+      ],
+      "tags": [
+        "cash-flow",
+        "fcf",
+        "basics"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 4,
+      "sampleTickers": [
+        "AAPL",
+        "COST",
+        "KO",
+        "MSFT"
+      ],
+      "wordCount": 814,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "There's an old saying in finance: *profit is an opinion, cash is a fact.* Net income depends on dozens of accounting judgments: when to recognize a sale, how fast a machine wears out, what inventory is worth. Cash is simpler. Either it came into the bank account or it didn't.\n\n**Free cash flow (FCF)** is the cash a business generated in a year after paying for everything it needed to keep operating and investing. It's the money that can actually be used: to pay dividends, repurchase shares, pay down debt, make acquisitions, or simply pile up for a rainy day.\n\n## The formula\n\nFree cash flow comes from the **cash flow statement**, the third of the big financial statements and the one beginners most often skip.\n\n> free cash flow = cash from operations − capital expenditures\n\n- **Cash from operations** starts with net income and adjusts it back toward actual cash. It adds back non-cash charges like depreciation, and accounts for money tied up in (or released from) inventory, customer bills and supplier bills.\n- **Capital expenditures (capex)** is cash spent on long-lived assets: factories, equipment, data centers, stores.\n\nHere's Micron's, from its reported figures:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "free_cash_flow"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "That result deserves a second look. Micron's operating cash flow was large (larger, in fact, than its net income), but it spent almost all of it on new factories and equipment. What was left over, the free part, was a small fraction of reported profit.\n\n## Why FCF and profit diverge\n\nThree things commonly push free cash flow away from net income:\n\n1. **Depreciation vs. capex.** When a company pays for a machine, the cash leaves immediately, but the income statement spreads the cost over the machine's useful life as depreciation. A company investing heavily *now* shows lower FCF than profit. A company that stopped investing shows the opposite, at least until its equipment wears out.\n2. **Working capital.** Selling on credit creates profit before cash arrives. Building up inventory uses cash before any sale happens. A fast-growing company often has profit running ahead of cash.\n3. **Non-cash items.** Stock-based compensation, write-downs and other charges reduce profit without using cash (or vice versa).\n\nNone of these is automatically good or bad. Heavy capex can be the price of future growth. But over many years, a business whose profit *never* turns into free cash is a business worth questioning.\n\n## FCF margin: comparing companies fairly\n\nLike profit, free cash flow is easier to compare as a share of revenue. **FCF margin** = free cash flow ÷ revenue: cents of free cash per sales dollar."
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "MSFT",
+              "AAPL",
+              "KO"
+            ],
+            "metric": "fcf_margin",
+            "caption": "MU is reported data; COST, MSFT, AAPL and KO are sample figures."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Asset-light businesses (software, brands that outsource manufacturing) tend to convert a large share of revenue into free cash. Asset-heavy businesses (chip fabs, oil, utilities, retailers building stores) convert less, because they must keep reinvesting. A retailer's FCF margin may look small, but on enormous revenue it can still be a lot of cash; a chip maker's can swing from strongly positive to negative within two years.\n\n## Free cash flow over time\n\nA single year of FCF is especially noisy, because capex comes in waves. A company might spend heavily for two years building a factory, then much less once it's running. So look at the history:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "free_cash_flow",
+            "average": true
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Micron's free cash flow swings more than its profit. In the best year shown, it produced billions of free cash; in fiscal 2023, when memory prices collapsed and it kept investing, free cash flow was deeply negative. The dashed average across the whole decade is a far more honest picture of what the business produces in a \"typical\" year, and it's the figure to reach for when valuing a cyclical company (more on that in the DCF articles).\n\n## What free cash flow is used for\n\nOnce a company has free cash, it has five basic choices, and how it chooses tells you a lot about management:\n\n- **Reinvest** in more growth (beyond the capex already counted).\n- **Acquire** other businesses.\n- **Pay down debt.**\n- **Pay dividends.**\n- **Repurchase shares.**\n\nA company that consistently pays out more in dividends and buybacks than it generates in free cash is funding the gap with debt or savings, which can't last forever.\n\n## Common pitfalls\n\n- **\"Adjusted\" FCF.** Some companies define free cash flow their own way, for example excluding certain capex as \"growth\" spending. Stick to the plain formula: cash from operations minus all capex.\n- **One-off working capital swings.** A single big customer payment arriving early can inflate one year's cash flow.\n- **Leases.** Some businesses lease assets instead of purchasing them; the payments may not appear in capex at all. Compare within an industry.\n\n## The takeaway\n\nFree cash flow is the cash left after a business pays to keep itself running and growing. It's harder to dress up than earnings, and it's what ultimately funds every dividend and buyback. When profit and free cash tell different stories, the gap is where the interesting questions are.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u4-l2"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "capex-micron-cash",
+      "title": "Capex, and why Micron's cash swings",
+      "summary": "Capital expenditure is the cost of staying in the game. In chip-making it is enormous, lumpy and badly timed — which is why Micron's free cash flow swings so much harder than its sales.",
+      "minutes": 6,
+      "level": "intermediate",
+      "unit": "u4-cashflow",
+      "relatedLessons": [
+        "u4-l4",
+        "u4-l2",
+        "u4-l1"
+      ],
+      "metrics": [
+        "capex",
+        "operating_cash_flow",
+        "free_cash_flow",
+        "d_and_a"
+      ],
+      "tags": [
+        "cash-flow",
+        "capex",
+        "cycles",
+        "micron"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 5,
+      "sampleTickers": [],
+      "wordCount": 839,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "**Capital expenditure**, or *capex*, is the cash a company spends on long-lived physical assets: factories, machines, buildings, servers. It shows up on the cash flow statement under investing activities, and it's the piece subtracted from operating cash flow to get free cash flow.\n\nFor many businesses, capex is a modest, steady bill. For a memory-chip maker, it's the defining feature of the business. This article uses Micron's real numbers to show why.\n\n## How big is the bill?\n\nHere's what Micron spent on capex in its latest fiscal year:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "capex"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "And here's the cash its operations brought in over the same year:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "operating_cash_flow"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Put those side by side and the story is stark: roughly nine out of every ten dollars of operating cash went straight back into plant and equipment. Measured against sales, capex was over 40 cents per revenue dollar. Compare that with a typical software company, where capex might be a few cents per dollar, or a retailer, where it's usually well under ten.\n\nThat ratio (capex ÷ revenue) is called **capex intensity**, and it's one of the most useful numbers for understanding how a business works.\n\n## Why chip-making eats so much capital\n\nMemory chips are made in fabrication plants (\"fabs\") that cost many billions of dollars each and are packed with some of the most expensive machinery on earth. Three features make the spending relentless:\n\n1. **Technology treadmill.** Every generation of memory packs more bits into the same space. A company that stops upgrading falls behind on cost per bit within a couple of years, and in a commodity-like product, cost is survival.\n2. **Scale.** A fab only makes sense running near full capacity; its costs are mostly fixed. So capacity comes in big, indivisible chunks.\n3. **Long lead times.** A new fab takes years to plan, build and ramp. Decisions made in a boom arrive as supply years later, often into a bust.\n\n## Depreciation vs. capex\n\nOn the income statement, those huge purchases don't appear all at once. They're spread over the equipment's useful life as **depreciation**. That creates a gap between profit and cash:\n\n- When capex is **above** depreciation, the company is expanding or upgrading faster than its assets wear out. Free cash flow will look weak relative to profit.\n- When capex is **below** depreciation, the company is harvesting: free cash flow looks strong relative to profit, but that can't last if the equipment isn't replaced.\n\nIn Micron's latest year, capex ran at nearly twice depreciation and amortization, a sign of heavy investment. That's why its net income was several times its free cash flow.\n\n## The cycle, in two charts\n\nRevenue in memory rises and falls with prices, which depend on the balance of supply and demand across the industry:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "revenue",
+            "average": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Now look at free cash flow over the same years:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "free_cash_flow",
+            "average": true
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "The free cash flow chart swings much harder than revenue, in both directions. Here's why. Capex can't be switched on and off as fast as prices move. Commitments for equipment are made quarters or years ahead, and cutting investment too deeply risks losing the technology race. So when prices fall:\n\n- Revenue drops sharply.\n- Operating cash flow drops even more, because costs are largely fixed.\n- Capex falls, but slowly and only partly.\n- **Free cash flow, the small difference between two big numbers, collapses**, sometimes below zero, as it did in fiscal 2023.\n\nIn a boom the reverse happens: prices jump, operating cash floods in, capex lags, and free cash flow spikes.\n\nThis is a general rule worth remembering: **when a small number is the difference between two big numbers, small changes in either one cause huge swings in the result.** That's true of free cash flow in capital-intensive businesses, and it's true of profit in any business with high fixed costs.\n\n## What this means when reading the numbers\n\n- **Don't judge a capital-intensive company by one year's FCF.** Micron's history shows years of strong free cash and years of heavy losses. The dashed average line is a fairer description of the business than any single bar.\n- **Watch capex relative to depreciation.** It tells you whether the company is in an investment phase or a harvesting phase.\n- **Ask where in the cycle the latest year sits.** High margins and high cash flow in a cyclical business often reflect tight supply that tends to attract new capacity, from the company itself and its competitors.\n- **Capex isn't waste.** In a technology race, the company that under-invests in a downturn may come out of it with a cost disadvantage. Heavy spending at the bottom can be a sign of strength, if the balance sheet can carry it.\n\n## The takeaway\n\nCapex is the price of staying competitive, and in memory chips it's a very large price paid in lumpy, hard-to-time installments. Because free cash flow is the thin slice left between large operating cash flow and large capex, it amplifies the industry cycle. Reading a chip maker's cash flow means reading across the whole cycle, not one year of it.\n\nPractice capex intensity on real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u4-l4"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "balance-sheet-5-minutes",
+      "title": "Reading a balance sheet in 5 minutes",
+      "summary": "One equation, four questions. How to scan any company's balance sheet for what it owns, what it owes, and whether it can pay its bills.",
+      "minutes": 5,
+      "level": "beginner",
+      "unit": "u5-balance",
+      "relatedLessons": [
+        "u5-l1",
+        "u5-l3",
+        "u5-l4"
+      ],
+      "metrics": [
+        "total_assets",
+        "total_liabilities",
+        "total_equity",
+        "current_ratio",
+        "debt_to_equity"
+      ],
+      "tags": [
+        "balance-sheet",
+        "basics",
+        "debt"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 5,
+      "sampleTickers": [
+        "AAPL",
+        "COST",
+        "MSFT",
+        "PG"
+      ],
+      "wordCount": 776,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "The income statement is a film: what happened over a year. The **balance sheet** is a photograph: what the company owns and owes on one specific day, the last day of its fiscal year. It looks intimidating, with dozens of lines, but you can get the essential picture in five minutes with one equation and four questions.\n\n## The one equation\n\nEvery balance sheet obeys the same identity:\n\n> assets = liabilities + shareholders' equity\n\n- **Assets** are everything the company owns or controls that has value: cash, customer bills not yet paid (receivables), inventory, factories and equipment, patents, and goodwill from past acquisitions.\n- **Liabilities** are everything it owes: bills to suppliers, wages due, taxes due, loans and bonds.\n- **Shareholders' equity** is what's left over, the owners' claim, sometimes called *book value*.\n\nEquity isn't a pile of money somewhere. It's simply the difference between what the company owns and what it owes. Think of a house worth $400,000 with a $300,000 mortgage: the owner's equity is $100,000.\n\nHere's Micron's, with the subtraction filled in:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "total_equity"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## Question 1: How big is it, and what is it made of?\n\nStart with total assets:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "total_assets"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Then glance at the biggest lines. For Micron, a large share of assets is **property, plant and equipment**: the fabs. For a bank, it would be loans. For a software company, it might be cash and goodwill. The *mix* tells you what kind of business this is and where its risks sit. Heavy physical assets need constant reinvestment; large goodwill means the company grew by acquisitions and paid more than the book value of what it acquired.\n\n## Question 2: Can it pay the bills due this year?\n\nAssets and liabilities are each split into **current** (expected to turn into cash, or come due, within a year) and **non-current** (longer than that). Comparing the two current buckets gives the **current ratio**:\n\n> current ratio = current assets ÷ current liabilities"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "current_ratio"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "A ratio above 1 means short-term assets cover short-term obligations. Micron's is comfortably above that. But context matters a lot:"
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "AAPL",
+              "MSFT",
+              "PG"
+            ],
+            "metric": "current_ratio",
+            "caption": "MU is reported data; the others are sample figures."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Some very strong businesses run a current ratio near or below 1 *on purpose*. A warehouse retailer, for example, often sells inventory to members before it has to pay suppliers for it; its suppliers are effectively financing the stores. A low current ratio is a reason to look closer, not a verdict.\n\n## Question 3: How much is borrowed?\n\nFind total debt (short-term borrowings plus long-term debt) and compare it with equity:\n\n> debt-to-equity = total debt ÷ shareholders' equity\n\nA debt-to-equity of 0.3 means the company has borrowed 30 cents for every dollar of owners' equity. Higher debt magnifies results in both directions: good years get better for shareholders, bad years get worse, and in a severe downturn, lenders get paid first. For a cyclical business like memory chips, the amount of debt going *into* a downturn matters a great deal. The next article, on net cash vs. net debt, goes deeper.\n\n## Question 4: Is equity growing?\n\nLook at shareholders' equity over several years. Equity grows when the company earns profits and keeps them (retained earnings), and shrinks when it loses money, pays out more than it earns, or repurchases a lot of stock.\n\nA caution: equity can be small, or even negative, at very profitable companies that have spent years returning cash through buybacks. That makes ratios based on equity (like return on equity or price-to-book) look extreme without anything being wrong. Always ask *why* equity is where it is.\n\n## Two traps to avoid\n\n- **Book value isn't market value.** A factory on the balance sheet is recorded at what it cost, minus depreciation, not what it could be sold for. Brands and know-how built in-house barely appear at all. That's why many great companies trade far above book value.\n- **It's one day.** Companies know which day the photo is taken. Cash can be unusually high, or debt unusually low, right at year-end. Comparing a few years smooths this out.\n\n## The five-minute checklist\n\n1. **Assets = liabilities + equity.** Find the three totals.\n2. **What are the biggest assets?** That tells you the business model.\n3. **Current ratio.** Can it cover the next year's bills?\n4. **Debt vs. equity (and vs. cash).** How much is borrowed?\n5. **Equity trend.** Growing, shrinking, or distorted by buybacks?\n\n## The takeaway\n\nThe balance sheet shows what a company has to work with and what claims sit ahead of the owners. You don't need to read every line: the equation, the current ratio and the debt load give you most of what matters, and they tell you how well the company could weather a bad year.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u5-l1"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "net-cash-vs-net-debt",
+      "title": "Net cash vs. net debt",
+      "summary": "One subtraction — cash minus debt — tells you whether a company could pay off every loan today, and how much room it has when a bad year arrives.",
+      "minutes": 5,
+      "level": "beginner",
+      "unit": "u5-balance",
+      "relatedLessons": [
+        "u5-l2",
+        "u5-l3"
+      ],
+      "metrics": [
+        "net_cash",
+        "cash",
+        "total_debt",
+        "debt_to_equity"
+      ],
+      "tags": [
+        "balance-sheet",
+        "debt",
+        "cash"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 5,
+      "sampleTickers": [
+        "AAPL",
+        "AMZN",
+        "COST",
+        "KO"
+      ],
+      "wordCount": 707,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "\"This company has $15 billion of debt\" sounds alarming. \"This company has $15 billion of debt and $20 billion of cash\" sounds very different. Debt on its own is half a sentence. The other half is the cash sitting next to it.\n\n## The formula\n\n> net cash = cash − total debt\n\n- If the result is **positive**, the company has **net cash**: it could repay every loan and bond from its bank account today and still have money left.\n- If it's **negative**, the company has **net debt**: even after using all its cash, some borrowing would remain.\n\n\"Cash\" here includes cash equivalents and short-term investments that can be turned into cash quickly. \"Total debt\" is short-term borrowings plus long-term debt: loans and bonds that charge interest. It doesn't include things like bills owed to suppliers.\n\nHere's Micron, from its reported balance sheet:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "net_cash"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Negative: Micron has net debt. That's a fact, not a judgment. Whether it's a comfortable amount depends on what comes next.\n\n## Why this one number matters\n\n**Resilience.** A company with net cash can ride out a terrible year, even several, without asking anyone for money. It can keep investing when competitors are cutting back. A company with heavy net debt must keep paying interest and eventually repay or refinance, whatever the business is doing.\n\n**Valuation.** When you value a whole business, the owners get what's left after lenders are paid. That's why **enterprise value** adds debt and subtracts cash from market cap, and why a DCF estimate adds net cash (or subtracts net debt) at the end. Two companies producing the same cash flows are worth different amounts to shareholders if one has a war chest and the other a mortgage.\n\n**Flexibility.** Net cash is optionality: acquisitions, buybacks, dividends, or simply patience.\n\n## Comparing companies"
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "AAPL",
+              "AMZN",
+              "KO"
+            ],
+            "metric": "net_cash",
+            "caption": "MU is reported data; COST, AAPL, AMZN and KO are sample figures."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Bars to the right of zero are net cash; bars to the left are net debt. Notice that net debt shows up at some of the most stable, profitable companies in the world. That's not a contradiction. A business with very predictable cash flows (a beverage brand, a consumer staples giant) can safely carry more debt than one whose profits swing, because lenders and managers can be confident the interest will be covered. Some companies borrow deliberately to fund buybacks and dividends.\n\nSo the right question isn't \"is there debt?\" but \"**is the debt sized for how volatile this business is?**\"\n\n## Net debt in a cyclical business\n\nFor a cyclical company the timing of debt matters as much as the amount. Watch how Micron's debt and cash moved over the past decade:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "total_debt",
+            "average": false
+          }
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "cash",
+            "average": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "At the top of the fiscal 2018 boom, Micron's cash exceeded its debt: it had net cash. Debt then drifted up for several years, and jumped in fiscal 2023, the downturn year when free cash flow went deeply negative. That's the pattern to understand: cyclical companies tend to *borrow in the bust*, when cash flow disappears but investment can't stop, and pay down in the boom. Net debt at the peak of a cycle is a warning worth taking seriously; net debt at the trough may be the natural result of the cycle doing what cycles do.\n\n## Pairing net cash with other measures\n\nNet cash is a snapshot. Two related measures add depth:\n\n- **Debt-to-equity** (total debt ÷ shareholders' equity) sizes debt against the owners' stake.\n- **Debt vs. earnings or cash flow**: how many years of operating profit or free cash flow it would take to repay the net debt. Two years is very different from ten. (Analysts often use net debt ÷ EBITDA; the EV/EBITDA article explains EBITDA.)\n\nAnd one caution: some obligations behave like debt without being labeled as such, for example long-term leases or pension shortfalls. For a first look, cash minus debt is enough; for a deeper look, check the notes.\n\n## The takeaway\n\nNet cash is one subtraction that tells you how much financial cushion a company has. Positive means it could clear all its borrowing today; negative means lenders have a claim ahead of shareholders. Neither is good or bad on its own. What matters is how the debt compares with the stability of the cash flows that must service it, and where in its cycle the company is borrowing.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u5-l2"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "your-money-like-a-10k",
+      "title": "Your money, like a 10-K",
+      "summary": "Liquidity, free cash flow and debt for your own life: the same three questions analysts ask of a company, applied to a household.",
+      "minutes": 6,
+      "level": "beginner",
+      "unit": "u5-balance",
+      "relatedLessons": [
+        "u5-l4",
+        "u5-l2",
+        "u4-l2"
+      ],
+      "metrics": [
+        "current_ratio",
+        "net_cash",
+        "free_cash_flow"
+      ],
+      "tags": [
+        "personal-finance",
+        "liquidity",
+        "money-hub"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 4,
+      "sampleTickers": [],
+      "wordCount": 905,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "Every public company files a 10-K, an annual report with a balance sheet, an income statement and a cash flow statement. Analysts read it with a handful of questions: can it pay its bills? Does it produce spare cash? How much does it owe?\n\nThose questions aren't just for corporations. A household has the same three statements hiding in its bank and card accounts. Reading your own finances the way you'd read a 10-K is one of the most practical things this library can teach, and it's the idea behind the Money hub in the app.\n\n## Statement one: the balance sheet (what you own and owe)\n\nA company's balance sheet lists assets and liabilities. Yours does too:\n\n- **Assets:** checking and savings, retirement and brokerage accounts, the value of a car or home.\n- **Liabilities:** credit card balances, student loans, car loans, a mortgage.\n- **Equity**, or **net worth**: assets minus liabilities.\n\nLike a company, the *mix* matters as much as the total. Net worth tied up in a house or a retirement account is real, but you can't pay this month's electric bill with it. That's why analysts separate current from long-term, and why the most useful personal ratio is about the short term.\n\n## The liquidity ratio: your personal current ratio\n\nFor a company, the **current ratio** compares assets that turn into cash within a year with bills due within a year:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "current_ratio"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Micron's short-term assets cover its short-term obligations about two and a half times. The household version is simpler and stricter:\n\n> liquidity ratio = cash (checking + savings) ÷ short-term debt (credit card balances and loan payments due now)\n\nA ratio of 2 means you have twice as much cash as the card balance you owe. Below 1 means that if every card balance came due today, cash alone couldn't cover it. Try it with your own numbers or with the example amounts below:"
+        },
+        {
+          "type": "widget",
+          "kind": "calculator",
+          "params": {
+            "kind": "liquidity",
+            "cash": 3000,
+            "card": 1500,
+            "caption": "Grades use the same bands as the Money hub. Nothing you enter here leaves your device."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "The grade bands are a rough guide, not a verdict: a ratio of 2 or more (or no card balance at all) is an A, 1.5 to 2 a B, 1 to 1.5 a C, and below that the cushion gets thin. Try one experiment: move $500 from cash to the card (lower both sliders by $500). When cash already exceeds the balance, the ratio rises. When it doesn't, the same payment makes the ratio *fall*, even though the debt shrank. A ratio is a lens, so read it alongside the balance itself.\n\n## Statement two: free cash flow (what's left each month)\n\nA company's free cash flow is cash from operations minus capital spending. The personal version:\n\n> personal free cash flow = take-home pay − regular spending − big one-off purchases\n\nHere's why the company version is instructive. Micron's operations brought in a lot of cash last year, but it spent most of it on new factories:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "free_cash_flow"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Households have their own \"capex\": a car, a new laptop, a roof repair, a move. These arrive in lumps, like a chip maker's fab upgrades. Two lessons carry over directly:\n\n1. **Look at the average, not one month.** A month with a car repair isn't a disaster, and a month with a bonus isn't a raise. Averaging across a year gives a truer picture, exactly as normalizing does for a cyclical company.\n2. **Positive free cash flow is what funds everything else.** For a company it funds dividends, buybacks and debt paydown. For a household it funds savings, extra debt payments and investing. If free cash flow is negative on average, the gap is being filled by savings or borrowing.\n\n## Statement three: debt (who has a claim ahead of you)\n\nFor a company, **net cash** is cash minus debt. For a household, the same subtraction is revealing: cash in the bank minus balances on cards and short-term loans. Positive means you could clear that debt today.\n\nAnalysts also care about the *type* and *cost* of debt, and so does a household:\n\n- **High-interest revolving debt** (credit cards) behaves like a company's expensive short-term borrowing. It compounds quickly and can squeeze free cash flow.\n- **Long-term, lower-rate debt** (a fixed-rate mortgage) behaves more like a company's long-dated bonds: predictable payments tied to a long-lived asset.\n- **Debt relative to income** matters more than the raw number, just as a company's debt is judged against its earnings.\n\nAnd the cyclical lesson applies too. A company whose income swings needs more cushion than one with steady income. A household with irregular income (freelance, commission, seasonal work) benefits from a higher liquidity ratio for exactly the same reason.\n\n## Putting it together\n\nRead your own finances like a 10-K, once a month:\n\n1. **Liquidity ratio.** Can cash cover what's due now?\n2. **Free cash flow.** On average, is money left over after spending and lumpy purchases?\n3. **Net cash and debt mix.** What do you owe, at what cost, and is it shrinking?\n\nThis is a description, not a to-do list. Everyone's situation is different, and the numbers are just a clearer way to see it.\n\n## The takeaway\n\nThe tools analysts use on companies (current ratio, free cash flow, net cash) translate almost directly to a household. They answer the same questions: can the bills be paid, is there spare cash, and how much is owed? Reading your own numbers this way makes the company numbers more intuitive too, and the other way round.\n\nPractice the company version with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u5-l4"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "roic-quality-test",
+      "title": "ROIC: the quality test",
+      "summary": "Return on invested capital asks the question that separates great businesses from merely big ones — how much profit does each dollar put into the business produce?",
+      "minutes": 6,
+      "level": "intermediate",
+      "unit": "u6-returns",
+      "relatedLessons": [
+        "u6-l3",
+        "u6-l1",
+        "u6-l4"
+      ],
+      "metrics": [
+        "roic",
+        "roe",
+        "operating_income",
+        "total_equity",
+        "total_debt"
+      ],
+      "tags": [
+        "returns",
+        "quality",
+        "roic"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 4,
+      "sampleTickers": [
+        "AAPL",
+        "COST",
+        "KO",
+        "MSFT"
+      ],
+      "wordCount": 745,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "Imagine two coffee shops, each earning $50,000 a year. The first cost $100,000 to open; the second cost $1,000,000. Same profit, very different businesses. The first returns 50% a year on the money put into it; the second returns 5%, less than a savings account in some years. If each wanted to open a second location, the first would create far more value with every dollar.\n\nThat's the idea behind **return on invested capital (ROIC)**: profit measured against the money it took to produce it. It's one of the most widely used \"quality\" tests in investing, because it captures something revenue and margins can't: *how efficiently a business turns capital into profit.*\n\n## The formula\n\n> ROIC = operating income × (1 − tax rate) ÷ (total debt + shareholders' equity − cash)\n\nTwo parts:\n\n- **The top, NOPAT** (net operating profit after tax), is operating income with a normal tax bill taken out. It deliberately ignores interest, so the result doesn't depend on how the company is financed. Tenbagger uses the company's own effective tax rate, capped between 0% and 35%, or 21% if it can't be computed.\n- **The bottom, invested capital**, is all the money lenders and owners have put into the business (debt plus equity), minus cash that's sitting idle rather than working.\n\nHere is Micron's, from its reported numbers:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "roic"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## How to read it\n\nA useful benchmark is the company's **cost of capital**, roughly the return that lenders and owners together expect for the risk they're taking. For large companies that's often somewhere around 8% to 10%.\n\n- **ROIC well above the cost of capital**: each dollar reinvested creates more than a dollar of value. Growth is valuable.\n- **ROIC near the cost of capital**: growth adds size but not much value.\n- **ROIC below the cost of capital**: growth can actually *destroy* value, because each new dollar invested earns less than it costs.\n\nThat's the real power of ROIC. It tells you whether growth is worth having.\n\n## Comparing companies"
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "AAPL",
+              "MSFT",
+              "KO"
+            ],
+            "metric": "roic",
+            "caption": "MU is reported data; COST, AAPL, MSFT and KO are sample figures."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Look at the variety of ways to earn a high return:\n\n- **A warehouse retailer** has razor-thin margins, but turns its inventory and stores over so fast that each dollar of capital supports many dollars of sales. Thin margin × high turnover can equal a high ROIC.\n- **A hardware brand that outsources manufacturing** needs relatively little capital of its own, so a moderate margin on enormous sales produces a very high ROIC.\n- **A software company** has high margins *and* low capital needs.\n- **A chip maker** has to own its factories, which ties up a lot of capital. Its ROIC depends heavily on where the cycle is: very high at the peak, negative at the trough.\n\nThis decomposition is worth remembering: **ROIC ≈ margin × capital turnover**. You can get there with a fat margin, with fast turnover, or with both.\n\n## Why not just use ROE?\n\nReturn on equity (net income ÷ shareholders' equity) is more commonly quoted, and it's useful. But it has a blind spot: **debt and buybacks inflate it.** Borrow money, use it to repurchase shares, and equity shrinks while profit barely changes, so ROE rises even though the business is no better."
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "AAPL",
+              "KO"
+            ],
+            "metric": "roe",
+            "caption": "MU is reported data; the others are sample figures."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Compare this chart with the ROIC chart above. Companies that have returned large amounts of cash through buybacks, or that carry significant debt, can show ROE far above their ROIC. ROIC counts debt *and* equity in the denominator, so it isn't fooled by the financing mix. When the two numbers diverge sharply, leverage or buybacks are usually the reason.\n\n## Pitfalls\n\n- **One year can mislead.** In cyclical industries, ROIC at the peak describes the peak. Average it across a cycle.\n- **Accounting shapes the denominator.** Years of write-downs or large buybacks can shrink invested capital and inflate ROIC; big acquisitions add goodwill and depress it.\n- **Growth investment looks bad at first.** A company building new capacity carries the capital before the profit arrives.\n- **Definitions vary.** Different data providers compute ROIC differently (tax rates, whether to subtract cash, lease adjustments). Compare numbers from the same source, like the formula shown in the widget.\n\n## The takeaway\n\nROIC asks how much after-tax operating profit each dollar of invested capital produces. Compared with the cost of capital, it tells you whether growth creates value. It rewards businesses that need little capital or turn it over quickly, and it isn't flattered by debt the way ROE can be. For a single number that says \"this is a good business,\" it's hard to beat, as long as you read it across more than one year.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u6-l3"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "ev-ebitda",
+      "title": "EV/EBITDA without the jargon",
+      "summary": "Two acronyms, one simple idea — the price of the whole business, debt included, compared with a rough measure of the cash profit it produces.",
+      "minutes": 6,
+      "level": "intermediate",
+      "unit": "u7-valuation",
+      "relatedLessons": [
+        "u7-l1",
+        "u7-l3"
+      ],
+      "metrics": [
+        "enterprise_value",
+        "ev_ebitda",
+        "market_cap",
+        "d_and_a",
+        "operating_income"
+      ],
+      "tags": [
+        "valuation",
+        "enterprise-value",
+        "ebitda"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 4,
+      "sampleTickers": [
+        "COST",
+        "KO",
+        "MSFT",
+        "PG"
+      ],
+      "wordCount": 747,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "EV/EBITDA sounds like something only bankers say. Strip away the acronyms and it's a very ordinary question: **what would it cost to take over the whole business, and how much operating profit would you get for that price?**\n\nIt's popular with professionals for a practical reason: unlike P/E, it isn't thrown off by how much debt a company carries. Let's build it one piece at a time.\n\n## Part one: enterprise value (EV)\n\nMarket capitalization, share price × shares, is what the *shares* are worth at the market price. But if you took over the entire company, you'd also take on its debt, and you'd also get its cash. So the price of the whole business is:\n\n> enterprise value = market cap + total debt − cash\n\nThink of purchasing a house for $300,000 that comes with a $100,000 mortgage you must take over and $20,000 of cash left in a safe. Your real cost is $300,000 + $100,000 − $20,000 = $380,000. That's the enterprise value of the house."
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "enterprise_value",
+            "caption": "Uses the sample share price in our data; debt and cash are Micron's reported figures."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "For Micron, debt is larger than cash, so enterprise value is a little *higher* than market cap. For a company sitting on a big net cash pile, EV is *lower* than market cap, because part of what you'd pay for would come straight back as cash.\n\n## Part two: EBITDA\n\n**EBITDA** stands for earnings before interest, taxes, depreciation and amortization. In Tenbagger it's computed simply:\n\n> EBITDA = operating income + depreciation & amortization\n\n- **Before interest**, because EV already accounts for debt. Interest is what debt costs; counting both would double-count.\n- **Before taxes**, so companies in different tax situations line up.\n- **Before depreciation and amortization**, because these are accounting charges for spending that happened in the past. Adding them back gets closer to the cash the operations produce this year.\n\nMicron's depreciation is large, because it owns huge, expensive factories:"
+        },
+        {
+          "type": "widget",
+          "kind": "metric",
+          "params": {
+            "ticker": "MU",
+            "metric": "d_and_a"
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## Putting it together\n\n> EV/EBITDA = enterprise value ÷ EBITDA\n\nIt reads like a P/E for the whole business: how many years of this year's operating cash profit it would take to pay back the full takeover price."
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "KO",
+              "PG",
+              "MSFT"
+            ],
+            "metric": "ev_ebitda",
+            "caption": "All share prices here are sample values; only MU's financials are reported data."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## Why professionals like it\n\n- **Debt-neutral.** Two identical businesses, one financed with debt and one without, have very different P/Es (interest lowers the first one's earnings) but similar EV/EBITDA ratios. That makes it better for comparing companies with different balance sheets.\n- **Useful when earnings are distorted.** Big depreciation charges, unusual tax years, or heavy interest can push net income around; EBITDA is steadier.\n- **It's how acquirers think.** When one company takes over another, it pays for the whole enterprise, debt included.\n\n## The catch: depreciation is a real cost\n\nEBITDA's biggest weakness is the part it leaves out. Depreciation is an accounting charge, but it represents something real: equipment wears out and must be replaced with actual cash. For a software company that barely needs any equipment, ignoring depreciation doesn't change much. For a capital-hungry business like a chip maker, a telecom network or an airline, ignoring it can make the business look far more profitable than it is.\n\nMicron is a good illustration. Its EBITDA is much larger than its operating income, because depreciation is so big. But its capex (the cash actually spent on equipment) is larger still, which is why its free cash flow is only a sliver of EBITDA. For a business like this, EBITDA flatters the picture; **EV ÷ free cash flow** or plain operating income can be more honest.\n\nOther cautions:\n\n- **Cycles still matter.** In a cyclical industry, EBITDA at the peak is temporarily high, so EV/EBITDA looks temporarily low, the same trap as P/E. Average across a cycle.\n- **\"Adjusted EBITDA.\"** Companies often publish their own version that adds back more costs (stock compensation, \"one-time\" charges that recur every year). Use the plain formula.\n- **Leases and other debt-like items** can be treated differently between companies, which nudges both EV and EBITDA.\n\n## A quick way to use it\n\n1. Compute EV: market cap + debt − cash.\n2. Compute EBITDA: operating income + D&A.\n3. Divide, and compare only with similar businesses.\n4. Then check capex against D&A. If capex is consistently far above depreciation, EBITDA overstates the cash the business can spare.\n\n## The takeaway\n\nEnterprise value is the price of the whole business, with debt added and cash subtracted. EBITDA is a rough measure of the operating profit that whole business produces before financing and accounting charges. Their ratio compares companies regardless of how they're financed, which is why it's popular. Just remember that depreciation stands in for real future spending, especially in capital-heavy industries.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u7-l3"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "pe-growth-assumption",
+      "title": "P/E, and what it quietly assumes about growth",
+      "summary": "The price-to-earnings ratio looks like a simple price tag. Flip it over and it becomes a statement about how fast profits need to grow.",
+      "minutes": 6,
+      "level": "intermediate",
+      "unit": "u7-valuation",
+      "relatedLessons": [
+        "u7-l2",
+        "u7-l5"
+      ],
+      "metrics": [
+        "pe",
+        "earnings_yield",
+        "eps_diluted",
+        "price"
+      ],
+      "tags": [
+        "valuation",
+        "pe",
+        "growth"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 3,
+      "sampleTickers": [
+        "COST",
+        "KO",
+        "MSFT",
+        "PG"
+      ],
+      "wordCount": 753,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "The **price-to-earnings ratio (P/E)** is the most quoted valuation number in the world:\n\n> P/E = share price ÷ earnings per share\n\nA P/E of 20 means the market price is $20 for every $1 of this year's profit per share. It's easy to compute and easy to compare. It's also easy to misread, because a P/E on its own says nothing about *why* the price is what it is. The interesting part is what the number quietly assumes.\n\n## Flip it over: earnings yield\n\nTurn P/E upside down and you get the **earnings yield**:\n\n> earnings yield = EPS ÷ price = 1 ÷ P/E\n\nA P/E of 20 is an earnings yield of 5%: each $100 of share price comes with $5 of annual profit. A P/E of 50 is a 2% earnings yield. This version is handy because it's in the same units as an interest rate, so you can put it next to a savings account or a bond yield.\n\nTry it. The calculator starts with Micron's reported EPS and the sample share price in our data. Slide either one and watch P/E and earnings yield move in opposite directions:"
+        },
+        {
+          "type": "widget",
+          "kind": "calculator",
+          "params": {
+            "kind": "pe",
+            "ticker": "MU",
+            "caption": "EPS is Micron's reported figure; the share price is a sample value, not a live quote.",
+            "required_return": 0.09
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## The hidden assumption\n\nWhy would anyone accept a 2% earnings yield when safer places might pay more? Only if they expect the earnings to **grow**. That gives a rough rule of thumb used in the curriculum:\n\n> required return ≈ earnings yield + growth\n\nRearranged:\n\n> implied growth ≈ required return − earnings yield\n\nSuppose investors as a group want about a 9% yearly return from a stock (a common rough figure for the long-run cost of equity). Then:\n\n- **P/E of 10** → earnings yield 10% → implied growth about **−1%**. The price assumes profits slowly *shrink*.\n- **P/E of 15** → yield about 6.7% → implied growth about **2.3%**, roughly inflation.\n- **P/E of 30** → yield about 3.3% → implied growth about **5.7% a year, forever**.\n- **P/E of 60** → yield about 1.7% → implied growth about **7.3% a year, forever**.\n\nThe calculator shows this \"implied growth\" line live. Slide the price up and watch how much growth the market price is asking for. This is a simplification (it treats growth as steady and perpetual, and treats all earnings as available to owners), but it's a powerful gut check. A high P/E isn't \"expensive\" or \"wrong\" by itself; it's a *claim* that profits will grow for a long time. The useful question is whether that claim seems plausible for this business.\n\n## Comparing P/E ratios"
+        },
+        {
+          "type": "widget",
+          "kind": "compare",
+          "params": {
+            "tickers": [
+              "MU",
+              "COST",
+              "KO",
+              "PG",
+              "MSFT"
+            ],
+            "metric": "pe",
+            "caption": "All share prices in this chart are sample values; only MU's earnings are reported data."
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "When comparing, remember:\n\n- **Growth expectations differ.** A fast-growing software firm and a mature beverage maker shouldn't have the same P/E.\n- **Quality differs.** High-ROIC businesses can reinvest profits at attractive rates, so each dollar of growth is worth more.\n- **Risk differs.** Steadier earnings typically command a higher P/E than volatile ones.\n\n## Where P/E breaks\n\nP/E is built on one year's earnings, and that's its weak spot.\n\n**Negative or tiny earnings.** A loss makes P/E meaningless; Tenbagger shows it as blank. Near-zero earnings make it enormous without meaning much.\n\n**Cyclical earnings.** This is the big one. In a boom, a cyclical company's earnings are temporarily high, so its P/E looks *low*. At the bottom of a bust, earnings collapse, so its P/E looks sky-high or can't be computed. Counter-intuitively, the P/E of a cyclical company is often lowest near the peak of its profits and highest near the trough. Micron's earnings per share have swung from a loss to well over ten dollars within this decade, so any single-year P/E describes that year, not the business.\n\nFor cyclical companies, many analysts use **normalized earnings**: average EPS across a full cycle, and compute P/E against that instead.\n\n**One-off items.** A big gain or write-down distorts the \"E\". Check whether this year's earnings are representative.\n\n## Earnings yield vs. interest rates\n\nBecause earnings yield is a rate, it's often compared with interest rates. When safe rates are high, investors can earn a decent return without risk, so they tend to demand more from stocks, which means lower P/Es. When rates are low, higher P/Es become easier to justify. That's one reason the whole market's P/E drifts over the years even when businesses don't change much.\n\n## The takeaway\n\nP/E is price per dollar of this year's profit. Flipped over, it's an earnings yield. And combined with a required return, it becomes a statement about expected growth. Reading a P/E well means asking: what growth does this price assume, is this year's \"E\" normal, and how does it compare with similar businesses? The number is a question, not an answer.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u7-l5"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "napkin-dcf",
+      "title": "A DCF you can do on a napkin",
+      "summary": "A discounted cash flow estimate is just four inputs and one idea — money later is worth less than money now. Build one with sliders and see which assumption really drives the answer.",
+      "minutes": 7,
+      "level": "intermediate",
+      "unit": "u8-intrinsic",
+      "relatedLessons": [
+        "u8-l1",
+        "u8-l2",
+        "u8-l3"
+      ],
+      "metrics": [
+        "free_cash_flow",
+        "net_cash",
+        "shares_diluted"
+      ],
+      "tags": [
+        "valuation",
+        "dcf",
+        "intrinsic-value"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 3,
+      "sampleTickers": [],
+      "wordCount": 848,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "A **discounted cash flow (DCF)** estimate sounds like the most intimidating tool in finance: spreadsheets with hundreds of rows, analysts arguing over decimals. Underneath, it rests on one idea you already know, and it needs only four inputs. You can do a perfectly respectable one on the back of a napkin.\n\nThe idea: **a business is worth the cash it will produce in the future, translated into today's dollars.**\n\n## Money later is worth less than money now\n\nWould you rather have $100 today or $100 in five years? Today, obviously: you could put it to work, and there's a risk the future $100 never shows up. So a future dollar has to be *discounted* to compare it with a dollar today.\n\nIf you require a 9% yearly return, then $100 arriving in one year is worth about $100 ÷ 1.09 ≈ $91.74 today. In two years, $100 ÷ 1.09² ≈ $84.17. The further away the cash, the less it's worth now. That percentage is the **discount rate**, and it represents the return you'd demand for waiting and for taking the risk.\n\n## The four inputs\n\n1. **Starting free cash flow.** The cash the business produces in a year after capex. (See the free cash flow article.)\n2. **Growth rate.** How fast that cash grows over the next several years.\n3. **Discount rate.** The return you require. Higher for riskier businesses.\n4. **Terminal multiple.** After the forecast years, instead of forecasting forever, assume the business could be valued at some multiple of its cash flow at that point.\n\nThen:\n\n- Grow the free cash flow each year for five years and discount each year's cash back to today.\n- At year five, value the rest of the company's life as *year-five FCF × terminal multiple*, and discount that back too.\n- Add the two parts together, then add net cash (or subtract net debt), since owners get the cash and must repay the debt.\n- Divide by the number of shares for a per-share figure.\n\nThat's the whole method. Here it is with illustrative inputs: a made-up company producing $100 million of free cash flow with 50 million shares and no debt:"
+        },
+        {
+          "type": "widget",
+          "kind": "calculator",
+          "params": {
+            "kind": "dcf",
+            "fcf": 100000000,
+            "shares": 50000000,
+            "net_cash": 0,
+            "growth": 0.06,
+            "caption": "Illustrative company, not real data. Move one slider at a time.",
+            "discount": 0.09,
+            "terminal": 15,
+            "years": 5,
+            "cyclical": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "## What the sliders teach you\n\nPlay with each input on its own, and some lessons jump out.\n\n**The discount rate is powerful.** Nudging it from 9% to 10% changes the answer noticeably, because it compounds across every year and the terminal value. Small changes in how much return you demand produce big swings in value.\n\n**The terminal value is most of the answer.** Look at the \"share from terminal value\" line. In a typical five-year DCF, the value assigned to everything *after* year five makes up well over half of the total, often around three quarters. That means your estimate depends mostly on an assumption about the distant future. Humility is warranted.\n\n**Growth matters, but less than you might think over five years.** Moving growth from 6% to 8% changes the estimate, but not as dramatically as the discount rate or the terminal multiple.\n\n**A terminal multiple hides a growth assumption.** A 15× multiple on cash flow is roughly what you'd get from assuming the cash grows about 2.5% a year forever and discounting at 9%: 1 ÷ (9% − 2.5%) ≈ 15. A 25× multiple quietly assumes much faster growth forever. The two ways of expressing the end value are two sides of the same coin.\n\n## Trying it on a real company\n\nThe same calculator can start from a company's reported numbers. Here it's prefilled with Micron's latest free cash flow, net debt and diluted share count:"
+        },
+        {
+          "type": "widget",
+          "kind": "calculator",
+          "params": {
+            "kind": "dcf",
+            "ticker": "MU",
+            "caption": "Starts from Micron's reported free cash flow, net debt and share count. Assumptions are yours.",
+            "growth": 0.05,
+            "discount": 0.09,
+            "terminal": 15,
+            "years": 5,
+            "cyclical": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "For most steady businesses, starting from the latest year's free cash flow is reasonable. For a company whose cash flow swings with an industry cycle, as Micron's does, one year can be wildly unrepresentative, so the calculator includes a switch to start from the *average* instead. The cycles article explores exactly why that switch matters.\n\n## A napkin DCF is a thinking tool\n\nA DCF doesn't produce \"the\" value of a company. It produces the value *implied by your assumptions*. That makes it useful in two ways:\n\n- **It forces you to be explicit.** What growth are you assuming? What return do you require? You can't hide behind a vague feeling.\n- **It can be run backwards.** Instead of asking \"what's it worth?\", ask \"what growth would the current price require?\" If the answer is \"25% a year for a decade,\" that's informative.\n\nCommon mistakes to avoid:\n\n- **Starting from an unusual year.** A peak or trough year of cash flow skews everything.\n- **Growth above the discount rate.** Mathematically, that implies infinite value; practically, it means an assumption has gone wrong.\n- **False precision.** An estimate to the cent from inputs you can't know to the percent is theatre. Think in ranges.\n\n## The takeaway\n\nA DCF is four inputs (starting cash flow, growth, discount rate and a terminal multiple), plus net cash and a share count. The math is simple; the judgment is in the inputs. Use the sliders to feel which ones matter most, and treat the output as a range of possibilities, not a number to trust.\n\nPractice with real filings:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u8-l1"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "cycles-dcf-micron",
+      "title": "Cycles: why one DCF can mislead (the Micron case)",
+      "summary": "A DCF multiplies whatever you feed it. Feed it a peak year from a cyclical business and it will confidently multiply the peak. Micron's real decade of numbers shows how far off that can be.",
+      "minutes": 7,
+      "level": "advanced",
+      "unit": "u8-intrinsic",
+      "relatedLessons": [
+        "u8-l4",
+        "u8-l3",
+        "u8-l1"
+      ],
+      "metrics": [
+        "free_cash_flow",
+        "gross_margin",
+        "revenue",
+        "net_cash"
+      ],
+      "tags": [
+        "dcf",
+        "cycles",
+        "micron",
+        "valuation"
+      ],
+      "updated": "2026-09-25",
+      "widgetCount": 4,
+      "sampleTickers": [],
+      "wordCount": 847,
+      "blocks": [
+        {
+          "type": "markdown",
+          "md": "A discounted cash flow estimate is a machine that multiplies. You give it a starting free cash flow, and after growth, discounting and a terminal multiple, you get back something like fifteen to twenty times that starting number. That's fine when the starting number is representative of the business. It's a serious problem when it isn't.\n\nIn a **cyclical** business (one whose profits rise and fall with an industry-wide cycle), any single year's cash flow is a snapshot of a moment in the cycle, not a description of the business. Micron, a memory-chip maker, is a textbook example, and this article uses its real reported numbers.\n\n## A decade of swings\n\nStart with gross margin, the share of each sales dollar left after the cost of making the chips:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "gross_margin",
+            "average": true
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "In the same company, making the same kind of product, gross margin has ranged from well over half of revenue to below zero. Memory is a product where one company's chip is broadly interchangeable with another's, so prices are set by industry-wide supply and demand. When supply is tight, prices soar and nearly all of the extra revenue drops to profit, because a fab's costs are largely fixed. When the industry adds too much capacity, prices fall below the cost of production.\n\nNow free cash flow, which amplifies these swings because capex doesn't fall as fast as revenue:"
+        },
+        {
+          "type": "widget",
+          "kind": "history",
+          "params": {
+            "ticker": "MU",
+            "metric": "free_cash_flow",
+            "average": true
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "The best year in this window, fiscal 2018, produced about $8.5 billion of free cash flow. Fiscal 2023 burned more than $6 billion. The dashed line is the average across all ten years: about $1.4 billion. The peak year was roughly six times the average.\n\n## The peak-year DCF\n\nImagine sitting at the end of fiscal 2018, looking at a record year and running a DCF that starts from that year's free cash flow. The calculator below does exactly that: it's prefilled with Micron's fiscal 2018 free cash flow and today's net debt and share count.\n\nNow flip the **Cyclical: use normalized FCF** switch. It swaps the starting point for the ten-year average and leaves every other assumption alone:"
+        },
+        {
+          "type": "widget",
+          "kind": "calculator",
+          "params": {
+            "kind": "dcf",
+            "ticker": "MU",
+            "fcf": 8521000000,
+            "caption": "Starts from Micron's FY2018 peak free cash flow. The toggle swaps in the 10-year average.",
+            "growth": 0.05,
+            "discount": 0.09,
+            "terminal": 15,
+            "years": 5,
+            "cyclical": false
+          }
+        },
+        {
+          "type": "markdown",
+          "md": "Same growth rate, same discount rate, same terminal multiple, and an estimate several times smaller. Nothing about the method changed. Only the starting number did. That's the core problem: **a DCF on a peak year quietly assumes the peak is the new normal, and then capitalizes it forever.**\n\nIt works in reverse, too. Start from a trough year like fiscal 2023 and the DCF says the business is worth less than nothing, which is equally absurd for a company that went on to post record revenue two years later.\n\n## What normalizing means\n\n**Normalizing** replaces one year's number with an estimate of what the business earns in a typical year across a full cycle. The simplest version is the one the calculator uses: the average of the last ten years of free cash flow. Other common approaches:\n\n- **Average margin × current revenue.** Apply a through-cycle average FCF margin to today's sales, which adjusts for the business being bigger than it was a decade ago.\n- **Mid-cycle estimate.** Pick a year you judge to be neither boom nor bust.\n- **Scenario range.** Run the DCF three times (trough, average, peak) and look at the spread rather than a single number.\n\nEach has flaws. A ten-year average of a growing company understates today's scale; an average margin assumes the industry's structure hasn't changed. But all of them are more honest than a single extreme year.\n\n## Signs you're looking at a cyclical\n\nYou don't need to be a semiconductor expert to recognize the pattern. Warning signs:\n\n1. **Margins that swing widely** from year to year, well beyond what a normal business shows.\n2. **A commodity-like product** where customers switch suppliers on price.\n3. **Heavy fixed costs and large, lumpy capex**, so capacity arrives in big steps.\n4. **Industry-wide booms and busts** that hit every competitor at once.\n5. **P/E that looks lowest when profits are highest.** At the peak, earnings are inflated, so the ratio looks modest; at the trough, earnings collapse and the P/E looks enormous or disappears.\n\nMemory chips tick every box. So do many parts of energy, chemicals, steel, shipping, homebuilding and airlines.\n\n## Reading the latest year\n\nMicron's latest fiscal year had record revenue, but its free cash flow was modest, because it spent almost all of its operating cash on new equipment. So even \"which number is the peak?\" isn't simple: profit and cash can peak at different times. That's another reason to look at the whole history, and at more than one metric, before trusting any single-year estimate.\n\n## The takeaway\n\nA DCF is only as good as the cash flow you start from. In a cyclical business, one year is a point on a wave, and capitalizing the crest (or the trough) produces an estimate that can be off by multiples. Look at the full cycle, normalize the starting point, run a range of scenarios, and treat the result as a sense of scale rather than a precise answer.\n\nPractice with Micron's real numbers:"
+        },
+        {
+          "type": "widget",
+          "kind": "quiz",
+          "params": {
+            "lesson": "u8-l4"
+          }
+        }
+      ]
+    }
+  ]
+}

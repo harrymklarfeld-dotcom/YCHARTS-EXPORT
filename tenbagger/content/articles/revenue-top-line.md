@@ -40,7 +40,7 @@ Real companies work the same way, just with more lines:
 6. minus interest and taxes.
 7. = **net income**, the bottom line.
 
-Two companies with identical revenue can end up with wildly different bottom lines. A grocer and a software firm might each sell $50 billion a year; one keeps a few cents per dollar, the other keeps a third. Revenue alone cannot tell them apart.
+Two companies with identical revenue can end up with wildly different bottom lines. A grocer and a software firm might each bring in $50 billion a year; one keeps a few cents per dollar, the other keeps a third. Revenue alone cannot tell them apart.
 
 ## Size is not the same as quality
 

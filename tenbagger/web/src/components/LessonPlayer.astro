@@ -12,14 +12,16 @@ interface Props {
   ctaLabel?: string;
   totalLessons?: number;
   showIntro?: boolean;
+  /** Hide XP on the result screen (articles: XP only comes from lessons in the app). */
+  noXp?: boolean;
 }
-const { lesson, questions, ctaHref, ctaLabel, totalLessons, showIntro = true } = Astro.props;
+const { lesson, questions, ctaHref, ctaLabel, totalLessons, showIntro = true, noXp = false } = Astro.props;
 const introHtml = lesson ? (marked.parse(lesson.intro, { async: false }) as string) : '';
 ---
 {questions.length === 0 ? (
   <div class="widget widget-error">The demo lesson will appear here once <code>data/lessons.json</code> is built.</div>
 ) : (
-  <lesson-player class="lp" data-cta-href={ctaHref} data-cta-label={ctaLabel} data-total-lessons={totalLessons}>
+  <lesson-player class="lp" data-cta-href={ctaHref} data-cta-label={ctaLabel} data-total-lessons={totalLessons} data-no-xp={noXp ? '' : undefined}>
     <script type="application/json" set:html={JSON.stringify(questions).replace(/</g, '\\u003c')}></script>
     <div class="lp-top">
       <div class="lp-track" aria-hidden="true"><div class="lp-bar" data-bar></div></div>

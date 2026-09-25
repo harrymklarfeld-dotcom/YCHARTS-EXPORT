@@ -4,7 +4,15 @@
 // money-summary shape for packages/money, and that tokens never leak.
 import { assert, assertEquals, assertFalse } from "jsr:@std/assert@1";
 import { TokenCipher } from "../supabase/functions/_shared/crypto.ts";
-import { type AuthContext, type Deps, moneySummary, moneySync, plaidExchange, plaidLinkToken, plaidWebhook } from "../supabase/functions/_shared/handlers.ts";
+import {
+  type AuthContext,
+  type Deps,
+  moneySummary,
+  moneySync,
+  plaidExchange,
+  plaidLinkToken,
+  plaidWebhook,
+} from "../supabase/functions/_shared/handlers.ts";
 import type { MoneySummary } from "../supabase/functions/_shared/money.ts";
 import { MockProvider } from "../supabase/functions/_shared/providers/mock.ts";
 import { ProviderError } from "../supabase/functions/_shared/providers/types.ts";
@@ -63,7 +71,8 @@ function assertNoSecrets(text: string, where = "response") {
 }
 
 let item = "";
-const providerItemId = async () => (await db.query<{ p: string }>(`select provider_item_id p from linked_items where id = $1`, [item])).rows[0].p;
+const providerItemId = async () =>
+  (await db.query<{ p: string }>(`select provider_item_id p from linked_items where id = $1`, [item])).rows[0].p;
 let summary: MoneySummary;
 
 Deno.test("money: link token requests Transactions only on opt-in; MFA still required", async () => {
@@ -88,8 +97,19 @@ Deno.test("money: exchange with money_hub on a bank without investments -> money
   assertEquals([body.item.status, body.item.money_hub], ["active", true]); // missing investments is not an Item error
   assertEquals([body.sync.status, body.sync.error_code], ["skipped", "NO_INVESTMENT_ACCOUNTS"]);
   assertEquals(body.money.status, "succeeded");
-  assertEquals(body.money.counts, { cash_accounts: 2, liabilities: 2, transactions_upserted: 4, transactions_removed: 0, transactions_skipped_retention: 1, income_streams: 4 });
-  assertEquals(body.money.warnings.map((w: { code: string }) => w.code).sort(), ["investment_account_skipped", "retention_skipped", "transfer_stream_skipped"]);
+  assertEquals(body.money.counts, {
+    cash_accounts: 2,
+    liabilities: 2,
+    transactions_upserted: 4,
+    transactions_removed: 0,
+    transactions_skipped_retention: 1,
+    income_streams: 4,
+  });
+  assertEquals(body.money.warnings.map((w: { code: string }) => w.code).sort(), [
+    "investment_account_skipped",
+    "retention_skipped",
+    "transfer_stream_skipped",
+  ]);
   assertEquals((await db.query<{ n: number }>(`select count(*)::int n from money_snapshots where user_id = $1`, [ALICE])).rows[0].n, 1);
   const runs = (await db.query(`select kind, status from sync_runs where linked_item_id = $1 order by started_at`, [item])).rows;
   assertEquals(runs, [{ kind: "holdings", status: "succeeded" }, { kind: "money", status: "succeeded" }]);
@@ -98,8 +118,14 @@ Deno.test("money: exchange with money_hub on a bank without investments -> money
 Deno.test("money-summary: normalized input for packages/money with basis labels", async () => {
   // Manual data the user owns: a manual brokerage and an hourly job with unsubmitted hours.
   await asRole(db, "authenticated", ALICE, async () => {
-    const acct = (await db.query<{ id: string }>(`insert into accounts (user_id, name, type, subtype) values ($1, 'Roth IRA (manual)', 'investment', 'roth') returning id`, [ALICE])).rows[0].id;
-    await db.query(`insert into holdings (user_id, account_id, ticker, quantity, market_value, as_of, source) values ($1, $2, 'VTI', 1, 300, '2026-09-25', 'manual')`, [ALICE, acct]);
+    const acct = (await db.query<{ id: string }>(
+      `insert into accounts (user_id, name, type, subtype) values ($1, 'Roth IRA (manual)', 'investment', 'roth') returning id`,
+      [ALICE],
+    )).rows[0].id;
+    await db.query(
+      `insert into holdings (user_id, account_id, ticker, quantity, market_value, as_of, source) values ($1, $2, 'VTI', 1, 300, '2026-09-25', 'manual')`,
+      [ALICE, acct],
+    );
     await db.query(
       `insert into income_streams (user_id, source, description, frequency, pay_type, rate, units_per_week, weekdays, next_pay_date,
                                    withholding_rate, condition, pending_units, pending_period_end)
@@ -122,15 +148,38 @@ Deno.test("money-summary: normalized input for packages/money with basis labels"
     ["Direct Unsubsidized", "loan", 12450, null, "verified"],
   ]);
   const card = summary.accounts.find((a) => a.kind === "credit_card")!;
-  assertEquals(summary.liabilities.map(({ accountId, statementBalance, minimumDue, dueDate, apr, basis }) => ({ accountId, statementBalance, minimumDue, dueDate, apr, basis })), [
-    { accountId: card.id, statementBalance: 689.4, minimumDue: 35, dueDate: "2026-10-12", apr: 0.2499, basis: "verified" },
-  ]); // loan in school: no due date -> account only
+  assertEquals(
+    summary.liabilities.map(({ accountId, statementBalance, minimumDue, dueDate, apr, basis }) => ({
+      accountId,
+      statementBalance,
+      minimumDue,
+      dueDate,
+      apr,
+      basis,
+    })),
+    [
+      { accountId: card.id, statementBalance: 689.4, minimumDue: 35, dueDate: "2026-10-12", apr: 0.2499, basis: "verified" },
+    ],
+  ); // loan in school: no due date -> account only
 
   assertEquals(summary.incomeStreams.length, 1);
   const job = summary.incomeStreams[0];
   assertEquals(
-    [job.kind, job.rate, job.schedule, job.payFrequency, job.nextPayDate, job.withholdingRate, job.condition, job.pendingUnsubmitted, job.basis],
-    ["hourly", 15.5, { unitsPerWeek: 10, weekdays: [1, 3, 5] }, "biweekly", "2026-10-09", 0.05, "hours submitted", { units: 19.5, periodEnd: "2026-10-03" }, "manual"],
+    [
+      job.kind,
+      job.rate,
+      job.schedule,
+      job.payFrequency,
+      job.nextPayDate,
+      job.withholdingRate,
+      job.condition,
+      job.pendingUnsubmitted,
+      job.basis,
+    ],
+    ["hourly", 15.5, { unitsPerWeek: 10, weekdays: [1, 3, 5] }, "biweekly", "2026-10-09", 0.05, "hours submitted", {
+      units: 19.5,
+      periodEnd: "2026-10-03",
+    }, "manual"],
   );
   assertEquals(summary.detectedStreams.map((s) => [s.name, s.status, s.asIncomeStream?.payFrequency ?? null]), [
     ["DashCart", "tombstoned", null], // merchant_name preferred over the raw description
@@ -151,7 +200,11 @@ Deno.test("money-summary: normalized input for packages/money with basis labels"
     "2026-10-30 QUILL UNIV PAYROLL DIR DEP 412.37 projected/high",
     "2026-11-03 Tutorly 57.5 projected/low",
   ]);
-  assertEquals(summary.deposits, [{ date: "2026-09-18", amount: 386.1, basis: "verified" }, { date: "2026-09-22", amount: 65, basis: "verified" }]);
+  assertEquals(summary.deposits, [{ date: "2026-09-18", amount: 386.1, basis: "verified" }, {
+    date: "2026-09-22",
+    amount: 65,
+    basis: "verified",
+  }]);
 
   assertEquals(summary.snapshots.length, 1);
   const s0 = summary.snapshots[0];
@@ -163,7 +216,14 @@ Deno.test("money-summary: normalized input for packages/money with basis labels"
 
   // Bob sees nothing of Alice's
   const bob: MoneySummary = await (await moneySummary(req(BOB, undefined, "GET"), deps)).json();
-  assertEquals([bob.accounts, bob.liabilities, bob.incomeStreams, bob.expectedDeposits, bob.snapshots, bob.sources], [[], [], [], [], [], []]);
+  assertEquals([bob.accounts, bob.liabilities, bob.incomeStreams, bob.expectedDeposits, bob.snapshots, bob.sources], [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ]);
 });
 
 Deno.test("money-sync: throttle, cursor delta, product errors as warnings, append-only history", async () => {
@@ -171,7 +231,13 @@ Deno.test("money-sync: throttle, cursor delta, product errors as warnings, appen
   assertEquals([throttled.results[0].error_code, throttled.snapshot_id], ["throttled", null]);
 
   // New Plaid page after our cursor; Liabilities temporarily not ready.
-  money.transactionsPages.push({ added: [], modified: [], removed: [{ transaction_id: "tx_book_0923" }], next_cursor: "cur-fictional-page-3", has_more: false });
+  money.transactionsPages.push({
+    added: [],
+    modified: [],
+    removed: [{ transaction_id: "tx_book_0923" }],
+    next_cursor: "cur-fictional-page-3",
+    has_more: false,
+  });
   plaid.failMoney.getLiabilities = new ProviderError("plaid", "PRODUCT_NOT_READY", "not ready", 400, false, true);
   const res = await moneySync(req(ALICE, { force: true }), deps);
   const text = await res.text();
@@ -181,7 +247,9 @@ Deno.test("money-sync: throttle, cursor delta, product errors as warnings, appen
   assertEquals(r.results[0].counts.transactions_removed, 1);
   assert(r.results[0].warnings.some((w: { code: string }) => w.code === "product_not_ready"));
   assert(typeof r.snapshot_id === "string");
-  assertEquals((await db.query(`select status from sync_runs where kind = 'money' order by started_at desc limit 1`)).rows, [{ status: "partial" }]);
+  assertEquals((await db.query(`select status from sync_runs where kind = 'money' order by started_at desc limit 1`)).rows, [{
+    status: "partial",
+  }]);
   // Details not fetched this time: balances refresh, last known statement/due date are kept
   const after: MoneySummary = await (await moneySummary(req(ALICE, undefined, "GET"), deps)).json();
   assertEquals(after.liabilities.map((l) => [l.dueDate, l.minimumDue]), [["2026-10-12", 35]]);
@@ -197,7 +265,10 @@ Deno.test("money-sync: throttle, cursor delta, product errors as warnings, appen
   await db.query(`update linked_items set status = 'active', status_reason = null where id = $1`, [item]);
 
   // Webhook-driven money sync only for opted-in items
-  const wh = await (await plaidWebhook(req(null, { webhook_type: "TRANSACTIONS", webhook_code: "SYNC_UPDATES_AVAILABLE", item_id: await providerItemId() }), deps)).json();
+  const wh = await (await plaidWebhook(
+    req(null, { webhook_type: "TRANSACTIONS", webhook_code: "SYNC_UPDATES_AVAILABLE", item_id: await providerItemId() }),
+    deps,
+  )).json();
   assertEquals(wh, { received: true, sync: "succeeded" });
   assertEquals((await db.query<{ n: number }>(`select count(*)::int n from money_snapshots where user_id = $1`, [ALICE])).rows[0].n, 3);
 
@@ -219,9 +290,18 @@ Deno.test("money-sync: opt-out deletes item money data but keeps append-only sna
     [ALICE],
   )).rows[0];
   assertEquals(left, { c: 0, t: 0, s: 0, m: 1, snaps: 3 });
-  assertEquals((await db.query(`select money_hub, transactions_cursor from linked_items where id = $1`, [item])).rows, [{ money_hub: false, transactions_cursor: null }]);
+  assertEquals((await db.query(`select money_hub, transactions_cursor from linked_items where id = $1`, [item])).rows, [{
+    money_hub: false,
+    transactions_cursor: null,
+  }]);
   // Money webhooks are ignored once opted out
-  assertEquals(await (await plaidWebhook(req(null, { webhook_type: "TRANSACTIONS", webhook_code: "SYNC_UPDATES_AVAILABLE", item_id: await providerItemId() }), deps)).json(), { received: true });
+  assertEquals(
+    await (await plaidWebhook(
+      req(null, { webhook_type: "TRANSACTIONS", webhook_code: "SYNC_UPDATES_AVAILABLE", item_id: await providerItemId() }),
+      deps,
+    )).json(),
+    { received: true },
+  );
 
   assertEquals((await moneySync(req(`${ALICE}:aal1`, { item_id: item, enable: true }), deps)).status, 403);
   const on = await (await moneySync(req(ALICE, { item_id: item, enable: true }), deps)).json();
@@ -257,7 +337,10 @@ Deno.test({
     const latest = summary.snapshots.at(-1)!;
     assertEquals(m.validateSnapshot(latest), []);
     const report = m.coverageCheck(latest, summary.incomeStreams, 30);
-    assertEquals(report.dues.map((d: { dueDate: string; statementBalance: number }) => [d.dueDate, d.statementBalance]), [["2026-10-12", 689.4]]);
+    assertEquals(report.dues.map((d: { dueDate: string; statementBalance: number }) => [d.dueDate, d.statementBalance]), [[
+      "2026-10-12",
+      689.4,
+    ]]);
     assert(typeof report.headline === "string");
   },
 });

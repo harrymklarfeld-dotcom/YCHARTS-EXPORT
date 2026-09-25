@@ -1,0 +1,226 @@
+---
+import site from '../../site.config.ts';
+import Base from '../layouts/Base.astro';
+import LessonPlayer from '../components/LessonPlayer.astro';
+import Screener from '../components/Screener.astro';
+import MoneyDemo from '../components/MoneyDemo.astro';
+import Pricing from '../components/Pricing.astro';
+import Faq from '../components/Faq.astro';
+import Waitlist from '../components/Waitlist.astro';
+import { companies, companyByTicker, demoQuestions, lessonsFile, shortName, tickerSlug } from '../lib/data.ts';
+import { articles } from '../lib/articles.ts';
+import { cents, formatPercent } from '../lib/company.ts';
+
+const { lesson, questions } = demoQuestions(site.demo.lessonId, site.demo.questions);
+const totalLessons = lessonsFile().units.reduce((n, u) => n + u.lessons.length, 0);
+const totalQuestions = lessonsFile().units.reduce((n, u) => n + u.lessons.reduce((m, l) => m + l.questions.length, 0), 0);
+const all = companies();
+const featured = companyByTicker(site.featuredTicker) ?? all[0];
+const facts = all
+  .filter((c) => typeof c.metrics.gross_margin === 'number')
+  .slice(0, 8)
+  .map((c) => ({ c, g: c.metrics.gross_margin as number }));
+const latestArticles = articles().slice(0, 3);
+---
+<Base>
+  <!-- ============================================================ HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="kicker">Built from SEC filings</p>
+        <h1>{site.heroLine}</h1>
+        <p class="lede">{site.heroSub}</p>
+        <div class="btn-row">
+          {site.features.showDemoLesson && questions.length > 0 && <a class="btn btn-primary" href="#try">Try a real lesson</a>}
+          {site.features.showWaitlist && <a class="btn" href="#waitlist">Join the waitlist</a>}
+        </div>
+        <dl class="hero-stats">
+          <div><dt>Lessons</dt><dd class="num">{totalLessons}</dd></div>
+          <div><dt>Questions</dt><dd class="num">{totalQuestions}</dd></div>
+          <div><dt>Companies</dt><dd class="num">{all.length}</dd></div>
+          <div><dt>Stock tips</dt><dd class="num">0</dd></div>
+        </dl>
+      </div>
+      {site.features.showDemoLesson && (
+        <div class="hero-demo" id="try">
+          <LessonPlayer lesson={lesson} questions={questions} ctaHref={site.features.showWaitlist ? '#waitlist' : '/app/'} ctaLabel="Save my streak" totalLessons={Math.max(0, totalLessons - 1)} />
+        </div>
+      )}
+    </div>
+    {featured && typeof featured.metrics.gross_margin === 'number' && (
+      <div class="wrap">
+        <a class="plain-english" href={`/companies/${tickerSlug(featured.ticker)}/`}>
+          <span class="pe-label">In plain English</span>
+          <span class="pe-text">{shortName(featured.name)} keeps <strong>{cents(featured.metrics.gross_margin)}</strong> of every sales dollar after paying for what it sells.</span>
+          <span class="pe-more">See the full breakdown →</span>
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- ============================================================ HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">How it works</p>
+        <h2>Learn the numbers. Use them. Then read your own.</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="step-n">01</span>
+          <h3>Learn</h3>
+          <p>Three-minute drills on real 10-K numbers: margins, cash flow, debt, valuation. Every answer is computed from the filing, and every explanation shows the formula.</p>
+          <a href="/learn/">Read the explainers →</a>
+        </li>
+        <li>
+          <span class="step-n">02</span>
+          <h3>Screen</h3>
+          <p>Turn what you learned into questions: which companies keep 20 cents of every dollar as free cash? The screener speaks plain English and shows why each company passed.</p>
+          <a href="/screener/">Open the screener →</a>
+        </li>
+        {site.features.showMoneyHub && (
+          <li>
+            <span class="step-n">03</span>
+            <h3>Your money</h3>
+            <p>Every metric you learn unlocks on your own finances. Current ratio becomes “can I cover my card by the due date?” Free cash flow becomes what’s left after this month’s bills.</p>
+            <a href="#money">See the money hub →</a>
+          </li>
+        )}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ SCREENER -->
+  <section class="section section-tint" id="screener">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">A screener for learners</p>
+        <h2>Ask the market a question.</h2>
+        <p>Pick a lens. Every screen explains what it looks for and what it can miss.</p>
+      </div>
+      <Screener mini presetIds={['cash-machines', 'fortress-balance-sheets', 'pricing-power', 'quality-fair-price', 'dividend-payers', 'low-debt']} />
+      <p class="section-more"><a class="btn" href="/screener/">Full screener with typed queries</a></p>
+    </div>
+  </section>
+
+  <!-- ============================================================ MONEY HUB -->
+  {site.features.showMoneyHub && (
+    <section class="section" id="money">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">The money hub</p>
+          <h2>Can I cover the card?</h2>
+          <p>Read your own finances like a 10-K. Cash now, plus pay that lands before the due date, including hours you’ve worked but not yet submitted, minus what’s due. Move the sliders.</p>
+        </div>
+        <MoneyDemo />
+        <p class="small muted money-foot">The hub describes your numbers; it doesn’t tell you what to do with them, and it will never offer cash advances or loans.</p>
+      </div>
+    </section>
+  )}
+
+  <!-- ============================================================ REAL COMPANIES -->
+  <section class="section section-tint">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Real companies, plain English</p>
+        <h2>Every company gets a page.</h2>
+        <p>Margins, cash, debt and history, written the way you’d explain them to a friend.</p>
+      </div>
+      <ul class="fact-grid">
+        {facts.map(({ c, g }) => (
+          <li>
+            <a href={`/companies/${tickerSlug(c.ticker)}/`}>
+              <span class="ticker">{c.ticker}</span>
+              <span class="fact-num num">{formatPercent(g)}</span>
+              <span class="fact-txt">gross margin: {cents(g)} of each sales dollar left after the cost of what it sells</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      {latestArticles.length > 0 && (
+        <div class="home-articles">
+          <h3>From the explainer library</h3>
+          <ul>
+            {latestArticles.map((a) => (
+              <li><a href={`/learn/${a.slug}/`}>{a.title}</a> <span class="muted small">· {a.readingMinutes} min</span></li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ============================================================ PRICING -->
+  {site.features.showPricing && (
+    <section class="section" id="pricing">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">Pricing</p>
+          <h2>Free to build the habit. Pro when you want everything.</h2>
+        </div>
+        <Pricing />
+      </div>
+    </section>
+  )}
+
+  <!-- ============================================================ FAQ -->
+  <section class="section" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">Questions</p>
+        <h2>Straight answers.</h2>
+      </div>
+      <Faq />
+    </div>
+  </section>
+
+  <section class="section waitlist-section">
+    <div class="wrap">
+      <Waitlist source="landing" id="waitlist" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding: clamp(36px, 6vw, 80px) 0 40px; background:
+      linear-gradient(to right, var(--rule) 1px, transparent 1px) 0 0 / calc(100% / 12) 100%;
+    background-color: var(--bg); position: relative; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 40%, transparent), var(--bg) 92%); pointer-events: none; }
+  .hero > * { position: relative; }
+  .hero-grid { display: grid; gap: 36px; align-items: center; }
+  @media (min-width: 980px) { .hero-grid { grid-template-columns: 1.05fr 1fr; gap: 56px; } }
+  .hero h1 { margin-bottom: 18px; }
+  .hero .lede { margin-bottom: 26px; }
+  .hero-stats { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 8px 28px; margin: 34px 0 0; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .hero-stats dt { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .hero-stats dd { margin: 0; font-size: 1.6rem; font-weight: 600; }
+  @media (max-width: 480px) { .hero-stats { grid-template-columns: repeat(2, auto); } }
+  .plain-english { display: grid; gap: 4px 20px; grid-template-columns: 1fr; margin-top: 40px; padding: 18px 22px; border: 1px solid var(--rule); border-left: 4px solid var(--signal); border-radius: 6px; background: var(--surface); text-decoration: none; color: var(--ink); }
+  @media (min-width: 820px) { .plain-english { grid-template-columns: auto 1fr auto; align-items: center; } }
+  .pe-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--signal); }
+  .pe-text { font-family: var(--font-display); font-size: 1.3rem; }
+  .pe-text strong { color: var(--signal); }
+  .pe-more { color: var(--accent); font-weight: 600; font-size: 0.92rem; }
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; border-top: 2px solid var(--ink); }
+  @media (min-width: 860px) { .steps { grid-template-columns: repeat(3, 1fr); } .steps li + li { border-left: 1px solid var(--rule); } }
+  .steps li { padding: 24px 24px 28px 0; border-bottom: 1px solid var(--rule); }
+  @media (min-width: 860px) { .steps li { padding: 28px 28px 32px; border-bottom: 0; } .steps li:first-child { padding-left: 0; } }
+  .step-n { font-family: var(--font-mono); font-size: 0.9rem; color: var(--signal); display: block; margin-bottom: 14px; }
+  .steps h3 { font-size: 1.8rem; }
+  .steps p { color: var(--muted); }
+  .steps a { font-weight: 600; text-decoration: none; }
+  .section-tint { background: var(--surface2); }
+  .section-tint :global(.table-wrap) { background: var(--surface); }
+  .section-more { margin-top: 22px; }
+  .money-foot { margin-top: 14px; }
+  .fact-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  .fact-grid a { display: grid; gap: 6px; padding: 16px; height: 100%; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; color: var(--ink); text-decoration: none; }
+  .fact-grid a:hover { border-color: var(--accent); }
+  .fact-grid .ticker { justify-self: start; }
+  .fact-num { font-size: 1.8rem; font-weight: 600; }
+  .fact-txt { font-size: 0.88rem; color: var(--muted); }
+  .home-articles { margin-top: 36px; }
+  .home-articles ul { padding-left: 1.2em; }
+  .home-articles li { margin: 6px 0; }
+  .waitlist-section { border-top: 0; padding-top: 0; }
+</style>

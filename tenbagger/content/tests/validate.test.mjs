@@ -82,3 +82,10 @@ test('the real library builds cleanly and data/articles.json is up to date', () 
   const onDisk = JSON.parse(readFileSync(join(HERE, '..', '..', 'data', 'articles.json'), 'utf8'));
   assert.deepEqual(onDisk, JSON.parse(JSON.stringify(out)), 'run `node content/build.mjs` to refresh data/articles.json');
 });
+
+test('the _template.md is itself a valid article', () => {
+  const text = readFileSync(join(HERE, '..', 'articles', '_template.md'), 'utf8');
+  const { errors, out } = build(text, 'articles/my-new-article.md');
+  assert.deepEqual(errors, []);
+  assert.equal(out.articles[0].slug, 'my-new-article');
+});
