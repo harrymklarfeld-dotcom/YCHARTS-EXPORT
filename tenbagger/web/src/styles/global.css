@@ -186,3 +186,5 @@ label { font-weight: 500; }
 .widget-error { border-style: dashed; color: var(--muted); font-size: 0.92rem; }
 .big-number { font-family: var(--font-display); font-size: clamp(2.4rem, 5vw, 3.4rem); font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .formula { font-family: var(--font-mono); font-size: 0.86rem; background: var(--surface2); border-radius: 4px; padding: 6px 10px; display: inline-block; color: var(--ink); }
+.chart-avg line { stroke: var(--signal); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart-avg text { font-family: var(--font-mono); font-size: 12px; fill: var(--signal); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }

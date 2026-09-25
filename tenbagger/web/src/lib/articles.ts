@@ -34,6 +34,7 @@ export type Article = {
   category?: string;
   level?: string;
   lessonId?: string;
+  unitId?: string;
   readingMinutes: number;
   segments: Segment[];
   headings: Array<{ id: string; text: string }>;
@@ -67,19 +68,35 @@ export function slugify(s: string): string {
     .replace(/-+/g, '-');
 }
 
+/** Coerce "true"/"12"/"MU,COST" strings into booleans, numbers and lists. */
+function coerce(key: string, v: string): unknown {
+  if (v === 'true') return true;
+  if (v === 'false') return false;
+  if (key === 'tickers') return v.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean);
+  if (/^-?\d+(\.\d+)?(e-?\d+)?$/i.test(v)) return Number(v);
+  return v;
+}
+
+/**
+ * Widget params per content/WIDGETS.md: `key=value` pairs on the fence line and
+ * on lines inside the block (quote values with spaces; `#` lines are comments).
+ * A YAML/JSON body is accepted as a fallback.
+ */
 function parseWidgetBody(body: string, info: string): { props: Record<string, unknown>; error?: string } {
-  const text = body.trim();
   const props: Record<string, unknown> = {};
-  // Inline attributes on the fence line: ```widget:metric ticker=COST metric=roic
-  for (const m of info.matchAll(/([A-Za-z_][\w-]*)=("[^"]*"|'[^']*'|\S+)/g)) {
-    props[m[1]] = m[2].replace(/^["']|["']$/g, '');
+  const kv = /([A-Za-z_][\w-]*)=("[^"]*"|'[^']*'|\S+)/g;
+  for (const m of info.matchAll(kv)) props[m[1]] = coerce(m[1], m[2].replace(/^["']|["']$/g, ''));
+  const lines = body.split('\n').filter((l) => l.trim() && !l.trim().startsWith('#'));
+  const text = lines.join('\n');
+  if (!text.trim()) return { props };
+  if (lines.every((l) => /^\s*([A-Za-z_][\w-]*=("[^"]*"|'[^']*'|\S+)\s*)+$/.test(l))) {
+    for (const m of text.matchAll(kv)) props[m[1]] = coerce(m[1], m[2].replace(/^["']|["']$/g, ''));
+    return { props };
   }
-  if (!text) return { props };
   try {
     const parsed = parseYaml(text);
     if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return { props: { ...props, ...(parsed as object) } };
-    if (Array.isArray(parsed)) return { props: { ...props, items: parsed } };
-    return { props: { ...props, value: parsed } };
+    return { props };
   } catch (e) {
     return { props, error: `Could not read widget settings: ${(e as Error).message.split('\n')[0]}` };
   }
@@ -117,6 +134,8 @@ function parseArticle(file: string, extra: Record<string, unknown> = {}): Articl
     src = src.slice(fm[0].length);
   }
   data = { ...extra, ...data };
+  // One-line widget form: ```widget:quiz lesson=u2-l1``` → two-line form.
+  src = src.replace(/^(`{3,})widget:([A-Za-z0-9_-]+)([^`\n]*)\1[ \t]*$/gm, '$1widget:$2$3\n$1');
   if (data.draft === true) return null;
 
   // Title: frontmatter, else first "# " heading.
@@ -158,15 +177,16 @@ function parseArticle(file: string, extra: Record<string, unknown> = {}): Articl
     slug,
     title,
     description,
-    date: asDate(data.date ?? data.published),
+    date: asDate(data.date ?? data.published ?? data.updated),
     updated: asDate(data.updated),
     tickers: asList(data.tickers ?? data.ticker).map((t) => t.toUpperCase()),
     metrics: asList(data.metrics ?? data.metric),
     tags: asList(data.tags),
     category: typeof data.category === 'string' ? data.category : undefined,
     level: typeof data.level === 'string' ? data.level : undefined,
-    lessonId: typeof data.lesson === 'string' ? data.lesson : typeof data.lesson_id === 'string' ? data.lesson_id : undefined,
-    readingMinutes: typeof data.reading_minutes === 'number' ? data.reading_minutes : Math.max(1, Math.round(words / 220)),
+    lessonId: asList(data.relatedLessons ?? data.lesson ?? data.lesson_id)[0],
+    unitId: typeof data.unit === 'string' ? data.unit : undefined,
+    readingMinutes: typeof data.minutes === 'number' ? data.minutes : typeof data.reading_minutes === 'number' ? data.reading_minutes : Math.max(1, Math.round(words / 220)),
     segments,
     headings,
     data,

@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../components/Icon';
-import { Body, Button, Card, Disclaimer, Eyebrow, Title } from '../components/ui';
+import { Body, Card, Disclaimer, Eyebrow, Title } from '../components/ui';
 import { getLesson } from '../data';
 import { useTheme } from '../theme';
 import { GradeBadge, LabelChip, Money, RunwayChart, SectionTitle, VerdictPill } from './components';
@@ -405,14 +405,31 @@ function TenK({ hub, wide }: { hub: MoneyHub; wide: boolean }) {
                 </Text>
               </View>
               <Text style={{ color: t.c.ink, fontSize: 13, lineHeight: 19 }}>{a.explanation}</Text>
-              <Button
-                variant="secondary"
-                label={lesson ? `Open lesson: ${lesson.lesson.title}` : 'Lesson coming soon'}
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={lesson ? `Open lesson: ${lesson.lesson.title}` : 'Lesson coming soon'}
+                accessibilityState={{ disabled: !lesson }}
                 disabled={!lesson}
                 onPress={() => router.push(`/lesson/${a.lessonId}`)}
-                style={{ paddingVertical: 10 }}
-                icon={<Icon name="book" color={lesson ? t.c.ink : t.c.inkSoft} size={18} />}
-              />
+                style={({ pressed }) => ({
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 8,
+                  alignSelf: 'flex-start',
+                  paddingVertical: 8,
+                  paddingHorizontal: 12,
+                  borderRadius: t.radius.pill,
+                  borderWidth: 1.5,
+                  borderColor: lesson ? t.c.primary : t.c.line,
+                  backgroundColor: pressed ? t.c.primarySoft : 'transparent',
+                })}
+              >
+                <Icon name="book" color={lesson ? t.c.primary : t.c.inkSoft} size={16} />
+                <Text style={{ color: lesson ? t.c.primary : t.c.inkSoft, fontWeight: '800', fontSize: 13 }}>
+                  {lesson ? `Open lesson: ${lesson.lesson.title}` : 'Lesson coming soon'}
+                </Text>
+                {lesson ? <Icon name="chevron" color={t.c.primary} size={14} /> : null}
+              </Pressable>
             </Card>
           );
         })}

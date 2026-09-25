@@ -350,7 +350,7 @@ export function projectExpectedDeposits(streams: IncomeStreamRow[], today: strin
       d = nextOccurrence(d, s.frequency);
     }
   }
-  return out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.streamId.localeCompare(b.streamId)));
+  return out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.streamName.localeCompare(b.streamName) || a.streamId.localeCompare(b.streamId)));
 }
 
 export function buildMoneySummary(rows: MoneyRows, now: Date, horizonDays = MONEY_HORIZON_DAYS): MoneySummary {

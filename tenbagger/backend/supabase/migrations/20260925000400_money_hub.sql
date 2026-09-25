@@ -333,14 +333,20 @@ begin
            (l->>'is_overdue')::boolean, coalesce(l->>'currency', 'USD'), coalesce((l->>'details_available')::boolean, false),
            now(), now()
     from jsonb_array_elements(p_payload->'liabilities') l
+    -- Balance fields always refresh. Statement/payment details refresh only when this sync got them
+    -- (details_available); otherwise the last known details are kept (e.g. PRODUCT_NOT_READY).
     on conflict (linked_item_id, provider_account_id) do update set
       kind = excluded.kind, name = excluded.name, mask = excluded.mask, institution_name = excluded.institution_name,
-      balance_current = excluded.balance_current, credit_limit = excluded.credit_limit,
-      last_statement_balance = excluded.last_statement_balance, last_statement_date = excluded.last_statement_date,
-      minimum_payment_amount = excluded.minimum_payment_amount, next_payment_due_date = excluded.next_payment_due_date,
-      last_payment_amount = excluded.last_payment_amount, last_payment_date = excluded.last_payment_date,
-      apr_percentage = excluded.apr_percentage, is_overdue = excluded.is_overdue, currency = excluded.currency,
-      details_available = excluded.details_available, as_of = now(), updated_at = now();
+      balance_current = excluded.balance_current, credit_limit = excluded.credit_limit, currency = excluded.currency,
+      last_statement_balance = case when excluded.details_available then excluded.last_statement_balance else liabilities.last_statement_balance end,
+      last_statement_date    = case when excluded.details_available then excluded.last_statement_date else liabilities.last_statement_date end,
+      minimum_payment_amount = case when excluded.details_available then excluded.minimum_payment_amount else liabilities.minimum_payment_amount end,
+      next_payment_due_date  = case when excluded.details_available then excluded.next_payment_due_date else liabilities.next_payment_due_date end,
+      last_payment_amount    = case when excluded.details_available then excluded.last_payment_amount else liabilities.last_payment_amount end,
+      last_payment_date      = case when excluded.details_available then excluded.last_payment_date else liabilities.last_payment_date end,
+      apr_percentage         = case when excluded.details_available then excluded.apr_percentage else liabilities.apr_percentage end,
+      is_overdue             = case when excluded.details_available then excluded.is_overdue else liabilities.is_overdue end,
+      details_available = excluded.details_available or liabilities.details_available, as_of = now(), updated_at = now();
     get diagnostics v_liab = row_count;
     select coalesce(array_agg(l->>'provider_account_id'), '{}') into v_ids from jsonb_array_elements(p_payload->'liabilities') l;
     delete from public.liabilities where linked_item_id = p_item_id and not (provider_account_id = any(v_ids));

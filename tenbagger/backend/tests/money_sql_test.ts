@@ -134,7 +134,8 @@ Deno.test("money sql: clients cannot write provider data; may manage manual inco
     await assertRejects(() => db.query(`update income_streams set frequency = 'irregular' where id = $1`, [id]), Error, "check");
     assertEquals((await db.query(`update income_streams set rate = 16, status = 'paused' where id = $1`, [id])).affectedRows, 1);
     // detected streams are read-only for clients
-    assertEquals((await db.query(`update income_streams set average_amount = 9999 where source = 'plaid'`)).affectedRows, 0);
+    await assertRejects(() => db.query(`update income_streams set average_amount = 9999`), Error, "permission denied");
+    assertEquals((await db.query(`update income_streams set description = 'renamed' where source = 'plaid'`)).affectedRows, 0);
     assertEquals((await db.query(`delete from income_streams where source = 'plaid'`)).affectedRows, 0);
     assertEquals((await db.query(`delete from income_streams where id = $1`, [id])).affectedRows, 1);
   });

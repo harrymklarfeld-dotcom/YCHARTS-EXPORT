@@ -1,0 +1,76 @@
+---
+import site from '../../site.config.ts';
+interface Props { source?: string; compact?: boolean; id?: string }
+const { source = 'site', compact = false, id } = Astro.props;
+const w = site.waitlist;
+const fid = `wl-${source}`;
+---
+{site.features.showWaitlist && (
+  <section class={`wl ${compact ? 'wl-compact' : ''}`} id={id} aria-labelledby={`${fid}-h`}>
+    <div class="wl-copy">
+      <h2 id={`${fid}-h`}>{w.heading}</h2>
+      <p>{w.sub}</p>
+    </div>
+    <form class="wl-form" data-waitlist data-endpoint={w.endpoint} data-source={source} data-ok={w.successMessage} data-local={w.localMessage} action={w.endpoint || undefined} method="post">
+      <label for={`${fid}-email`} class="sr-only">Email address</label>
+      <input id={`${fid}-email`} type="email" name="email" required placeholder="you@school.edu" autocomplete="email" />
+      <input type="hidden" name="source" value={source} />
+      <button class="btn btn-primary" type="submit">{w.button}</button>
+      <p class="wl-msg small" data-msg aria-live="polite"></p>
+    </form>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('form[data-waitlist]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const msg = form.querySelector<HTMLElement>('[data-msg]')!;
+      const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+      const source = form.dataset.source ?? 'site';
+      const endpoint = form.dataset.endpoint;
+      const btn = form.querySelector('button');
+      if (btn) btn.disabled = true;
+      try {
+        if (endpoint) {
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ email, source }),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          msg.textContent = form.dataset.ok ?? 'Thanks!';
+        } else {
+          try {
+            const list = JSON.parse(localStorage.getItem('waitlist') ?? '[]');
+            list.push({ email, source, at: new Date().toISOString() });
+            localStorage.setItem('waitlist', JSON.stringify(list));
+          } catch {}
+          msg.textContent = form.dataset.local ?? 'Saved.';
+        }
+        msg.classList.add('ok');
+        form.reset();
+      } catch {
+        msg.textContent = 'Something went wrong. Please try again in a minute.';
+        msg.classList.remove('ok');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style is:global>
+  .wl { display: grid; gap: 20px; align-items: center; background: var(--ink); color: var(--bg); border-radius: 12px; padding: clamp(24px, 4vw, 44px); }
+  .wl h2 { color: var(--bg); margin-bottom: 6px; }
+  .wl p { margin: 0; opacity: 0.85; }
+  @media (min-width: 860px) { .wl { grid-template-columns: 1fr 1.1fr; } }
+  .wl-form { display: flex; flex-wrap: wrap; gap: 10px; }
+  .wl-form input[type='email'] { flex: 1 1 220px; background: var(--bg); border-color: transparent; }
+  .wl-form .btn-primary { background: var(--signal); border-color: var(--signal); color: #fff; }
+  .wl-msg { flex-basis: 100%; min-height: 1.4em; }
+  .wl-msg.ok { color: var(--accent-soft); font-weight: 600; opacity: 1; }
+  .wl-compact { background: var(--surface); color: var(--ink); border: 1px solid var(--rule); }
+  .wl-compact h2 { color: var(--ink); font-size: 1.5rem; }
+  .wl-compact .wl-msg.ok { color: var(--positive); }
+</style>

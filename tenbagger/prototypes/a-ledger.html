@@ -41,7 +41,7 @@ a { color: inherit; }
 /* Direction label */
 .dir { display: flex; gap: 16px; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--rule); background: var(--paper); }
 .dir b { font: 600 11px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--primary); }
-.dir p { margin: 2px 0 0; font-size: 13px; color: var(--ink-soft); max-width: 70ch; }
+.dir p { margin: 2px 0 0; font-size: 13px; color: var(--ink-soft); max-width: 110ch; }
 .dir-tools { display: flex; gap: 8px; flex-shrink: 0; }
 .chipbtn { border: 1px solid var(--rule); background: transparent; border-radius: 999px; padding: 6px 12px; font-size: 13px; text-decoration: none; white-space: nowrap; }
 
@@ -237,9 +237,17 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   .device-cap { display: none; }
   .landing { padding: 0 16px; }
   .l-mast nav { display: none; }
-  .dir p { display: none; }
+  .dir { flex-wrap: wrap; gap: 6px 12px; padding: 8px 16px; }
+  .dir > div:first-child { display: contents; }
+  .dir b { order: 1; white-space: nowrap; }
+  .dir-tools { order: 2; margin-left: auto; }
+  .dir p { order: 3; flex-basis: 100%; font-size: 12px; line-height: 1.35; margin: 0; }
+  .chipbtn { padding: 4px 10px; font-size: 12px; }
+  .phone { height: min(760px, calc(100svh - 96px)); }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+.lwrap { min-height: 100%; display: flex; flex-direction: column; }
+.lwrap > .lfoot { margin-top: auto; }
 </style>
 </head>
 <body>
@@ -470,7 +478,7 @@ function runway(includePending) {
 }
 
 /* ---- State, rendering loop and delegated events ---- */
-const S = { tab: 'learn', view: null, q: 0, pick: null, checked: false, right: 0, hearts: 5, xp: 140, goal: 20, today: 0, streak: 6,
+const S = { tab: 'learn', view: null, q: 0, pick: null, checked: false, right: 0, hearts: 5, xp: 140, goal: 20, today: 6, completed: false, streak: 6,
   preset: 'quality', sortK: null, sortD: -1, ticker: 'MSFT', hist: 'revenue', pending: true, done: false, intro: true };
 
 function themeCycle() {
@@ -494,7 +502,7 @@ const ACT = {
   },
   next() {
     if (S.q < LQ.length - 1) { S.q++; S.pick = null; S.checked = false; }
-    else { S.done = true; S.today = Math.min(S.goal, S.today + D.lesson.xp + S.right * 2); S.xp += D.lesson.xp + S.right * 2; }
+    else { S.done = true; S.completed = true; S.today = Math.min(S.goal, S.today + D.lesson.xp + S.right * 2); S.xp += D.lesson.xp + S.right * 2; }
   },
   exit() { S.view = null; S.tab = 'learn'; },
   preset(v) { S.preset = v; S.sortK = null; S.sortD = -1; },
@@ -513,7 +521,7 @@ function render() {
   app.innerHTML = R.render(S);
   const tb = document.getElementById('tabbar');
   if (tb) {
-    tb.hidden = !!S.view;
+    tb.style.display = S.view ? 'none' : '';
     tb.querySelectorAll('[data-act="tab"]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.v === S.tab && !S.view)));
   }
   if (key !== lastKey) { app.scrollTop = 0; lastKey = key; }
@@ -539,7 +547,7 @@ window.addEventListener('DOMContentLoaded', render);
 <script>
 const X_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 const R = {
-  render(S) { return S.view === 'lesson' ? R.lesson(S) : R[S.tab](S); },
+  render(S) { return S.view === 'lesson' ? `<div class="lwrap">${R.lesson(S)}</div>` : R[S.tab](S); },
 
   learn(S) {
     const units = D.units.slice(0, 4);
@@ -561,7 +569,8 @@ const R = {
         <section class="unit">
           <span class="kicker">Unit ${ui + 1}</span><h3>${u.title}</h3><p>${u.summary}</p>
           ${u.lessons.map((l, li) => {
-            const st = ui === 0 || (ui === 1 && li === 0 && S.today >= S.goal) ? 'done' : ui === 1 && li === 0 ? 'cur' : 'lock';
+            const pos = ui * 10 + li, cur = S.completed ? 11 : 10;
+            const st = pos < cur ? 'done' : pos === cur ? 'cur' : 'lock';
             const lab = st === 'done' ? 'Read ✓' : st === 'cur' ? 'Continue →' : 'Locked';
             return `<button class="les ${st}" ${st !== 'lock' ? 'data-act="start"' : 'disabled'}><span class="n num">${ui + 1}.${li + 1}</span><span class="t">${l.title}</span><span class="s">${lab}</span></button>`;
           }).join('')}

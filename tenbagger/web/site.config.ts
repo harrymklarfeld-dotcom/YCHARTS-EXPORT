@@ -199,6 +199,8 @@ export const site = {
     lessons: '../data/lessons.json',
     articlesDir: '../content/articles',
     articlesIndex: '../data/articles.json',
+    /** Widget spec + metric catalog + data provenance written by the content agent. */
+    widgetsSpec: '../content/widgets.json',
   },
 
   /** Lesson used for the playable demo on the landing page, and how many questions to play. */
