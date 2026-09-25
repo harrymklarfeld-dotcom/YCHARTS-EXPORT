@@ -1,0 +1,92 @@
+---
+/** Programmatic SEO page per metric: explainer, formula, ranking, related lessons & articles. */
+import site from '../../../site.config.ts';
+import Base from '../../layouts/Base.astro';
+import SampleBanner from '../../components/SampleBanner.astro';
+import CompareWidget from '../../components/widgets/CompareWidget.astro';
+import { METRIC_CATALOG, type MetricInfo } from '../../../../packages/screener/src/index.ts';
+import { companies, lessonsForMetric, shortName, tickerSlug } from '../../lib/data.ts';
+import { articlesForMetric } from '../../lib/articles.ts';
+import { cents } from '../../lib/company.ts';
+
+export function getStaticPaths() {
+  return METRIC_CATALOG.map((m) => ({ params: { metric: m.key.replace(/_/g, '-') }, props: { info: m } }));
+}
+const { info } = Astro.props as { info: MetricInfo };
+const all = companies();
+const get = (c: (typeof all)[number]) => ((c.metrics as Record<string, unknown>)[info.key] ?? (c.fundamentals as Record<string, unknown>)[info.key] ?? null) as number | null;
+const ranked = all.filter((c) => typeof get(c) === 'number').sort((a, b) => (get(b) as number) - (get(a) as number));
+const missing = all.filter((c) => typeof get(c) !== 'number');
+const lessons = lessonsForMetric(info.key).slice(0, 4);
+const arts = articlesForMetric(info.key);
+const usesPrice = ['market_cap', 'enterprise_value', 'pe', 'ps', 'pb', 'ev_ebitda', 'fcf_yield', 'earnings_yield', 'dividend_yield'].includes(info.key);
+const top = ranked[0];
+const dirText = info.higherIsBetter === true ? 'Generally, higher is better, but always compare within an industry.' : info.higherIsBetter === false ? 'Generally, lower is considered better, but context matters.' : 'Neither higher nor lower is better on its own; it depends on the business.';
+const description = `${info.label}${info.shortLabel !== info.label ? ` (${info.shortLabel})` : ''} explained in plain English: ${info.explainer}`.slice(0, 158);
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  name: info.label,
+  alternateName: info.shortLabel,
+  description: info.explainer,
+  inDefinedTermSet: `${site.url}/metrics/`,
+};
+---
+<Base title={`What is ${info.label}${info.shortLabel !== info.label ? ` (${info.shortLabel})` : ''}?`} description={description} jsonLd={ld}>
+  <div class="wrap narrow">
+    <header class="page-head">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/metrics/">Metrics</a><span aria-hidden="true">/</span>{info.shortLabel}</nav>
+      <p class="kicker">{info.category}</p>
+      <h1>What is {info.label.toLowerCase()}?</h1>
+      <p class="lede">{info.explainer}</p>
+    </header>
+    <section class="m-block">
+      {info.formula && <p><span class="widget-kicker">Formula</span><br /><span class="formula">{info.shortLabel} = {info.formula}</span></p>}
+      <p>{dirText}</p>
+      {top && info.unit === 'percent' && typeof get(top) === 'number' && (
+        <p class="m-example">Example: <a href={`/companies/${tickerSlug(top.ticker)}/`}>{shortName(top.name)}</a> has the highest {info.shortLabel} of the companies we cover, at {info.format(get(top))}, or about {cents(get(top) as number)} per dollar.</p>
+      )}
+    </section>
+
+    {ranked.length >= 2 && (
+      <section class="m-block">
+        <h2>{info.label} across companies</h2>
+        {(usesPrice || all.length > 0) && <SampleBanner />}
+        <div style="margin-top:16px">
+          <CompareWidget tickers={ranked.slice(0, 6).map((c) => c.ticker)} metric={info.key} caption={ranked.length > 6 ? `Top 6 of ${ranked.length}. Full list below.` : undefined} />
+        </div>
+        <div class="table-wrap" style="margin-top:16px">
+          <table class="data">
+            <thead><tr><th scope="col">#</th><th scope="col">Company</th><th scope="col">Sector</th><th scope="col" class="n">{info.shortLabel}</th></tr></thead>
+            <tbody>
+              {ranked.map((c, i) => (
+                <tr><td class="n">{i + 1}</td><td><a href={`/companies/${tickerSlug(c.ticker)}/`}><span class="ticker">{c.ticker}</span> {shortName(c.name)}</a></td><td class="muted">{c.sector}</td><td class="n">{info.format(get(c))}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {missing.length > 0 && <p class="small muted">Not available for {missing.map((c) => c.ticker).join(', ')} (for example, when a company reports a loss or its statements don’t have this line).</p>}
+        <p class="small muted">A ranking is a study aid, not a recommendation.</p>
+      </section>
+    )}
+
+    {(lessons.length > 0 || arts.length > 0) && (
+      <section class="m-block">
+        <h2>Practice it</h2>
+        <ul class="m-links">
+          {arts.map((a) => <li><a href={`/learn/${a.slug}/`}>{a.title}</a> <span class="muted small">· explainer</span></li>)}
+          {lessons.map(({ unit, lesson }) => <li><a href={`/app/?lesson=${lesson.id}`}>{lesson.title}</a> <span class="muted small">· lesson in “{unit.title}”, {lesson.questions.length} questions</span></li>)}
+        </ul>
+      </section>
+    )}
+    <p class="m-screen"><a class="btn" href={`/screener/?q=${encodeURIComponent(info.shortLabel + ' > 0')}`}>Screen by {info.shortLabel}</a></p>
+  </div>
+</Base>
+<style>
+  .m-block { margin-bottom: 40px; }
+  .m-block h2 { font-size: 1.6rem; }
+  .m-example { font-family: var(--font-display); font-size: 1.2rem; }
+  .m-links { padding-left: 1.2em; }
+  .m-links li { margin: 6px 0; }
+  .m-screen { padding-bottom: 64px; }
+</style>

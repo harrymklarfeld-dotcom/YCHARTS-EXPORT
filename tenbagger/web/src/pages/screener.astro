@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import Screener from '../components/Screener.astro';
+import SampleBanner from '../components/SampleBanner.astro';
+import { PRESET_SCREENS } from '../../../packages/screener/src/index.ts';
+---
+<Base title="Stock screener for learners" description={`A plain-English stock screener with ${PRESET_SCREENS.length} teaching presets. Type "roic > 15% and pe < 25" and see why each company passes.`}>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Screener</p>
+      <h1>Ask the market a question.</h1>
+      <p class="lede">Pick a preset or type a screen in plain English. Every result says why it passed, and every preset says what it can miss.</p>
+      <SampleBanner />
+    </header>
+    <div class="scr"><Screener /></div>
+  </div>
+</Base>
+<style>.scr { padding-bottom: 72px; }</style>

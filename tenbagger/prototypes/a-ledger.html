@@ -243,7 +243,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   .dir-tools { order: 2; margin-left: auto; }
   .dir p { order: 3; flex-basis: 100%; font-size: 12px; line-height: 1.35; margin: 0; }
   .chipbtn { padding: 4px 10px; font-size: 12px; }
-  .phone { height: min(760px, calc(100svh - 96px)); }
+  .phone { height: min(760px, calc(100svh - var(--dir-h, 96px))); }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
 .lwrap { min-height: 100%; display: flex; flex-direction: column; }
@@ -541,7 +541,9 @@ document.addEventListener('keydown', (e) => {
   if (n >= 1 && n <= Q.choices(q).length && !S.checked) { ACT.pick(n - 1); render(); }
   else if (e.key === 'Enter') { S.checked ? ACT.next() : ACT.check(); render(); }
 });
-window.addEventListener('DOMContentLoaded', render);
+function fitHeader() { const h = document.querySelector('.dir'); if (h) document.documentElement.style.setProperty('--dir-h', h.offsetHeight + 'px'); }
+window.addEventListener('resize', fitHeader);
+window.addEventListener('DOMContentLoaded', () => { fitHeader(); render(); });
 
 </script>
 <script>

@@ -257,12 +257,12 @@ details.more summary { font-weight: 800; font-size: 13px; cursor: pointer; color
 .trust span { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; border: 2px dashed var(--ink-soft); color: var(--ink-soft); }
 .collage { position: relative; height: 330px; }
 .collage .card { position: absolute; padding: 14px; }
-.c1 { left: 0; top: 30px; width: 88%; transform: rotate(-3deg); }
+.c1 { left: 0; top: 0; width: 86%; transform: rotate(-3deg); }
 .c1 .prompt { font-size: 17px; margin: 8px 0 10px; }
 .c1 .tiles.two .tile { min-height: 64px; padding: 8px; font-size: 14px; }
-.c2 { right: 0; top: 0; background: var(--sun) !important; color: #16213A; transform: rotate(5deg); text-align: center; width: 128px; }
+.c2 { left: 14px; bottom: 6px; background: var(--sun) !important; color: #16213A; transform: rotate(5deg); text-align: center; width: 128px; }
 .c2 strong { font: 800 44px/1 var(--display); display: block; }
-.c3 { right: 10px; bottom: 0; background: var(--go) !important; color: var(--go-ink); transform: rotate(-4deg); font: 800 16px var(--display); }
+.c3 { right: 6px; bottom: 34px; background: var(--go) !important; color: var(--go-ink); transform: rotate(-4deg); font: 800 16px var(--display); }
 .feats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .feat { padding: 18px; }
 .feat .ic { width: 52px; height: 52px; border-radius: 16px; border: 2px solid var(--line); display: grid; place-items: center; box-shadow: 0 3px 0 var(--line); margin-bottom: 12px; }
@@ -290,7 +290,7 @@ details.more summary { font-weight: 800; font-size: 13px; cursor: pointer; color
 @media (max-width: 860px) {
   .stage { grid-template-columns: 1fr; padding: 0 0 48px; gap: 28px; }
   .device { position: static; order: -1; }
-  .phone { width: 100%; height: min(760px, calc(100svh - 96px)); border-radius: 0; border: 0; border-bottom: 3px solid var(--line); box-shadow: none; }
+  .phone { width: 100%; height: min(760px, calc(100svh - var(--dir-h, 96px))); border-radius: 0; border: 0; border-bottom: 3px solid var(--line); box-shadow: none; }
   .device-cap { display: none; }
   .landing { padding: 0 16px; }
   .dir { flex-wrap: wrap; gap: 6px 12px; padding: 8px 16px; }
@@ -598,7 +598,9 @@ document.addEventListener('keydown', (e) => {
   if (n >= 1 && n <= Q.choices(q).length && !S.checked) { ACT.pick(n - 1); render(); }
   else if (e.key === 'Enter') { S.checked ? ACT.next() : ACT.check(); render(); }
 });
-window.addEventListener('DOMContentLoaded', render);
+function fitHeader() { const h = document.querySelector('.dir'); if (h) document.documentElement.style.setProperty('--dir-h', h.offsetHeight + 'px'); }
+window.addEventListener('resize', fitHeader);
+window.addEventListener('DOMContentLoaded', () => { fitHeader(); render(); });
 
 </script>
 <script>

@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { METRIC_CATALOG } from '../../../../packages/screener/src/index.ts';
+const groups = new Map<string, typeof METRIC_CATALOG[number][]>();
+for (const m of METRIC_CATALOG) groups.set(m.category, [...(groups.get(m.category) ?? []), m]);
+const slug = (k: string) => k.replace(/_/g, '-');
+---
+<Base title="Financial metrics explained" description="Every metric in a company's financials explained in plain English, with the formula and real companies ranked.">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Metrics</p>
+      <h1>Every number in a 10-K, explained.</h1>
+      <p class="lede">What it measures, how it’s calculated, and how real companies compare.</p>
+    </header>
+    <div class="mgrid">
+      {[...groups.entries()].map(([cat, list]) => (
+        <section>
+          <h2>{cat[0].toUpperCase() + cat.slice(1)}</h2>
+          <ul>
+            {list.map((m) => (
+              <li><a href={`/metrics/${slug(m.key)}/`}>{m.label}</a><span class="muted small"> {m.shortLabel !== m.label ? `· ${m.shortLabel}` : ''}</span></li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </div>
+</Base>
+<style>
+  .mgrid { display: grid; gap: 28px 40px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); padding-bottom: 64px; }
+  .mgrid h2 { font-size: 1.3rem; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+  .mgrid ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .mgrid a { font-weight: 600; text-decoration: none; }
+  .mgrid a:hover { text-decoration: underline; }
+</style>

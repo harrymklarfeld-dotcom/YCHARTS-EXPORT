@@ -28,6 +28,7 @@ CATEGORIES = (
 @dataclass(frozen=True)
 class FundSpec:
     ticker: str
+    name: str
     issuer: str
     category: str
     # Some ETFs are not '40-Act funds and never file N-PORT (unit investment trusts such as
@@ -42,20 +43,20 @@ class FundSpec:
 
 
 FUNDS: tuple[FundSpec, ...] = (
-    FundSpec("VOO", "Vanguard", "US Large Cap", sample_expense_ratio=0.0003),
-    FundSpec("VTI", "Vanguard", "Total Market", sample_expense_ratio=0.0003),
-    FundSpec("QQQ", "Invesco", "Nasdaq-100", nport_proxy="QQQM", files_nport=False,
+    FundSpec("VOO", "Vanguard S&P 500 ETF", "Vanguard", "US Large Cap", sample_expense_ratio=0.0003),
+    FundSpec("VTI", "Vanguard Total Stock Market ETF", "Vanguard", "Total Market", sample_expense_ratio=0.0003),
+    FundSpec("QQQ", "Invesco QQQ Trust", "Invesco", "Nasdaq-100", nport_proxy="QQQM", files_nport=False,
              note="QQQ is a unit investment trust and does not file N-PORT; live builds read "
                   "QQQM (same index, open-end fund) instead.",
              sample_expense_ratio=0.0020),
-    FundSpec("SCHD", "Schwab", "Dividend", sample_expense_ratio=0.0006),
-    FundSpec("XLV", "State Street", "Sector – Health Care", sample_expense_ratio=0.0008),
-    FundSpec("XLE", "State Street", "Sector – Energy", sample_expense_ratio=0.0008),
-    FundSpec("GLD", "State Street", "Gold", files_nport=False,
+    FundSpec("SCHD", "Schwab U.S. Dividend Equity ETF", "Schwab", "Dividend", sample_expense_ratio=0.0006),
+    FundSpec("XLV", "Health Care Select Sector SPDR Fund", "State Street", "Sector – Health Care", sample_expense_ratio=0.0008),
+    FundSpec("XLE", "Energy Select Sector SPDR Fund", "State Street", "Sector – Energy", sample_expense_ratio=0.0008),
+    FundSpec("GLD", "SPDR Gold Shares", "State Street", "Gold", files_nport=False,
              note="GLD is a grantor trust holding gold bars; it files 10-K/10-Q, not N-PORT. "
                   "Its holdings are modelled as a single commodity position.",
              sample_expense_ratio=0.0040),
-    FundSpec("HACK", "Amplify", "Cybersecurity", sample_expense_ratio=0.0060),
+    FundSpec("HACK", "Amplify Cybersecurity ETF", "Amplify", "Cybersecurity", sample_expense_ratio=0.0060),
 )
 
 FUND_BY_TICKER = {f.ticker: f for f in FUNDS}

@@ -1,0 +1,23 @@
+---
+import site from '../../site.config.ts';
+import Base from '../layouts/Base.astro';
+import Pricing from '../components/Pricing.astro';
+import Faq from '../components/Faq.astro';
+import Waitlist from '../components/Waitlist.astro';
+const tiers = site.pricing.tiers.map((t) => `${t.name} ${t.price}${t.period.startsWith('/') ? t.period : ''}`).join(', ');
+---
+<Base title="Pricing" description={`${site.name} pricing: ${tiers}.`} noindex={!site.features.showPricing}>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Pricing</p>
+      <h1>Simple plans. No weekly traps.</h1>
+      <p class="lede">The daily habit is free for good. Pro unlocks everything; students pay about half.</p>
+    </header>
+    {site.features.showPricing ? <Pricing /> : <p class="muted">Pricing will be announced at launch.</p>}
+    <section class="section" style="border-top:0">
+      <h2>Questions</h2>
+      <Faq items={site.faq.filter((f) => /cost|advice|money hub|lend/i.test(f.q))} />
+    </section>
+    <div style="padding-bottom:64px"><Waitlist source="pricing" /></div>
+  </div>
+</Base>

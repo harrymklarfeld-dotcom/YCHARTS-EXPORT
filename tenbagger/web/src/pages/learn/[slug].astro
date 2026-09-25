@@ -1,0 +1,101 @@
+---
+/** Article page: markdown + ```widget:*``` blocks rendered as components/islands. */
+import site from '../../../site.config.ts';
+import Base from '../../layouts/Base.astro';
+import Widget from '../../components/widgets/Widget.astro';
+import Waitlist from '../../components/Waitlist.astro';
+import { articles, type Article } from '../../lib/articles.ts';
+import { companyByTicker, findLesson, lessonsFile, shortName, tickerSlug } from '../../lib/data.ts';
+import { getMetricInfo } from '../../../../packages/screener/src/index.ts';
+
+export function getStaticPaths() {
+  const list = articles();
+  return list.map((a, i) => ({ params: { slug: a.slug }, props: { article: a, prev: list[i - 1] ?? null, next: list[i + 1] ?? null } }));
+}
+const { article: a, next } = Astro.props as { article: Article; prev: Article | null; next: Article | null };
+const unit = lessonsFile().units.find((u) => u.id === a.unitId);
+const lesson = a.lessonId ? findLesson(a.lessonId) : null;
+// Tickers used in widgets (for "companies in this article")
+const used = new Set<string>(a.tickers);
+for (const s of a.segments) if (s.kind === 'widget') {
+  const p = s.props as Record<string, unknown>;
+  if (typeof p.ticker === 'string') used.add(p.ticker.toUpperCase());
+  if (Array.isArray(p.tickers)) p.tickers.forEach((t) => used.add(String(t).toUpperCase()));
+}
+const cos = [...used].map((t) => companyByTicker(t)).filter((c) => !!c);
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: a.title,
+  description: a.description,
+  ...(a.date ? { datePublished: a.date, dateModified: a.updated ?? a.date } : {}),
+  author: { '@type': 'Organization', name: site.name },
+  publisher: { '@type': 'Organization', name: site.name },
+  mainEntityOfPage: `${site.url}/learn/${a.slug}/`,
+  isAccessibleForFree: true,
+};
+---
+<Base title={a.title} description={a.description} ogType="article" jsonLd={ld}>
+  <article class="wrap art">
+    <header class="page-head art-head">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/learn/">Learn</a>{unit && <><span aria-hidden="true">/</span>{unit.title}</>}</nav>
+      <p class="kicker">{[a.level, `${a.readingMinutes} min read`].filter(Boolean).join(' · ')}</p>
+      <h1>{a.title}</h1>
+      {a.description && <p class="lede">{a.description}</p>}
+      {a.updated && <p class="small muted">Updated <time datetime={a.updated}>{a.updated}</time></p>}
+    </header>
+    <div class="art-grid">
+      <div class="prose">
+        {a.segments.map((s) => (s.kind === 'html' ? <Fragment set:html={s.html} /> : <div class="widget-slot"><Widget type={s.type} props={s.props} raw={s.raw} error={s.error} /></div>))}
+        <hr />
+        <p class="small muted">{site.disclaimer}</p>
+      </div>
+      <aside class="art-side">
+        {a.headings.length > 1 && (
+          <nav class="toc" aria-label="On this page">
+            <p class="widget-kicker">On this page</p>
+            <ol>{a.headings.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}</ol>
+          </nav>
+        )}
+        {a.metrics.length > 0 && (
+          <div class="toc">
+            <p class="widget-kicker">Metrics in this article</p>
+            <ul>{a.metrics.filter((m) => getMetricInfo(m)).map((m) => <li><a href={`/metrics/${m.replace(/_/g, '-')}/`}>{getMetricInfo(m)!.label}</a></li>)}</ul>
+          </div>
+        )}
+        {cos.length > 0 && (
+          <div class="toc">
+            <p class="widget-kicker">Companies</p>
+            <ul>{cos.map((c) => <li><a href={`/companies/${tickerSlug(c!.ticker)}/`}>{shortName(c!.name)}</a></li>)}</ul>
+          </div>
+        )}
+        {lesson && (
+          <a class="card side-lesson" href={`/app/?lesson=${lesson.lesson.id}`}>
+            <span class="widget-kicker">Practice lesson</span>
+            <strong>{lesson.lesson.title}</strong>
+            <span class="small muted">{lesson.lesson.questions.length} questions · 3 min</span>
+          </a>
+        )}
+      </aside>
+    </div>
+    {next && (
+      <a class="next" href={`/learn/${next.slug}/`}><span class="widget-kicker">Next explainer</span><span class="next-title">{next.title} →</span></a>
+    )}
+    <div class="art-cta"><Waitlist source={`article-${a.slug}`} compact /></div>
+  </article>
+</Base>
+<style>
+  .art-head h1 { max-width: 20em; }
+  .art-grid { display: grid; gap: 40px; }
+  @media (min-width: 1060px) { .art-grid { grid-template-columns: minmax(0, 700px) 280px; justify-content: space-between; } .art-side { position: sticky; top: 84px; align-self: start; } }
+  .widget-slot { margin: 1.8em 0; font-size: 1rem; }
+  .art-side { display: grid; gap: 22px; align-content: start; }
+  .toc ol, .toc ul { padding-left: 1.1em; margin: 0; display: grid; gap: 6px; font-size: 0.93rem; }
+  .toc a { text-decoration: none; color: var(--ink); }
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+  .side-lesson { display: grid; gap: 4px; text-decoration: none; color: var(--ink); border-left: 4px solid var(--accent); }
+  .next { display: grid; gap: 4px; margin: 48px 0 32px; padding: 22px 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink); }
+  .next-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; }
+  .next:hover .next-title { color: var(--accent); }
+  .art-cta { padding-bottom: 64px; }
+</style>

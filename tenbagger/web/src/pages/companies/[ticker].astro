@@ -1,0 +1,203 @@
+---
+/**
+ * Programmatic SEO page: one per company in data/companies.json.
+ */
+import site from '../../../site.config.ts';
+import Base from '../../layouts/Base.astro';
+import HistoryChart from '../../components/HistoryChart.astro';
+import SampleBanner from '../../components/SampleBanner.astro';
+import Waitlist from '../../components/Waitlist.astro';
+import LessonPlayer from '../../components/LessonPlayer.astro';
+import { companies, questionsForTicker, shortName, tickerSlug, type Company } from '../../lib/data.ts';
+import { articlesForTicker } from '../../lib/articles.ts';
+import { breakdown, KEY_METRICS, fmt, getMetricInfo, rankOf } from '../../lib/company.ts';
+import { isSampleFundamentals } from '../../lib/widgets.ts';
+
+export function getStaticPaths() {
+  return companies().map((c) => ({ params: { ticker: tickerSlug(c.ticker) }, props: { company: c } }));
+}
+const { company: c } = Astro.props as { company: Company };
+const all = companies();
+const name = shortName(c.name);
+const sentences = breakdown(c);
+const priceKeys = new Set(['market_cap', 'enterprise_value', 'pe', 'ps', 'pb', 'ev_ebitda', 'fcf_yield', 'earnings_yield', 'dividend_yield']);
+const metricSlug = (k: string) => k.replace(/_/g, '-');
+const h = c.history ?? {};
+const charts = [
+  { key: 'revenue', title: 'Revenue', unit: 'usd' as const },
+  { key: 'net_income', title: 'Net income', unit: 'usd' as const },
+  { key: 'free_cash_flow', title: 'Free cash flow', unit: 'usd' as const },
+  { key: 'gross_margin', title: 'Gross margin', unit: 'percent' as const, kind: 'line' as const },
+  { key: 'operating_margin', title: 'Operating margin', unit: 'percent' as const, kind: 'line' as const },
+  { key: 'eps_diluted', title: 'Diluted EPS', unit: 'usd' as const },
+].filter((x) => (h[x.key]?.filter((p) => p[1] !== null).length ?? 0) >= 2);
+const practice = questionsForTicker(c.ticker).slice(0, 3);
+const related = articlesForTicker(c.ticker);
+const peers = all.filter((x) => x.ticker !== c.ticker && x.sector === c.sector).slice(0, 6);
+const others = all.filter((x) => x.ticker !== c.ticker && x.sector !== c.sector).slice(0, Math.max(0, 6 - peers.length));
+const sample = isSampleFundamentals(c);
+const description = `${name} (${c.ticker}) financials in plain English: ${sentences[1]?.text ?? sentences[0]?.text ?? ''}`.slice(0, 158);
+const fmtFy = `FY${c.latest_fy}`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: `${name} (${c.ticker}) financials explained`,
+    description,
+    about: { '@type': 'Corporation', name: c.name, tickerSymbol: c.ticker, ...(c.cik ? { identifier: `CIK ${c.cik}` } : {}) },
+    isAccessibleForFree: true,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Companies', item: site.url + '/companies/' },
+      { '@type': 'ListItem', position: 3, name: `${name} (${c.ticker})`, item: `${site.url}/companies/${tickerSlug(c.ticker)}/` },
+    ],
+  },
+];
+---
+<Base title={`${name} (${c.ticker}) financials explained`} description={description} jsonLd={jsonLd}>
+  <div class="wrap">
+    <header class="page-head co-head">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/companies/">Companies</a><span aria-hidden="true">/</span>{c.ticker}</nav>
+      <p class="kicker">{c.sector} · {c.industry}</p>
+      <h1><span class="ticker co-ticker">{c.ticker}</span> {name}, explained</h1>
+      <p class="lede">What {name}’s {fmtFy} annual report says, in plain English. Fiscal year ends {c.fiscal_year_end.replace('-', '/')} (month/day).</p>
+      <SampleBanner company={c} />
+    </header>
+
+    <div class="co-layout">
+      <div class="co-main">
+        <section aria-labelledby="pe-h" class="co-section">
+          <h2 id="pe-h">The business in plain English</h2>
+          <ol class="plain">
+            {sentences.map((s) => (
+              <li>
+                <span class="plain-label">{s.label}</span>
+                <p>{s.text} {s.metric && <a class="small" href={`/metrics/${metricSlug(s.metric)}/`}>What’s this?</a>}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section aria-labelledby="km-h" class="co-section">
+          <h2 id="km-h">Key metrics, {fmtFy}</h2>
+          {KEY_METRICS.map((g) => (
+            <div class="km-group">
+              <h3>{g.group}</h3>
+              <div class="km-grid">
+                {g.keys.map((k) => {
+                  const info = getMetricInfo(k)!;
+                  const v = (c.metrics as Record<string, number | null>)[k] ?? (c.fundamentals as Record<string, number | null>)[k] ?? null;
+                  const rk = v !== null && all.length > 2 ? rankOf(all, k, c.ticker) : null;
+                  const peer = rk ? (rk.rank === 1 ? `Highest of ${rk.of} companies we cover` : rk.rank === rk.of ? `Lowest of ${rk.of} companies we cover` : `Ranks #${rk.rank} of ${rk.of} companies we cover (highest first)`) : null;
+                  return (
+                    <a class="km" href={`/metrics/${metricSlug(k)}/`}>
+                      <span class="km-label">{info.label}</span>
+                      <span class="km-val num">{fmt(k, v)}{priceKeys.has(k) && c.price_is_sample && <span class="km-flag" title="Uses a sample share price">sample price</span>}</span>
+                      <span class="km-exp">{v === null ? 'Not meaningful for this company (for example, banks don’t report gross margin).' : info.explainer}</span>
+                      {peer && <span class="km-peer">{peer}</span>}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {charts.length > 0 && (
+          <section aria-labelledby="hist-h" class="co-section">
+            <h2 id="hist-h">History</h2>
+            <div class="chart-grid">
+              {charts.map((ch) => <HistoryChart series={h[ch.key] ?? []} title={ch.title} unit={ch.unit} kind={ch.kind ?? 'bar'} />)}
+            </div>
+            <p class="small muted">Annual figures by fiscal year. Hover or tap a year to see its value.</p>
+          </section>
+        )}
+
+        <section aria-labelledby="fin-h" class="co-section">
+          <h2 id="fin-h">The raw numbers</h2>
+          <div class="table-wrap">
+            <table class="data">
+              <caption class="sr-only">{name} {fmtFy} fundamentals</caption>
+              <thead><tr><th scope="col">Line item ({fmtFy})</th><th scope="col" class="n">Value</th></tr></thead>
+              <tbody>
+                {Object.entries(c.fundamentals).map(([k, v]) => (
+                  <tr><td><a href={`/metrics/${metricSlug(k)}/`}>{getMetricInfo(k)?.label ?? k}</a></td><td class="n">{fmt(k, v as number | null)}</td></tr>
+                ))}
+                <tr><td>Share price{c.price_is_sample ? ' (sample)' : ''}, {c.price_date}</td><td class="n">{c.price === null ? '—' : `$${c.price.toFixed(2)}`}</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">Source: {sample ? 'development sample data modeled on' : ''} {c.name} 10-K filings{c.cik ? <> (SEC CIK <a href={`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${c.cik}&type=10-K`} rel="nofollow noopener">{c.cik}</a>)</> : ''}. Values in US dollars.</p>
+        </section>
+      </div>
+
+      <aside class="co-side">
+        <div class="card practice">
+          <p class="widget-kicker">Practice with {c.ticker}</p>
+          <h2 class="practice-h">Can you read {name}’s numbers?</h2>
+          {practice.length > 0 ? (
+            <LessonPlayer lesson={null} questions={practice} showIntro={false} ctaHref={site.features.showWaitlist ? '/#waitlist' : '/app/'} ctaLabel="Get the app" />
+          ) : (
+            <p class="muted">Lessons using {name} are coming soon.</p>
+          )}
+        </div>
+        {related.length > 0 && (
+          <div class="card">
+            <p class="widget-kicker">Explainers using {c.ticker}</p>
+            <ul class="side-list">{related.map((a) => <li><a href={`/learn/${a.slug}/`}>{a.title}</a></li>)}</ul>
+          </div>
+        )}
+        <div class="card">
+          <p class="widget-kicker">{peers.length ? `Other ${c.sector} companies` : 'More companies'}</p>
+          <ul class="side-list">
+            {[...peers, ...others].map((p) => <li><a href={`/companies/${tickerSlug(p.ticker)}/`}><span class="ticker">{p.ticker}</span> {shortName(p.name)}</a></li>)}
+          </ul>
+          <a class="small" href="/companies/">All companies →</a>
+        </div>
+      </aside>
+    </div>
+    <div class="co-cta"><Waitlist source={`company-${c.ticker}`} compact /></div>
+  </div>
+</Base>
+
+<style>
+  .co-head h1 { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .co-ticker { font-size: 0.42em; padding: 6px 10px; border-radius: 4px; }
+  .co-head .lede { margin-bottom: 18px; }
+  .co-layout { display: grid; gap: 40px; padding-bottom: 48px; }
+  @media (min-width: 1040px) { .co-layout { grid-template-columns: minmax(0, 1fr) 360px; } .co-side { position: sticky; top: 80px; align-self: start; } }
+  .co-section { margin: 12px 0 44px; }
+  .co-section > h2 { font-size: 1.8rem; padding-bottom: 10px; border-bottom: 2px solid var(--ink); margin-bottom: 18px; }
+  .plain { list-style: none; padding: 0; margin: 0; counter-reset: p; }
+  .plain li { display: grid; gap: 2px 20px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  @media (min-width: 720px) { .plain li { grid-template-columns: 200px 1fr; } }
+  .plain-label { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .plain p { margin: 0; font-family: var(--font-display); font-size: 1.2rem; line-height: 1.45; }
+  .plain p a { font-family: var(--font-body); }
+  .km-group { margin-bottom: 24px; }
+  .km-group h3 { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .km-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .km { display: grid; gap: 4px; align-content: start; padding: 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; color: var(--ink); text-decoration: none; }
+  .km:hover { border-color: var(--accent); }
+  .km-label { font-weight: 600; font-size: 0.9rem; }
+  .km-val { font-size: 1.6rem; font-weight: 600; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .km-flag { font-size: 0.62rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--warn); border: 1px solid var(--warn); border-radius: 3px; padding: 0 4px; }
+  .km-exp { font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
+  .km-peer { font-size: 0.8rem; color: var(--accent); }
+  .chart-grid { display: grid; gap: 14px; }
+  @media (min-width: 720px) { .chart-grid { grid-template-columns: 1fr 1fr; } }
+  .co-side { display: grid; gap: 16px; }
+  .practice-h { font-size: 1.3rem; }
+  .practice :global(.lp) { padding: 14px; box-shadow: none; }
+  .practice :global(.lp-foot) { margin: 14px -14px -14px; padding: 12px 14px; }
+  .practice :global(.lp-compare) { grid-template-columns: 1fr; }
+  .side-list { list-style: none; padding: 0; margin: 0 0 10px; display: grid; gap: 8px; }
+  .side-list a { text-decoration: none; color: var(--ink); }
+  .side-list a:hover { color: var(--accent); }
+  .co-cta { padding-bottom: 64px; }
+</style>
