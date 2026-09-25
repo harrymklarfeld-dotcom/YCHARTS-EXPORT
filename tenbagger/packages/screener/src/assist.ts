@@ -119,8 +119,8 @@ const OP_WORDS: Record<FilterOp, string> = { '>': 'above', '>=': 'at least', '<'
 export function describeFilterPlain(f: Filter): string {
   const info = getMetricInfo(f.metric);
   const short = info?.shortLabel ?? f.metric;
-  // "Net margin" → "net margin", but keep "P/E", "ROIC", "EV/EBITDA".
-  const name = /^[A-Z][a-z]/.test(short) ? short[0]!.toLowerCase() + short.slice(1) : short;
+  // "Net margin" → "net margin", "Debt/Equity" → "debt/equity"; keep "P/E", "ROIC", "FCF margin".
+  const name = /^[A-Z][a-z]/.test(short) && !/[A-Z]{2}/.test(short) ? short.toLowerCase() : short;
   const fmt = (v: number) => (info ? formatByUnit(info.unit, v) : String(v));
   if (f.op === 'between' && Array.isArray(f.value)) return `${name} between ${fmt(f.value[0])} and ${fmt(f.value[1])}`;
   return `${name} ${OP_WORDS[f.op]} ${fmt(f.value as number)}`;
@@ -164,9 +164,11 @@ const SYNONYM_INDEX: ReadonlyArray<{ phrase: string; re: RegExp; syn: AssistSyno
 ).sort((a, b) => b.phrase.length - a.phrase.length);
 
 const STOP_WORDS = new Set(
-  'a an the and or of in on for to with that which who are is be being been it its their them they some any very really pretty quite ' +
+  (
+    'a an the and or of in on for to with that which who are is be being been it its their them they some any very really pretty quite ' +
   'companies company stocks stock businesses business firms firm names ones show me find give get list i we want like looking look ' +
-  'please only also just good nice solid decent strong kind sort type types lots lot much many more most by than than'.split(' '),
+    'please only also just good nice solid decent strong kind sort type types lots lot much many more most by than'
+  ).split(' '),
 );
 
 /** Words left in `segment` after removing matched phrases and filler; '' when nothing meaningful is left. */

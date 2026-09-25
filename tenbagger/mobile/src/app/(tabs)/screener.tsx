@@ -109,6 +109,8 @@ export default function ScreenerScreen() {
   const sort = sortOverride ?? defaultSort;
   const results = useMemo(() => sortByColumn(bucketed, sort.column, sort.dir, ctx), [bucketed, sort.column, sort.dir, ctx]);
   const conc = useMemo(() => concentrationFor(results), [results]);
+  // Always show the column the list is sorted by (appended if the person hasn't chosen it).
+  const shownColumns = useMemo(() => (columns.includes(sort.column) || !getColumn(sort.column) ? columns : [...columns, sort.column]), [columns, sort.column]);
 
   const onSort = (id: string) =>
     setSortOverride(sort.column === id ? { column: id, dir: sort.dir === 'desc' ? 'asc' : 'desc' } : { column: id, dir: getColumn(id)?.defaultDir ?? 'desc' });
@@ -339,7 +341,7 @@ export default function ScreenerScreen() {
         {top}
         {wide && results.length ? (
           <View style={[pageW, { backgroundColor: t.c.bg }]}>
-            <ResultsTableHeader columns={columns} sort={sort} onSort={onSort} />
+            <ResultsTableHeader columns={shownColumns} sort={sort} onSort={onSort} />
           </View>
         ) : (
           <View />
@@ -347,7 +349,7 @@ export default function ScreenerScreen() {
         <View style={pageW}>
           {wide ? (
             results.length ? (
-              <ResultsTableBody companies={results} columns={columns} ctx={ctx} onScore={(ticker, family) => setScoreFocus({ ticker, family: family as ScoreFamilyId })} />
+              <ResultsTableBody companies={results} columns={shownColumns} ctx={ctx} onScore={(ticker, family) => setScoreFocus({ ticker, family: family as ScoreFamilyId })} />
             ) : null
           ) : (
             <ResultCards companies={results} columns={columns} ctx={ctx} onScore={(ticker, family) => setScoreFocus({ ticker, family: family as ScoreFamilyId })} />

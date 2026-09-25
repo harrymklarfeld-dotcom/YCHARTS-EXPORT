@@ -223,6 +223,72 @@ Expected "and" between conditions but found "roic".
 "between" needs two numbers, like "pe between 0.1 and 0.2".
 ```
 
+## v2 additions (all backward compatible)
+
+Everything below is pure, deterministic and dependency-free, like the rest of the package.
+
+### Funnel — `funnel(companies, screen | Filter[])`
+
+Applies filters one at a time, in order. Returns `{ start, steps[], final, biggestCut }`, where each
+step is `{ index, filter, label, before, after, removed, removedForMissingData }`. `final` always
+equals `runScreen(...).results.length`. The UI shows "→ 128 left" on each chip and a funnel bar.
+
+### Concentration — `concentration(results, { threshold = 0.6, minResults = 3 })`
+
+Accepts companies or `runScreen` results. Returns `{ total, groups[], top, isConcentrated, note }`.
+When the top sector's share is **above** 60% (and there are at least 3 results), `note` holds a
+short teaching text plus a `lessonId` from `data/lessons.json` (`SECTOR_NOTES`, falling back to
+`GENERIC_SECTOR_NOTE`). A test checks that every lesson id exists.
+
+### Scores — `scores(companies)`, `scoresByTicker`, `SCORE_FAMILIES`
+
+Four **educational** scores (not ratings), each 0–100:
+
+| Family | Inputs (direction that ranks higher) |
+|---|---|
+| Quality | ROIC ↑, gross margin ↑, FCF margin ↑, debt/equity ↓ |
+| Value | earnings yield ↑, FCF yield ↑, EBITDA/EV ↑ (= 1 / EV/EBITDA) |
+| Growth | 3y revenue CAGR ↑, EPS growth ↑ |
+| Balance sheet | debt/equity ↓, current ratio ↑, net cash / total assets ↑ |
+
+Each input's percentile is `(others strictly below + ½ × others tied) / (n − 1) × 100` among the
+companies in the list that have that number, flipped for "lower ranks higher". A lone company gets
+50. The family score is the rounded average of the available percentiles; it needs at least half the
+inputs (otherwise `null`). Negative debt/equity (negative equity) ranks as the most debt. Every
+`FamilyScore` returns its `components` (value, display, percentile, peers, formula), the full
+`formula` text and a `working` line such as `Average of 4 percentiles: 56, 100, 89, 83 → 82`.
+
+### Style buckets — `styleBox(company, universe)`, `styleBoxes`, `filterByStyle`, `STYLE_BOX_CONFIG`
+
+Size: market cap ≥ $10B Large, ≥ $2B Mid, otherwise Small (configurable). Style: `priceLevel` =
+average percentile of P/E and P/B (positive values only), `growthLevel` = percentile of 3y revenue
+CAGR (falls back to 1y growth), `styleScore` = their average; ≤ 33⅓ Value, ≥ 66⅔ Growth, else Blend.
+The result includes a plain-English `explanation`.
+
+### Ask the screener — `mockAssist`, `validateAssistOutput`, `ASSIST_TOOL`, `buildAssistSystemPrompt`
+
+* `mockAssist(text)`: exact `safeParseQuery` first; otherwise splits into clauses, parses each and maps
+  fuzzy words through `ASSIST_SYNONYMS` ("cheap" → P/E < 15 and P/B < 2, "low debt" → D/E 0–0.5, …).
+  Every synonym adds a visible note ("“cheap” was read as …. Edit the chips …"). Leftover words are
+  returned in `unrecognized`; `needsModel(result)` says whether a model call could help.
+* `ASSIST_TOOL` / `buildAssistSystemPrompt()`: the strict tool schema (metric enum = catalog keys) and
+  a byte-stable system prompt (catalog keys, units, ops, house conventions, examples; no company
+  data), sized above Haiku 4.5's 4,096-token cache minimum so it can be prompt-cached.
+* `validateAssistOutput(raw)`: rejects unknown metrics / ops / non-finite values, caps filters at 8,
+  and replaces the model's restatement when it is too long, uses advice words, or mentions any number
+  that is not a filter threshold (`restatementNumbersMatch`). `restateFilters` is the deterministic
+  fallback. `mergeFilters` implements "Add to this screen".
+
+### Language guard — `BANNED_PHRASES`, `findBannedPhrases`, `isCleanLanguage`
+
+Extends the preset test's list with rating labels (Attractive, Avoid, Outperform, Overweight, top
+pick, overvalued, …). Tests run it over all score, style, concentration and assist copy.
+
+### CSV — `toCsv(companies, columns, { sourceNote })`, `catalogCsvColumn`, `csvCell`
+
+RFC 4180 output with raw numbers (decimals for percents, raw USD), identity columns first, a
+`# source` line last, and formula-injection protection for text cells.
+
 ## Tests
 
 ```bash

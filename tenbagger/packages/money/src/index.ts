@@ -31,6 +31,7 @@ export {
   shortDate,
   daysInMonth,
   monthKey,
+  parts,
   toDayNumber,
   weekday,
   weekdayName,
