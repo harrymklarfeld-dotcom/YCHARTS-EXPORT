@@ -1,6 +1,7 @@
 import Tabs from 'expo-router/js-tabs';
 import type { ColorValue } from 'react-native';
 import { Icon, type IconName } from '../../components/Icon';
+import { MoneyIcon } from '../../money/components';
 import { useTheme } from '../../theme';
 
 const tab = (title: string, icon: IconName, a11y: string) => ({
@@ -25,6 +26,14 @@ export default function TabsLayout() {
       <Tabs.Screen name="index" options={tab('Learn', 'path', 'Learn tab: lesson path')} />
       <Tabs.Screen name="screener" options={tab('Screener', 'filter', 'Screener tab')} />
       <Tabs.Screen name="companies" options={tab('Companies', 'building', 'Companies tab')} />
+      <Tabs.Screen
+        name="money"
+        options={{
+          title: 'Money',
+          tabBarAccessibilityLabel: 'Money tab: your money hub',
+          tabBarIcon: ({ color }: { color: ColorValue }) => <MoneyIcon color={String(color)} size={24} />,
+        }}
+      />
       <Tabs.Screen name="profile" options={tab('Profile', 'user', 'Profile tab')} />
     </Tabs>
   );
