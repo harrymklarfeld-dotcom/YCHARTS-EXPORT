@@ -20,16 +20,15 @@ describe('markdown subset', () => {
     expect(b[1].type).toBe('paragraph');
   });
   it('parses inline bold, italic, code, links, nesting', () => {
-    expect(parseInline('a **b *c*** `d` [e](https://x.y) *f* g_h_i')).toEqual([
+    expect(parseInline('a **b [e](https://x.y)** `d` *f* g_h_i _j_')).toEqual([
       { t: 'text', v: 'a ' },
-      { t: 'b', c: [{ t: 'text', v: 'b ' }, { t: 'i', c: [{ t: 'text', v: 'c' }] }] },
-      { t: 'text', v: '* ' },
+      { t: 'b', c: [{ t: 'text', v: 'b ' }, { t: 'link', href: 'https://x.y', c: [{ t: 'text', v: 'e' }] }] },
+      { t: 'text', v: ' ' },
       { t: 'code', v: 'd' },
       { t: 'text', v: ' ' },
-      { t: 'link', href: 'https://x.y', c: [{ t: 'text', v: 'e' }] },
-      { t: 'text', v: ' ' },
       { t: 'i', c: [{ t: 'text', v: 'f' }] },
-      { t: 'text', v: ' g_h_i' },
+      { t: 'text', v: ' g_h_i ' },
+      { t: 'i', c: [{ t: 'text', v: 'j' }] },
     ]);
   });
   it('does not treat a lone asterisk or multiplication as emphasis', () => {
