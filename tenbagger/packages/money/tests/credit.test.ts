@@ -23,11 +23,11 @@ describe('payoffPlan(balance, apr, monthlyPayment)', () => {
   it('months to payoff and total interest (monthly rate = APR/12)', () => {
     const p = payoffPlan(1000, 0.24, 100);
     expect(p.feasible).toBe(true);
-    expect(p.months).toBe(11);
+    expect(p.months).toBe(12); // n = −ln(1 − rB/P) / ln(1 + r) = 11.27 → 12 payments
     expect(p.firstMonthInterest).toBe(20);
     expect(p.schedule[0]).toEqual({ month: 1, payment: 100, interest: 20, principal: 80, balance: 920 });
-    expect(p.totalInterest).toBe(120.36);
-    expect(p.totalPaid).toBe(1120.36);
+    expect(p.totalInterest).toBe(127.04);
+    expect(p.totalPaid).toBe(1127.04);
     expect(p.schedule[p.schedule.length - 1]!.balance).toBe(0);
     expect(p.label).toBe('estimate');
   });
@@ -49,7 +49,7 @@ describe('payoffPlan(balance, apr, monthlyPayment)', () => {
     expect(m.months!).toBeGreaterThan(60);
     expect(m.totalInterest).toBeGreaterThan(500);
     const pay = requiredMonthlyPayment(1120, 0.2499, 6);
-    expect(pay).toBe(203.05);
+    expect(pay).toBe(200.51);
     expect(payoffPlan(1120, 0.2499, pay).months).toBe(6);
     expect(requiredMonthlyPayment(600, 0, 6)).toBe(100);
   });

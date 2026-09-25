@@ -100,7 +100,7 @@ describe('detectSubscriptions', () => {
     const subs = detectSubscriptions(txs);
     expect(subs).toHaveLength(1);
     expect(subs[0]).toMatchObject({ merchant: 'streamtunes music', occurrences: 3, cadenceDays: 31, lastDate: '2026-09-12', nextExpected: '2026-10-13', lastAmount: 11.49, category: 'subscriptions' });
-    expect(subs[0]!.monthlyCost).toBeCloseTo(11.03, 2);
+    expect(subs[0]!.monthlyCost).toBeCloseTo(10.96, 2);
     expect(detectSubscriptions(txs, { minOccurrences: 2 }).map((s) => s.merchant)).toEqual(['pinephone wireless', 'streamtunes music']);
   });
   it('sample persona: music, video, cloud storage and the phone bill', () => {

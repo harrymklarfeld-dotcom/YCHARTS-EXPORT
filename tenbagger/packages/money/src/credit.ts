@@ -42,8 +42,9 @@ export function utilization(balance: number, limit: number | null | undefined): 
   if (!limit || limit <= 0) {
     return { balance, limit: null, ratio: null, band: null, at10: null, at30: null, sentence: 'No credit limit on record, so utilization cannot be computed.' };
   }
-  const ratio = round2(Math.max(0, balance) / limit);
-  const band = UTILIZATION_BANDS.find((b) => ratio < b.upTo || (b.id === 'high' && ratio <= 1)) ?? UTILIZATION_BANDS[UTILIZATION_BANDS.length - 1]!;
+  const exact = Math.max(0, balance) / limit;
+  const ratio = round2(exact);
+  const band = UTILIZATION_BANDS.find((b) => exact < b.upTo || (b.id === 'high' && exact <= 1)) ?? UTILIZATION_BANDS[UTILIZATION_BANDS.length - 1]!;
   return {
     balance,
     limit,
@@ -51,7 +52,7 @@ export function utilization(balance: number, limit: number | null | undefined): 
     band,
     at10: round2(limit * 0.1),
     at30: round2(limit * 0.3),
-    sentence: `${formatUSD(balance)} of a ${formatUSD(limit)} limit is ${formatPct(ratio)} utilization (${band.title.toLowerCase()}).`,
+    sentence: `${formatUSD(balance)} of a ${formatUSD(limit)} limit is ${formatPct(exact)} utilization (${band.title.toLowerCase()}).`,
   };
 }
 

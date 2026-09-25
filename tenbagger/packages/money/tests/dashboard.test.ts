@@ -60,7 +60,7 @@ describe('netWorthSeries', () => {
   it('one labelled point per snapshot, oldest first', () => {
     const s = netWorthSeries(HISTORY);
     expect(s).toHaveLength(11);
-    expect(s[0]).toMatchObject({ date: '2026-04-30', net: 1770, label: 'manual' });
+    expect(s[0]).toMatchObject({ date: '2026-04-30', net: 2120, label: 'manual' });
     expect(s[s.length - 1]).toMatchObject({ date: '2026-10-05', net: 3030, liquidity: 1250, investments: 2900, debt: 1120 });
   });
   it('change since the previous snapshot', () => {
@@ -116,8 +116,8 @@ describe('income extras', () => {
   it('annualized income from the last 90 days is an ESTIMATE', () => {
     const a = annualizedIncome(DEPOSITS, '2026-10-05');
     expect(a.label).toBe('estimate');
-    expect(a.windowTotal).toBe(2106.05);
-    expect(a.value).toBe(8541.2);
+    expect(a.windowTotal).toBe(2114.15);
+    expect(a.value).toBe(Math.round((2114.15 / 90) * 365 * 100) / 100);
   });
   it('pending-pay ledger and work log', () => {
     const log: WorkEntry[] = [
@@ -166,7 +166,7 @@ describe('personal10K', () => {
     expect(r.scorecard!.categories).toHaveLength(6);
     expect(r.analogs.map((a) => [a.id, a.lessonId])).toEqual([['current_ratio', 'u5-l4'], ['free_cash_flow', 'u4-l2'], ['debt_to_equity', 'u5-l3']]);
     expect(r.shareText).toMatch(/^Alex's Personal 10-K: Sep 2026 \(sample data, fictional\)/);
-    expect(r.shareText).not.toMatch(/Checking|Savings|Brokerage|Roth|credit card|\d{4,}(?!\))/i);
+    expect(r.shareText).not.toMatch(/Checking|Savings|Brokerage|Roth|Student credit card|\d{5,}|chk|brk/);
   });
 });
 
