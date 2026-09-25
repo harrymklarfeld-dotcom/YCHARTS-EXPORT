@@ -59,7 +59,7 @@ export default function InvestmentsTab({ dash, hub, wide }: TabProps) {
         <View style={{ flexDirection: 'row', paddingBottom: 4, borderBottomWidth: 1, borderBottomColor: t.c.line }}>
           <Text style={[th(t), { flex: 1 }]}>Position</Text>
           <Text style={[th(t), { width: 74, textAlign: 'right' }]}>Value</Text>
-          <Text style={[th(t), { width: 48, textAlign: 'right' }]}>Weight</Text>
+          <Text style={[th(t), { width: 52, textAlign: 'right' }]}>Wt</Text>
           <Text style={[th(t), { width: 74, textAlign: 'right' }]}>Gain</Text>
         </View>
         {h.rows.map((r, i) => {
@@ -84,7 +84,7 @@ export default function InvestmentsTab({ dash, hub, wide }: TabProps) {
                 </Text>
               </View>
               <Text style={[td(t), { width: 74 }]}>{formatUSD(r.value)}</Text>
-              <Text style={[td(t), { width: 48, color: t.c.inkSoft }]}>{pct(r.weight)}</Text>
+              <Text style={[td(t), { width: 52, color: t.c.inkSoft }]}>{pct(r.weight)}</Text>
               <Text style={[td(t), { width: 74, color: r.gain === null ? t.c.inkSoft : r.gain >= 0 ? t.c.primary : t.c.danger }]}>
                 {r.gain === null ? '—' : formatUSD(r.gain, { signed: true })}
               </Text>

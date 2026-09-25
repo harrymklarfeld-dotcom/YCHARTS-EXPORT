@@ -50,9 +50,13 @@ export default function MoneyScreen({ initialTab, embedded }: { initialTab?: Das
   const { width } = useWindowDimensions();
   const rail = width >= WIDE_RAIL;
   const scroll = useRef<ScrollView>(null);
+  const tabStrip = useRef<ScrollView>(null);
+  const chipX = useRef<Record<string, number>>({});
 
   const goTab = (next: DashTab) => {
     setTabState(next);
+    const x = chipX.current[next];
+    if (x !== undefined) tabStrip.current?.scrollTo({ x: Math.max(0, x - 60), animated: true });
     scroll.current?.scrollTo({ y: 0, animated: false });
     if (!embedded) {
       try {
@@ -101,7 +105,7 @@ export default function MoneyScreen({ initialTab, embedded }: { initialTab?: Das
           <DashboardHeader dash={dash} hub={hub} compact />
         </View>
         <View style={{ backgroundColor: t.c.bg, paddingVertical: 10 }}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} accessibilityRole="tablist" contentContainerStyle={{ paddingHorizontal: 16, gap: 6 }}>
+          <ScrollView ref={tabStrip} horizontal showsHorizontalScrollIndicator={false} accessibilityRole="tablist" contentContainerStyle={{ paddingHorizontal: 16, gap: 6 }}>
             {DASH_TABS.map((id) => {
               const on = id === tab;
               return (
@@ -111,6 +115,10 @@ export default function MoneyScreen({ initialTab, embedded }: { initialTab?: Das
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`${TAB_TITLES[id]} tab`}
                   onPress={() => goTab(id)}
+                  onLayout={(e) => {
+                    chipX.current[id] = e.nativeEvent.layout.x;
+                    if (on) tabStrip.current?.scrollTo({ x: Math.max(0, e.nativeEvent.layout.x - 60), animated: false });
+                  }}
                   style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: t.radius.pill, backgroundColor: on ? t.c.ink : t.c.surface, borderWidth: 1, borderColor: on ? t.c.ink : t.c.line }}
                 >
                   <Text style={{ color: on ? t.c.bg : t.c.ink, fontWeight: '800', fontSize: 13 }}>{TAB_TITLES[id]}</Text>

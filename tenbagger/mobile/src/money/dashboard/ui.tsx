@@ -126,7 +126,7 @@ export function Segmented<T extends string>({ options, value, onChange, label }:
 
 /** Two-column grid on wide screens, one column on phones. */
 export function Grid({ wide, children, min = 300 }: { wide: boolean; children: ReactNode; min?: number }) {
-  return <View style={{ flexDirection: wide ? 'row' : 'column', flexWrap: 'wrap', gap: 14, alignItems: wide ? 'flex-start' : 'stretch' }}>{wrap(children, wide, min)}</View>;
+  return <View style={{ flexDirection: wide ? 'row' : 'column', flexWrap: wide ? 'wrap' : 'nowrap', gap: 14, alignItems: wide ? 'flex-start' : 'stretch' }}>{wrap(children, wide, min)}</View>;
 }
 
 function wrap(children: ReactNode, wide: boolean, min: number): ReactNode {
