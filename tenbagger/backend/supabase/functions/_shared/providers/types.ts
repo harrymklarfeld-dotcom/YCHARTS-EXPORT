@@ -1,7 +1,7 @@
 // AggregatorProvider: the seam between edge-function handlers and Plaid / SnapTrade / mock.
 // Handlers only ever talk to this interface, so providers can be swapped per environment
 // (PROVIDER_MODE=mock for local dev + tests) and a new aggregator is one new class.
-import type { NormalizedSnapshot, ProviderName } from "../types.ts";
+import type { NormalizedBalances, NormalizedLiabilities, NormalizedRecurring, NormalizedSnapshot, ProviderName, TransactionsDelta } from "../types.ts";
 
 /** Decrypted credential. Lives only in edge-function memory; never serialized to clients or logs. */
 export type ProviderCredential =
@@ -47,6 +47,8 @@ export interface AggregatorProvider {
     redirectUri?: string;
     webhookUrl?: string;
     broker?: string;
+    /** Money hub opt-in: also request Transactions + Liabilities (Plaid). */
+    moneyHub?: boolean;
   }): Promise<LinkSession>;
 
   /** Plaid only: public_token -> access_token + item/institution metadata. */
@@ -63,7 +65,32 @@ export interface AggregatorProvider {
 
   /** SnapTrade only: delete the aggregator-side user and all its data. */
   deleteUser?(cred: ProviderCredential): Promise<void>;
+
+  // ---- Money hub (Plaid only; optional so SnapTrade need not implement) ----------------
+  /** Depository balances (current/available) + credit/loan balances. */
+  getBalances?(cred: ProviderCredential): Promise<NormalizedBalances>;
+  /** Credit-card / student-loan statement & payment details (Plaid /liabilities/get). */
+  getLiabilities?(cred: ProviderCredential): Promise<NormalizedLiabilities>;
+  /** Cursor-based transactions delta (Plaid /transactions/sync, all pages). `null` cursor = full history. */
+  syncTransactions?(cred: ProviderCredential, cursor: string | null): Promise<TransactionsDelta>;
+  /** Detected recurring INFLOW streams (Plaid /transactions/recurring/get). */
+  getRecurring?(cred: ProviderCredential): Promise<NormalizedRecurring>;
 }
+
+/**
+ * Plaid error codes meaning "this product/data is not available for this Item" (not an
+ * Item failure): the Money hub records a warning and carries on with what it has.
+ */
+export const PRODUCT_UNAVAILABLE_CODES = new Set([
+  "PRODUCTS_NOT_SUPPORTED",
+  "PRODUCT_NOT_ENABLED",
+  "ADDITIONAL_CONSENT_REQUIRED",
+  "INVALID_PRODUCT",
+  "NO_LIABILITY_ACCOUNTS",
+  "NO_INVESTMENT_ACCOUNTS",
+  "NO_INVESTMENT_HOLDINGS",
+  "NO_ACCOUNTS",
+]);
 
 export class ProviderError extends Error {
   constructor(

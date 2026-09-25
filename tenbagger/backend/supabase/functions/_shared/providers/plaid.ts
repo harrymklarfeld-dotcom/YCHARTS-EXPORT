@@ -1,7 +1,18 @@
 // Plaid REST client (no SDK dependency, injectable fetch for tests).
 // Docs: https://plaid.com/docs/api/products/investments/  (read-only "investments" product)
+// Money hub (opt-in): https://plaid.com/docs/api/products/transactions/ and /liabilities/
 import { normalizePlaidHoldings, type PlaidHoldingsResponse } from "../normalize_plaid.ts";
-import type { NormalizedSnapshot } from "../types.ts";
+import {
+  foldTransactionsSync,
+  normalizePlaidBalances,
+  normalizePlaidLiabilities,
+  normalizePlaidRecurring,
+  type PlaidAccountsResponse,
+  type PlaidLiabilitiesResponse,
+  type PlaidRecurringResponse,
+  type PlaidTransactionsSyncResponse,
+} from "../normalize_plaid_money.ts";
+import type { NormalizedBalances, NormalizedLiabilities, NormalizedRecurring, NormalizedSnapshot, TransactionsDelta } from "../types.ts";
 import {
   type AggregatorProvider,
   type ExchangeResult,
@@ -22,7 +33,16 @@ export interface PlaidConfig {
   countryCodes?: string[];
   fetch?: FetchLike;
   tickerByCusip?: Record<string, string>;
+  /** true => /accounts/balance/get (real-time, billed per call); default /accounts/get (cached, free with Transactions). */
+  realtimeBalances?: boolean;
+  /** Days of history requested at link time for the Money hub (Plaid default 90, max 730). */
+  transactionsDaysRequested?: number;
 }
+
+/** Products added to a Link session when the user opts into the Money hub. */
+export const MONEY_HUB_PRODUCTS = ["transactions", "liabilities"] as const;
+const MAX_SYNC_PAGES = 50;
+const MAX_SYNC_RESTARTS = 3;
 
 // Error codes that require the user to re-authenticate via Link update mode.
 const REAUTH_CODES = new Set(["ITEM_LOGIN_REQUIRED", "PENDING_EXPIRATION", "INVALID_CREDENTIALS", "INSUFFICIENT_CREDENTIALS", "USER_PERMISSION_REVOKED"]);
@@ -72,7 +92,9 @@ export class PlaidProvider implements AggregatorProvider {
     return cred.accessToken;
   }
 
-  async createLinkSession(input: { appUserId: string; credential?: ProviderCredential; redirectUri?: string; webhookUrl?: string }): Promise<LinkSession> {
+  async createLinkSession(
+    input: { appUserId: string; credential?: ProviderCredential; redirectUri?: string; webhookUrl?: string; moneyHub?: boolean },
+  ): Promise<LinkSession> {
     const body: Record<string, unknown> = {
       client_name: this.cfg.clientName ?? "Tenbagger",
       language: "en",
@@ -81,8 +103,16 @@ export class PlaidProvider implements AggregatorProvider {
     };
     if (input.credential) {
       body.access_token = this.token(input.credential); // update mode (re-auth) — no products
+      // Money hub opt-in on an existing Item: ask the user to consent to the extra products.
+      if (input.moneyHub) body.additional_consented_products = [...MONEY_HUB_PRODUCTS];
+    } else if (input.moneyHub) {
+      // Bank / card Items: Transactions is required; Liabilities and Investments are used when the
+      // institution supports them, without failing Link for institutions that do not.
+      body.products = ["transactions"];
+      body.optional_products = ["liabilities", "investments"];
+      body.transactions = { days_requested: this.cfg.transactionsDaysRequested ?? 180 };
     } else {
-      body.products = ["investments"];
+      body.products = ["investments"]; // unchanged default: read-only brokerage holdings
     }
     if (input.webhookUrl) body.webhook = input.webhookUrl;
     if (input.redirectUri) body.redirect_uri = input.redirectUri;
@@ -125,6 +155,48 @@ export class PlaidProvider implements AggregatorProvider {
       if (e instanceof ProviderError && ALREADY_GONE.has(e.code)) return;
       throw e;
     }
+  }
+
+  // ---- Money hub ----------------------------------------------------------------------
+  async getBalances(cred: ProviderCredential): Promise<NormalizedBalances> {
+    const path = this.cfg.realtimeBalances ? "/accounts/balance/get" : "/accounts/get";
+    return normalizePlaidBalances(await this.call<PlaidAccountsResponse>(path, { access_token: this.token(cred) }));
+  }
+
+  async getLiabilities(cred: ProviderCredential): Promise<NormalizedLiabilities> {
+    return normalizePlaidLiabilities(await this.call<PlaidLiabilitiesResponse>("/liabilities/get", { access_token: this.token(cred) }));
+  }
+
+  /**
+   * Pages /transactions/sync until has_more=false. If Plaid reports a mutation during
+   * pagination, restart from the cursor we started with (Plaid's documented recovery).
+   * The returned next_cursor must be persisted atomically with the delta.
+   */
+  async syncTransactions(cred: ProviderCredential, cursor: string | null): Promise<TransactionsDelta> {
+    const accessToken = this.token(cred);
+    for (let attempt = 0; attempt <= MAX_SYNC_RESTARTS; attempt++) {
+      const pages: PlaidTransactionsSyncResponse[] = [];
+      let c = cursor;
+      try {
+        for (let i = 0; i < MAX_SYNC_PAGES; i++) {
+          const body: Record<string, unknown> = { access_token: accessToken, count: 500 };
+          if (c) body.cursor = c;
+          const page = await this.call<PlaidTransactionsSyncResponse>("/transactions/sync", body);
+          pages.push(page);
+          c = page.next_cursor;
+          if (!page.has_more) break;
+        }
+        return foldTransactionsSync(pages, cursor);
+      } catch (e) {
+        if (e instanceof ProviderError && e.code === "TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION" && attempt < MAX_SYNC_RESTARTS) continue;
+        throw e;
+      }
+    }
+    throw new ProviderError("plaid", "TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION", "transactions kept changing during sync", undefined, false, true);
+  }
+
+  async getRecurring(cred: ProviderCredential): Promise<NormalizedRecurring> {
+    return normalizePlaidRecurring(await this.call<PlaidRecurringResponse>("/transactions/recurring/get", { access_token: this.token(cred) }));
   }
 
   /** Used by webhook verification: fetch the JWK for a given key id. */
