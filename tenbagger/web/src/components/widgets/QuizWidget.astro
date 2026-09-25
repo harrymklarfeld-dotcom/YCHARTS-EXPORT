@@ -1,0 +1,30 @@
+---
+/** widget:quiz — "Practice this" card. XP is earned only by finishing the lesson (in the app). */
+import site from '../../../site.config.ts';
+import { findLesson } from '../../lib/data.ts';
+import LessonPlayer from '../LessonPlayer.astro';
+import WidgetError from './WidgetError.astro';
+interface Props { lesson?: string; caption?: string }
+const { lesson = '', caption } = Astro.props;
+const found = findLesson(String(lesson));
+const appHref = `/app/?lesson=${encodeURIComponent(String(lesson))}`;
+---
+{!found ? (
+  <WidgetError message={`lesson “${lesson}” not found.`} />
+) : (
+  <aside class="widget w-quiz">
+    <div class="w-quiz-main">
+      <p class="widget-kicker">Practice this · {found.unit.title}</p>
+      <p class="w-quiz-title">{found.lesson.title}</p>
+      <p class="small muted">{found.lesson.questions.length} questions on real companies · {found.lesson.xp} XP when you finish · about 3 minutes</p>
+      {caption && <p class="small">{caption}</p>}
+      <div class="btn-row">
+        <a class="btn btn-primary" href={appHref}>Open the lesson</a>
+      </div>
+    </div>
+    <details class="w-quiz-try">
+      <summary>Try 3 questions right here</summary>
+      <LessonPlayer lesson={found.lesson} questions={found.lesson.questions.filter((q) => q.type !== 'order').slice(0, 3)} showIntro={false} ctaHref={site.features.showWaitlist ? '/#waitlist' : appHref} ctaLabel="Get the full app" />
+    </details>
+  </aside>
+)}

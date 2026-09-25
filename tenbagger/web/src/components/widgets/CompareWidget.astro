@@ -1,0 +1,47 @@
+---
+/** widget:compare — horizontal bars of one metric across 2–6 companies (SVG, no JS). */
+import { companyByTicker, shortName, tickerSlug, type Company } from '../../lib/data.ts';
+import { wmetric, value } from '../../lib/widgets.ts';
+import { wfmt } from '../../lib/wformat.ts';
+import SampleTags from './SampleTags.astro';
+import WidgetError from './WidgetError.astro';
+interface Props { tickers?: string[] | string; metric?: string; caption?: string }
+const { tickers = [], metric = '', caption } = Astro.props;
+const list = (Array.isArray(tickers) ? tickers : String(tickers).split(',')).map((t) => String(t).trim().toUpperCase());
+const cs = list.map((t) => companyByTicker(t)).filter((c): c is Company => !!c);
+const m = wmetric(String(metric));
+const rows = cs.map((c) => ({ c, v: value(c, String(metric)) }));
+const vals = rows.map((r) => r.v ?? 0);
+const max = Math.max(0, ...vals);
+const min = Math.min(0, ...vals);
+const span = max - min || 1;
+const zeroPct = (-min / span) * 100;
+const usesPrice = ['price', 'market_cap', 'enterprise_value', 'pe', 'ps', 'pb', 'ev_ebitda', 'fcf_yield', 'earnings_yield', 'dividend_yield'].includes(String(metric));
+---
+{!m || cs.length < 2 ? (
+  <WidgetError message={!m ? `unknown metric “${metric}”.` : 'needs at least two known tickers.'} />
+) : (
+  <figure class="widget w-compare">
+    <div class="w-head">
+      <p class="widget-kicker">{m.label} · latest fiscal year</p>
+      <SampleTags companies={cs} usesPrice={usesPrice} />
+    </div>
+    <ul class="cmp" style={`--zero:${zeroPct}%`}>
+      {rows.map(({ c, v }) => {
+        const w = v === null ? 0 : (Math.abs(v) / span) * 100;
+        const left = v !== null && v < 0 ? zeroPct - w : zeroPct;
+        return (
+          <li>
+            <a class="cmp-name" href={`/companies/${tickerSlug(c.ticker)}/`}><span class="ticker">{c.ticker}</span> <span class="cmp-full">{shortName(c.name)}</span></a>
+            <span class="cmp-track">
+              {v !== null && <span class={`cmp-bar ${v < 0 ? 'neg' : ''}`} style={`left:${left}%;width:${Math.max(w, 0.6)}%`}></span>}
+              <span class="cmp-zero"></span>
+            </span>
+            <span class="cmp-val">{wfmt(m.format, v)}</span>
+          </li>
+        );
+      })}
+    </ul>
+    {caption && <figcaption class="w-caption">{caption}</figcaption>}
+  </figure>
+)}
