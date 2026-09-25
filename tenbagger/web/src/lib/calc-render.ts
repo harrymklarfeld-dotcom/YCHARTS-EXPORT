@@ -42,7 +42,7 @@ export function renderCalc(s: CalcState): string {
     const r = dcfCalc({ f0, g: s.growth, r: s.discount, m: s.terminal, n: s.years, netCash: s.netCash, shares: s.shares });
     const perShare = r.perShare !== null ? out('Estimate per share', wfmt('per_share', r.perShare), s.price ? `For reference, the share price in the data is ${wfmt('per_share', s.price)}.` : '') : '';
     return [
-      out('Estimated value of the business', wfmt('usd', r.value), `${s.years} years of cash + a ${wfmt('multiple', s.terminal)} exit + ${wfmt('usd', s.netCash)} net cash.`),
+      out('Estimated value of the business', wfmt('usd', r.value), `${s.years} years of cash + a ${wfmt('multiple', s.terminal)} exit ${s.netCash >= 0 ? `+ ${wfmt('usd', s.netCash)} net cash` : `− ${wfmt('usd', -s.netCash)} net debt`}.`),
       perShare,
       out('Share of value from the exit multiple', wfmt('percent', r.terminalShare), 'The higher this is, the more the answer rests on a guess about the far future.'),
       `<p class="calc-foot small muted">Starting FCF used: ${wfmt('usd', f0)}${s.useNormalized ? ' (normalized average)' : ''}. An estimate is only as good as its inputs; small slider moves change it a lot.</p>`,

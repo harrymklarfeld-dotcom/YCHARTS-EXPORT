@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE fixture for XLE: approximate weights from memory, NOT a real SEC filing. Replace with a live N-PORT-P pull. -->
+<edgarSubmission xmlns="http://www.sec.gov/edgar/nport" xmlns:com="http://www.sec.gov/edgar/common" xmlns:ncom="http://www.sec.gov/edgar/nportcommon">
+  <headerData>
+    <submissionType>NPORT-P</submissionType>
+    <filerInfo><seriesClassInfo><seriesId>S000006408</seriesId></seriesClassInfo></filerInfo>
+  </headerData>
+  <formData>
+    <genInfo>
+      <regName>SELECT SECTOR SPDR TRUST</regName><regCik>0000000000</regCik>
+      <seriesName>The Energy Select Sector SPDR Fund</seriesName><seriesId>S000006408</seriesId>
+      <repPdEnd>2025-12-31</repPdEnd><repPdDate>2025-06-30</repPdDate><isFinalFiling>N</isFinalFiling>
+    </genInfo>
+    <fundInfo>
+      <totAssets>27027000000.00</totAssets><totLiabs>27000000.00</totLiabs><netAssets>27000000000.00</netAssets>
+    </fundInfo>
+    <invstOrSecs>
+      <invstOrSec>
+        <name>Exxon Mobil Corp</name><lei>N/A</lei><title>Exxon Mobil Corp</title><cusip>30231G102</cusip>
+        <identifiers><isin value="US30231G1020"/><ticker value="XOM"/></identifiers>
+        <balance>62100000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>6210000000.0</valUSD><pctVal>23.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Chevron Corp</name><lei>N/A</lei><title>Chevron Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CVX"/></identifiers>
+        <balance>44550000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>4455000000.0</valUSD><pctVal>16.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>ConocoPhillips</name><lei>N/A</lei><title>ConocoPhillips</title><cusip>N/A</cusip>
+        <identifiers><ticker value="COP"/></identifiers>
+        <balance>18360000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1836000000.0</valUSD><pctVal>6.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Williams Cos Inc/The</name><lei>N/A</lei><title>Williams Cos Inc/The</title><cusip>N/A</cusip>
+        <identifiers><ticker value="WMB"/></identifiers>
+        <balance>12420000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1242000000.0</valUSD><pctVal>4.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>EOG Resources Inc</name><lei>N/A</lei><title>EOG Resources Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="EOG"/></identifiers>
+        <balance>11880000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1188000000.0</valUSD><pctVal>4.4</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Kinder Morgan Inc</name><lei>N/A</lei><title>Kinder Morgan Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="KMI"/></identifiers>
+        <balance>11610000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1161000000.0</valUSD><pctVal>4.3</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Schlumberger NV</name><lei>N/A</lei><title>Schlumberger NV</title><cusip>N/A</cusip>
+        <identifiers><ticker value="SLB"/></identifiers>
+        <balance>10530000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1053000000.0</valUSD><pctVal>3.9</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Phillips 66</name><lei>N/A</lei><title>Phillips 66</title><cusip>N/A</cusip>
+        <identifiers><ticker value="PSX"/></identifiers>
+        <balance>10260000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1026000000.0</valUSD><pctVal>3.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Marathon Petroleum Corp</name><lei>N/A</lei><title>Marathon Petroleum Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="MPC"/></identifiers>
+        <balance>9720000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>972000000.0</valUSD><pctVal>3.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>ONEOK Inc</name><lei>N/A</lei><title>ONEOK Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="OKE"/></identifiers>
+        <balance>8910000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>891000000.0</valUSD><pctVal>3.3</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Valero Energy Corp</name><lei>N/A</lei><title>Valero Energy Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="VLO"/></identifiers>
+        <balance>8640000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>864000000.0</valUSD><pctVal>3.2</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Baker Hughes Co</name><lei>N/A</lei><title>Baker Hughes Co</title><cusip>N/A</cusip>
+        <identifiers><ticker value="BKR"/></identifiers>
+        <balance>8370000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>837000000.0</valUSD><pctVal>3.1</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Money market sweep (sample)</name><lei>N/A</lei><title>Money market sweep (sample)</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>270000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>27000000.0</valUSD><pctVal>0.1</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>STIV</assetCat><issuerCat>RF</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>SAMPLE AGGREGATE: remaining 11 positions</name><lei>N/A</lei><title>SAMPLE AGGREGATE: remaining 11 positions</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>52380000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>5238000000.0</valUSD><pctVal>19.4</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+    </invstOrSecs>
+  </formData>
+</edgarSubmission>

@@ -188,3 +188,5 @@ label { font-weight: 500; }
 .formula { font-family: var(--font-mono); font-size: 0.86rem; background: var(--surface2); border-radius: 4px; padding: 6px 10px; display: inline-block; color: var(--ink); }
 .chart-avg line { stroke: var(--signal); stroke-width: 1.5; stroke-dasharray: 5 4; }
 .chart-avg text { font-family: var(--font-mono); font-size: 12px; fill: var(--signal); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }
+/* Custom-element islands are inline by default; make them blocks. */
+calc-widget, lesson-player, screener-app, money-demo { display: block; }

@@ -10,10 +10,13 @@ import {
   explainMatch,
   describeCondition,
   type Company,
+  type Filter,
   type Screen,
 } from '../../../packages/screener/src/index.ts';
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+/** Filters → a query string the parser reads back identically ("ROIC > 15% and P/E < 25x"). */
+const toQuery = (fs: readonly Filter[]) => fs.map((f) => `${(getMetricInfo(f.metric)?.shortLabel ?? f.metric).replace(/\./g, '')} ${describeCondition(f)}`).join(' and ');
 const slug = (t: string) => t.toLowerCase().replace(/[^a-z0-9-]/g, '-');
 
 class ScreenerApp extends HTMLElement {
@@ -35,7 +38,7 @@ class ScreenerApp extends HTMLElement {
         if (!p) return;
         this.select(b);
         const q = this.querySelector<HTMLInputElement>('[data-query]');
-        if (q) q.value = p.filters.map((f) => describeCondition(f)).join(' and ');
+        if (q) q.value = toQuery(p.filters);
         this.run(p);
       }),
     );
@@ -82,7 +85,7 @@ class ScreenerApp extends HTMLElement {
     const first = r.filters[0];
     const info = getMetricInfo(first.metric);
     const dir = info?.higherIsBetter === false ? 'asc' : 'desc';
-    this.run({ id: 'custom', name: 'Your screen', description: `Companies where ${r.filters.map((f) => describeCondition(f)).join(' and ')}.`, filters: r.filters, sort: { metric: first.metric, dir } });
+    this.run({ id: 'custom', name: 'Your screen', description: `Companies where ${toQuery(r.filters)}.`, filters: r.filters, sort: { metric: first.metric, dir } });
   }
 
   run(screen: Screen) {

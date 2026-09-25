@@ -216,7 +216,7 @@ tr.locked td { color: var(--dim); }
 }
 @media (max-width: 1100px) { .hero { grid-template-columns: 1fr; } .feats { grid-template-columns: 1fr; } }
 @media (max-width: 860px) {
-  .stage { grid-template-columns: 1fr; padding: 0 0 48px; gap: 26px; }
+  .stage { grid-template-columns: minmax(0, 1fr); padding: 0 0 48px; gap: 26px; }
   .device { position: static; order: -1; }
   .phone { width: 100%; height: min(760px, calc(100svh - var(--dir-h, 96px))); border-radius: 0; border: 0; border-bottom: 1px solid var(--line); box-shadow: none; }
   .device-cap { display: none; }

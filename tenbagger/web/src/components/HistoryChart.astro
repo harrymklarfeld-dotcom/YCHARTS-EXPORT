@@ -19,7 +19,7 @@ interface Props {
 }
 const { series = [], unit = 'usd', title, caption, kind = 'bar', height = 180, average = false, format } = Astro.props;
 const pts = series.filter((p): p is [number, number] => typeof p[1] === 'number' && Number.isFinite(p[1]));
-const W = 560;
+const W = 440;
 const H = height;
 const padL = 8, padR = 8, padT = 22, padB = 24;
 const vals = pts.map((p) => p[1]);
@@ -58,7 +58,7 @@ const avg = pts.length ? vals.reduce((a, b) => a + b, 0) / pts.length : 0;
   {pts.length < 2 ? (
     <p class="chart-empty">Not enough history to chart yet.</p>
   ) : (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${title}, fiscal ${first[0]} to ${last[0]}`} class={`chart-svg chart-${kind}`}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${title}, fiscal ${first[0]} to ${last[0]}`} class={`chart-svg chart-kind-${kind}`}>
       <line x1={padL} x2={W - padR} y1={zeroY} y2={zeroY} class="chart-base" />
       {kind === 'line' && <path d={linePath} class="chart-line" fill="none" />}
       {average && (

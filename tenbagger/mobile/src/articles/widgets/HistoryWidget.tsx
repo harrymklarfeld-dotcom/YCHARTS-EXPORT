@@ -4,7 +4,7 @@ import Svg, { Line, Rect, Text as SvgText } from 'react-native-svg';
 import { getCompany } from '../../data';
 import { useTheme } from '../../theme';
 import type { HistoryKey } from '../../types/contract';
-import { normalizedFcf } from '../calc';
+import { seriesMean } from '../calc';
 import { getArticlesFile } from '../data';
 import { provenanceTags } from '../provenance';
 import { formatMetric } from '../values';
@@ -24,7 +24,7 @@ export function HistoryWidget({ ticker, metric, average, caption }: { ticker: st
   if (!c || series.length < 2) return <Unsupported reason={`no ${metric} history for ${ticker}`} />;
   const label = catalog[metric]?.label ?? metric;
   const vals = series.map(([, v]) => v);
-  const avg = average ? normalizedFcf(series) : null;
+  const avg = average ? seriesMean(series) : null;
   const max = Math.max(0, ...vals, avg ?? 0);
   const min = Math.min(0, ...vals, avg ?? 0);
   const span = max - min || 1;

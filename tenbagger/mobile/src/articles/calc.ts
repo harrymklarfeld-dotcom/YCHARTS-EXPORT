@@ -56,12 +56,15 @@ export function dcfCalc({ fcf, growth, discount, terminal, years, netCash = 0, s
   };
 }
 
-/** Mean of every non-null year of a history series (the "normalized FCF" for cyclical companies). */
-export function normalizedFcf(history: HistoryPoint[] | undefined | null): number | null {
+/** Mean of every non-null year of a history series. */
+export function seriesMean(history: HistoryPoint[] | undefined | null): number | null {
   const vals = (history ?? []).map(([, v]) => v).filter(finite);
   if (!vals.length) return null;
   return vals.reduce((a, b) => a + b, 0) / vals.length;
 }
+
+/** The "normalized FCF" used by the DCF cyclical toggle: the mean of every reported year. */
+export const normalizedFcf = seriesMean;
 
 /* ----------------------------------------------------------------------------- Liquidity */
 

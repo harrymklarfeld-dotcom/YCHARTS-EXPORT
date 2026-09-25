@@ -39,6 +39,8 @@ class FundSpec:
     note: str | None = None
     # Sample expense ratio (decimal) used only when no prospectus iXBRL is available.
     sample_expense_ratio: float | None = None
+    # Sector funds: positions we cannot classify are assumed to be in the fund's own sector.
+    default_sector: str | None = None
     aliases: tuple[str, ...] = field(default_factory=tuple)
 
 
@@ -50,13 +52,16 @@ FUNDS: tuple[FundSpec, ...] = (
                   "QQQM (same index, open-end fund) instead.",
              sample_expense_ratio=0.0020),
     FundSpec("SCHD", "Schwab U.S. Dividend Equity ETF", "Schwab", "Dividend", sample_expense_ratio=0.0006),
-    FundSpec("XLV", "Health Care Select Sector SPDR Fund", "State Street", "Sector – Health Care", sample_expense_ratio=0.0008),
-    FundSpec("XLE", "Energy Select Sector SPDR Fund", "State Street", "Sector – Energy", sample_expense_ratio=0.0008),
+    FundSpec("XLV", "Health Care Select Sector SPDR Fund", "State Street", "Sector – Health Care", sample_expense_ratio=0.0008,
+             default_sector="Health Care"),
+    FundSpec("XLE", "Energy Select Sector SPDR Fund", "State Street", "Sector – Energy", sample_expense_ratio=0.0008,
+             default_sector="Energy"),
     FundSpec("GLD", "SPDR Gold Shares", "State Street", "Gold", files_nport=False,
              note="GLD is a grantor trust holding gold bars; it files 10-K/10-Q, not N-PORT. "
                   "Its holdings are modelled as a single commodity position.",
              sample_expense_ratio=0.0040),
-    FundSpec("HACK", "Amplify Cybersecurity ETF", "Amplify", "Cybersecurity", sample_expense_ratio=0.0060),
+    FundSpec("HACK", "Amplify Cybersecurity ETF", "Amplify", "Cybersecurity", sample_expense_ratio=0.0060,
+             default_sector="Technology"),
 )
 
 FUND_BY_TICKER = {f.ticker: f for f in FUNDS}
