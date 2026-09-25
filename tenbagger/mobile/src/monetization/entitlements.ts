@@ -2,7 +2,7 @@
  * Entitlement + free-tier limit logic. PURE (no React, no store) so it is unit-tested and
  * shared by hooks, ProGate and the lesson gate. All numbers come from src/config/monetization.ts.
  */
-import { FREE_LIMITS, LESSON_RULES, type Feature, type PlanId } from '../config/monetization';
+import { FREE_LIMITS, FREE_SCREENER_PRESET_COUNT, FREE_SCREENER_PRESET_IDS, LESSON_RULES, type Feature, type PlanId } from '../config/monetization';
 import { daysBetween, toDayKey } from '../game/day';
 
 export type Tier = 'free' | 'pro';
@@ -137,4 +137,11 @@ export const dayKey = (ms: number = Date.now()) => toDayKey(new Date(ms));
 /** Paywalls must never interrupt a lesson in progress (spec: never mid-question). */
 export function canPresentPaywall(ctx: { lessonInProgress: boolean; tier: Tier }): boolean {
   return !ctx.lessonInProgress && ctx.tier !== 'pro';
+}
+
+/** Is this screener preset open to free users? (by id list, else the first N presets) */
+export function isPresetFree(presetId: string, index: number, tier: Tier): boolean {
+  if (tier === 'pro' || FREE_LIMITS.screener_presets_all === true) return true;
+  if (FREE_SCREENER_PRESET_IDS.length) return FREE_SCREENER_PRESET_IDS.includes(presetId);
+  return index < FREE_SCREENER_PRESET_COUNT;
 }

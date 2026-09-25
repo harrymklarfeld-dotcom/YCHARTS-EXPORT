@@ -62,7 +62,7 @@ export const DEFAULT_CATEGORY_RULES: CategoryRules = {
   transfer: ['transfer to', 'transfer from'],
   income: ['payroll', 'dir dep', 'tutoring', 'gift from'],
   fees: ['interest charge', 'late fee', 'fee'],
-  subscriptions: ['streaming', 'music', 'video', 'cloud storage', 'subscription'],
+  subscriptions: ['streaming', 'music', 'video', 'storage', 'subscription'],
   phone: ['wireless', 'phone'],
   groceries: ['grocery', 'market'],
   rideshare: ['ride', 'scooter'],
@@ -87,6 +87,16 @@ export function merchantKey(name: string): string {
     .trim();
 }
 
+/**
+ * A keyword matches at the START of a word ("ride" matches "ridenow trip", "fee" does not match
+ * "coffee"). Multi-word keywords match the same way.
+ */
+export function keywordMatches(key: string, keyword: string): boolean {
+  const w = merchantKey(keyword);
+  if (!w) return false;
+  return key === w || key.startsWith(w) || key.includes(` ${w}`);
+}
+
 export type CategorizeOptions = {
   rules?: CategoryRules;
   /** User edits: merchantKey → category. Wins over everything. */
@@ -104,7 +114,7 @@ export function categorize(tx: Transaction, opts: CategorizeOptions = {}): strin
   if (tx.category) return tx.category;
   const rules = opts.rules ?? DEFAULT_CATEGORY_RULES;
   for (const [cat, words] of Object.entries(rules)) {
-    if (words.some((w) => key.includes(w.toLowerCase()))) return cat;
+    if (words.some((w) => keywordMatches(key, w))) return cat;
   }
   return tx.amount > 0 ? 'income' : 'other';
 }
@@ -262,7 +272,7 @@ export type Subscription = {
 };
 
 export type SubscriptionOptions = CategorizeOptions & {
-  /** Minimum charges needed (default 2). */
+  /** Minimum charges needed (default 3: three months in a row). */
   minOccurrences?: number;
   /** Allowed days between charges (default 26–35: roughly monthly). */
   minGapDays?: number;
@@ -283,7 +293,7 @@ function median(xs: number[]): number {
  * `nextExpected` is last date + median gap (a PROJECTED date, not a promise).
  */
 export function detectSubscriptions(txs: readonly Transaction[], opts: SubscriptionOptions = {}): Subscription[] {
-  const minOcc = opts.minOccurrences ?? 2;
+  const minOcc = opts.minOccurrences ?? 3;
   const minGap = opts.minGapDays ?? 26;
   const maxGap = opts.maxGapDays ?? 35;
   const tol = opts.amountTolerance ?? 0.15;

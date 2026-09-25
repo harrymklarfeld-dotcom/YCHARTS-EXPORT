@@ -6,8 +6,10 @@ import { TickerBadge } from '../../components/CompanyRow';
 import { Icon } from '../../components/Icon';
 import { MetricExplainer } from '../../components/MetricExplainer';
 import { MiniBarChart } from '../../components/MiniBarChart';
+import { RangeBar } from '../../components/RangeBar';
 import { Body, Button, Disclaimer, Eyebrow, Title } from '../../components/ui';
-import { getCompany, getUnits } from '../../data';
+import { getCompanies, getCompany, getUnits } from '../../data';
+import { RANGE_METRICS, rangeFor, type RangeScope } from '../../funds/range';
 import { formatPercent, formatUsdCompact, formatValue } from '../../lib/format';
 import { METRIC_BY_KEY, metricCue, type Cue } from '../../lib/metricCatalog';
 import { practiceLessonFor } from '../../lib/practice';
@@ -45,8 +47,13 @@ export default function CompanyScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const [explain, setExplain] = useState<string | null>(null);
+  const [scope, setScope] = useState<RangeScope>('sector');
   const c = ticker ? getCompany(String(ticker)) : undefined;
   const practiceCount = useMemo(() => (c ? practiceLessonFor(c, getUnits()).questions.length : 0), [c]);
+  const ranges = useMemo(
+    () => (c ? RANGE_METRICS.map((k) => ({ k, info: rangeFor(getCompanies(), k, c.ticker, scope) })).filter((r) => r.info !== null) : []),
+    [c, scope],
+  );
 
   if (!c) {
     return (
@@ -117,6 +124,41 @@ export default function CompanyScreen() {
           </View>
         ))}
         <Body soft size={12}>Colour cues are rules of thumb for learning, not ratings. Tap any number for a plain-English explanation.</Body>
+
+        {ranges.length > 0 && (
+          <View style={{ gap: 8 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Eyebrow>How it compares</Eyebrow>
+              <View accessibilityRole="tablist" style={{ flexDirection: 'row', backgroundColor: t.c.surfaceAlt, borderRadius: 999, padding: 2 }}>
+                {(['sector', 'all'] as RangeScope[]).map((k) => (
+                  <Pressable
+                    key={k}
+                    accessibilityRole="tab"
+                    accessibilityState={{ selected: scope === k }}
+                    accessibilityLabel={k === 'sector' ? `Compare with ${c.sector} companies` : 'Compare with all companies'}
+                    onPress={() => setScope(k)}
+                    style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: scope === k ? t.c.surface : 'transparent' }}
+                  >
+                    <Text style={{ color: scope === k ? t.c.ink : t.c.inkSoft, fontSize: 12, fontWeight: '800' }}>{k === 'sector' ? 'Sector' : 'All'}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+            {ranges.map(({ k, info }) => (
+              <RangeBar
+                key={k}
+                label={METRIC_BY_KEY[k]?.label ?? k}
+                info={info!}
+                format={(v) => formatValue(v, METRIC_BY_KEY[k]?.format ?? 'ratio')}
+                onPress={() => setExplain(k)}
+              />
+            ))}
+            {ranges.some((r) => r.info!.scope !== scope) && (
+              <Body soft size={12}>Too few {c.sector} companies for some measures, so those compare with all companies.</Body>
+            )}
+            <Button label={`Compare ${c.ticker} with others`} variant="secondary" onPress={() => router.push(`/compare?tickers=${c.ticker}`)} />
+          </View>
+        )}
 
         <View style={{ gap: 8 }}>
           <Eyebrow>History</Eyebrow>

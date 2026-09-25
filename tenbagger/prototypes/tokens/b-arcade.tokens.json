@@ -1,0 +1,207 @@
+{
+  "$schema": "tenbagger-design-tokens/v1",
+  "direction": "B",
+  "name": "Arcade",
+  "prototype": "../b-arcade.html",
+  "defaultScheme": "system",
+  "color": {
+    "light": {
+      "bg": "#FFF7E8",
+      "surface": "#FFFFFF",
+      "surfaceAlt": "#FFEFD2",
+      "ink": "#16213A",
+      "inkSoft": "#5D6479",
+      "line": "#EBDDC2",
+      "primary": "#1FA35C",
+      "primaryInk": "#FFFFFF",
+      "primarySoft": "#D4F4E1",
+      "accent": "#FFC23D",
+      "accentSoft": "#FFF0C7",
+      "danger": "#FF5B45",
+      "dangerSoft": "#FFE0D9",
+      "locked": "#D9CFBD",
+      "flame": "#FF7A1A",
+      "heart": "#FF5B45",
+      "unitA": "#1FA35C",
+      "unitB": "#D39500"
+    },
+    "dark": {
+      "bg": "#111827",
+      "surface": "#1C2437",
+      "surfaceAlt": "#252F48",
+      "ink": "#F7F2E6",
+      "inkSoft": "#A7AEC4",
+      "line": "#2C3652",
+      "primary": "#37D07A",
+      "primaryInk": "#07210F",
+      "primarySoft": "#173B2A",
+      "accent": "#FFCB52",
+      "accentSoft": "#3A2F12",
+      "danger": "#FF6F5B",
+      "dangerSoft": "#3E1D19",
+      "locked": "#3A4460",
+      "flame": "#FF9A3D",
+      "heart": "#FF6F5B",
+      "unitA": "#1E8E50",
+      "unitB": "#C88E00"
+    },
+    "extra": {
+      "light": {
+        "outline": "#16213A",
+        "primaryDeep": "#137A43",
+        "accentDeep": "#D39500",
+        "dangerDeep": "#C9361F",
+        "sky": "#2F9BE0",
+        "skyDeep": "#1C6FA6",
+        "skySoft": "#D9EEFC",
+        "skyText": "#1C6FA6",
+        "goText": "#137A43",
+        "tomatoText": "#C9361F",
+        "onAccent": "#16213A"
+      },
+      "dark": {
+        "outline": "#05080F",
+        "primaryDeep": "#1E8E50",
+        "accentDeep": "#C88E00",
+        "dangerDeep": "#C53C26",
+        "sky": "#4DB0F2",
+        "skyDeep": "#2476AD",
+        "skySoft": "#15314A",
+        "skyText": "#6CC0F7",
+        "goText": "#4BDB8A",
+        "tomatoText": "#FF8676",
+        "onAccent": "#16213A"
+      }
+    }
+  },
+  "font": {
+    "display": {
+      "family": "Bricolage Grotesque",
+      "googleFonts": "Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800",
+      "expoPackage": "@expo-google-fonts/bricolage-grotesque",
+      "rnFamilies": {
+        "600": "BricolageGrotesque_600SemiBold",
+        "800": "BricolageGrotesque_800ExtraBold"
+      }
+    },
+    "body": {
+      "family": "Figtree",
+      "googleFonts": "Figtree:wght@500;600;700;800",
+      "expoPackage": "@expo-google-fonts/figtree",
+      "rnFamilies": {
+        "500": "Figtree_500Medium",
+        "600": "Figtree_600SemiBold",
+        "700": "Figtree_700Bold",
+        "800": "Figtree_800ExtraBold"
+      }
+    },
+    "mono": null,
+    "numerals": "tabular-nums on Figtree"
+  },
+  "type": {
+    "display": {
+      "fontSize": 44,
+      "lineHeight": 44,
+      "fontWeight": "800",
+      "font": "display",
+      "letterSpacing": -1.2
+    },
+    "h1": {
+      "fontSize": 30,
+      "lineHeight": 32,
+      "fontWeight": "800",
+      "font": "display",
+      "letterSpacing": -0.6
+    },
+    "h2": {
+      "fontSize": 22,
+      "lineHeight": 24,
+      "fontWeight": "800",
+      "font": "display"
+    },
+    "h3": {
+      "fontSize": 18,
+      "lineHeight": 20,
+      "fontWeight": "800",
+      "font": "display"
+    },
+    "prompt": {
+      "fontSize": 22,
+      "lineHeight": 26,
+      "fontWeight": "800",
+      "font": "display"
+    },
+    "body": {
+      "fontSize": 15,
+      "lineHeight": 22,
+      "fontWeight": "500",
+      "font": "body"
+    },
+    "small": {
+      "fontSize": 13,
+      "lineHeight": 18,
+      "fontWeight": "600",
+      "font": "body"
+    },
+    "label": {
+      "fontSize": 11,
+      "lineHeight": 13,
+      "fontWeight": "800",
+      "font": "body",
+      "letterSpacing": 1.1,
+      "textTransform": "uppercase"
+    },
+    "stat": {
+      "fontSize": 22,
+      "lineHeight": 24,
+      "fontWeight": "800",
+      "font": "display"
+    },
+    "button": {
+      "fontSize": 15,
+      "lineHeight": 18,
+      "fontWeight": "800",
+      "font": "body",
+      "letterSpacing": 0.3,
+      "textTransform": "uppercase"
+    }
+  },
+  "radius": {
+    "sm": 10,
+    "md": 16,
+    "lg": 24,
+    "pill": 999,
+    "node": 999
+  },
+  "space": {
+    "unit": 4,
+    "screenX": 16,
+    "stackGap": 10,
+    "rowY": 10,
+    "cardPad": 14
+  },
+  "border": {
+    "width": 2,
+    "color": "extra.outline",
+    "note": "Every card, tile and button has a 2px outline."
+  },
+  "elevation": {
+    "hardShadow": {
+      "offsetY": 4,
+      "blur": 0,
+      "color": "extra.outline"
+    },
+    "pressed": {
+      "offsetY": 1,
+      "translateY": 3
+    },
+    "rn": "iOS: shadowOffset {0,4}, shadowRadius 0, shadowOpacity 1. Android: no hard shadows, so use a 4px bottom border in outline colour (the current 3D-button trick)."
+  },
+  "motion": {
+    "pressMs": 80,
+    "popMs": 180,
+    "sheetMs": 220,
+    "easing": "cubic-bezier(.2,1.3,.5,1)",
+    "reducedMotion": "Disable bob, pop, confetti and sheet slide; keep colour changes."
+  }
+}

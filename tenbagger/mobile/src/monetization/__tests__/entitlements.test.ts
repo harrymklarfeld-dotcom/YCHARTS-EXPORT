@@ -6,6 +6,7 @@ import {
   effectiveTier,
   FREE_SNAPSHOT,
   inLessonGracePeriod,
+  isPresetFree,
   newLessonsOn,
   type Usage,
 } from '../entitlements';
@@ -122,5 +123,13 @@ describe('rewarded heart', () => {
     expect(grantOneHeart({ count: 0, regenFrom: 1000 }, 1000)).toEqual({ count: 1, regenFrom: 1000 });
     expect(grantOneHeart({ count: 4, regenFrom: 1000 }, 1000)).toEqual({ count: 5, regenFrom: null });
     expect(grantOneHeart({ count: 5, regenFrom: null }, 1000)).toEqual({ count: 5, regenFrom: null });
+  });
+});
+
+describe('screener presets', () => {
+  it('free gets the first presets, pro gets all', () => {
+    expect(isPresetFree('any', 0, 'free')).toBe(true);
+    expect(isPresetFree('any', 99, 'free')).toBe(false);
+    expect(isPresetFree('any', 99, 'pro')).toBe(true);
   });
 });

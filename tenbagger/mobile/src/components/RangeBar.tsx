@@ -17,7 +17,7 @@ type Props = {
  */
 export function RangeBar({ label, info, format, onPress }: Props) {
   const t = useTheme();
-  const pos = `${(info.position * 100).toFixed(1)}%` as const;
+  const pos: `${number}%` = `${Math.round(info.position * 1000) / 10}%`;
   const medPos =
     info.median !== null && info.max > info.min ? Math.max(0, Math.min(1, (info.median - info.min) / (info.max - info.min))) : null;
   const a11y = `${label}: ${format(info.value)}. Lowest ${format(info.min)}, highest ${format(info.max)} among ${info.peerCount + 1} ${info.groupLabel}. ${info.sentence}`;

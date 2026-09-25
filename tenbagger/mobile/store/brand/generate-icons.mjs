@@ -19,7 +19,7 @@
  *   assets/splash-icon-dark.png         1024x1024 RGBA, transparent, shown centred on #0D1422 (dark mode)
  *   assets/favicon.png                  48x48 RGBA (web)
  *   store/brand/play-feature-graphic.png 1024x500 RGB (Google Play feature graphic)
- *   store/brand/play-icon-512.png       512x512 RGB (Google Play hi-res icon, 32-bit PNG accepted)
+ *   store/brand/play-icon-512.png       512x512 RGBA 32-bit (Google Play hi-res icon)
  */
 import { createRequire } from 'node:module';
 import { writeFileSync, mkdirSync } from 'node:fs';
@@ -109,7 +109,8 @@ write('assets/splash-icon-dark.png', render(svg(1024, 1024, placed(1024, 1.3)), 
 write('assets/favicon.png', render(svg(1024, 1024, placed(1024, 1.35), NAVY), 48), { alpha: true });
 
 // Google Play store graphics.
-write('store/brand/play-icon-512.png', render(svg(1024, 1024, placed(1024, 1.12), NAVY), 512), { alpha: false });
+// Play asks for a 32-bit PNG (with alpha channel), opaque content.
+write('store/brand/play-icon-512.png', render(svg(1024, 1024, placed(1024, 1.12), NAVY), 512), { alpha: true });
 const feature = svg(
   1024,
   500,

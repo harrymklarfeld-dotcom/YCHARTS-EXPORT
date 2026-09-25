@@ -74,7 +74,7 @@ data.monthEndSnapshots = monthEnd.map(([d, chk, sav, card, brk, roth, note]) => 
 
 // ------------------------------------------------------------------ transactions
 const tx = [];
-const add = (date, accountId, amount, name) => tx.push({ date, accountId, amount: r2(amount), name, category: null, pending: false, basis: 'verified' });
+const add = (date, accountId, amount, name, variable = false) => tx.push({ date, accountId, amount: r2(amount), name, category: null, pending: false, basis: 'verified', variable });
 
 // Income (mirrors `deposits` so both views agree).
 const INCOME_NAME = { 'campus-job': 'CAMPUS PAYROLL DIR DEP', tutoring: 'TUTORING SESSIONS P2P', other: 'GIFT FROM FAMILY' };
@@ -109,11 +109,11 @@ const EATS = ['NOODLE BAR', 'TACO STAND', 'SLICE PIZZA', 'GRILL BURGER'];
 for (const d of days) {
   const fall = d >= '2026-08-25';
   const w = dow(d);
-  if (w >= 1 && w <= 5 && rand() < (fall ? 0.6 : 0.35)) add(d, 'card', -between(3.5, 6.75), pick(CAFES));
-  if (rand() < (fall ? 0.3 : 0.2)) add(d, 'card', -between(9, 16.5), pick(EATS));
-  if (w === 6 || (fall && w === 3 && rand() < 0.5)) add(d, 'card', -between(22, 44), pick(['CAMPUS MARKET', 'CORNER GROCERY']));
-  if (rand() < (fall ? 0.28 : 0.12)) add(d, 'card', -between(7.5, 18.5), 'RIDENOW TRIP');
-  if (fall && (w === 5 || w === 6) && rand() < 0.45) add(d, 'card', -between(18, 29), 'DASHEATS DELIVERY');
+  if (w >= 1 && w <= 5 && rand() < (fall ? 0.6 : 0.35)) add(d, 'card', -between(3.5, 6.75), pick(CAFES), true);
+  if (rand() < (fall ? 0.3 : 0.2)) add(d, 'card', -between(9, 16.5), pick(EATS), true);
+  if (w === 6 || (fall && w === 3 && rand() < 0.5)) add(d, 'card', -between(22, 44), pick(['CAMPUS MARKET', 'CORNER GROCERY']), true);
+  if (rand() < (fall ? 0.28 : 0.12)) add(d, 'card', -between(7.5, 18.5), 'RIDENOW TRIP', true);
+  if (fall && (w === 5 || w === 6) && rand() < 0.45) add(d, 'card', -between(18, 29), 'DASHEATS DELIVERY', true);
   if (!fall && w === 5 && rand() < 0.4) add(d, 'chk', -between(8, 14), 'SLICE PIZZA');
 }
 // One-offs
@@ -129,8 +129,42 @@ add('2026-09-24', 'card', -42.75, 'DORM SUPPLIES STORE');
 add('2026-09-26', 'card', -58, 'ARENA CONCERT TICKETS');
 add('2026-10-03', 'card', -19.5, 'CINEMA 8 MOVIE TICKETS');
 
+// Reconcile the card with the snapshots: in each window between card snapshots, card charges
+// must equal (balance change + payments). Extra everyday charges move to the debit card
+// (checking); a shortfall is filled with a few everyday card charges.
+{
+  const snaps = [...data.monthEndSnapshots, ...data.snapshots].map((s) => [s.takenAt.slice(0, 10), s.accounts.find((a) => a.id === 'card').balance]);
+  const FILL = ['CAMPUS MARKET', 'DASHEATS DELIVERY', 'CORNER GROCERY', 'CAMPUS STORE'];
+  for (let i = 1; i < snaps.length; i++) {
+    const [from, b0] = snaps[i - 1];
+    const [to, b1] = snaps[i];
+    if (to < START) continue;
+    const lo = from < START ? addDays(START, -1) : from;
+    const inWin = tx.filter((t) => t.accountId === 'card' && t.date > lo && t.date <= to);
+    const payments = inWin.filter((t) => t.amount > 0).reduce((x, t) => x + t.amount, 0);
+    // Charges before START in a straddling window are unknown: count only the in-range share.
+    const target = r2(b1 - b0 + payments - (from < START ? 0 : 0));
+    let charges = inWin.filter((t) => t.amount < 0).reduce((x, t) => x - t.amount, 0);
+    const movable = inWin.filter((t) => t.amount < 0 && t.variable).sort((a, b) => (a.date < b.date ? 1 : -1));
+    while (charges > target + 0.001 && movable.length) {
+      const t = movable.shift();
+      t.accountId = 'chk';
+      charges += t.amount;
+    }
+    let gap = r2(target - charges);
+    const span = Math.max(1, Math.round((toD(to) - toD(lo)) / DAY));
+    let k = 0;
+    while (gap > 0.004) {
+      const amt = r2(Math.min(gap, between(24, 46)));
+      const d = addDays(lo, 1 + Math.floor(rand() * span));
+      add(d > to ? to : d, 'card', -amt, FILL[k++ % FILL.length]);
+      gap = r2(gap - amt);
+    }
+  }
+}
+
 tx.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.accountId.localeCompare(b.accountId) || a.name.localeCompare(b.name)));
-data.transactions = tx.map((t, i) => ({ id: `tx-${String(i + 1).padStart(3, '0')}`, ...t }));
+data.transactions = tx.map(({ variable, ...t }, i) => ({ id: `tx-${String(i + 1).padStart(3, '0')}`, ...t }));
 
 // ------------------------------------------------------------------ investments
 const H = (accountId, ticker, name, kind, assetClass, shares, price, costBasis, basis) => ({ accountId, ticker, name, kind, assetClass, shares, price, costBasis, basis });

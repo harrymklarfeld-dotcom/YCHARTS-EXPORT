@@ -693,6 +693,46 @@
   "transactions": [
     {
       "id": "tx-001",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -33.4,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-002",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -45.85,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-003",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -45.32,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-004",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -42.26,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-005",
       "date": "2026-07-08",
       "accountId": "card",
       "amount": -4.21,
@@ -702,7 +742,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-002",
+      "id": "tx-006",
       "date": "2026-07-08",
       "accountId": "chk",
       "amount": -30,
@@ -712,7 +752,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-003",
+      "id": "tx-007",
       "date": "2026-07-09",
       "accountId": "card",
       "amount": -5.59,
@@ -722,7 +762,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-004",
+      "id": "tx-008",
       "date": "2026-07-09",
       "accountId": "chk",
       "amount": 60,
@@ -732,7 +772,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-005",
+      "id": "tx-009",
       "date": "2026-07-10",
       "accountId": "card",
       "amount": -4.18,
@@ -742,7 +782,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-006",
+      "id": "tx-010",
       "date": "2026-07-10",
       "accountId": "chk",
       "amount": -9.9,
@@ -752,7 +792,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-007",
+      "id": "tx-011",
       "date": "2026-07-11",
       "accountId": "card",
       "amount": -37.78,
@@ -762,7 +802,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-008",
+      "id": "tx-012",
+      "date": "2026-07-11",
+      "accountId": "card",
+      "amount": -33.49,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-013",
       "date": "2026-07-12",
       "accountId": "card",
       "amount": -13.68,
@@ -772,7 +822,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-009",
+      "id": "tx-014",
       "date": "2026-07-12",
       "accountId": "card",
       "amount": -10.99,
@@ -782,7 +832,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-010",
+      "id": "tx-015",
       "date": "2026-07-13",
       "accountId": "card",
       "amount": -17.84,
@@ -792,7 +842,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-011",
+      "id": "tx-016",
       "date": "2026-07-15",
       "accountId": "card",
       "amount": -3.94,
@@ -802,7 +852,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-012",
+      "id": "tx-017",
       "date": "2026-07-15",
       "accountId": "chk",
       "amount": -10,
@@ -812,7 +862,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-013",
+      "id": "tx-018",
       "date": "2026-07-15",
       "accountId": "sav",
       "amount": 10,
@@ -822,7 +872,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-014",
+      "id": "tx-019",
       "date": "2026-07-17",
       "accountId": "card",
       "amount": 480,
@@ -832,7 +882,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-015",
+      "id": "tx-020",
       "date": "2026-07-17",
       "accountId": "chk",
       "amount": 294.5,
@@ -842,7 +892,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-016",
+      "id": "tx-021",
       "date": "2026-07-17",
       "accountId": "chk",
       "amount": -480,
@@ -852,7 +902,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-017",
+      "id": "tx-022",
       "date": "2026-07-18",
       "accountId": "card",
       "amount": -23.52,
@@ -862,7 +912,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-018",
+      "id": "tx-023",
+      "date": "2026-07-19",
+      "accountId": "card",
+      "amount": -26.25,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-024",
       "date": "2026-07-19",
       "accountId": "card",
       "amount": -14,
@@ -872,7 +932,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-019",
+      "id": "tx-025",
       "date": "2026-07-21",
       "accountId": "card",
       "amount": -15.49,
@@ -882,7 +942,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-020",
+      "id": "tx-026",
       "date": "2026-07-22",
       "accountId": "card",
       "amount": -4.87,
@@ -892,7 +952,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-021",
+      "id": "tx-027",
       "date": "2026-07-23",
       "accountId": "card",
       "amount": -10.03,
@@ -902,7 +962,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-022",
+      "id": "tx-028",
       "date": "2026-07-23",
       "accountId": "chk",
       "amount": 60,
@@ -912,7 +972,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-023",
+      "id": "tx-029",
       "date": "2026-07-24",
       "accountId": "card",
       "amount": -6.05,
@@ -922,7 +982,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-024",
+      "id": "tx-030",
       "date": "2026-07-24",
       "accountId": "card",
       "amount": -10.2,
@@ -932,7 +992,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-025",
+      "id": "tx-031",
       "date": "2026-07-25",
       "accountId": "card",
       "amount": -25.11,
@@ -942,7 +1002,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-026",
+      "id": "tx-032",
       "date": "2026-07-27",
       "accountId": "card",
       "amount": -13.77,
@@ -952,7 +1012,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-027",
+      "id": "tx-033",
       "date": "2026-07-27",
       "accountId": "card",
       "amount": -12.18,
@@ -962,7 +1022,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-028",
+      "id": "tx-034",
+      "date": "2026-07-28",
+      "accountId": "card",
+      "amount": -32.77,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-035",
       "date": "2026-07-28",
       "accountId": "card",
       "amount": -16.7,
@@ -972,7 +1042,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-029",
+      "id": "tx-036",
       "date": "2026-07-29",
       "accountId": "card",
       "amount": -5.63,
@@ -982,7 +1052,27 @@
       "basis": "verified"
     },
     {
-      "id": "tx-030",
+      "id": "tx-037",
+      "date": "2026-07-29",
+      "accountId": "card",
+      "amount": -24.73,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-038",
+      "date": "2026-07-31",
+      "accountId": "card",
+      "amount": -30.17,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-039",
       "date": "2026-07-31",
       "accountId": "chk",
       "amount": 265.05,
@@ -992,7 +1082,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-031",
+      "id": "tx-040",
       "date": "2026-07-31",
       "accountId": "chk",
       "amount": -13.49,
@@ -1002,7 +1092,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-032",
+      "id": "tx-041",
       "date": "2026-07-31",
       "accountId": "sav",
       "amount": 0.31,
@@ -1012,7 +1102,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-033",
+      "id": "tx-042",
       "date": "2026-08-01",
       "accountId": "card",
       "amount": -36.61,
@@ -1022,7 +1112,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-034",
+      "id": "tx-043",
       "date": "2026-08-01",
       "accountId": "chk",
       "amount": -75,
@@ -1032,7 +1122,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-035",
+      "id": "tx-044",
       "date": "2026-08-03",
       "accountId": "card",
       "amount": -3.56,
@@ -1042,7 +1132,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-036",
+      "id": "tx-045",
       "date": "2026-08-03",
       "accountId": "card",
       "amount": -2.99,
@@ -1052,7 +1142,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-037",
+      "id": "tx-046",
+      "date": "2026-08-04",
+      "accountId": "card",
+      "amount": -43.12,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-047",
       "date": "2026-08-04",
       "accountId": "card",
       "amount": -13.58,
@@ -1062,7 +1162,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-038",
+      "id": "tx-048",
       "date": "2026-08-04",
       "accountId": "card",
       "amount": -10.96,
@@ -1072,7 +1172,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-039",
+      "id": "tx-049",
       "date": "2026-08-05",
       "accountId": "card",
       "amount": -4.38,
@@ -1082,7 +1182,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-040",
+      "id": "tx-050",
       "date": "2026-08-06",
       "accountId": "card",
       "amount": -4.06,
@@ -1092,7 +1192,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-041",
+      "id": "tx-051",
       "date": "2026-08-06",
       "accountId": "card",
       "amount": -12.96,
@@ -1102,7 +1202,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-042",
+      "id": "tx-052",
       "date": "2026-08-07",
       "accountId": "card",
       "amount": -5.93,
@@ -1112,7 +1212,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-043",
+      "id": "tx-053",
+      "date": "2026-08-07",
+      "accountId": "card",
+      "amount": -41.72,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-054",
       "date": "2026-08-08",
       "accountId": "card",
       "amount": -26.74,
@@ -1122,7 +1232,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-044",
+      "id": "tx-055",
       "date": "2026-08-08",
       "accountId": "chk",
       "amount": -30,
@@ -1132,7 +1242,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-045",
+      "id": "tx-056",
+      "date": "2026-08-10",
+      "accountId": "card",
+      "amount": -14.58,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-057",
       "date": "2026-08-10",
       "accountId": "card",
       "amount": -36.5,
@@ -1142,7 +1262,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-046",
+      "id": "tx-058",
       "date": "2026-08-12",
       "accountId": "card",
       "amount": -3.81,
@@ -1152,7 +1272,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-047",
+      "id": "tx-059",
+      "date": "2026-08-12",
+      "accountId": "card",
+      "amount": -32.36,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-060",
       "date": "2026-08-12",
       "accountId": "card",
       "amount": -17.14,
@@ -1162,7 +1292,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-048",
+      "id": "tx-061",
       "date": "2026-08-12",
       "accountId": "card",
       "amount": -10.99,
@@ -1172,7 +1302,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-049",
+      "id": "tx-062",
       "date": "2026-08-14",
       "accountId": "card",
       "amount": -5.3,
@@ -1182,7 +1312,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-050",
+      "id": "tx-063",
+      "date": "2026-08-14",
+      "accountId": "card",
+      "amount": -42.71,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-064",
       "date": "2026-08-14",
       "accountId": "chk",
       "amount": 176.7,
@@ -1192,9 +1332,9 @@
       "basis": "verified"
     },
     {
-      "id": "tx-051",
+      "id": "tx-065",
       "date": "2026-08-15",
-      "accountId": "card",
+      "accountId": "chk",
       "amount": -39.73,
       "name": "CAMPUS MARKET",
       "category": null,
@@ -1202,7 +1342,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-052",
+      "id": "tx-066",
       "date": "2026-08-15",
       "accountId": "chk",
       "amount": -10,
@@ -1212,7 +1352,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-053",
+      "id": "tx-067",
       "date": "2026-08-15",
       "accountId": "sav",
       "amount": 10,
@@ -1222,9 +1362,9 @@
       "basis": "verified"
     },
     {
-      "id": "tx-054",
+      "id": "tx-068",
       "date": "2026-08-17",
-      "accountId": "card",
+      "accountId": "chk",
       "amount": -5.29,
       "name": "CAMPUS CAFE",
       "category": null,
@@ -1232,17 +1372,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-055",
-      "date": "2026-08-18",
-      "accountId": "card",
-      "amount": -4.75,
-      "name": "CORNER BAKERY CAFE",
-      "category": null,
-      "pending": false,
-      "basis": "verified"
-    },
-    {
-      "id": "tx-056",
+      "id": "tx-069",
       "date": "2026-08-18",
       "accountId": "card",
       "amount": 730,
@@ -1252,7 +1382,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-057",
+      "id": "tx-070",
+      "date": "2026-08-18",
+      "accountId": "chk",
+      "amount": -4.75,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-071",
       "date": "2026-08-18",
       "accountId": "chk",
       "amount": -730,
@@ -1262,7 +1402,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-058",
+      "id": "tx-072",
       "date": "2026-08-20",
       "accountId": "chk",
       "amount": 60,
@@ -1272,7 +1412,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-059",
+      "id": "tx-073",
       "date": "2026-08-21",
       "accountId": "card",
       "amount": -15.49,
@@ -1282,7 +1422,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-060",
+      "id": "tx-074",
       "date": "2026-08-22",
       "accountId": "card",
       "amount": -33.39,
@@ -1292,7 +1432,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-061",
+      "id": "tx-075",
       "date": "2026-08-25",
       "accountId": "card",
       "amount": -4.66,
@@ -1302,7 +1442,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-062",
+      "id": "tx-076",
       "date": "2026-08-25",
       "accountId": "card",
       "amount": -10.8,
@@ -1312,7 +1452,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-063",
+      "id": "tx-077",
       "date": "2026-08-25",
       "accountId": "chk",
       "amount": -45,
@@ -1322,7 +1462,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-064",
+      "id": "tx-078",
       "date": "2026-08-26",
       "accountId": "card",
       "amount": -6.43,
@@ -1332,7 +1472,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-065",
+      "id": "tx-079",
       "date": "2026-08-26",
       "accountId": "card",
       "amount": -15.08,
@@ -1342,7 +1482,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-066",
+      "id": "tx-080",
       "date": "2026-08-26",
       "accountId": "card",
       "amount": -9.3,
@@ -1352,7 +1492,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-067",
+      "id": "tx-081",
       "date": "2026-08-27",
       "accountId": "card",
       "amount": -28.4,
@@ -1362,7 +1502,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-068",
+      "id": "tx-082",
       "date": "2026-08-27",
       "accountId": "card",
       "amount": -5.39,
@@ -1372,7 +1512,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-069",
+      "id": "tx-083",
       "date": "2026-08-27",
       "accountId": "card",
       "amount": -8.45,
@@ -1382,7 +1522,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-070",
+      "id": "tx-084",
       "date": "2026-08-27",
       "accountId": "card",
       "amount": -10.05,
@@ -1392,7 +1532,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-071",
+      "id": "tx-085",
       "date": "2026-08-28",
       "accountId": "card",
       "amount": -6.2,
@@ -1402,7 +1542,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-072",
+      "id": "tx-086",
       "date": "2026-08-28",
       "accountId": "card",
       "amount": -23.95,
@@ -1412,7 +1552,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-073",
+      "id": "tx-087",
       "date": "2026-08-28",
       "accountId": "card",
       "amount": -12.36,
@@ -1422,7 +1562,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-074",
+      "id": "tx-088",
       "date": "2026-08-28",
       "accountId": "chk",
       "amount": 294.5,
@@ -1432,7 +1572,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-075",
+      "id": "tx-089",
       "date": "2026-08-29",
       "accountId": "card",
       "amount": -36.31,
@@ -1442,7 +1582,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-076",
+      "id": "tx-090",
       "date": "2026-08-29",
       "accountId": "card",
       "amount": -14.1,
@@ -1452,7 +1592,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-077",
+      "id": "tx-091",
       "date": "2026-08-30",
       "accountId": "card",
       "amount": -14.88,
@@ -1462,7 +1602,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-078",
+      "id": "tx-092",
       "date": "2026-08-31",
       "accountId": "card",
       "amount": -6.37,
@@ -1472,7 +1612,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-079",
+      "id": "tx-093",
       "date": "2026-08-31",
       "accountId": "sav",
       "amount": 0.3,
@@ -1482,7 +1622,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-080",
+      "id": "tx-094",
       "date": "2026-09-01",
       "accountId": "card",
       "amount": -4.03,
@@ -1492,9 +1632,19 @@
       "basis": "verified"
     },
     {
-      "id": "tx-081",
+      "id": "tx-095",
       "date": "2026-09-01",
       "accountId": "card",
+      "amount": -4.36,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-096",
+      "date": "2026-09-01",
+      "accountId": "chk",
       "amount": -17.62,
       "name": "RIDENOW TRIP",
       "category": null,
@@ -1502,7 +1652,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-082",
+      "id": "tx-097",
       "date": "2026-09-01",
       "accountId": "chk",
       "amount": -75,
@@ -1512,7 +1662,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-083",
+      "id": "tx-098",
       "date": "2026-09-02",
       "accountId": "card",
       "amount": -32.94,
@@ -1522,7 +1672,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-084",
+      "id": "tx-099",
+      "date": "2026-09-02",
+      "accountId": "card",
+      "amount": -38.61,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-100",
       "date": "2026-09-02",
       "accountId": "card",
       "amount": -14.26,
@@ -1532,7 +1692,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-085",
+      "id": "tx-101",
       "date": "2026-09-03",
       "accountId": "card",
       "amount": -2.99,
@@ -1542,7 +1702,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-086",
+      "id": "tx-102",
       "date": "2026-09-03",
       "accountId": "card",
       "amount": -5.09,
@@ -1552,7 +1712,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-087",
+      "id": "tx-103",
       "date": "2026-09-03",
       "accountId": "card",
       "amount": -10.81,
@@ -1562,7 +1722,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-088",
+      "id": "tx-104",
       "date": "2026-09-03",
       "accountId": "chk",
       "amount": 90,
@@ -1572,7 +1732,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-089",
+      "id": "tx-105",
       "date": "2026-09-04",
       "accountId": "card",
       "amount": -5.99,
@@ -1582,7 +1742,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-090",
+      "id": "tx-106",
       "date": "2026-09-04",
       "accountId": "card",
       "amount": -9.55,
@@ -1592,7 +1752,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-091",
+      "id": "tx-107",
       "date": "2026-09-05",
       "accountId": "card",
       "amount": -30.1,
@@ -1602,7 +1762,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-092",
+      "id": "tx-108",
       "date": "2026-09-05",
       "accountId": "card",
       "amount": -21.69,
@@ -1612,7 +1772,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-093",
+      "id": "tx-109",
+      "date": "2026-09-06",
+      "accountId": "card",
+      "amount": -34.2,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-110",
       "date": "2026-09-06",
       "accountId": "card",
       "amount": -13.87,
@@ -1622,7 +1792,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-094",
+      "id": "tx-111",
       "date": "2026-09-06",
       "accountId": "card",
       "amount": -4.99,
@@ -1632,7 +1802,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-095",
+      "id": "tx-112",
       "date": "2026-09-07",
       "accountId": "card",
       "amount": -6.32,
@@ -1642,7 +1812,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-096",
+      "id": "tx-113",
       "date": "2026-09-07",
       "accountId": "card",
       "amount": -14.27,
@@ -1652,7 +1822,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-097",
+      "id": "tx-114",
       "date": "2026-09-07",
       "accountId": "card",
       "amount": -15.71,
@@ -1662,7 +1832,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-098",
+      "id": "tx-115",
+      "date": "2026-09-08",
+      "accountId": "card",
+      "amount": -38.19,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-116",
       "date": "2026-09-08",
       "accountId": "card",
       "amount": -10.45,
@@ -1672,7 +1852,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-099",
+      "id": "tx-117",
       "date": "2026-09-08",
       "accountId": "chk",
       "amount": -30,
@@ -1682,7 +1862,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-100",
+      "id": "tx-118",
       "date": "2026-09-10",
       "accountId": "card",
       "amount": -24,
@@ -1692,7 +1872,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-101",
+      "id": "tx-119",
       "date": "2026-09-10",
       "accountId": "card",
       "amount": -18.29,
@@ -1702,7 +1882,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-102",
+      "id": "tx-120",
+      "date": "2026-09-11",
+      "accountId": "card",
+      "amount": -26.37,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-121",
       "date": "2026-09-11",
       "accountId": "card",
       "amount": -4.08,
@@ -1712,7 +1902,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-103",
+      "id": "tx-122",
       "date": "2026-09-12",
       "accountId": "card",
       "amount": -41.92,
@@ -1722,7 +1912,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-104",
+      "id": "tx-123",
       "date": "2026-09-12",
       "accountId": "card",
       "amount": -10.25,
@@ -1732,7 +1922,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-105",
+      "id": "tx-124",
       "date": "2026-09-12",
       "accountId": "card",
       "amount": -10.99,
@@ -1742,7 +1932,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-106",
+      "id": "tx-125",
+      "date": "2026-09-14",
+      "accountId": "card",
+      "amount": -9.68,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-126",
       "date": "2026-09-15",
       "accountId": "chk",
       "amount": -10,
@@ -1752,7 +1952,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-107",
+      "id": "tx-127",
       "date": "2026-09-15",
       "accountId": "sav",
       "amount": 10,
@@ -1762,7 +1962,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-108",
+      "id": "tx-128",
       "date": "2026-09-16",
       "accountId": "card",
       "amount": -5.05,
@@ -1772,7 +1972,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-109",
+      "id": "tx-129",
       "date": "2026-09-16",
       "accountId": "card",
       "amount": -31.57,
@@ -1782,7 +1982,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-110",
+      "id": "tx-130",
+      "date": "2026-09-16",
+      "accountId": "card",
+      "amount": -26.69,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-131",
       "date": "2026-09-16",
       "accountId": "card",
       "amount": -11.08,
@@ -1792,9 +2002,9 @@
       "basis": "verified"
     },
     {
-      "id": "tx-111",
+      "id": "tx-132",
       "date": "2026-09-17",
-      "accountId": "card",
+      "accountId": "chk",
       "amount": -3.5,
       "name": "CAMPUS CAFE",
       "category": null,
@@ -1802,7 +2012,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-112",
+      "id": "tx-133",
       "date": "2026-09-17",
       "accountId": "chk",
       "amount": 120,
@@ -1812,17 +2022,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-113",
-      "date": "2026-09-18",
-      "accountId": "card",
-      "amount": -15.12,
-      "name": "GRILL BURGER",
-      "category": null,
-      "pending": false,
-      "basis": "verified"
-    },
-    {
-      "id": "tx-114",
+      "id": "tx-134",
       "date": "2026-09-18",
       "accountId": "card",
       "amount": 750,
@@ -1832,7 +2032,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-115",
+      "id": "tx-135",
+      "date": "2026-09-18",
+      "accountId": "chk",
+      "amount": -15.12,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-136",
       "date": "2026-09-18",
       "accountId": "chk",
       "amount": -750,
@@ -1842,7 +2052,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-116",
+      "id": "tx-137",
       "date": "2026-09-19",
       "accountId": "card",
       "amount": -36,
@@ -1852,7 +2062,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-117",
+      "id": "tx-138",
       "date": "2026-09-19",
       "accountId": "card",
       "amount": -22.33,
@@ -1862,7 +2072,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-118",
+      "id": "tx-139",
       "date": "2026-09-19",
       "accountId": "card",
       "amount": -9.06,
@@ -1872,7 +2082,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-119",
+      "id": "tx-140",
       "date": "2026-09-20",
       "accountId": "card",
       "amount": -186.4,
@@ -1882,7 +2092,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-120",
+      "id": "tx-141",
       "date": "2026-09-21",
       "accountId": "card",
       "amount": -4.31,
@@ -1892,7 +2102,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-121",
+      "id": "tx-142",
+      "date": "2026-09-21",
+      "accountId": "card",
+      "amount": -10.08,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-143",
       "date": "2026-09-21",
       "accountId": "card",
       "amount": -15.49,
@@ -1902,7 +2122,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-122",
+      "id": "tx-144",
       "date": "2026-09-21",
       "accountId": "card",
       "amount": -15.28,
@@ -1912,7 +2132,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-123",
+      "id": "tx-145",
       "date": "2026-09-22",
       "accountId": "card",
       "amount": -64,
@@ -1922,7 +2142,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-124",
+      "id": "tx-146",
       "date": "2026-09-23",
       "accountId": "card",
       "amount": -12.93,
@@ -1932,7 +2152,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-125",
+      "id": "tx-147",
       "date": "2026-09-24",
       "accountId": "card",
       "amount": -42.75,
@@ -1942,7 +2162,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-126",
+      "id": "tx-148",
       "date": "2026-09-25",
       "accountId": "card",
       "amount": -13.96,
@@ -1952,7 +2172,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-127",
+      "id": "tx-149",
       "date": "2026-09-25",
       "accountId": "chk",
       "amount": 353.4,
@@ -1962,7 +2182,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-128",
+      "id": "tx-150",
       "date": "2026-09-26",
       "accountId": "card",
       "amount": -58,
@@ -1972,7 +2192,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-129",
+      "id": "tx-151",
       "date": "2026-09-26",
       "accountId": "card",
       "amount": -33.96,
@@ -1982,7 +2202,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-130",
+      "id": "tx-152",
       "date": "2026-09-26",
       "accountId": "card",
       "amount": -18.4,
@@ -1992,7 +2212,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-131",
+      "id": "tx-153",
+      "date": "2026-09-27",
+      "accountId": "card",
+      "amount": -38.03,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-154",
       "date": "2026-09-29",
       "accountId": "card",
       "amount": -4.62,
@@ -2002,7 +2232,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-132",
+      "id": "tx-155",
       "date": "2026-09-29",
       "accountId": "card",
       "amount": -8.09,
@@ -2012,7 +2242,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-133",
+      "id": "tx-156",
       "date": "2026-09-30",
       "accountId": "card",
       "amount": -6.31,
@@ -2022,7 +2252,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-134",
+      "id": "tx-157",
       "date": "2026-09-30",
       "accountId": "sav",
       "amount": 0.29,
@@ -2032,7 +2262,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-135",
+      "id": "tx-158",
       "date": "2026-10-01",
       "accountId": "card",
       "amount": -4.41,
@@ -2042,7 +2272,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-136",
+      "id": "tx-159",
+      "date": "2026-10-01",
+      "accountId": "card",
+      "amount": -41.32,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-160",
       "date": "2026-10-01",
       "accountId": "chk",
       "amount": -75,
@@ -2052,7 +2292,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-137",
+      "id": "tx-161",
       "date": "2026-10-01",
       "accountId": "chk",
       "amount": 90,
@@ -2062,7 +2302,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-138",
+      "id": "tx-162",
       "date": "2026-10-02",
       "accountId": "card",
       "amount": -4.89,
@@ -2072,7 +2312,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-139",
+      "id": "tx-163",
+      "date": "2026-10-02",
+      "accountId": "card",
+      "amount": -32.2,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-164",
       "date": "2026-10-02",
       "accountId": "chk",
       "amount": 250,
@@ -2082,7 +2332,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-140",
+      "id": "tx-165",
+      "date": "2026-10-03",
+      "accountId": "card",
+      "amount": -16.86,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-166",
       "date": "2026-10-03",
       "accountId": "card",
       "amount": -19.5,
@@ -2092,7 +2352,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-141",
+      "id": "tx-167",
       "date": "2026-10-03",
       "accountId": "card",
       "amount": -2.99,
@@ -2102,7 +2362,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-142",
+      "id": "tx-168",
       "date": "2026-10-03",
       "accountId": "card",
       "amount": -23.95,
@@ -2112,7 +2372,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-143",
+      "id": "tx-169",
       "date": "2026-10-03",
       "accountId": "card",
       "amount": -23.21,
@@ -2122,7 +2382,7 @@
       "basis": "verified"
     },
     {
-      "id": "tx-144",
+      "id": "tx-170",
       "date": "2026-10-05",
       "accountId": "card",
       "amount": -3.6,
@@ -2132,7 +2392,17 @@
       "basis": "verified"
     },
     {
-      "id": "tx-145",
+      "id": "tx-171",
+      "date": "2026-10-05",
+      "accountId": "card",
+      "amount": -32.5,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-172",
       "date": "2026-10-05",
       "accountId": "card",
       "amount": -14.57,

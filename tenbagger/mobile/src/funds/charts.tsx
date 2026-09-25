@@ -6,7 +6,7 @@ import { neutral, seriesColors } from './palette';
 
 export type Slice = { label: string; value: number; neutral?: boolean };
 
-const pct = (v: number) => `${(v * 100).toFixed(v > 0 && v < 0.01 ? 1 : 0)}%`;
+const pct = (v: number) => `${(v * 100).toFixed(v >= 0.995 || v === 0 ? 0 : 1)}%`;
 
 /** Donut with a 2px surface gap between segments and a legend with values (never colour-only). */
 export function Donut({ slices, size = 132, center, title }: { slices: Slice[]; size?: number; center?: string; title: string }) {

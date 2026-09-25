@@ -21,6 +21,6 @@ export { RewardedHeartButton } from './components/RewardedHeartButton';
 export { OfferCard } from './components/OfferCard';
 export { useMonetization } from './store';
 export { adEligibility, screenerAdRowIndexes } from './adRules';
-export { checkFeature, checkLessonStart, effectiveTier, type EntitlementSnapshot, type GateResult, type Tier } from './entitlements';
+export { checkFeature, checkLessonStart, effectiveTier, isPresetFree, type EntitlementSnapshot, type GateResult, type Tier } from './entitlements';
 export { addAnalyticsSink, track, type MonetizationEvent } from './analytics';
 export { validateOffers, offersFor } from './affiliate';

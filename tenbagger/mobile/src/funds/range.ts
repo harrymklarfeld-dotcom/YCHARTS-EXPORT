@@ -4,6 +4,7 @@
  */
 import {
   compareToPeers,
+  getMetricInfo,
   getValue,
   type Company as EngineCompany,
   type FieldKey,
@@ -61,7 +62,19 @@ export function rangeFor(companiesIn: AnyCompany[], metric: string, ticker: stri
     pctAbove: cmp.pctAbove,
     peerCount: cmp.peerCount,
     groupLabel: cmp.groupLabel,
-    sentence: cmp.sentence,
+    sentence: edgeSentence(metric, cmp.value, cmp.pctBelow, cmp.pctAbove, cmp.peerCount, cmp.groupLabel) ?? cmp.sentence,
     scope: used,
   };
+}
+
+/** At either end of the range, "cheaper than 0%" reads badly: say "highest/lowest" instead. */
+export function edgeSentence(metric: string, value: number, pctBelow: number, pctAbove: number, peerCount: number, groupLabel: string): string | null {
+  if (peerCount < 1) return null;
+  const info = getMetricInfo(metric);
+  const name = info?.shortLabel ?? metric;
+  const shown = info ? info.format(value) : String(value);
+  const of = `of the ${peerCount + 1} ${groupLabel} we cover`;
+  if (pctAbove === 0 && pctBelow > 0) return `Highest ${name} (${shown}) ${of}.`;
+  if (pctBelow === 0 && pctAbove > 0) return `Lowest ${name} (${shown}) ${of}.`;
+  return null;
 }

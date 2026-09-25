@@ -49,7 +49,7 @@ describe('rangeFor', () => {
     expect(r.pctBelow).toBe(100);
     expect(r.max).toBeCloseTo(r.value);
     expect(r.position).toBe(1);
-    expect(r.sentence).toMatch(/Technology companies/);
+    expect(r.sentence).toBe('Highest P/E (131.8x) of the 4 Technology companies we cover.');
   });
   it('falls back to all companies when the sector is too small, and is null-safe', () => {
     const r = rangeFor(companies, 'pe', 'JPM', 'sector')!;

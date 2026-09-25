@@ -1,0 +1,186 @@
+{
+  "$schema": "tenbagger-design-tokens/v1",
+  "direction": "A",
+  "name": "Ledger",
+  "prototype": "../a-ledger.html",
+  "defaultScheme": "system",
+  "color": {
+    "light": {
+      "bg": "#F5F2EA",
+      "surface": "#FFFDF8",
+      "surfaceAlt": "#ECE7DB",
+      "ink": "#14213D",
+      "inkSoft": "#5B6475",
+      "line": "#DDD6C6",
+      "primary": "#0B7A57",
+      "primaryInk": "#FFFFFF",
+      "primarySoft": "#D5EDE3",
+      "accent": "#A8690F",
+      "accentSoft": "#FBEBC8",
+      "danger": "#B8372F",
+      "dangerSoft": "#F8DAD6",
+      "locked": "#B4AC9C",
+      "flame": "#E8701A",
+      "heart": "#D6453D",
+      "unitA": "#0B7A57",
+      "unitB": "#94600F"
+    },
+    "dark": {
+      "bg": "#0E1522",
+      "surface": "#151E2F",
+      "surfaceAlt": "#1C2740",
+      "ink": "#ECEFF5",
+      "inkSoft": "#9AA5B9",
+      "line": "#2A3650",
+      "primary": "#34C28E",
+      "primaryInk": "#06221A",
+      "primarySoft": "#133A2E",
+      "accent": "#E9B04B",
+      "accentSoft": "#3A2E12",
+      "danger": "#FF7A70",
+      "dangerSoft": "#3E1B1A",
+      "locked": "#4A5670",
+      "flame": "#FF9A3D",
+      "heart": "#FF6B61",
+      "unitA": "#10563F",
+      "unitB": "#6B4E12"
+    },
+    "extra": {
+      "light": {
+        "ruleStrong": "#14213D",
+        "chartFill": "rgba(11,122,87,0.10)"
+      },
+      "dark": {
+        "ruleStrong": "#C9D1DF",
+        "chartFill": "rgba(52,194,142,0.14)"
+      }
+    }
+  },
+  "font": {
+    "display": {
+      "family": "Newsreader",
+      "googleFonts": "Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500",
+      "expoPackage": "@expo-google-fonts/newsreader",
+      "rnFamilies": {
+        "400": "Newsreader_400Regular",
+        "500": "Newsreader_500Medium",
+        "600": "Newsreader_600SemiBold",
+        "italic500": "Newsreader_500Medium_Italic"
+      }
+    },
+    "body": {
+      "family": "Public Sans",
+      "googleFonts": "Public+Sans:wght@400;500;600;700",
+      "expoPackage": "@expo-google-fonts/public-sans",
+      "rnFamilies": {
+        "400": "PublicSans_400Regular",
+        "500": "PublicSans_500Medium",
+        "600": "PublicSans_600SemiBold",
+        "700": "PublicSans_700Bold"
+      }
+    },
+    "mono": null,
+    "numerals": "tabular-nums lining-nums on the body face (no separate mono)"
+  },
+  "type": {
+    "display": {
+      "fontSize": 34,
+      "lineHeight": 36,
+      "fontWeight": "600",
+      "font": "display",
+      "letterSpacing": -0.3
+    },
+    "h1": {
+      "fontSize": 28,
+      "lineHeight": 31,
+      "fontWeight": "600",
+      "font": "display"
+    },
+    "h2": {
+      "fontSize": 24,
+      "lineHeight": 28,
+      "fontWeight": "600",
+      "font": "display"
+    },
+    "h3": {
+      "fontSize": 20,
+      "lineHeight": 24,
+      "fontWeight": "600",
+      "font": "display"
+    },
+    "prompt": {
+      "fontSize": 22,
+      "lineHeight": 29,
+      "fontWeight": "500",
+      "font": "display"
+    },
+    "lede": {
+      "fontSize": 17,
+      "lineHeight": 26,
+      "fontWeight": "400",
+      "font": "display",
+      "note": "intro copy, drop cap on first paragraph"
+    },
+    "body": {
+      "fontSize": 15,
+      "lineHeight": 22,
+      "fontWeight": "400",
+      "font": "body"
+    },
+    "small": {
+      "fontSize": 13,
+      "lineHeight": 18,
+      "fontWeight": "400",
+      "font": "body"
+    },
+    "label": {
+      "fontSize": 11,
+      "lineHeight": 13,
+      "fontWeight": "600",
+      "font": "body",
+      "letterSpacing": 1.5,
+      "textTransform": "uppercase",
+      "color": "accent"
+    },
+    "number": {
+      "fontSize": 15,
+      "lineHeight": 20,
+      "fontWeight": "700",
+      "font": "body",
+      "fontVariant": [
+        "tabular-nums"
+      ]
+    },
+    "button": {
+      "fontSize": 15,
+      "lineHeight": 18,
+      "fontWeight": "700",
+      "font": "body"
+    }
+  },
+  "radius": {
+    "sm": 6,
+    "md": 10,
+    "lg": 16,
+    "pill": 999
+  },
+  "space": {
+    "unit": 4,
+    "screenX": 20,
+    "stackGap": 12,
+    "rowY": 8,
+    "cardPad": 16
+  },
+  "border": {
+    "hairline": 1,
+    "rule": "1px line, 3px double ruleStrong under mastheads and totals"
+  },
+  "elevation": {
+    "button": "inset bottom 3px rgba(0,0,0,0.18) (the existing 3D press)",
+    "card": "none: 1px line border on surface"
+  },
+  "motion": {
+    "durationMs": 200,
+    "note": "Minimal; toggles and progress only."
+  }
+}

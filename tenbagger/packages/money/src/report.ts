@@ -59,6 +59,8 @@ export type Personal10K = {
     moneyIn: number;
     moneyOut: number;
     cardPayments: number;
+    /** Change in everything owed: + means borrowing funded part of the month. */
+    debtChange: number | null;
     netWorthChange: number | null;
     label: NumberLabel;
   };
@@ -128,6 +130,7 @@ export function personal10K(month: string, data: Personal10KInput): Personal10K 
     moneyIn,
     moneyOut,
     cardPayments,
+    debtChange: startB && endB ? round2(endB.debt.value - startB.debt.value) : null,
     netWorthChange: startB && endB ? round2(endB.net.value - startB.net.value) : null,
     label: weakestLabel([isLabel, endB?.liquidity.label ?? 'estimate']),
   };
@@ -175,7 +178,9 @@ export function personal10K(month: string, data: Personal10KInput): Personal10K 
   const who = data.name ? `${data.name}'s` : 'My';
   const lines = [
     `${who} Personal 10-K: ${monthName}${data.sample ? ' (sample data, fictional)' : ''}`,
-    `Income ${formatUSD(income)} − spending ${formatUSD(spend.total)} = free cash flow ${formatUSD(fcf, { signed: true })}${income > 0 ? ` (${formatPct(fcf / income)} of income kept)` : ''}.`,
+    `Income ${formatUSD(income)} − spending ${formatUSD(spend.total)} = free cash flow ${formatUSD(fcf, { signed: true })}${
+      income > 0 ? (fcf >= 0 ? ` (${formatPct(fcf / income)} of income kept)` : ` (spending was ${formatPct(spend.total / income)} of income)`) : ''
+    }.`,
     balanceSheet
       ? `Balance sheet (${shortDate(balanceSheet.asOf)}): assets ${formatUSD(balanceSheet.totalAssets)}, debts ${formatUSD(balanceSheet.totalLiabilities)}, net worth ${formatUSD(balanceSheet.netWorth)}.`
       : 'Balance sheet: no snapshot yet.',
