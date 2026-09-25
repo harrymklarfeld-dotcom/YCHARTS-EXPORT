@@ -22,6 +22,7 @@ import {
   type Company,
 } from '../src/index.ts';
 import { COMPANIES, byTicker, mk } from './helpers.ts';
+import LESSONS from '../../../data/lessons.json' with { type: 'json' };
 
 describe('funnel', () => {
   it('counts survivors per filter, cumulatively and in order', () => {
@@ -92,11 +93,8 @@ describe('concentration', () => {
     expect(out.groups[0]!.share).toBe(1);
   });
 
-  it('every lesson id exists in data/lessons.json', async () => {
-    const { readFile } = await import('node:fs/promises');
-    const lessons = JSON.parse(await readFile(new URL('../../../data/lessons.json', import.meta.url), 'utf8')) as {
-      units: Array<{ lessons: Array<{ id: string }> }>;
-    };
+  it('every lesson id exists in data/lessons.json', () => {
+    const lessons = LESSONS as unknown as { units: Array<{ lessons: Array<{ id: string }> }> };
     const ids = new Set(lessons.units.flatMap((u) => u.lessons.map((l) => l.id)));
     for (const n of [...Object.values(SECTOR_NOTES), GENERIC_SECTOR_NOTE]) expect(ids.has(n.lessonId), n.lessonId).toBe(true);
   });
