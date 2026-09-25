@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "units": [
+    {
+      "id": "u1-margins",
+      "title": "Margins",
+      "summary": "How much of each sales dollar a business keeps.",
+      "order": 1,
+      "lessons": [
+        {
+          "id": "u1-l1",
+          "title": "Gross margin",
+          "xp": 10,
+          "intro": "# Gross margin\n\nEvery dollar a company sells has a cost attached. **Gross margin** tells you how much of each sales dollar is left after paying for the goods themselves.\n\n- Gross profit = revenue − cost of revenue\n- Gross margin = gross profit / revenue\n\nA warehouse club and a software company can both be great businesses with very different gross margins.",
+          "questions": [
+            {
+              "id": "q-u1l1-1",
+              "type": "multiple_choice",
+              "prompt": "Costco had $275.2B of revenue and $239.9B cost of revenue in FY2025. What is its gross margin?",
+              "choices": [
+                "87.2%",
+                "12.8%",
+                "2.9%",
+                "25.7%"
+              ],
+              "answer": 1,
+              "unit": "percent",
+              "explanation": "Gross margin = gross profit / revenue = $35.3B / $275.2B = 12.8%.",
+              "source": {
+                "ticker": "COST",
+                "fy": 2025,
+                "metrics": [
+                  "gross_margin"
+                ],
+                "formula": "gross_profit / revenue"
+              }
+            },
+            {
+              "id": "q-u1l1-2",
+              "type": "numeric",
+              "prompt": "Microsoft: revenue $281.7B, gross profit $193.9B. Enter its gross margin in %.",
+              "answer": 0.688321,
+              "tolerance": 0.005,
+              "unit": "percent",
+              "explanation": "$193.9B / $281.7B = 68.8%. Software costs little to copy, so most of each sale is gross profit.",
+              "source": {
+                "ticker": "MSFT",
+                "fy": 2025,
+                "metrics": [
+                  "gross_margin"
+                ],
+                "formula": "gross_profit / revenue"
+              }
+            },
+            {
+              "id": "q-u1l1-3",
+              "type": "true_false",
+              "prompt": "True or false: Costco's gross margin (12.8%) is higher than Apple's.",
+              "answer": false,
+              "unit": "none",
+              "explanation": "Apple's gross margin is 46.9% vs Costco's 12.8%. Costco deliberately prices goods close to cost and earns money from membership fees.",
+              "source": {
+                "ticker": "AAPL",
+                "fy": 2025,
+                "metrics": [
+                  "gross_margin"
+                ],
+                "formula": "gross_profit / revenue"
+              }
+            },
+            {
+              "id": "q-u1l1-4",
+              "type": "compare",
+              "prompt": "Which company keeps more of each sales dollar after the cost of goods?",
+              "choices": [
+                "KO",
+                "TGT"
+              ],
+              "answer": 0,
+              "unit": "percent",
+              "explanation": "Coca-Cola's gross margin is 61.0% vs Target's 28.2%. Selling a branded syrup costs far less than stocking shelves.",
+              "source": {
+                "ticker": "KO",
+                "fy": 2025,
+                "metrics": [
+                  "gross_margin"
+                ],
+                "formula": "gross_profit / revenue"
+              }
+            },
+            {
+              "id": "q-u1l1-5",
+              "type": "order",
+              "prompt": "Rank these by gross margin, highest first.",
+              "choices": [
+                "COST",
+                "MSFT",
+                "KO"
+              ],
+              "answer": [
+                1,
+                2,
+                0
+              ],
+              "unit": "percent",
+              "explanation": "MSFT 68.8%, KO 61.0%, COST 12.8%.",
+              "source": {
+                "ticker": "MSFT",
+                "fy": 2025,
+                "metrics": [
+                  "gross_margin"
+                ],
+                "formula": "gross_profit / revenue"
+              }
+            }
+          ]
+        },
+        {
+          "id": "u1-l2",
+          "title": "Operating & net margin",
+          "xp": 10,
+          "intro": "# Below the gross line\n\nAfter the cost of goods come salaries, rent, R&D and marketing. What remains is **operating income**. Then interest and taxes leave **net income**.\n\n- Operating margin = operating income / revenue\n- Net margin = net income / revenue\n\nMargins can be negative when a company loses money.",
+          "questions": [
+            {
+              "id": "q-u1l2-1",
+              "type": "numeric",
+              "prompt": "Apple earned $133.1B of operating income on $416.2B of revenue. Operating margin in %?",
+              "answer": 0.319798,
+              "tolerance": 0.005,
+              "unit": "percent",
+              "explanation": "$133.1B / $416.2B = 32.0%.",
+              "source": {
+                "ticker": "AAPL",
+                "fy": 2025,
+                "metrics": [
+                  "operating_margin"
+                ],
+                "formula": "operating_income / revenue"
+              }
+            },
+            {
+              "id": "q-u1l2-2",
+              "type": "multiple_choice",
+              "prompt": "Ford had $-2.0B net income on $187.0B revenue. What's its net margin?",
+              "choices": [
+                "1.1%",
+                "2.7%",
+                "-1.1%",
+                "10.2%"
+              ],
+              "answer": 2,
+              "unit": "percent",
+              "explanation": "Net margin = $-2.0B / $187.0B = -1.1%. A loss makes the margin negative.",
+              "source": {
+                "ticker": "F",
+                "fy": 2025,
+                "metrics": [
+                  "net_margin"
+                ],
+                "formula": "net_income / revenue"
+              }
+            },
+            {
+              "id": "q-u1l2-3",
+              "type": "true_false",
+              "prompt": "True or false: a company's operating margin is always lower than its gross margin.",
+              "answer": true,
+              "unit": "none",
+              "explanation": "Operating income = gross profit − operating expenses, so it can't exceed gross profit. Costco: gross 12.8%, operating 3.8%.",
+              "source": {
+                "ticker": "COST",
+                "fy": 2025,
+                "metrics": [
+                  "gross_margin",
+                  "operating_margin"
+                ],
+                "formula": "operating_income / revenue"
+              }
+            },
+            {
+              "id": "q-u1l2-4",
+              "type": "compare",
+              "prompt": "Which chipmaker had the higher net margin in its latest year?",
+              "choices": [
+                "NVDA",
+                "MU"
+              ],
+              "answer": 0,
+              "unit": "percent",
+              "explanation": "NVIDIA 55.6% vs Micron 22.7%.",
+              "source": {
+                "ticker": "NVDA",
+                "fy": 2026,
+                "metrics": [
+                  "net_margin"
+                ],
+                "formula": "net_income / revenue"
+              }
+            },
+            {
+              "id": "q-u1l2-5",
+              "type": "order",
+              "prompt": "Rank by operating margin, highest first.",
+              "choices": [
+                "TGT",
+                "AAPL",
+                "F",
+                "MSFT"
+              ],
+              "answer": [
+                3,
+                1,
+                0,
+                2
+              ],
+              "unit": "percent",
+              "explanation": "MSFT 45.6%, AAPL 32.0%, TGT 5.3%, F 2.7%.",
+              "source": {
+                "ticker": "MSFT",
+                "fy": 2025,
+                "metrics": [
+                  "operating_margin"
+                ],
+                "formula": "operating_income / revenue"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "u2-valuation",
+      "title": "Valuation basics",
+      "summary": "What you pay for profits and cash flow.",
+      "order": 2,
+      "lessons": [
+        {
+          "id": "u2-l1",
+          "title": "The P/E ratio",
+          "xp": 15,
+          "intro": "# Price-to-earnings\n\n**P/E** compares a share's price with the profit per share (EPS) behind it.\n\n- P/E = price / diluted EPS\n- If EPS is zero or negative, P/E is not meaningful (we show \"—\").\n\nA P/E of 20 means you pay $20 for each $1 of this year's earnings. It is a description, not a verdict.",
+          "questions": [
+            {
+              "id": "q-u2l1-1",
+              "type": "numeric",
+              "prompt": "Costco's sample price is $920 and diluted EPS is $18.21. What is its P/E?",
+              "answer": 50.52,
+              "tolerance": 0.5,
+              "unit": "multiple",
+              "explanation": "P/E = 920 / 18.21 = 50.5x.",
+              "source": {
+                "ticker": "COST",
+                "fy": 2025,
+                "metrics": [
+                  "pe"
+                ],
+                "formula": "price / eps_diluted"
+              }
+            },
+            {
+              "id": "q-u2l1-2",
+              "type": "true_false",
+              "prompt": "Ford's EPS was $-0.5. True or false: Ford has a meaningful P/E this year.",
+              "answer": false,
+              "unit": "none",
+              "explanation": "With negative earnings, price / EPS gives a negative number that tells you nothing useful, so P/E is shown as \"—\".",
+              "source": {
+                "ticker": "F",
+                "fy": 2025,
+                "metrics": [
+                  "pe",
+                  "eps_diluted"
+                ],
+                "formula": "price / eps_diluted"
+              }
+            },
+            {
+              "id": "q-u2l1-3",
+              "type": "multiple_choice",
+              "prompt": "Microsoft trades at 37.4x earnings. What's its earnings yield (EPS / price)?",
+              "choices": [
+                "2.7%",
+                "37.4%",
+                "0.6%",
+                "3.8%"
+              ],
+              "answer": 0,
+              "unit": "percent",
+              "explanation": "Earnings yield is the flip side of P/E: 1 / 37.4x ≈ 2.7%.",
+              "source": {
+                "ticker": "MSFT",
+                "fy": 2025,
+                "metrics": [
+                  "earnings_yield"
+                ],
+                "formula": "eps_diluted / price"
+              }
+            },
+            {
+              "id": "q-u2l1-4",
+              "type": "compare",
+              "prompt": "Which has the lower P/E (you pay less per $1 of earnings)?",
+              "choices": [
+                "KO",
+                "NVDA"
+              ],
+              "answer": 0,
+              "unit": "multiple",
+              "explanation": "KO 23.0x vs NVDA 42.0x. A lower P/E is not automatically \"better\" — growth expectations differ.",
+              "source": {
+                "ticker": "KO",
+                "fy": 2025,
+                "metrics": [
+                  "pe"
+                ],
+                "formula": "price / eps_diluted"
+              }
+            },
+            {
+              "id": "q-u2l1-5",
+              "type": "order",
+              "prompt": "Rank by P/E, lowest first.",
+              "choices": [
+                "MSFT",
+                "TGT",
+                "AAPL"
+              ],
+              "answer": [
+                1,
+                2,
+                0
+              ],
+              "unit": "multiple",
+              "explanation": "TGT 10.7x, AAPL 34.1x, MSFT 37.4x.",
+              "source": {
+                "ticker": "TGT",
+                "fy": 2025,
+                "metrics": [
+                  "pe"
+                ],
+                "formula": "price / eps_diluted"
+              }
+            }
+          ]
+        },
+        {
+          "id": "u2-l2",
+          "title": "Free cash flow",
+          "xp": 15,
+          "intro": "# Cash that is actually free\n\nProfits are an accounting number. **Free cash flow (FCF)** is the cash left after running the business *and* investing in it.\n\n- FCF = operating cash flow − capital expenditures\n- FCF yield = FCF / market cap\n\nHeavy builders (chip fabs, factories) can show big profits but small FCF.",
+          "questions": [
+            {
+              "id": "q-u2l2-1",
+              "type": "numeric",
+              "prompt": "Micron: operating cash flow $17.5B, capex $15.9B. Free cash flow in $B?",
+              "answer": 1600000000,
+              "tolerance": 50000000,
+              "unit": "usd",
+              "explanation": "FCF = $17.5B − $15.9B = $1.6B. Building fabs eats most of the cash.",
+              "source": {
+                "ticker": "MU",
+                "fy": 2025,
+                "metrics": [
+                  "free_cash_flow"
+                ],
+                "formula": "operating_cash_flow - capex"
+              }
+            },
+            {
+              "id": "q-u2l2-2",
+              "type": "multiple_choice",
+              "prompt": "Apple's FCF is $98.8B on $416.2B revenue. FCF margin?",
+              "choices": [
+                "26.9%",
+                "2.6%",
+                "46.9%",
+                "23.7%"
+              ],
+              "answer": 3,
+              "unit": "percent",
+              "explanation": "FCF margin = $98.8B / $416.2B = 23.7%.",
+              "source": {
+                "ticker": "AAPL",
+                "fy": 2025,
+                "metrics": [
+                  "fcf_margin"
+                ],
+                "formula": "free_cash_flow / revenue"
+              }
+            },
+            {
+              "id": "q-u2l2-3",
+              "type": "true_false",
+              "prompt": "True or false: Micron's free cash flow was larger than its net income in FY2025.",
+              "answer": false,
+              "unit": "none",
+              "explanation": "FCF $1.6B vs net income $8.5B. Capex is a cash cost that doesn't hit profit all at once.",
+              "source": {
+                "ticker": "MU",
+                "fy": 2025,
+                "metrics": [
+                  "free_cash_flow",
+                  "net_income"
+                ],
+                "formula": "operating_cash_flow - capex"
+              }
+            },
+            {
+              "id": "q-u2l2-4",
+              "type": "compare",
+              "prompt": "Which has the higher FCF yield (FCF / market cap)?",
+              "choices": [
+                "F",
+                "MSFT"
+              ],
+              "answer": 0,
+              "unit": "percent",
+              "explanation": "Ford 18.6% vs Microsoft 1.9%. A high yield can reflect low expectations as much as cheapness.",
+              "source": {
+                "ticker": "F",
+                "fy": 2025,
+                "metrics": [
+                  "fcf_yield"
+                ],
+                "formula": "free_cash_flow / market_cap"
+              }
+            },
+            {
+              "id": "q-u2l2-5",
+              "type": "order",
+              "prompt": "Rank by FCF margin, highest first.",
+              "choices": [
+                "COST",
+                "NVDA",
+                "KO"
+              ],
+              "answer": [
+                1,
+                2,
+                0
+              ],
+              "unit": "percent",
+              "explanation": "NVDA 50.5%, KO 19.4%, COST 2.8%.",
+              "source": {
+                "ticker": "NVDA",
+                "fy": 2026,
+                "metrics": [
+                  "fcf_margin"
+                ],
+                "formula": "free_cash_flow / revenue"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
