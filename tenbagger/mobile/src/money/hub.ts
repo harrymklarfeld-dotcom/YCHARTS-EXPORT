@@ -26,16 +26,52 @@ import {
   type Scorecard,
   type Snapshot,
   type SnapshotLog,
+  type Contribution,
+  type Dividend,
+  type Holding,
+  type PricePoint,
+  type Transaction,
 } from './engine';
+
+export type DetectedStream = {
+  id: string;
+  name: string;
+  category: string | null;
+  frequency: string;
+  status: string;
+  averageAmount: number | null;
+  lastAmount: number | null;
+  lastDate: string | null;
+  predictedNextDate: string | null;
+  basis: 'verified';
+  /** Sample-only hint: which manual stream this detected stream mirrors (never counted twice). */
+  matchesStreamId?: string;
+};
+
+export type MoneyGoals = { emergencyFundWeeks: number; cardPayoffBy: string; rothTarget: number; rothYear: number };
 
 export type MoneyData = {
   sample: boolean;
   sampleLabel: string;
   persona: { name: string; age: number; year: string; blurb: string };
+  /** Reference "today" for the data (the sample persona is frozen on this date). */
+  asOf?: string;
   horizonDays: number;
   streams: IncomeStream[];
   deposits: IncomeDeposit[];
+  /** Recent snapshots (the backend returns the last 90 days). */
   snapshots: Snapshot[];
+  // ---- dashboard extras (all optional; the dashboard hides what is missing) ----
+  /** Older month-end snapshots, oldest first, all before `snapshots`. */
+  monthEndSnapshots?: Snapshot[];
+  transactions?: Transaction[];
+  holdings?: Holding[];
+  investmentContributions?: Contribution[];
+  benchmark?: { ticker: string; note?: string; prices: PricePoint[] };
+  dividends?: Dividend[];
+  rothContributions?: (Contribution & { taxYear?: number })[];
+  detectedStreams?: DetectedStream[];
+  goals?: MoneyGoals;
 };
 
 export type StreamView = {

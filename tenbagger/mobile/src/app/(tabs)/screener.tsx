@@ -1,223 +1,412 @@
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, Text, useWindowDimensions, View, type ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CompanyRow } from '../../components/CompanyRow';
 import { Icon } from '../../components/Icon';
 import { MetricExplainer } from '../../components/MetricExplainer';
 import { MetricPicker } from '../../components/MetricPicker';
 import { Body, Chip, Disclaimer, Eyebrow, Title } from '../../components/ui';
 import { dataInfo, getCompanies } from '../../data';
-import { inputUnitFor, METRIC_BY_KEY } from '../../lib/metricCatalog';
-import { describeFilter, PRESET_SCREENS, runScreen, sortCompanies } from '../../lib/screener';
-import type { Filter, FilterOp, Screen } from '../../types/contract';
+import {
+  concentrationFor,
+  funnelFor,
+  mergeFilters,
+  PRESET_SCREENS,
+  runScreen,
+  scoresFor,
+  SIZE_BUCKETS,
+  STYLE_BUCKETS,
+  styleBoxesFor,
+  toCsvFor,
+  type FunnelOutput,
+  type ScoreFamilyId,
+  type SizeBucket,
+  type StyleBucket,
+} from '../../lib/screener';
+import type { AssistAnswer } from '../../screener/assist';
+import { csvColumns, getColumn, sortByColumn, type ColumnContext } from '../../screener/columns';
+import type { SavedScreen, SortSpec, Watchlist } from '../../screener/lists';
+import { shareCsv } from '../../screener/share';
+import { useScreenerPrefs } from '../../screener/store';
+import { AskBox } from '../../screener/components/AskBox';
+import { ColumnsSheet } from '../../screener/components/ColumnsSheet';
+import { ConcentrationCallout } from '../../screener/components/ConcentrationCallout';
+import { FilterChips } from '../../screener/components/FilterChips';
+import { FilterEditor } from '../../screener/components/FilterEditor';
+import { FunnelBar } from '../../screener/components/FunnelBar';
+import { ResultCards, ResultsTableBody, ResultsTableHeader } from '../../screener/components/Results';
+import { SavedSheet } from '../../screener/components/SavedSheet';
+import { ScoreSheet } from '../../screener/components/ScoreSheet';
+import type { Company, Filter, Screen } from '../../types/contract';
 import { useTheme } from '../../theme';
 
-const OPS: FilterOp[] = ['>=', '<=', 'between'];
-const OP_LABEL: Record<string, string> = { '>=': 'at least', '<=': 'at most', between: 'between', '>': 'above', '<': 'below', '==': 'equals' };
-
-type Draft = { metric: string; op: FilterOp; a: string; b: string };
-
-function draftToFilter(d: Draft): Filter | null {
-  const u = inputUnitFor(d.metric);
-  const a = Number(d.a);
-  if (d.a.trim() === '' || !Number.isFinite(a)) return null;
-  if (d.op === 'between') {
-    const b = Number(d.b);
-    if (d.b.trim() === '' || !Number.isFinite(b)) return null;
-    return { metric: d.metric as Filter['metric'], op: 'between', value: [u.toRaw(a), u.toRaw(b)] };
-  }
-  return { metric: d.metric as Filter['metric'], op: d.op, value: u.toRaw(a) };
-}
+type Mode = 'presets' | 'custom' | 'watchlist';
+const WIDE = 760;
 
 export default function ScreenerScreen() {
   const t = useTheme();
+  const { width } = useWindowDimensions();
+  const wide = width >= WIDE;
   const companies = getCompanies();
-  const [mode, setMode] = useState<'presets' | 'custom'>('presets');
+  const columns = useScreenerPrefs((s) => s.columns);
+  const saveScreenPref = useScreenerPrefs((s) => s.saveScreen);
+
+  const [mode, setMode] = useState<Mode>('presets');
   const [presetId, setPresetId] = useState(PRESET_SCREENS[0].id);
-  const [drafts, setDrafts] = useState<Draft[]>([{ metric: 'gross_margin', op: '>=', a: '40', b: '' }]);
-  const [pickerFor, setPickerFor] = useState<number | 'sort' | null>(null);
+  const [filters, setFilters] = useState<Filter[]>([]);
+  const [editing, setEditing] = useState<number | null>(null);
+  const [picker, setPicker] = useState(false);
   const [explain, setExplain] = useState<string | null>(null);
-  const [sortOverride, setSortOverride] = useState<{ metric: string; dir: 'asc' | 'desc' } | null>(null);
+  const [sortOverride, setSortOverride] = useState<SortSpec | null>(null);
+  const [sizes, setSizes] = useState<SizeBucket[]>([]);
+  const [styles, setStyles] = useState<StyleBucket[]>([]);
+  const [watchlist, setWatchlist] = useState<Watchlist | null>(null);
+  const [sheet, setSheet] = useState<null | 'columns' | 'saved'>(null);
+  const [scoreFocus, setScoreFocus] = useState<{ ticker?: string; family?: ScoreFamilyId } | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  // Scores and style buckets are relative to the whole universe, not the result list.
+  const ctx: ColumnContext = useMemo(() => ({ scores: scoresFor(companies), styles: styleBoxesFor(companies) }), [companies]);
 
   const preset = PRESET_SCREENS.find((p) => p.id === presetId) ?? PRESET_SCREENS[0];
-  const customScreen: Screen = useMemo(
-    () => ({
-      id: 'custom',
-      name: 'My screen',
-      description: '',
-      filters: drafts.map(draftToFilter).filter((f): f is Filter => f !== null),
-    }),
-    [drafts],
+  const activeFilters: Filter[] = mode === 'presets' ? preset.filters : mode === 'custom' ? filters : [];
+  const universe: Company[] = useMemo(
+    () => (mode === 'watchlist' && watchlist ? companies.filter((c) => watchlist.tickers.includes(c.ticker)) : companies),
+    [mode, watchlist, companies],
   );
-  const active = mode === 'presets' ? preset : customScreen;
-  const sort = sortOverride ?? active.sort ?? { metric: active.filters[0]?.metric ?? 'market_cap', dir: 'desc' as const };
-  const results = useMemo(() => sortCompanies(runScreen(companies, active), sort.metric, sort.dir), [companies, active, sort.metric, sort.dir]);
-  const shownMetrics = Array.from(new Set([sort.metric, ...active.filters.map((f) => f.metric as string)]));
+  const screen: Screen = useMemo(() => ({ id: mode, name: mode, description: '', filters: activeFilters }), [mode, activeFilters]);
 
-  const updateDraft = (i: number, patch: Partial<Draft>) => setDrafts((ds) => ds.map((d, j) => (j === i ? { ...d, ...patch } : d)));
+  const funnel: FunnelOutput | null = useMemo(() => {
+    try {
+      return funnelFor(universe, screen);
+    } catch {
+      return null;
+    }
+  }, [universe, screen]);
+  const matched = useMemo(() => {
+    try {
+      return runScreen(universe, screen);
+    } catch {
+      return [];
+    }
+  }, [universe, screen]);
+  const bucketed = useMemo(
+    () =>
+      matched.filter((c) => {
+        const s = ctx.styles.get(c.ticker);
+        if (sizes.length && (!s?.size || !sizes.includes(s.size))) return false;
+        if (styles.length && (!s?.style || !styles.includes(s.style))) return false;
+        return true;
+      }),
+    [matched, sizes, styles, ctx],
+  );
+
+  const defaultSort: SortSpec =
+    mode === 'presets' && preset.sort
+      ? { column: preset.sort.metric, dir: preset.sort.dir }
+      : activeFilters[0]
+        ? { column: activeFilters[0].metric, dir: getColumn(activeFilters[0].metric)?.defaultDir ?? 'desc' }
+        : { column: 'score:quality', dir: 'desc' };
+  const sort = sortOverride ?? defaultSort;
+  const results = useMemo(() => sortByColumn(bucketed, sort.column, sort.dir, ctx), [bucketed, sort.column, sort.dir, ctx]);
+  const conc = useMemo(() => concentrationFor(results), [results]);
+
+  const onSort = (id: string) =>
+    setSortOverride(sort.column === id ? { column: id, dir: sort.dir === 'desc' ? 'asc' : 'desc' } : { column: id, dir: getColumn(id)?.defaultDir ?? 'desc' });
+
+  const applyAnswer = (a: AssistAnswer, how: 'replace' | 'append') => {
+    const base = how === 'append' ? activeFilters : [];
+    setFilters(mergeFilters(base as never, a.filters) as unknown as Filter[]);
+    setMode('custom');
+    setEditing(null);
+    setSortOverride(null);
+  };
+
+  const exportCsv = async () => {
+    const note = `Tenbagger screener export. Values from company annual filings (SEC EDGAR)${dataInfo.isSample ? ', sample data' : ''}; scores are within-list percentiles for learning. Educational only.`;
+    const csv = toCsvFor(results, csvColumns(columns, ctx), note);
+    const r = await shareCsv(csv, 'tenbagger-screen.csv');
+    setToast(r === 'downloaded' ? 'CSV downloaded (and copied if allowed).' : r === 'copied' ? 'CSV copied to the clipboard.' : r === 'shared' ? 'CSV shared.' : r === 'dismissed' ? null : 'Could not export on this device.');
+  };
+
+  const openSaved = (s: SavedScreen) => {
+    setFilters(s.filters);
+    setMode('custom');
+    useScreenerPrefs.getState().setColumns(s.columns);
+    setSortOverride(s.sort ?? null);
+    setSheet(null);
+  };
+  const openWatchlist = (w: Watchlist) => {
+    setWatchlist(w);
+    setMode('watchlist');
+    setSortOverride(null);
+    setSheet(null);
+  };
+
+  const pageW: ViewStyle = { width: '100%', maxWidth: 1180, alignSelf: 'center' };
+  const scoreCompany = scoreFocus?.ticker ? companies.find((c) => c.ticker === scoreFocus.ticker) : undefined;
+
+  const filtersBlock = (
+    <View style={{ gap: 12 }}>
+      <View accessibilityRole="tablist" style={{ flexDirection: 'row', backgroundColor: t.c.surfaceAlt, borderRadius: 12, padding: 4 }}>
+        {(
+          [
+            ['presets', 'Presets'],
+            ['custom', 'My filters'],
+            ...(watchlist ? ([['watchlist', watchlist.name]] as const) : []),
+          ] as Array<[Mode, string]>
+        ).map(([m, label]) => (
+          <Pressable
+            key={m}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: mode === m }}
+            accessibilityLabel={label}
+            onPress={() => {
+              if (m === 'custom' && mode === 'presets' && filters.length === 0) setFilters(preset.filters.map((f) => ({ ...f })) as Filter[]);
+              setMode(m);
+              setSortOverride(null);
+              setEditing(null);
+            }}
+            style={{ flex: 1, paddingVertical: 9, borderRadius: 9, backgroundColor: mode === m ? t.c.surface : 'transparent', alignItems: 'center' }}
+          >
+            <Text numberOfLines={1} style={{ fontWeight: '800', color: mode === m ? t.c.ink : t.c.inkSoft }}>{label}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {mode === 'presets' ? (
+        <View style={{ gap: 10 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+            {PRESET_SCREENS.map((p) => (
+              <Chip key={p.id} label={p.name} selected={p.id === presetId} onPress={() => { setPresetId(p.id); setSortOverride(null); }} />
+            ))}
+          </ScrollView>
+          <Body soft size={14}>{preset.description}</Body>
+          {preset.caveat ? <Body soft size={12}>What it can miss: {preset.caveat}</Body> : null}
+          <FilterChips filters={preset.filters} funnel={funnel} onExplain={setExplain} />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Copy this preset into My filters to edit it"
+            onPress={() => {
+              setFilters(preset.filters.map((f) => ({ ...f })) as Filter[]);
+              setMode('custom');
+              setSortOverride(null);
+            }}
+          >
+            <Text style={{ color: t.c.primary, fontWeight: '800' }}>Customize this preset →</Text>
+          </Pressable>
+        </View>
+      ) : mode === 'custom' ? (
+        <View style={{ gap: 10 }}>
+          {filters.length === 0 ? <Body soft size={14}>No filters yet. Describe what you want above, or add one.</Body> : null}
+          <FilterChips
+            filters={filters}
+            funnel={funnel}
+            onEdit={(i) => setEditing(editing === i ? null : i)}
+            onRemove={(i) => {
+              setFilters((fs) => fs.filter((_, j) => j !== i));
+              setEditing(null);
+            }}
+          />
+          {editing !== null && filters[editing] ? (
+            <FilterEditor
+              filter={filters[editing]}
+              onChange={(f) => setFilters((fs) => fs.map((x, j) => (j === editing ? f : x)))}
+              onPickMetric={() => setPicker(true)}
+              onExplain={setExplain}
+              onDone={() => setEditing(null)}
+            />
+          ) : null}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add filter"
+            onPress={() => {
+              setFilters((fs) => [...fs, { metric: 'pe', op: '<', value: 25 }]);
+              setEditing(filters.length);
+            }}
+            style={{ flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: t.radius.md, borderWidth: 1.5, borderStyle: 'dashed', borderColor: t.c.primary }}
+          >
+            <Icon name="plus" color={t.c.primary} size={18} />
+            <Text style={{ color: t.c.primary, fontWeight: '800' }}>Add filter</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Body soft size={14}>Watchlist “{watchlist?.name}”: {watchlist?.tickers.length ?? 0} companies you saved on this device.</Body>
+      )}
+
+      <View style={{ gap: 6 }}>
+        <Eyebrow>Size & style buckets</Eyebrow>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+          {SIZE_BUCKETS.map((b) => (
+            <Chip key={b} label={b} selected={sizes.includes(b)} accessibilityLabel={`Size ${b}`} onPress={() => setSizes((xs) => (xs.includes(b) ? xs.filter((x) => x !== b) : [...xs, b]))} style={{ paddingVertical: 6 }} />
+          ))}
+          <View style={{ width: 8 }} />
+          {STYLE_BUCKETS.map((b) => (
+            <Chip key={b} label={b} selected={styles.includes(b)} accessibilityLabel={`Style ${b}`} onPress={() => setStyles((xs) => (xs.includes(b) ? xs.filter((x) => x !== b) : [...xs, b]))} style={{ paddingVertical: 6 }} />
+          ))}
+        </View>
+      </View>
+
+      {funnel && funnel.steps.length ? (
+        <View style={{ backgroundColor: t.c.surface, borderRadius: t.radius.md, borderWidth: 1, borderColor: t.c.line, padding: 12, gap: 8 }}>
+          <Eyebrow>Filter funnel</Eyebrow>
+          <FunnelBar funnel={funnel} extra={sizes.length || styles.length ? { label: 'Size & style', after: results.length } : undefined} />
+        </View>
+      ) : null}
+    </View>
+  );
+
+  const toolbar = (
+    <View style={{ gap: 10 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+        <Eyebrow>
+          {results.length} match{results.length === 1 ? '' : 'es'} of {universe.length}
+        </Eyebrow>
+        <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+          <ToolButton label="Columns" icon="sort" onPress={() => setSheet('columns')} />
+          <ToolButton label="Saved" icon="star" onPress={() => setSheet('saved')} />
+          <ToolButton label="Export CSV" icon="link" onPress={exportCsv} disabled={!results.length} />
+        </View>
+      </View>
+      {!wide ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Text style={{ color: t.c.inkSoft, fontSize: 13 }}>Sort:</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+            {Array.from(new Set([...columns, sort.column])).map((id) => (
+              <Chip
+                key={id}
+                label={`${getColumn(id)?.short ?? id}${sort.column === id ? (sort.dir === 'desc' ? ' ↓' : ' ↑') : ''}`}
+                selected={sort.column === id}
+                accessibilityLabel={`Sort by ${getColumn(id)?.label ?? id}`}
+                onPress={() => onSort(id)}
+                style={{ paddingVertical: 6 }}
+              />
+            ))}
+          </ScrollView>
+        </View>
+      ) : null}
+      <Pressable accessibilityRole="button" accessibilityLabel="How are the scores calculated?" onPress={() => setScoreFocus({})} hitSlop={6}>
+        <Text style={{ color: t.c.primary, fontWeight: '700', fontSize: 13 }}>
+          Scores are 0–100 percentiles within these {companies.length} companies, not ratings. How is this calculated?
+        </Text>
+      </Pressable>
+      {toast ? <Text style={{ color: t.c.inkSoft, fontSize: 12 }}>{toast}</Text> : null}
+      <ConcentrationCallout out={conc} />
+    </View>
+  );
+
+  const empty =
+    results.length === 0 ? (
+      <View style={{ padding: 24, alignItems: 'center', gap: 6 }}>
+        <Text style={{ fontFamily: t.fonts.display, fontSize: 18, color: t.c.ink }}>Nothing matches — yet.</Text>
+        <Body soft size={14} style={{ textAlign: 'center' }}>
+          {funnel?.biggestCut ? `“${funnel.biggestCut.label}” removed the most. Try loosening it.` : 'Loosen a filter. Strict screens are a lesson too: great numbers are rare.'}
+        </Body>
+      </View>
+    ) : null;
+
+  const top = (
+    <View style={[pageW, { gap: 16, paddingBottom: 12 }]}>
+      <View style={{ gap: 4 }}>
+        <Title>Screener</Title>
+        <Body soft size={14}>
+          Filter {companies.length} companies by what their filings say{dataInfo.isSample ? ' · sample data' : ''}.
+        </Body>
+      </View>
+      {wide ? (
+        <View style={{ flexDirection: 'row', gap: 16, alignItems: 'flex-start' }}>
+          <View style={{ flex: 1 }}>
+            <AskBox hasFilters={activeFilters.length > 0} onApply={applyAnswer} />
+          </View>
+          <View style={{ flex: 1.2 }}>{filtersBlock}</View>
+        </View>
+      ) : (
+        <>
+          <AskBox hasFilters={activeFilters.length > 0} onApply={applyAnswer} />
+          {filtersBlock}
+        </>
+      )}
+      {toolbar}
+    </View>
+  );
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: t.c.bg }}>
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
-        <View style={{ gap: 4 }}>
-          <Title>Screener</Title>
-          <Body soft size={14}>
-            Filter {companies.length} companies by what their filings say{dataInfo.isSample ? ' · sample data' : ''}.
-          </Body>
-        </View>
-
-        <View accessibilityRole="tablist" style={{ flexDirection: 'row', backgroundColor: t.c.surfaceAlt, borderRadius: 12, padding: 4 }}>
-          {(['presets', 'custom'] as const).map((m) => (
-            <Pressable
-              key={m}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: mode === m }}
-              accessibilityLabel={m === 'presets' ? 'Preset screens' : 'Build your own screen'}
-              onPress={() => {
-                setMode(m);
-                setSortOverride(null);
-              }}
-              style={{ flex: 1, paddingVertical: 10, borderRadius: 9, backgroundColor: mode === m ? t.c.surface : 'transparent', alignItems: 'center' }}
-            >
-              <Text style={{ fontWeight: '800', color: mode === m ? t.c.ink : t.c.inkSoft }}>{m === 'presets' ? 'Presets' : 'Build your own'}</Text>
-            </Pressable>
-          ))}
-        </View>
-
-        {mode === 'presets' ? (
-          <View style={{ gap: 12 }}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
-              {PRESET_SCREENS.map((p) => (
-                <Chip key={p.id} label={p.name} selected={p.id === presetId} onPress={() => { setPresetId(p.id); setSortOverride(null); }} />
-              ))}
-            </ScrollView>
-            <View style={{ backgroundColor: t.c.surface, borderRadius: t.radius.lg, padding: 16, gap: 10, borderWidth: 1, borderColor: t.c.line }}>
-              <Text style={{ fontFamily: t.fonts.display, fontSize: 20, fontWeight: '700', color: t.c.ink }}>{preset.name}</Text>
-              <Body soft size={14}>{preset.description}</Body>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                {preset.filters.map((f, i) => (
-                  <Pressable
-                    key={i}
-                    accessibilityRole="button"
-                    accessibilityLabel={`${describeFilter(f)}. Tap to learn what ${METRIC_BY_KEY[f.metric]?.label ?? f.metric} means`}
-                    onPress={() => setExplain(f.metric)}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: t.c.primarySoft, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999 }}
-                  >
-                    <Text style={{ color: t.c.ink, fontWeight: '700', fontSize: 13 }}>{describeFilter(f)}</Text>
-                    <Icon name="info" color={t.c.primary} size={15} />
-                  </Pressable>
-                ))}
-              </View>
-            </View>
+      <ScrollView
+        contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+        keyboardShouldPersistTaps="handled"
+        stickyHeaderIndices={wide && results.length ? [1] : undefined}
+      >
+        {top}
+        {wide && results.length ? (
+          <View style={[pageW, { backgroundColor: t.c.bg }]}>
+            <ResultsTableHeader columns={columns} sort={sort} onSort={onSort} />
           </View>
         ) : (
-          <View style={{ gap: 10 }}>
-            {drafts.map((d, i) => {
-              const info = METRIC_BY_KEY[d.metric];
-              const u = inputUnitFor(d.metric);
-              return (
-                <View key={i} style={{ backgroundColor: t.c.surface, borderRadius: t.radius.md, padding: 12, gap: 10, borderWidth: 1, borderColor: t.c.line }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={`Metric: ${info?.label ?? d.metric}. Change metric`}
-                      onPress={() => setPickerFor(i)}
-                      style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: t.c.surfaceAlt, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10 }}
-                    >
-                      <Text style={{ color: t.c.ink, fontWeight: '800' }}>{info?.label ?? d.metric}</Text>
-                      <Icon name="chevron" color={t.c.inkSoft} size={16} />
-                    </Pressable>
-                    <Pressable accessibilityRole="button" accessibilityLabel={`What is ${info?.label}?`} onPress={() => setExplain(d.metric)} hitSlop={8}>
-                      <Icon name="info" color={t.c.inkSoft} />
-                    </Pressable>
-                    <Pressable accessibilityRole="button" accessibilityLabel="Remove filter" onPress={() => setDrafts((ds) => ds.filter((_, j) => j !== i))} hitSlop={8}>
-                      <Icon name="trash" color={t.c.danger} />
-                    </Pressable>
-                  </View>
-                  <View style={{ flexDirection: 'row', gap: 6 }}>
-                    {OPS.map((op) => (
-                      <Chip key={op} label={OP_LABEL[op]} selected={d.op === op} onPress={() => updateDraft(i, { op })} accessibilityLabel={`Operator ${OP_LABEL[op]}`} />
-                    ))}
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    {[d.a, ...(d.op === 'between' ? [d.b] : [])].map((val, k) => (
-                      <View key={k} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderColor: t.c.line, borderRadius: 10, paddingHorizontal: 10 }}>
-                        {u.prefix ? <Text style={{ color: t.c.inkSoft, fontWeight: '700' }}>{u.prefix}</Text> : null}
-                        <TextInput
-                          accessibilityLabel={k === 0 ? (d.op === 'between' ? 'Minimum value' : 'Value') : 'Maximum value'}
-                          value={val}
-                          onChangeText={(s) => updateDraft(i, k === 0 ? { a: s } : { b: s })}
-                          keyboardType="numbers-and-punctuation"
-                          placeholder={k === 0 ? '0' : 'max'}
-                          placeholderTextColor={t.c.locked}
-                          style={{ flex: 1, paddingVertical: 10, color: t.c.ink, fontSize: 16, fontWeight: '700' }}
-                        />
-                        <Text style={{ color: t.c.inkSoft, fontWeight: '700' }}>{u.suffix}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </View>
-              );
-            })}
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Add filter"
-              onPress={() => setDrafts((ds) => [...ds, { metric: 'pe', op: '<=', a: '25', b: '' }])}
-              style={{ flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center', padding: 12, borderRadius: t.radius.md, borderWidth: 1.5, borderStyle: 'dashed', borderColor: t.c.primary }}
-            >
-              <Icon name="plus" color={t.c.primary} />
-              <Text style={{ color: t.c.primary, fontWeight: '800' }}>Add filter</Text>
-            </Pressable>
-          </View>
+          <View />
         )}
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Eyebrow>{results.length} match{results.length === 1 ? '' : 'es'}</Eyebrow>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Pressable accessibilityRole="button" accessibilityLabel={`Sort by ${METRIC_BY_KEY[sort.metric]?.label ?? sort.metric}. Change sort metric`} onPress={() => setPickerFor('sort')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ color: t.c.inkSoft, fontSize: 13 }}>Sort:</Text>
-              <Text style={{ color: t.c.ink, fontWeight: '800', fontSize: 13 }}>{METRIC_BY_KEY[sort.metric]?.short ?? sort.metric}</Text>
-            </Pressable>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={sort.dir === 'desc' ? 'Sorted high to low. Switch to low to high' : 'Sorted low to high. Switch to high to low'}
-              onPress={() => setSortOverride({ metric: sort.metric, dir: sort.dir === 'desc' ? 'asc' : 'desc' })}
-              style={{ padding: 6, borderRadius: 8, backgroundColor: t.c.surface, borderWidth: 1, borderColor: t.c.line }}
-            >
-              <Icon name={sort.dir === 'desc' ? 'arrowDown' : 'arrowUp'} color={t.c.ink} size={16} />
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={{ gap: 8 }}>
-          {results.map((c) => (
-            <CompanyRow key={c.ticker} company={c} metrics={shownMetrics} />
-          ))}
-          {results.length === 0 && (
-            <View style={{ padding: 24, alignItems: 'center', gap: 6 }}>
-              <Text style={{ fontFamily: t.fonts.display, fontSize: 18, color: t.c.ink }}>Nothing matches — yet.</Text>
-              <Body soft size={14} style={{ textAlign: 'center' }}>Loosen a filter. Strict screens are a lesson too: great numbers are rare.</Body>
-            </View>
+        <View style={pageW}>
+          {wide ? (
+            results.length ? (
+              <ResultsTableBody companies={results} columns={columns} ctx={ctx} onScore={(ticker, family) => setScoreFocus({ ticker, family: family as ScoreFamilyId })} />
+            ) : null
+          ) : (
+            <ResultCards companies={results} columns={columns} ctx={ctx} onScore={(ticker, family) => setScoreFocus({ ticker, family: family as ScoreFamilyId })} />
           )}
+          {empty}
         </View>
-        <Disclaimer compact />
+        <View style={[pageW, { marginTop: 16 }]}>
+          <Disclaimer compact />
+        </View>
       </ScrollView>
 
       <MetricPicker
-        visible={pickerFor !== null}
-        title={pickerFor === 'sort' ? 'Sort by' : 'Choose a metric'}
-        onClose={() => setPickerFor(null)}
+        visible={picker}
+        title="Choose a metric"
+        onClose={() => setPicker(false)}
         onExplain={(k) => {
-          setPickerFor(null);
+          setPicker(false);
           setExplain(k);
         }}
         onPick={(k) => {
-          if (pickerFor === 'sort') setSortOverride({ metric: k, dir: sort.dir });
-          else if (typeof pickerFor === 'number') updateDraft(pickerFor, { metric: k });
-          setPickerFor(null);
+          if (editing !== null) setFilters((fs) => fs.map((f, j) => (j === editing ? ({ ...f, metric: k } as Filter) : f)));
+          setPicker(false);
         }}
       />
       <MetricExplainer metric={explain} onClose={() => setExplain(null)} />
+      <ColumnsSheet visible={sheet === 'columns'} onClose={() => setSheet(null)} />
+      <SavedSheet
+        visible={sheet === 'saved'}
+        onClose={() => setSheet(null)}
+        canSaveScreen={activeFilters.length > 0}
+        resultTickers={results.map((c) => c.ticker)}
+        onSaveScreen={(name) => saveScreenPref({ name: name || (mode === 'presets' ? preset.name : ''), filters: activeFilters, columns, sort })}
+        onOpenScreen={openSaved}
+        onOpenWatchlist={openWatchlist}
+      />
+      <ScoreSheet
+        visible={scoreFocus !== null}
+        onClose={() => setScoreFocus(null)}
+        universeSize={companies.length}
+        focus={scoreFocus?.family ?? null}
+        company={scoreCompany ? { ticker: scoreCompany.ticker, name: scoreCompany.name, scores: ctx.scores.get(scoreCompany.ticker)! } : null}
+      />
     </SafeAreaView>
+  );
+}
+
+function ToolButton({ label, icon, onPress, disabled }: { label: string; icon: 'sort' | 'star' | 'link'; onPress: () => void; disabled?: boolean }) {
+  const t = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled }}
+      disabled={disabled}
+      onPress={onPress}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10, borderWidth: 1, borderColor: t.c.line, backgroundColor: t.c.surface, opacity: disabled ? 0.5 : 1 }}
+    >
+      <Icon name={icon} color={t.c.ink} size={15} />
+      <Text style={{ color: t.c.ink, fontWeight: '700', fontSize: 13 }}>{label}</Text>
+    </Pressable>
   );
 }

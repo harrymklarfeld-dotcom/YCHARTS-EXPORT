@@ -202,7 +202,7 @@ The 'without ads' column assumes nothing else changes. In practice an ad-free fr
 2. Subscriptions carry the business: 95.6% of base FY3 revenue after the 15% store fee. Each half-point of install-to-paid (2.5% to 3.0%) adds about $3k a month to month-36 operating income. Conversion is the lever to work on first.
 3. Base case: break-even in month 26 (first positive month 12), with a maximum cash need of $6,550 and FY3 operating income of $24,585. Bear: break-even never (within 36 months), cash need $91,905. Bull: break-even month 3. None of this pays the founder (switch `founder_salary_on` to 1 to see the $5k/month version).
 4. Paid acquisition does not pay back at freemium conversion. Apple Search Ads at $6.00 per install costs $243 per payer against an LTV of $76 (LTV/CAC 0.31x; creators 0.24x). Keep paid spend as a test budget until install-to-paid is near 7.9%.
-5. The three biggest levers on base FY3 operating income (+/-20%) are organic installs growth, month over month (-$29k / +$41k); installs that activate (finish first lesson) (-$24k / +$24k); trial-to-paid (-$22k / +$22k). Costs are small and mostly fixed: COGS is 29.8% of FY3 revenue, and Plaid linking costs $25k in FY3 as long as free users are capped at one bank.
+5. The three biggest levers on base FY3 operating income (a -20% / +20% move) are organic installs growth, month over month (-$29k / +$41k); installs that activate (finish first lesson) (-$24k / +$24k); trial-to-paid (-$22k / +$22k). On costs, COGS is 29.8% of FY3 revenue and the largest line is plaid / aggregation at $25k (16.1% of revenue), even with free users capped at one linked bank. Get a real Plaid quote before launching the Money Hub.
 
 ## Formula check
 
