@@ -1101,7 +1101,11 @@ def build_workbook(A: dict, res: dict, sens: dict, path: Path) -> dict:
 # =============================================================================
 # 7. LibreOffice verification
 # =============================================================================
-def verify_with_libreoffice(xlsx: Path, expect: dict, tol: float = 1e-6) -> dict:
+def verify_with_libreoffice(xlsx: Path, expect: dict, tol: float = 1e-6, keep: bool = True) -> dict:
+    """Recalculate `xlsx` in headless LibreOffice and compare every formula cell with `expect`.
+
+    If everything matches and `keep` is true, the recalculated copy replaces `xlsx`, so the shipped
+    workbook carries cached values (handy for previewers) while keeping every formula."""
     soffice = shutil.which("soffice") or shutil.which("libreoffice")
     if not soffice:
         return {"status": "skipped", "reason": "soffice not found; formulas not independently recalculated"}
@@ -1134,6 +1138,9 @@ def verify_with_libreoffice(xlsx: Path, expect: dict, tol: float = 1e-6) -> dict
             got = 0.0 if got is None else float(got)
             if abs(got - exp) > tol * max(1.0, abs(exp)):
                 bad.append((sheet, coord, exp, got))
+        wb.close()
+        if not bad and keep:
+            shutil.copyfile(conv, xlsx)
         return {"status": "ok" if not bad else "mismatch", "cells": n, "mismatches": len(bad),
                 "formula_errors": errors, "examples": bad[:10],
                 "lo_version": subprocess.run([soffice, "--version"], capture_output=True, text=True).stdout.strip()}
@@ -1321,11 +1328,14 @@ def takeaways(res, sens) -> list[str]:
              f"Keep paid spend as a test budget until install-to-paid is near "
              f"{_pct(b['p']['asa_cpi'] / kb['LTV per payer (net of store fee, refunds, variable cost)'])}.")
     top = sens["tornado"][:3]
-    plaid3 = b["annual"]["Plaid / aggregation"][2]
-    t.append("The three biggest levers on base FY3 operating income (+/-20%) are "
+    an = b["annual"]
+    cogs = {k: an[k][2] for k in ("Data licensing", "Plaid / aggregation", "Hosting", "LLM tutor", "RevenueCat")}
+    big = max(cogs, key=cogs.get)
+    t.append("The three biggest levers on base FY3 operating income (a -20% / +20% move) are "
              + "; ".join(f"{x['label'].lower()} ({_k(x['low'])} / +{_k(x['high'])})" for x in top)
-             + f". Costs are small and mostly fixed: COGS is {_pct(b['annual']['Total COGS'][2] / rev3 if rev3 else 0)} "
-             f"of FY3 revenue, and Plaid linking costs {_k(plaid3)} in FY3 as long as free users are capped at one bank.")
+             + f". On costs, COGS is {_pct(an['Total COGS'][2] / rev3 if rev3 else 0)} of FY3 revenue and the largest "
+             f"line is {big.lower()} at {_k(cogs[big])} ({_pct(cogs[big] / rev3 if rev3 else 0)} of revenue), even with "
+             "free users capped at one linked bank. Get a real Plaid quote before launching the Money Hub.")
     return t
 
 
