@@ -1,0 +1,65 @@
+{
+  "_comment": "FICTIONAL /transactions/recurring/get response. Inflow amounts are negative (Plaid convention). Payroll is irregular (average != last).",
+  "inflow_streams": [
+    {
+      "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "stream_id": "stream_payroll_quill",
+      "category": ["Transfer", "Payroll"], "category_id": "21009000", "description": "QUILL UNIV PAYROLL DIR DEP", "merchant_name": null,
+      "personal_finance_category": { "primary": "INCOME", "detailed": "INCOME_WAGES", "confidence_level": "VERY_HIGH" },
+      "first_date": "2026-05-08", "last_date": "2026-09-18", "predicted_next_date": "2026-10-02", "frequency": "BIWEEKLY",
+      "transaction_ids": ["tx_pay_0918", "tx_pay_0904", "tx_pay_0821"],
+      "average_amount": { "amount": -412.37, "iso_currency_code": "USD", "unofficial_currency_code": null },
+      "last_amount": { "amount": -386.1, "iso_currency_code": "USD", "unofficial_currency_code": null },
+      "is_active": true, "status": "MATURE", "is_user_modified": false
+    },
+    {
+      "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "stream_id": "stream_tutorly",
+      "description": "TUTORLY PAYOUT", "merchant_name": "Tutorly",
+      "personal_finance_category": { "primary": "INCOME", "detailed": "INCOME_OTHER_INCOME", "confidence_level": "HIGH" },
+      "first_date": "2026-09-01", "last_date": "2026-09-22", "predicted_next_date": "2026-09-29", "frequency": "WEEKLY",
+      "transaction_ids": ["tx_tutor_0922"],
+      "average_amount": { "amount": -57.5, "iso_currency_code": "USD" },
+      "last_amount": { "amount": -65, "iso_currency_code": "USD" },
+      "is_active": true, "status": "EARLY_DETECTION", "is_user_modified": false
+    },
+    {
+      "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "stream_id": "stream_lab_stipend",
+      "description": "RESEARCH STIPEND FICTIONAL LAB", "merchant_name": null,
+      "personal_finance_category": { "primary": "INCOME", "detailed": "INCOME_OTHER_INCOME", "confidence_level": "MEDIUM" },
+      "first_date": "2026-06-20", "last_date": "2026-08-21", "predicted_next_date": "2026-10-20", "frequency": "UNKNOWN",
+      "average_amount": { "amount": -250, "iso_currency_code": "USD" },
+      "last_amount": { "amount": -300, "iso_currency_code": "USD" },
+      "is_active": true, "status": "MATURE", "is_user_modified": false
+    },
+    {
+      "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "stream_id": "stream_savings_sweep",
+      "description": "ONLINE TRANSFER FROM SAV 0202", "merchant_name": null,
+      "personal_finance_category": { "primary": "TRANSFER_IN", "detailed": "TRANSFER_IN_ACCOUNT_TRANSFER", "confidence_level": "VERY_HIGH" },
+      "first_date": "2026-03-01", "last_date": "2026-09-01", "predicted_next_date": "2026-10-01", "frequency": "MONTHLY",
+      "average_amount": { "amount": -100, "iso_currency_code": "USD" },
+      "last_amount": { "amount": -100, "iso_currency_code": "USD" },
+      "is_active": true, "status": "MATURE", "is_user_modified": false
+    },
+    {
+      "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "stream_id": "stream_dashcart_old",
+      "description": "DASHCART DRIVER PAY", "merchant_name": "DashCart",
+      "personal_finance_category": { "primary": "INCOME", "detailed": "INCOME_WAGES", "confidence_level": "HIGH" },
+      "first_date": "2025-11-01", "last_date": "2026-03-14", "predicted_next_date": null, "frequency": "WEEKLY",
+      "average_amount": { "amount": -140.2, "iso_currency_code": "USD" },
+      "last_amount": { "amount": -95.5, "iso_currency_code": "USD" },
+      "is_active": false, "status": "TOMBSTONED", "is_user_modified": false
+    }
+  ],
+  "outflow_streams": [
+    {
+      "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "stream_id": "stream_rent_out",
+      "description": "FICTIONAL PROPERTY MGMT RENT", "merchant_name": null,
+      "personal_finance_category": { "primary": "RENT_AND_UTILITIES", "detailed": "RENT_AND_UTILITIES_RENT" },
+      "first_date": "2026-01-01", "last_date": "2026-09-01", "predicted_next_date": "2026-10-01", "frequency": "MONTHLY",
+      "average_amount": { "amount": 650, "iso_currency_code": "USD" }, "last_amount": { "amount": 650, "iso_currency_code": "USD" },
+      "is_active": true, "status": "MATURE"
+    }
+  ],
+  "updated_datetime": "2026-09-24T10:00:00Z",
+  "personal_finance_category_version": "v2",
+  "request_id": "fictional-req-3"
+}

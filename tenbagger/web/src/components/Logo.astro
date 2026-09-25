@@ -1,0 +1,8 @@
+---
+import site from '../../site.config.ts';
+interface Props { size?: number }
+const { size = 30 } = Astro.props;
+---
+<span class="logo" style={`--s:${size}px`} aria-hidden="true">
+  <span class="logo-mark">{site.logoMark}</span>
+</span>

@@ -1,22 +1,19 @@
-// Money hub data layer: shapes DB rows into the normalized input that packages/money
-// consumes, projects expected deposits from Plaid recurring predictions, and builds the
-// append-only snapshot. NO cash-flow math here beyond simple labelled sums for snapshots:
-// packages/money owns the forward check (cash now + expected income before due − amount due).
+// Money hub data layer: shapes DB rows into the input that packages/money consumes
+// (Account, Liability, IncomeStream, ExpectedDeposit, IncomeDeposit, Snapshot — mirrored
+// below from packages/money/src/types.ts), projects expected deposits from Plaid recurring
+// predictions, and builds the append-only snapshot. No cash-flow math here: packages/money
+// owns the forward check (cash now + expected income before the due date − amount due).
 //
-// Every number is wrapped as {value, basis, asOf}:
-//   verified  = returned by the provider (asOf = when we last pulled it)
-//   projected = predicted (Plaid recurring predicted_next_date / frequency roll-forward)
-//   manual    = entered by the user
-import type { Basis, IncomeFrequency, LiabilityKind, NormalizedCashAccount, NormalizedLiability, NormalizedIncomeStream, TransactionsDelta } from "./types.ts";
+// Basis labels (every number is covered by one):
+//   verified  = returned by the provider (Account.basis, Liability.basis, deposits history)
+//   projected = predicted (ExpectedDeposit.basis, from Plaid predicted_next_date + cadence)
+//   manual    = entered by the user (manual IncomeStream.basis, manual Account.basis)
+import type { Basis, IncomeFrequency, NormalizedCashAccount, NormalizedIncomeStream, NormalizedLiability, TransactionsDelta } from "./types.ts";
 
+export const MONEY_SCHEMA_VERSION = 1;
 export const MONEY_HORIZON_DAYS = 45;
 export const MONEY_SNAPSHOT_LOOKBACK_DAYS = 90;
-
-export interface Amount {
-  value: number;
-  basis: Basis;
-  asOf: string | null;
-}
+export const MONEY_DEPOSIT_HISTORY_DAYS = 180;
 
 /** Payload of replace_item_money(). A null section = not fetched this time (keep rows). */
 export interface MoneyItemPayload {
@@ -27,7 +24,121 @@ export interface MoneyItemPayload {
   income_streams: NormalizedIncomeStream[] | null;
 }
 
-// ---- DB row shapes (as returned by Repo.getMoneyRows; numerics already converted) ------
+// ---- packages/money shapes (structural mirror; extra fields are additive) ----------------
+export type ISODate = string;
+export type AccountKind = "checking" | "savings" | "brokerage" | "retirement" | "crypto" | "credit_card" | "loan";
+export type PayFrequency = "weekly" | "biweekly" | "semimonthly" | "monthly";
+export type IncomeKind = "hourly" | "per_session" | "salary" | "other";
+
+export interface Account {
+  id: string;
+  name: string;
+  kind: AccountKind;
+  /** Assets: current value. Debts: POSITIVE amount owed. */
+  balance: number;
+  available?: number;
+  asOf: ISODate;
+  basis: "verified" | "manual";
+  // additive
+  source: "plaid" | "snaptrade" | "manual";
+  institution: string | null;
+  mask: string | null;
+}
+export interface Liability {
+  accountId: string;
+  statementBalance: number;
+  minimumDue: number;
+  dueDate: ISODate;
+  /** Decimal (0.2499 = 24.99%). */
+  apr?: number;
+  // additive
+  basis: "verified";
+  lastPaymentAmount: number | null;
+  lastPaymentDate: ISODate | null;
+  isOverdue: boolean | null;
+}
+export interface IncomeStream {
+  id: string;
+  name: string;
+  kind: IncomeKind;
+  rate: number;
+  schedule: { unitsPerWeek: number; weekdays: number[] };
+  payFrequency: PayFrequency;
+  nextPayDate: ISODate;
+  withholdingRate: number;
+  condition?: string;
+  pendingUnsubmitted?: { units: number; periodEnd: ISODate };
+  semimonthlyDays?: [number, number];
+  periodLagDays?: number;
+  weekendRule?: "none" | "previous_business_day";
+  // additive
+  basis: Basis;
+  source: "manual" | "plaid";
+}
+export interface ExpectedDeposit {
+  date: ISODate;
+  amount: number;
+  gross: number;
+  basis: "projected";
+  streamId: string;
+  streamName: string;
+  note?: string;
+  // additive: high = Plaid MATURE + regular cadence; low = EARLY_DETECTION / irregular
+  confidence: "high" | "low";
+}
+export interface IncomeDeposit {
+  date: ISODate;
+  amount: number;
+  streamId?: string;
+  basis: "verified";
+}
+export interface Snapshot {
+  takenAt: string;
+  accounts: Account[];
+  liabilities: Liability[];
+  note: string;
+}
+/** A detected (Plaid recurring) inflow stream, for display and optional confirmation. */
+export interface DetectedStream {
+  id: string;
+  name: string;
+  category: string | null;
+  frequency: IncomeFrequency;
+  status: string;
+  averageAmount: number | null;
+  lastAmount: number | null;
+  lastDate: ISODate | null;
+  predictedNextDate: ISODate | null;
+  basis: "verified";
+  /**
+   * packages/money IncomeStream (kind "other", $/paycheck = average deposit) when the cadence is
+   * regular. NOT included in incomeStreams (its deposits are already in expectedDeposits); the
+   * app may swap it in if the user confirms the stream, to avoid double counting with a manual one.
+   */
+  asIncomeStream: IncomeStream | null;
+}
+
+export interface MoneySummary {
+  schemaVersion: number;
+  asOf: ISODate;
+  timezone: string;
+  horizonDays: number;
+  accounts: Account[];
+  liabilities: Liability[];
+  /** Manual, active streams: feed straight to projectIncome / coverageCheck. */
+  incomeStreams: IncomeStream[];
+  detectedStreams: DetectedStream[];
+  /** Projected deposits from detected streams within [asOf, asOf + horizonDays]. */
+  expectedDeposits: ExpectedDeposit[];
+  /** Income deposits observed in the last 180 days (transactions categorized INCOME). */
+  deposits: IncomeDeposit[];
+  /** Last 90 days, oldest first (packages/money SnapshotLog order). */
+  snapshots: Array<Snapshot & { id: string; basis: Record<string, unknown>; notes: Array<{ id: string; note: string; createdAt: string }> }>;
+  sources: Array<{ itemId: string; institution: string | null; status: string; moneyHub: boolean; moneySyncedAt: string | null }>;
+  warnings: string[];
+}
+
+// ---- DB row shapes (Repo.getMoneyRows; numerics converted; dates as YYYY-MM-DD) ----------
 export interface CashAccountRow {
   id: string;
   name: string;
@@ -37,7 +148,7 @@ export interface CashAccountRow {
   balance_current: number | null;
   balance_available: number | null;
   currency: string;
-  as_of: string;
+  as_of: string; // ISO timestamp
 }
 export interface InvestmentAccountRow {
   id: string;
@@ -48,18 +159,16 @@ export interface InvestmentAccountRow {
   source: "plaid" | "snaptrade" | "manual";
   balance: number | null;
   currency: string;
-  as_of: string | null;
+  as_of: string | null; // ISO timestamp
 }
 export interface LiabilityRow {
   id: string;
-  kind: LiabilityKind;
+  kind: "credit_card" | "student_loan" | "other_loan";
   name: string;
   mask: string | null;
   institution_name: string | null;
   balance_current: number | null;
-  credit_limit: number | null;
   last_statement_balance: number | null;
-  last_statement_date: string | null;
   minimum_payment_amount: number | null;
   next_payment_due_date: string | null;
   last_payment_amount: number | null;
@@ -68,7 +177,7 @@ export interface LiabilityRow {
   is_overdue: boolean | null;
   currency: string;
   details_available: boolean;
-  as_of: string;
+  as_of: string; // ISO timestamp
 }
 export interface IncomeStreamRow {
   id: string;
@@ -81,19 +190,22 @@ export interface IncomeStreamRow {
   last_date: string | null;
   predicted_next_date: string | null;
   status: string;
-  pay_type: "hourly" | "per_session" | "salary" | null;
+  pay_type: IncomeKind | null;
   rate: number | null;
-  units_per_period: number | null;
+  units_per_week: number | null;
+  weekdays: number[] | null;
   next_pay_date: string | null;
   withholding_rate: number | null;
   condition: string | null;
+  pending_units: number | null;
+  pending_period_end: string | null;
+  semimonthly_days: number[] | null;
+  period_lag_days: number | null;
+  weekend_rule: "none" | "previous_business_day" | null;
   currency: string;
-  updated_at: string;
 }
 export interface SnapshotRow {
   id: string;
-  taken_at: string;
-  trigger: string;
   snapshot: Record<string, unknown>;
   basis: Record<string, unknown>;
   notes: Array<{ id: string; note: string; created_at: string }>;
@@ -106,105 +218,20 @@ export interface MoneySourceRow {
   money_synced_at: string | null;
 }
 export interface MoneyRows {
+  timezone: string;
   cash: CashAccountRow[];
   investments: InvestmentAccountRow[];
   liabilities: LiabilityRow[];
   streams: IncomeStreamRow[];
+  deposits: Array<{ date: string; amount: number }>;
   snapshots: SnapshotRow[];
   sources: MoneySourceRow[];
 }
 
-// ---- Output: the normalized input shape for packages/money ------------------------------
-export interface MoneyAccount {
-  id: string;
-  kind: "cash" | "investment";
-  name: string;
-  mask: string | null;
-  subtype: string | null;
-  institution: string | null;
-  source: "plaid" | "snaptrade" | "manual";
-  currency: string;
-  balance: Amount | null;
-  /** Depository "available" balance (after holds / pending); null for investments. */
-  available: Amount | null;
-}
-export interface MoneyLiability {
-  id: string;
-  kind: LiabilityKind;
-  name: string;
-  mask: string | null;
-  institution: string | null;
-  currency: string;
-  balance: Amount | null;
-  creditLimit: Amount | null;
-  statementBalance: Amount | null;
-  statementDate: string | null;
-  minimumPayment: Amount | null;
-  nextDueDate: string | null;
-  lastPaymentAmount: Amount | null;
-  lastPaymentDate: string | null;
-  aprPercentage: Amount | null;
-  isOverdue: boolean | null;
-  /** false => only balance/limit known (Liabilities product not available for this card). */
-  detailsAvailable: boolean;
-}
-export interface MoneyIncomeStream {
-  id: string;
-  source: "plaid" | "manual";
-  basis: Basis;
-  description: string;
-  category: string | null;
-  frequency: IncomeFrequency;
-  status: string;
-  currency: string;
-  averageAmount: Amount | null;
-  lastAmount: Amount | null;
-  lastDate: string | null;
-  nextDate: string | null;
-  manual: {
-    payType: "hourly" | "per_session" | "salary";
-    rate: Amount;
-    unitsPerPeriod: Amount | null;
-    withholdingRate: Amount | null;
-    condition: string | null;
-  } | null;
-}
-export interface ExpectedDeposit {
-  streamId: string;
-  description: string;
-  date: string;
-  amount: Amount;
-  frequency: IncomeFrequency;
-  /** high = Plaid MATURE stream, low = EARLY_DETECTION / unknown cadence. */
-  confidence: "high" | "low";
-}
-export interface MoneySnapshotOut {
-  id: string;
-  takenAt: string;
-  trigger: string;
-  snapshot: Record<string, unknown>;
-  basis: Record<string, unknown>;
-  notes: Array<{ id: string; note: string; createdAt: string }>;
-}
-export interface MoneySummary {
-  asOf: string;
-  horizonDays: number;
-  accounts: MoneyAccount[];
-  liabilities: MoneyLiability[];
-  incomeStreams: MoneyIncomeStream[];
-  expectedDeposits: ExpectedDeposit[];
-  snapshots: MoneySnapshotOut[];
-  sources: Array<{ itemId: string; institution: string | null; status: string; moneyHub: boolean; moneySyncedAt: string | null }>;
-  warnings: string[];
-}
-
-const amt = (v: number | null | undefined, basis: Basis, asOf: string | null): Amount | null =>
-  v === null || v === undefined || !Number.isFinite(v) ? null : { value: v, basis, asOf };
-
-// ---- date helpers (UTC calendar dates) --------------------------------------------------
+// ---- dates ------------------------------------------------------------------------------
 const toDate = (s: string) => new Date(`${s}T00:00:00Z`);
 const fmt = (d: Date) => d.toISOString().slice(0, 10);
-function addDays(s: string, n: number): string {
+export function addDays(s: string, n: number): string {
   const d = toDate(s);
   d.setUTCDate(d.getUTCDate() + n);
   return fmt(d);
@@ -218,6 +245,19 @@ function addMonths(s: string, n: number): string {
   d.setUTCDate(Math.min(day, last));
   return fmt(d);
 }
+
+/** Local calendar date + wall time for a user's IANA timezone (falls back to UTC). */
+export function localParts(at: Date, timezone: string): { date: ISODate; time: string } {
+  let f: Intl.DateTimeFormat;
+  try {
+    f = new Intl.DateTimeFormat("en-CA", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  } catch {
+    f = new Intl.DateTimeFormat("en-CA", { timeZone: "UTC", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  }
+  const p = Object.fromEntries(f.formatToParts(at).map((x) => [x.type, x.value]));
+  return { date: `${p.year}-${p.month}-${p.day}`, time: `${p.hour}:${p.minute}` };
+}
+
 /** Next occurrence after `s` for a cadence; null for irregular / unknown cadences. */
 export function nextOccurrence(s: string, f: IncomeFrequency): string | null {
   switch (f) {
@@ -225,8 +265,8 @@ export function nextOccurrence(s: string, f: IncomeFrequency): string | null {
       return addDays(s, 7);
     case "biweekly":
       return addDays(s, 14);
-    case "semi_monthly": {
-      // 1st/15th-style pay: alternate +15 days and to the same day next month.
+    case "semimonthly": {
+      // 1st/15th-style pay: alternate +15 days and back to the same day next month.
       const d = toDate(s).getUTCDate();
       return d <= 15 ? addDays(s, 15) : addMonths(addDays(s, -15), 1);
     }
@@ -239,191 +279,252 @@ export function nextOccurrence(s: string, f: IncomeFrequency): string | null {
   }
 }
 
+/** First predicted date on/after `today` (stale predictions roll forward by cadence). */
+function rollForward(start: string, f: IncomeFrequency, today: string): string | null {
+  let d: string | null = start;
+  for (let g = 0; d && d < today && g < 1000; g++) d = nextOccurrence(d, f);
+  return d;
+}
+
+// ---- mapping ------------------------------------------------------------------------------
+const RETIREMENT = /(401|403|457|ira|roth|sep|simple|keogh|pension|retirement|tsp|rrsp|tfsa|lif|lira|rrif)/i;
+function cashKind(subtype: string | null): AccountKind {
+  return /savings|money market|cd|hsa/i.test(subtype ?? "") ? "savings" : "checking";
+}
+function investmentKind(subtype: string | null, name: string): AccountKind {
+  const s = `${subtype ?? ""} ${name}`;
+  if (/crypto/i.test(s)) return "crypto";
+  return RETIREMENT.test(subtype ?? "") ? "retirement" : "brokerage";
+}
+const REGULAR: readonly IncomeFrequency[] = ["weekly", "biweekly", "semimonthly", "monthly"];
+const isRegular = (f: IncomeFrequency): f is PayFrequency => REGULAR.includes(f);
+
+function manualStream(s: IncomeStreamRow): IncomeStream {
+  const out: IncomeStream = {
+    id: s.id,
+    name: s.description,
+    kind: s.pay_type ?? "other",
+    rate: s.rate ?? 0,
+    schedule: { unitsPerWeek: s.units_per_week ?? 0, weekdays: s.weekdays ?? [] },
+    payFrequency: isRegular(s.frequency) ? s.frequency : "biweekly",
+    nextPayDate: s.next_pay_date!,
+    withholdingRate: s.withholding_rate ?? 0,
+    basis: "manual",
+    source: "manual",
+  };
+  if (s.condition) out.condition = s.condition;
+  if (s.pending_units !== null && s.pending_period_end) out.pendingUnsubmitted = { units: s.pending_units, periodEnd: s.pending_period_end };
+  if (s.semimonthly_days?.length === 2) out.semimonthlyDays = [s.semimonthly_days[0], s.semimonthly_days[1]];
+  if (s.period_lag_days !== null) out.periodLagDays = s.period_lag_days;
+  if (s.weekend_rule) out.weekendRule = s.weekend_rule;
+  return out;
+}
+
 /**
- * Expected deposits within [today, today + horizonDays] from DETECTED (Plaid) streams.
- * Starts at predicted_next_date and rolls forward by frequency; a stale prediction is
- * rolled forward to today. Tombstoned streams and streams without an amount are skipped.
- * Manual streams are not projected here (packages/money derives them from incomeStreams).
+ * Expected deposits within [today, today + horizonDays] from DETECTED (Plaid) streams: start
+ * at predicted_next_date, roll stale predictions forward, repeat by cadence. Irregular /
+ * unknown cadences contribute only their single predicted date. Tombstoned, non-USD and
+ * amount-less streams are skipped. Manual streams are NOT projected here (packages/money
+ * projectIncome does that, including pending/conditional pay).
  */
 export function projectExpectedDeposits(streams: IncomeStreamRow[], today: string, horizonDays = MONEY_HORIZON_DAYS): ExpectedDeposit[] {
   const end = addDays(today, horizonDays);
   const out: ExpectedDeposit[] = [];
   for (const s of streams) {
-    if (s.source !== "plaid" || s.status === "tombstoned" || s.currency !== "USD") continue;
+    if (s.source !== "plaid" || s.status === "tombstoned" || s.currency !== "USD" || !s.predicted_next_date) continue;
     const value = s.average_amount ?? s.last_amount;
-    if (value === null || value <= 0 || !s.predicted_next_date) continue;
-    let d: string | null = s.predicted_next_date;
-    for (let guard = 0; d && d < today && guard < 400; guard++) d = nextOccurrence(d, s.frequency);
-    for (let guard = 0; d && d <= end && guard < 400; guard++) {
-      if (d >= today) {
-        out.push({
-          streamId: s.id,
-          description: s.description,
-          date: d,
-          amount: { value, basis: "projected", asOf: s.predicted_next_date },
-          frequency: s.frequency,
-          confidence: s.status === "mature" && s.frequency !== "unknown" && s.frequency !== "irregular" ? "high" : "low",
-        });
-      }
+    if (value === null || value <= 0) continue;
+    const confidence = s.status === "mature" && isRegular(s.frequency) ? "high" : "low";
+    let d = s.predicted_next_date < today ? rollForward(s.predicted_next_date, s.frequency, today) : s.predicted_next_date;
+    for (let g = 0; d && d <= end && g < 400; g++) {
+      out.push({
+        date: d,
+        amount: value,
+        gross: value,
+        basis: "projected",
+        streamId: s.id,
+        streamName: s.description,
+        note: confidence === "high" ? "Detected pattern from past deposits; not guaranteed" : "Early or irregular pattern; amount and date may vary",
+        confidence,
+      });
       d = nextOccurrence(d, s.frequency);
     }
   }
   return out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.streamId.localeCompare(b.streamId)));
 }
 
-export function buildMoneySummary(rows: MoneyRows, today: string, horizonDays = MONEY_HORIZON_DAYS): MoneySummary {
+export function buildMoneySummary(rows: MoneyRows, now: Date, horizonDays = MONEY_HORIZON_DAYS): MoneySummary {
+  const tz = rows.timezone || "UTC";
+  const asOf = localParts(now, tz).date;
+  const localDate = (iso: string | null) => (iso ? localParts(new Date(iso), tz).date : asOf);
   const warnings: string[] = [];
-  const accounts: MoneyAccount[] = [
-    ...rows.cash.map((c): MoneyAccount => ({
-      id: c.id,
-      kind: "cash",
-      name: c.name,
-      mask: c.mask,
-      subtype: c.subtype,
-      institution: c.institution_name,
-      source: "plaid",
-      currency: c.currency,
-      balance: amt(c.balance_current, "verified", c.as_of),
-      available: amt(c.balance_available, "verified", c.as_of),
-    })),
-    ...rows.investments.map((a): MoneyAccount => ({
-      id: a.id,
-      kind: "investment",
-      name: a.name,
-      mask: a.mask,
-      subtype: a.subtype,
-      institution: a.institution_name,
-      source: a.source,
-      currency: a.currency,
-      balance: amt(a.balance, a.source === "manual" ? "manual" : "verified", a.as_of),
-      available: null,
-    })),
-  ];
-  const liabilities: MoneyLiability[] = rows.liabilities.map((l) => {
-    const v = (x: number | null) => amt(x, "verified", l.as_of);
-    return {
-      id: l.id,
-      kind: l.kind,
-      name: l.name,
-      mask: l.mask,
-      institution: l.institution_name,
-      currency: l.currency,
-      balance: v(l.balance_current),
-      creditLimit: v(l.credit_limit),
-      statementBalance: v(l.last_statement_balance),
-      statementDate: l.last_statement_date,
-      minimumPayment: v(l.minimum_payment_amount),
-      nextDueDate: l.next_payment_due_date,
-      lastPaymentAmount: v(l.last_payment_amount),
-      lastPaymentDate: l.last_payment_date,
-      aprPercentage: v(l.apr_percentage),
-      isOverdue: l.is_overdue,
-      detailsAvailable: l.details_available,
-    };
-  });
-  for (const l of liabilities) {
-    if (l.kind === "credit_card" && !l.detailsAvailable) warnings.push(`${l.name}: due date and minimum payment unavailable (Liabilities not enabled for this card)`);
-  }
-  const incomeStreams: MoneyIncomeStream[] = rows.streams.map((s) => {
-    if (s.source === "manual") {
-      const m = (x: number | null) => amt(x, "manual", s.updated_at);
-      return {
-        id: s.id,
-        source: "manual",
-        basis: "manual",
-        description: s.description,
-        category: s.category,
-        frequency: s.frequency,
-        status: s.status,
-        currency: s.currency,
-        averageAmount: null,
-        lastAmount: null,
-        lastDate: null,
-        nextDate: s.next_pay_date,
-        manual: {
-          payType: s.pay_type!,
-          rate: m(s.rate)!,
-          unitsPerPeriod: m(s.units_per_period),
-          withholdingRate: m(s.withholding_rate),
-          condition: s.condition,
-        },
-      };
+  const skip = (name: string, why: string) => warnings.push(`${name}: ${why}`);
+
+  const accounts: Account[] = [];
+  for (const c of rows.cash) {
+    if (c.currency !== "USD") {
+      skip(c.name, `${c.currency} account not converted to USD; left out`);
+      continue;
     }
+    if (c.balance_current === null) {
+      skip(c.name, "no balance reported");
+      continue;
+    }
+    const a: Account = {
+      id: c.id,
+      name: c.name,
+      kind: cashKind(c.subtype),
+      balance: c.balance_current,
+      asOf: localDate(c.as_of),
+      basis: "verified",
+      source: "plaid",
+      institution: c.institution_name,
+      mask: c.mask,
+    };
+    if (c.balance_available !== null) a.available = c.balance_available;
+    accounts.push(a);
+  }
+  for (const i of rows.investments) {
+    if (i.currency !== "USD") {
+      skip(i.name, `${i.currency} account not converted to USD; left out`);
+      continue;
+    }
+    if (i.balance === null) continue;
+    accounts.push({
+      id: i.id,
+      name: i.name,
+      kind: investmentKind(i.subtype, i.name),
+      balance: i.balance,
+      asOf: localDate(i.as_of),
+      basis: i.source === "manual" ? "manual" : "verified",
+      source: i.source,
+      institution: i.institution_name,
+      mask: i.mask,
+    });
+  }
+  const liabilities: Liability[] = [];
+  for (const l of rows.liabilities) {
+    if (l.currency !== "USD") {
+      skip(l.name, `${l.currency} account not converted to USD; left out`);
+      continue;
+    }
+    if (l.balance_current === null) {
+      skip(l.name, "no balance reported");
+      continue;
+    }
+    if (l.balance_current < 0) skip(l.name, "credit balance (overpaid) shown as $0 owed");
+    accounts.push({
+      id: l.id,
+      name: l.name,
+      kind: l.kind === "credit_card" ? "credit_card" : "loan",
+      balance: Math.max(0, l.balance_current),
+      asOf: localDate(l.as_of),
+      basis: "verified",
+      source: "plaid",
+      institution: l.institution_name,
+      mask: l.mask,
+    });
+    if (!l.details_available) {
+      if (l.kind === "credit_card") skip(l.name, "due date and minimum payment unavailable (Liabilities not enabled for this card)");
+      continue;
+    }
+    if (!l.next_payment_due_date || l.last_statement_balance === null || l.minimum_payment_amount === null) {
+      if (l.kind === "credit_card" && l.balance_current > 0) skip(l.name, "no upcoming statement due date reported");
+      continue;
+    }
+    const li: Liability = {
+      accountId: l.id,
+      statementBalance: Math.max(0, l.last_statement_balance),
+      minimumDue: Math.max(0, l.minimum_payment_amount),
+      dueDate: l.next_payment_due_date,
+      basis: "verified",
+      lastPaymentAmount: l.last_payment_amount,
+      lastPaymentDate: l.last_payment_date,
+      isOverdue: l.is_overdue,
+    };
+    if (l.apr_percentage !== null) li.apr = Math.round(l.apr_percentage * 100) / 10000;
+    liabilities.push(li);
+  }
+
+  const incomeStreams = rows.streams.filter((s) => s.source === "manual" && s.status === "active").map(manualStream);
+  const paused = rows.streams.filter((s) => s.source === "manual" && s.status !== "active").length;
+  if (paused) warnings.push(`${paused} paused income stream(s) not projected`);
+
+  const detectedStreams: DetectedStream[] = rows.streams.filter((s) => s.source === "plaid").map((s) => {
+    const avg = s.average_amount ?? s.last_amount;
+    const next = s.predicted_next_date ? rollForward(s.predicted_next_date, s.frequency, asOf) : null;
+    const usable = s.status !== "tombstoned" && s.currency === "USD" && isRegular(s.frequency) && avg !== null && avg > 0 && next;
     return {
       id: s.id,
-      source: "plaid",
-      basis: "verified",
-      description: s.description,
+      name: s.description,
       category: s.category,
       frequency: s.frequency,
       status: s.status,
-      currency: s.currency,
-      // Average / last amounts are observed history: verified. Only the future is projected.
-      averageAmount: amt(s.average_amount, "verified", s.last_date),
-      lastAmount: amt(s.last_amount, "verified", s.last_date),
+      averageAmount: s.average_amount,
+      lastAmount: s.last_amount,
       lastDate: s.last_date,
-      nextDate: s.predicted_next_date,
-      manual: null,
+      predictedNextDate: s.predicted_next_date,
+      basis: "verified",
+      asIncomeStream: usable
+        ? {
+          id: s.id,
+          name: s.description,
+          kind: "other",
+          rate: avg!,
+          schedule: { unitsPerWeek: 0, weekdays: [] },
+          payFrequency: s.frequency as PayFrequency,
+          nextPayDate: next!,
+          withholdingRate: 0, // Plaid amounts are net deposits
+          basis: "projected",
+          source: "plaid",
+        }
+        : null,
     };
   });
-  const nonUsd = [...rows.cash, ...rows.investments, ...rows.liabilities].filter((x) => x.currency !== "USD").length;
-  if (nonUsd) warnings.push(`${nonUsd} non-USD account(s) are listed but not converted`);
+
+  // Oldest first, matching packages/money SnapshotLog.
+  const snapshots = [...rows.snapshots].reverse().map((r) => {
+    const s = r.snapshot as unknown as Snapshot;
+    const notes = r.notes.map((n) => ({ id: n.id, note: n.note, createdAt: n.created_at }));
+    return {
+      id: r.id,
+      takenAt: String(s.takenAt),
+      accounts: Array.isArray(s.accounts) ? s.accounts : [],
+      liabilities: Array.isArray(s.liabilities) ? s.liabilities : [],
+      note: [s.note, ...notes.map((n) => n.note)].filter((x) => typeof x === "string" && x).join("\n"),
+      basis: r.basis,
+      notes,
+    };
+  });
 
   return {
-    asOf: today,
+    schemaVersion: MONEY_SCHEMA_VERSION,
+    asOf,
+    timezone: tz,
     horizonDays,
     accounts,
     liabilities,
     incomeStreams,
-    expectedDeposits: projectExpectedDeposits(rows.streams, today, horizonDays),
-    snapshots: rows.snapshots.map((s) => ({
-      id: s.id,
-      takenAt: s.taken_at,
-      trigger: s.trigger,
-      snapshot: s.snapshot,
-      basis: s.basis,
-      notes: s.notes.map((n) => ({ id: n.id, note: n.note, createdAt: n.created_at })),
-    })),
+    detectedStreams,
+    expectedDeposits: projectExpectedDeposits(rows.streams, asOf, horizonDays),
+    deposits: rows.deposits.map((d) => ({ date: d.date, amount: d.amount, basis: "verified" as const })),
+    snapshots,
     sources: rows.sources.map((i) => ({ itemId: i.id, institution: i.institution_name, status: i.status, moneyHub: i.money_hub, moneySyncedAt: i.money_synced_at })),
     warnings,
   };
 }
 
-const round2 = (n: number) => Math.round(n * 100) / 100;
-const sumUsd = (xs: Array<{ currency: string; v: Amount | null }>) => round2(xs.filter((x) => x.currency === "USD" && x.v).reduce((s, x) => s + x.v!.value, 0));
-
 /**
- * Minimized, labelled totals for the append-only history. Stores components only; the
- * forward check itself is recomputed by packages/money from these inputs.
+ * The append-only history row: a packages/money Snapshot (takenAt in the user's local wall
+ * time, accounts incl. debts, liabilities) + basis labels per account / liability.
+ * The forward check is recomputed from these by packages/money, never stored.
  */
-export function buildSnapshot(s: MoneySummary): { snapshot: Record<string, unknown>; basis: Record<string, Basis> } {
-  const cash = s.accounts.filter((a) => a.kind === "cash");
-  const inv = s.accounts.filter((a) => a.kind === "investment");
-  const upcoming = s.liabilities
-    .filter((l) => l.kind === "credit_card" && l.nextDueDate && l.nextDueDate >= s.asOf)
-    .sort((a, b) => (a.nextDueDate! < b.nextDueDate! ? -1 : 1))[0];
-  const incomeBeforeDue = upcoming ? round2(s.expectedDeposits.filter((d) => d.date <= upcoming.nextDueDate!).reduce((t, d) => t + d.amount.value, 0)) : null;
-  const snapshot = {
-    as_of: s.asOf,
-    cash_current: sumUsd(cash.map((a) => ({ currency: a.currency, v: a.balance }))),
-    cash_available: sumUsd(cash.map((a) => ({ currency: a.currency, v: a.available }))),
-    investments: sumUsd(inv.map((a) => ({ currency: a.currency, v: a.balance }))),
-    debt: sumUsd(s.liabilities.map((l) => ({ currency: l.currency, v: l.balance }))),
-    next_card_due: upcoming
-      ? { date: upcoming.nextDueDate, minimum_payment: upcoming.minimumPayment?.value ?? null, statement_balance: upcoming.statementBalance?.value ?? null }
-      : null,
-    expected_income_before_due: incomeBeforeDue,
-    expected_income_horizon: round2(s.expectedDeposits.reduce((t, d) => t + d.amount.value, 0)),
-    counts: { cash_accounts: cash.length, investment_accounts: inv.length, liabilities: s.liabilities.length, income_streams: s.incomeStreams.length },
-  };
-  const basis: Record<string, Basis> = {
-    cash_current: "verified",
-    cash_available: "verified",
-    investments: inv.some((a) => a.balance?.basis === "manual") ? "manual" : "verified",
-    debt: "verified",
-    next_card_due: "verified",
-    expected_income_before_due: "projected",
-    expected_income_horizon: "projected",
+export function buildSnapshot(s: MoneySummary, now: Date): { snapshot: Snapshot; basis: Record<string, unknown> } {
+  const { date, time } = localParts(now, s.timezone);
+  const snapshot: Snapshot = { takenAt: `${date}T${time}`, accounts: s.accounts, liabilities: s.liabilities, note: "" };
+  const basis = {
+    accounts: Object.fromEntries(s.accounts.map((a) => [a.id, a.basis])),
+    liabilities: Object.fromEntries(s.liabilities.map((l) => [l.accountId, l.basis])),
   };
   return { snapshot, basis };
 }

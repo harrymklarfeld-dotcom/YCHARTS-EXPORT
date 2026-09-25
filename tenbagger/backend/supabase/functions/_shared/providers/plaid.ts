@@ -45,8 +45,20 @@ const MAX_SYNC_PAGES = 50;
 const MAX_SYNC_RESTARTS = 3;
 
 // Error codes that require the user to re-authenticate via Link update mode.
-const REAUTH_CODES = new Set(["ITEM_LOGIN_REQUIRED", "PENDING_EXPIRATION", "INVALID_CREDENTIALS", "INSUFFICIENT_CREDENTIALS", "USER_PERMISSION_REVOKED"]);
-const RETRYABLE_CODES = new Set(["PRODUCT_NOT_READY", "RATE_LIMIT_EXCEEDED", "INSTITUTION_DOWN", "INSTITUTION_NOT_RESPONDING", "INTERNAL_SERVER_ERROR"]);
+const REAUTH_CODES = new Set([
+  "ITEM_LOGIN_REQUIRED",
+  "PENDING_EXPIRATION",
+  "INVALID_CREDENTIALS",
+  "INSUFFICIENT_CREDENTIALS",
+  "USER_PERMISSION_REVOKED",
+]);
+const RETRYABLE_CODES = new Set([
+  "PRODUCT_NOT_READY",
+  "RATE_LIMIT_EXCEEDED",
+  "INSTITUTION_DOWN",
+  "INSTITUTION_NOT_RESPONDING",
+  "INTERNAL_SERVER_ERROR",
+]);
 // Removing an item that Plaid already considers gone is success for our purposes.
 const ALREADY_GONE = new Set(["ITEM_NOT_FOUND", "INVALID_ACCESS_TOKEN"]);
 
@@ -188,15 +200,26 @@ export class PlaidProvider implements AggregatorProvider {
         }
         return foldTransactionsSync(pages, cursor);
       } catch (e) {
-        if (e instanceof ProviderError && e.code === "TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION" && attempt < MAX_SYNC_RESTARTS) continue;
+        if (e instanceof ProviderError && e.code === "TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION" && attempt < MAX_SYNC_RESTARTS) {
+          continue;
+        }
         throw e;
       }
     }
-    throw new ProviderError("plaid", "TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION", "transactions kept changing during sync", undefined, false, true);
+    throw new ProviderError(
+      "plaid",
+      "TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION",
+      "transactions kept changing during sync",
+      undefined,
+      false,
+      true,
+    );
   }
 
   async getRecurring(cred: ProviderCredential): Promise<NormalizedRecurring> {
-    return normalizePlaidRecurring(await this.call<PlaidRecurringResponse>("/transactions/recurring/get", { access_token: this.token(cred) }));
+    return normalizePlaidRecurring(
+      await this.call<PlaidRecurringResponse>("/transactions/recurring/get", { access_token: this.token(cred) }),
+    );
   }
 
   /** Used by webhook verification: fetch the JWK for a given key id. */

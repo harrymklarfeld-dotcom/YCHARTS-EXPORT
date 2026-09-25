@@ -1,0 +1,75 @@
+---
+/**
+ * Page shell used by every page: <head> (SEO, social, fonts, theme), header, footer.
+ */
+import site from '../../site.config.ts';
+import { themeCss, googleFontsHref } from '../lib/theme.ts';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path like "/companies/cost/". Defaults to the current URL. */
+  canonicalPath?: string;
+  ogType?: 'website' | 'article';
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+  noindex?: boolean;
+  bodyClass?: string;
+}
+const {
+  title,
+  description = site.tagline,
+  canonicalPath = Astro.url.pathname,
+  ogType = 'website',
+  jsonLd,
+  noindex = false,
+  bodyClass = '',
+} = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(canonicalPath, site.url + '/').toString();
+const ogImage = new URL('/og.png', site.url + '/').toString();
+const orgLd = { '@context': 'https://schema.org', '@type': 'Organization', name: site.name, url: site.url, logo: new URL('/favicon.svg', site.url + '/').toString() };
+const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="theme-color" content={site.colors.light.bg} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={site.colors.dark.bg} media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={googleFontsHref()} />
+    <style is:inline set:html={themeCss()}></style>
+    <script is:inline>
+      try { var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify([orgLd, ...ld])}></script>
+  </head>
+  <body class={bodyClass}>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,76 @@
+{
+  "_comment": "FICTIONAL sandbox-shaped /liabilities/get response. Account numbers, servicer and reference numbers are fake and must NOT survive normalization.",
+  "accounts": [
+    {
+      "account_id": "mhCrd3Xz8uZdN2rBt3cAvP5mYu1fGg6hIj7lM",
+      "balances": { "available": 1265.79, "current": 734.21, "iso_currency_code": "USD", "limit": 2000, "unofficial_currency_code": null },
+      "mask": "0303", "name": "Campus Rewards Card", "official_name": "Northwind Campus Rewards Visa", "subtype": "credit card", "type": "credit"
+    },
+    {
+      "account_id": "mhLon5Rt1tAeO3sCu4dBwQ6nZv2gHh7iJk8mN",
+      "balances": { "available": null, "current": 12450, "iso_currency_code": "USD", "limit": null, "unofficial_currency_code": null },
+      "mask": "0404", "name": "Student Loan", "official_name": null, "subtype": "student", "type": "loan"
+    }
+  ],
+  "liabilities": {
+    "credit": [
+      {
+        "account_id": "mhCrd3Xz8uZdN2rBt3cAvP5mYu1fGg6hIj7lM",
+        "aprs": [
+          { "apr_percentage": 24.99, "apr_type": "purchase_apr", "balance_subject_to_apr": 689.4, "interest_charge_amount": 13.8 },
+          { "apr_percentage": 29.99, "apr_type": "cash_apr", "balance_subject_to_apr": 0, "interest_charge_amount": 0 }
+        ],
+        "is_overdue": false,
+        "last_payment_amount": 150,
+        "last_payment_date": "2026-09-08",
+        "last_statement_issue_date": "2026-09-17",
+        "last_statement_balance": 689.4,
+        "minimum_payment_amount": 35,
+        "next_payment_due_date": "2026-10-12"
+      },
+      {
+        "account_id": null,
+        "aprs": [],
+        "is_overdue": null,
+        "last_payment_amount": null,
+        "last_payment_date": null,
+        "last_statement_issue_date": null,
+        "last_statement_balance": null,
+        "minimum_payment_amount": null,
+        "next_payment_due_date": null
+      }
+    ],
+    "mortgage": null,
+    "student": [
+      {
+        "account_id": "mhLon5Rt1tAeO3sCu4dBwQ6nZv2gHh7iJk8mN",
+        "account_number": "FAKE-ACCT-0000000404",
+        "disbursement_dates": ["2025-08-20"],
+        "expected_payoff_date": "2036-12-01",
+        "guarantor": "FICTIONAL GUARANTY AGENCY",
+        "interest_rate_percentage": 5.5,
+        "is_overdue": false,
+        "last_payment_amount": null,
+        "last_payment_date": null,
+        "last_statement_issue_date": "2026-09-01",
+        "last_statement_balance": 12450,
+        "loan_name": "Direct Unsubsidized",
+        "loan_status": { "end_date": "2027-05-31", "type": "in school" },
+        "minimum_payment_amount": 0,
+        "next_payment_due_date": null,
+        "origination_date": "2025-08-20",
+        "origination_principal_amount": 12000,
+        "outstanding_interest_amount": 450,
+        "payment_reference_number": "FAKE-REF-0404",
+        "pslf_status": { "estimated_eligibility_date": null, "payments_made": null, "payments_remaining": null },
+        "repayment_plan": { "description": "Standard", "type": "standard" },
+        "sequence_number": "1",
+        "servicer_address": { "city": "Faketown", "country": "US", "postal_code": "00000", "region": "ZZ", "street": "1 Fictional Servicer Way" },
+        "ytd_interest_paid": 0,
+        "ytd_principal_paid": 0
+      }
+    ]
+  },
+  "item": { "item_id": "mhItemFictional0001", "institution_id": "ins_fictional_northwind" },
+  "request_id": "fictional-req-2"
+}

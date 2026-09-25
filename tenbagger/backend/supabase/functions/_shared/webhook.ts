@@ -103,7 +103,9 @@ export function classifyPlaidWebhook(b: PlaidWebhookBody): WebhookAction {
   const type = b.webhook_type ?? "";
   const code = b.webhook_code ?? "";
   if (type === "ITEM") {
-    if (code === "ERROR" && b.error?.error_code === "ITEM_LOGIN_REQUIRED") return { kind: "status", status: "needs_reauth", reason: "ITEM_LOGIN_REQUIRED" };
+    if (code === "ERROR" && b.error?.error_code === "ITEM_LOGIN_REQUIRED") {
+      return { kind: "status", status: "needs_reauth", reason: "ITEM_LOGIN_REQUIRED" };
+    }
     if (code === "ITEM_LOGIN_REQUIRED") return { kind: "status", status: "needs_reauth", reason: "ITEM_LOGIN_REQUIRED" };
     if (code === "PENDING_EXPIRATION" || code === "PENDING_DISCONNECT") return { kind: "status", status: "needs_reauth", reason: code };
     if (code === "USER_PERMISSION_REVOKED" || code === "USER_ACCOUNT_REVOKED") return { kind: "status", status: "revoked", reason: code };
@@ -112,4 +114,12 @@ export function classifyPlaidWebhook(b: PlaidWebhookBody): WebhookAction {
   }
   if (type === "HOLDINGS" && code === "DEFAULT_UPDATE") return { kind: "sync" };
   return { kind: "ignore" };
+}
+
+/** Money-hub webhooks (acted on only for items that opted in; holdings logic above is unchanged). */
+export function isMoneyHubWebhook(b: PlaidWebhookBody): boolean {
+  const type = b.webhook_type ?? "";
+  const code = b.webhook_code ?? "";
+  return (type === "TRANSACTIONS" && (code === "SYNC_UPDATES_AVAILABLE" || code === "RECURRING_TRANSACTIONS_UPDATE")) ||
+    (type === "LIABILITIES" && code === "DEFAULT_UPDATE");
 }

@@ -1,0 +1,11 @@
+{
+  "name": "tenbagger-content",
+  "private": true,
+  "type": "module",
+  "description": "Tenbagger articles library: markdown + widget blocks -> data/articles.json",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs --check",
+    "test": "node --test tests/"
+  }
+}

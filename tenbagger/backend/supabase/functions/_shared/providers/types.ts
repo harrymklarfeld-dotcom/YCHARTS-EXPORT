@@ -1,7 +1,14 @@
 // AggregatorProvider: the seam between edge-function handlers and Plaid / SnapTrade / mock.
 // Handlers only ever talk to this interface, so providers can be swapped per environment
 // (PROVIDER_MODE=mock for local dev + tests) and a new aggregator is one new class.
-import type { NormalizedBalances, NormalizedLiabilities, NormalizedRecurring, NormalizedSnapshot, ProviderName, TransactionsDelta } from "../types.ts";
+import type {
+  NormalizedBalances,
+  NormalizedLiabilities,
+  NormalizedRecurring,
+  NormalizedSnapshot,
+  ProviderName,
+  TransactionsDelta,
+} from "../types.ts";
 
 /** Decrypted credential. Lives only in edge-function memory; never serialized to clients or logs. */
 export type ProviderCredential =

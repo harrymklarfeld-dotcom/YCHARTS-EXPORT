@@ -95,11 +95,11 @@ function verdictFor(afterFull: number, afterMin: number): Verdict {
   return 'short';
 }
 
-function sentenceFor(d: Omit<DueCheck, 'sentence' | 'steps'>): string {
+function sentenceFor(d: Omit<DueCheck, 'sentence' | 'steps'>, conditions: string[]): string {
   const when = shortDate(d.dueDate);
   const pendingNote =
     d.pendingIncomeBefore > 0
-      ? ` That counts ${formatUSD(d.pendingIncomeBefore)} of PENDING pay that only lands if the work is submitted.`
+      ? ` That counts ${formatUSD(d.pendingIncomeBefore)} of PENDING pay that only lands if ${conditions.length ? conditions.join(' and ') : 'the work is submitted'}.`
       : '';
   const withoutPending =
     d.pendingIncomeBefore > 0 && d.verdictWithoutPending !== d.verdict
@@ -192,7 +192,8 @@ export function coverageCheck(
     if (spend > 0) steps.push({ label: 'Everyday spending (assumed)', amount: -spend, basis: 'estimate', op: '−' });
     steps.push({ label: `${base.accountName} statement balance`, amount: -l.statementBalance, basis: acct?.basis ?? 'manual', op: '−' });
     steps.push({ label: afterFull >= 0 ? 'Left over' : 'Short', amount: afterFull, basis: weakestLabel(steps.map((s) => s.basis)), op: '=' });
-    dues.push({ ...base, sentence: sentenceFor(base), steps });
+    const conditions = [...new Set(before.filter((d) => d.basis === 'pending').map((d) => streams.find((s) => s.id === d.streamId)?.condition).filter((c): c is string => !!c))];
+    dues.push({ ...base, sentence: sentenceFor(base, conditions), steps });
     earlierFull += l.statementBalance;
     earlierMin += l.minimumDue;
   }

@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "about": "Machine-readable widget spec + metric catalog shared by content/build.mjs, the mobile app and the website. Human docs: WIDGETS.md.",
+  "provenance": {
+    "note": "companies.json has no per-company flag for fundamentals yet. While companies.json source is 'fixture', only these tickers carry real reported numbers; every other company is SAMPLE data. A company-level boolean `fundamentals_is_sample` (if the pipeline adds one) overrides this list.",
+    "real_fixture_tickers": ["MU"]
+  },
+  "rules": {
+    "min_widgets": 2,
+    "word_range": [600, 1100],
+    "levels": ["beginner", "intermediate", "advanced"],
+    "banned_phrases": [
+      "\\bbuy(s|ing)?\\b", "\\bsell\\b", "\\bselling (the|your|shares|stock)\\b", "\\bhold\\b",
+      "\\bstrong buy\\b", "\\b(price|share) target\\b", "\\btarget price\\b", "\\bprice objective\\b",
+      "\\bunder-?valued\\b", "\\bover-?valued\\b", "\\bcheap\\b", "\\bbargain\\b", "\\bsteal\\b",
+      "\\bout-?perform", "\\bunder-?perform", "\\brecommend", "\\bshould (you )?(buy|sell|own|invest|add|trim)\\b",
+      "\\byou should\\b", "\\bguarantee", "\\bcan'?t lose\\b", "\\bsure thing\\b", "\\bget rich\\b",
+      "\\bto the moon\\b", "\\bupside of\\b", "\\bfair value target\\b", "\\baccumulate\\b", "\\bload up\\b"
+    ]
+  },
+  "widgets": {
+    "metric": {
+      "summary": "One live number from companies.json with its formula and the inputs plugged in.",
+      "params": {
+        "ticker": { "type": "ticker", "required": true },
+        "metric": { "type": "metric", "required": true },
+        "caption": { "type": "string" }
+      }
+    },
+    "compare": {
+      "summary": "Horizontal bar chart of one metric across 2-6 companies.",
+      "params": {
+        "tickers": { "type": "tickers", "required": true, "min": 2, "max": 6 },
+        "metric": { "type": "metric", "required": true },
+        "caption": { "type": "string" }
+      }
+    },
+    "history": {
+      "summary": "Annual bar chart of one history series for one company (negatives below zero).",
+      "params": {
+        "ticker": { "type": "ticker", "required": true },
+        "metric": { "type": "history_metric", "required": true },
+        "average": { "type": "boolean", "default": false },
+        "caption": { "type": "string" }
+      }
+    },
+    "quiz": {
+      "summary": "A 'Practice this' card that launches a lesson. XP is earned only by finishing the lesson.",
+      "params": {
+        "lesson": { "type": "lesson", "required": true },
+        "caption": { "type": "string" }
+      }
+    },
+    "calculator": {
+      "summary": "Interactive sliders. The `kind` param picks the calculator.",
+      "params": {
+        "kind": { "type": "enum", "required": true, "values": ["pe", "dcf", "liquidity"] },
+        "caption": { "type": "string" }
+      },
+      "variants": {
+        "pe": {
+          "ticker": { "type": "ticker", "note": "prefills price and diluted EPS" },
+          "price": { "type": "number", "min": 0.01 },
+          "eps": { "type": "number" },
+          "required_return": { "type": "number", "min": 0.01, "max": 0.3, "default": 0.09 }
+        },
+        "dcf": {
+          "ticker": { "type": "ticker", "note": "prefills FCF, net cash, diluted shares, normalized FCF from history" },
+          "fcf": { "type": "number", "note": "starting annual free cash flow, raw USD" },
+          "growth": { "type": "number", "min": -0.2, "max": 0.4, "default": 0.05 },
+          "discount": { "type": "number", "min": 0.04, "max": 0.2, "default": 0.09 },
+          "terminal": { "type": "number", "min": 1, "max": 40, "default": 15 },
+          "years": { "type": "number", "min": 1, "max": 15, "default": 5 },
+          "net_cash": { "type": "number" },
+          "shares": { "type": "number", "min": 1 },
+          "normalized_fcf": { "type": "number", "note": "used by the cyclical toggle when there is no ticker history" },
+          "cyclical": { "type": "boolean", "default": false, "note": "start with the 'use normalized FCF' toggle ON" }
+        },
+        "liquidity": {
+          "cash": { "type": "number", "min": 0, "default": 3000 },
+          "card": { "type": "number", "min": 0, "default": 1500 }
+        }
+      }
+    }
+  },
+  "history_metrics": ["revenue", "net_income", "free_cash_flow", "eps_diluted", "gross_margin", "operating_margin", "total_debt", "cash"],
+  "metrics": {
+    "price":               { "label": "Share price", "short": "Price", "format": "per_share", "source": "company", "formula": "last share price in the data" },
+    "market_cap":          { "label": "Market cap", "short": "Mkt cap", "format": "usd", "source": "metrics", "formula": "price × diluted shares", "terms": ["price", "shares_diluted"], "op": "×" },
+    "enterprise_value":    { "label": "Enterprise value", "short": "EV", "format": "usd", "source": "metrics", "formula": "market cap + debt − cash" },
+    "pe":                  { "label": "Price / earnings", "short": "P/E", "format": "multiple", "source": "metrics", "formula": "price / diluted EPS", "terms": ["price", "eps_diluted"] },
+    "ps":                  { "label": "Price / sales", "short": "P/S", "format": "multiple", "source": "metrics", "formula": "market cap / revenue", "terms": ["market_cap", "revenue"] },
+    "pb":                  { "label": "Price / book", "short": "P/B", "format": "multiple", "source": "metrics", "formula": "market cap / shareholders' equity", "terms": ["market_cap", "total_equity"] },
+    "ev_ebitda":           { "label": "EV / EBITDA", "short": "EV/EBITDA", "format": "multiple", "source": "metrics", "formula": "EV / (operating income + D&A)" },
+    "fcf_yield":           { "label": "Free cash flow yield", "short": "FCF yield", "format": "percent", "source": "metrics", "formula": "free cash flow / market cap", "terms": ["free_cash_flow", "market_cap"] },
+    "earnings_yield":      { "label": "Earnings yield", "short": "E/P", "format": "percent", "source": "metrics", "formula": "diluted EPS / price", "terms": ["eps_diluted", "price"] },
+    "dividend_yield":      { "label": "Dividend yield", "short": "Div yield", "format": "percent", "source": "metrics", "formula": "dividends paid / market cap", "terms": ["dividends_paid", "market_cap"] },
+    "gross_margin":        { "label": "Gross margin", "short": "Gross mgn", "format": "percent", "source": "metrics", "formula": "gross profit / revenue", "terms": ["gross_profit", "revenue"] },
+    "operating_margin":    { "label": "Operating margin", "short": "Op mgn", "format": "percent", "source": "metrics", "formula": "operating income / revenue", "terms": ["operating_income", "revenue"] },
+    "net_margin":          { "label": "Net margin", "short": "Net mgn", "format": "percent", "source": "metrics", "formula": "net income / revenue", "terms": ["net_income", "revenue"] },
+    "fcf_margin":          { "label": "FCF margin", "short": "FCF mgn", "format": "percent", "source": "metrics", "formula": "free cash flow / revenue", "terms": ["free_cash_flow", "revenue"] },
+    "roe":                 { "label": "Return on equity", "short": "ROE", "format": "percent", "source": "metrics", "formula": "net income / shareholders' equity", "terms": ["net_income", "total_equity"] },
+    "roa":                 { "label": "Return on assets", "short": "ROA", "format": "percent", "source": "metrics", "formula": "net income / total assets", "terms": ["net_income", "total_assets"] },
+    "roic":                { "label": "Return on invested capital", "short": "ROIC", "format": "percent", "source": "metrics", "formula": "operating income × (1 − tax rate) / (debt + equity − cash)" },
+    "debt_to_equity":      { "label": "Debt / equity", "short": "D/E", "format": "ratio", "source": "metrics", "formula": "total debt / shareholders' equity", "terms": ["total_debt", "total_equity"] },
+    "current_ratio":       { "label": "Current ratio", "short": "Current", "format": "ratio", "source": "metrics", "formula": "current assets / current liabilities", "terms": ["current_assets", "current_liabilities"] },
+    "net_cash":            { "label": "Net cash", "short": "Net cash", "format": "usd", "source": "metrics", "formula": "cash − total debt", "terms": ["cash", "total_debt"], "op": "−" },
+    "revenue_growth_yoy":  { "label": "Revenue growth (1y)", "short": "Rev growth", "format": "percent", "source": "metrics", "formula": "revenue this year / last year − 1" },
+    "eps_growth_yoy":      { "label": "EPS growth (1y)", "short": "EPS growth", "format": "percent", "source": "metrics", "formula": "EPS this year / last year − 1" },
+    "revenue_cagr_3y":     { "label": "Revenue CAGR (3y)", "short": "3y CAGR", "format": "percent", "source": "metrics", "formula": "(revenue / revenue 3y ago)^(1/3) − 1" },
+    "revenue":             { "label": "Revenue", "short": "Revenue", "format": "usd", "source": "fundamentals", "formula": "total sales for the fiscal year" },
+    "cost_of_revenue":     { "label": "Cost of revenue", "short": "COGS", "format": "usd", "source": "fundamentals", "formula": "direct cost of the goods and services sold" },
+    "gross_profit":        { "label": "Gross profit", "short": "Gross profit", "format": "usd", "source": "fundamentals", "formula": "revenue − cost of revenue", "terms": ["revenue", "cost_of_revenue"], "op": "−" },
+    "operating_income":    { "label": "Operating income", "short": "Op income", "format": "usd", "source": "fundamentals", "formula": "gross profit − operating expenses" },
+    "net_income":          { "label": "Net income", "short": "Net income", "format": "usd", "source": "fundamentals", "formula": "profit after every expense, interest and tax" },
+    "eps_diluted":         { "label": "EPS (diluted)", "short": "EPS", "format": "per_share", "source": "fundamentals", "formula": "net income / diluted shares", "terms": ["net_income", "shares_diluted"] },
+    "shares_diluted":      { "label": "Diluted shares", "short": "Shares", "format": "count", "source": "fundamentals", "formula": "average diluted share count" },
+    "operating_cash_flow": { "label": "Cash from operations", "short": "CFO", "format": "usd", "source": "fundamentals", "formula": "cash the business brought in from running itself" },
+    "capex":               { "label": "Capital expenditures", "short": "Capex", "format": "usd", "source": "fundamentals", "formula": "cash spent on property, plant and equipment" },
+    "free_cash_flow":      { "label": "Free cash flow", "short": "FCF", "format": "usd", "source": "fundamentals", "formula": "operating cash flow − capex", "terms": ["operating_cash_flow", "capex"], "op": "−" },
+    "dividends_paid":      { "label": "Dividends paid", "short": "Dividends", "format": "usd", "source": "fundamentals", "formula": "cash paid to shareholders as dividends" },
+    "cash":                { "label": "Cash", "short": "Cash", "format": "usd", "source": "fundamentals", "formula": "cash and short-term investments" },
+    "total_assets":        { "label": "Total assets", "short": "Assets", "format": "usd", "source": "fundamentals", "formula": "everything the company owns" },
+    "total_liabilities":   { "label": "Total liabilities", "short": "Liabilities", "format": "usd", "source": "fundamentals", "formula": "everything the company owes" },
+    "total_equity":        { "label": "Shareholders' equity", "short": "Equity", "format": "usd", "source": "fundamentals", "formula": "total assets − total liabilities", "terms": ["total_assets", "total_liabilities"], "op": "−" },
+    "total_debt":          { "label": "Total debt", "short": "Debt", "format": "usd", "source": "fundamentals", "formula": "short-term + long-term borrowings" },
+    "current_assets":      { "label": "Current assets", "short": "Cur. assets", "format": "usd", "source": "fundamentals", "formula": "assets expected to turn into cash within a year" },
+    "current_liabilities": { "label": "Current liabilities", "short": "Cur. liab.", "format": "usd", "source": "fundamentals", "formula": "bills due within a year" },
+    "inventory":           { "label": "Inventory", "short": "Inventory", "format": "usd", "source": "fundamentals", "formula": "goods made or bought but not yet sold" },
+    "d_and_a":             { "label": "Depreciation & amortization", "short": "D&A", "format": "usd", "source": "fundamentals", "formula": "the yearly accounting charge for wearing out assets" },
+    "income_tax":          { "label": "Income tax", "short": "Tax", "format": "usd", "source": "fundamentals", "formula": "income tax expense for the year" },
+    "pretax_income":       { "label": "Pre-tax income", "short": "Pre-tax", "format": "usd", "source": "fundamentals", "formula": "profit before income tax" }
+  }
+}

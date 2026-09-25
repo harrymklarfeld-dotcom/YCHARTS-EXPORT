@@ -3,7 +3,17 @@
 // same code path production uses — only the network hop is faked.
 import { normalizePlaidHoldings, type PlaidHoldingsResponse } from "../normalize_plaid.ts";
 import { normalizeSnapTradeHoldings, type SnapTradeAccountHoldings } from "../normalize_snaptrade.ts";
-import type { NormalizedSnapshot, ProviderName } from "../types.ts";
+import {
+  foldTransactionsSync,
+  normalizePlaidBalances,
+  normalizePlaidLiabilities,
+  normalizePlaidRecurring,
+  type PlaidAccountsResponse,
+  type PlaidLiabilitiesResponse,
+  type PlaidRecurringResponse,
+  type PlaidTransactionsSyncResponse,
+} from "../normalize_plaid_money.ts";
+import type { NormalizedBalances, NormalizedLiabilities, NormalizedRecurring, NormalizedSnapshot, ProviderName, TransactionsDelta } from "../types.ts";
 import {
   type AggregatorProvider,
   type ExchangeResult,
@@ -19,11 +29,23 @@ export interface MockCall {
   args: unknown[];
 }
 
+/** Plaid-shaped Money-hub responses replayed by the mock (transactions as ordered sync pages). */
+export interface MockMoneyData {
+  accounts?: PlaidAccountsResponse;
+  liabilities?: PlaidLiabilitiesResponse;
+  transactionsPages?: PlaidTransactionsSyncResponse[];
+  recurring?: PlaidRecurringResponse;
+}
+
+type MoneyMethod = "getBalances" | "getLiabilities" | "syncTransactions" | "getRecurring";
+
 export class MockProvider implements AggregatorProvider {
   readonly calls: MockCall[] = [];
   /** Set to make the next fetchHoldings throw (e.g. ITEM_LOGIN_REQUIRED). */
   failNextFetch: ProviderError | null = null;
   failRemove: ProviderError | null = null;
+  /** Make a Money-hub method throw (persistent until cleared), e.g. NO_LIABILITY_ACCOUNTS. */
+  failMoney: Partial<Record<MoneyMethod, ProviderError>> = {};
   removed: string[] = [];
   private seq = 0;
 
@@ -33,6 +55,7 @@ export class MockProvider implements AggregatorProvider {
       plaid?: PlaidHoldingsResponse;
       snaptrade?: SnapTradeAccountHoldings[];
       institution?: { id: string; name: string };
+      money?: MockMoneyData;
     },
   ) {}
 
@@ -41,8 +64,8 @@ export class MockProvider implements AggregatorProvider {
     return Promise.resolve({ providerUserId, secret: `mock-secret-${providerUserId}` });
   }
 
-  createLinkSession(input: { appUserId: string; credential?: ProviderCredential }): Promise<LinkSession> {
-    this.calls.push({ method: "createLinkSession", args: [input.appUserId, !!input.credential] });
+  createLinkSession(input: { appUserId: string; credential?: ProviderCredential; moneyHub?: boolean }): Promise<LinkSession> {
+    this.calls.push({ method: "createLinkSession", args: [input.appUserId, !!input.credential, input.moneyHub === true] });
     return Promise.resolve(
       this.name === "plaid"
         ? { linkToken: `link-sandbox-mock-${++this.seq}`, expiration: "2099-01-01T00:00:00Z" }
@@ -96,5 +119,40 @@ export class MockProvider implements AggregatorProvider {
   deleteUser(_cred: ProviderCredential): Promise<void> {
     this.calls.push({ method: "deleteUser", args: [] });
     return Promise.resolve();
+  }
+
+  // ---- Money hub: real normalizers over Plaid-shaped fixtures -----------------------------
+  private money<T>(method: MoneyMethod, args: unknown[], fn: () => T): Promise<T> {
+    this.calls.push({ method, args });
+    const e = this.failMoney[method];
+    return e ? Promise.reject(e) : Promise.resolve(fn());
+  }
+
+  getBalances(cred: ProviderCredential): Promise<NormalizedBalances> {
+    return this.money("getBalances", [cred.kind], () => normalizePlaidBalances(structuredClone(this.data.money?.accounts ?? { accounts: [] })));
+  }
+
+  getLiabilities(cred: ProviderCredential): Promise<NormalizedLiabilities> {
+    return this.money("getLiabilities", [cred.kind], () =>
+      normalizePlaidLiabilities(structuredClone(this.data.money?.liabilities ?? { accounts: [], liabilities: {} })));
+  }
+
+  /** null cursor => every page; otherwise the pages after the one that returned `cursor`. */
+  syncTransactions(cred: ProviderCredential, cursor: string | null): Promise<TransactionsDelta> {
+    return this.money("syncTransactions", [cred.kind, cursor], () => {
+      const pages = this.data.money?.transactionsPages ?? [];
+      const start = cursor === null ? 0 : pages.findIndex((p) => p.next_cursor === cursor) + 1;
+      const out: PlaidTransactionsSyncResponse[] = [];
+      if (cursor !== null && start === 0) return foldTransactionsSync(out, cursor); // unknown cursor: nothing new
+      for (let i = start; i < pages.length; i++) {
+        out.push(structuredClone(pages[i]));
+        if (!pages[i].has_more) break;
+      }
+      return foldTransactionsSync(out, cursor);
+    });
+  }
+
+  getRecurring(cred: ProviderCredential): Promise<NormalizedRecurring> {
+    return this.money("getRecurring", [cred.kind], () => normalizePlaidRecurring(structuredClone(this.data.money?.recurring ?? { inflow_streams: [] })));
   }
 }

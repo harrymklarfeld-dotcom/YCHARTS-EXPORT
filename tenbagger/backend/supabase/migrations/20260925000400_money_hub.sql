@@ -108,7 +108,9 @@ create table public.transactions (
 create index transactions_user_date_idx on public.transactions (user_id, date desc);
 
 -- ---------------------------------------------------------------------------
--- income_streams: detected (Plaid recurring inflows) + manual (user-entered)
+-- income_streams: detected (Plaid recurring inflows) + manual (user-entered).
+-- Manual columns mirror packages/money IncomeStream (kind/rate/schedule/payFrequency/
+-- nextPayDate/withholdingRate/condition/pendingUnsubmitted/...).
 -- ---------------------------------------------------------------------------
 create table public.income_streams (
   id                   uuid primary key default gen_random_uuid(),
@@ -120,27 +122,37 @@ create table public.income_streams (
   description          text not null check (char_length(description) between 1 and 140),
   category             text check (category is null or char_length(category) <= 80),
   frequency            text not null default 'unknown'
-                       check (frequency in ('weekly', 'biweekly', 'semi_monthly', 'monthly', 'annually', 'irregular', 'unknown')),
-  average_amount       numeric,             -- detected: Plaid average (positive = inflow)
+                       check (frequency in ('weekly', 'biweekly', 'semimonthly', 'monthly', 'annually', 'irregular', 'unknown')),
+  -- detected-only fields (positive = inflow)
+  average_amount       numeric,
   last_amount          numeric,
   last_date            date,
   predicted_next_date  date,
   status               text not null default 'active'
                        check (status in ('mature', 'early_detection', 'tombstoned', 'unknown', 'active', 'paused')),
   -- manual-only fields
-  pay_type             text check (pay_type is null or pay_type in ('hourly', 'per_session', 'salary')),
-  rate                 numeric check (rate is null or (rate >= 0 and rate <= 1000000)),
-  units_per_period     numeric check (units_per_period is null or (units_per_period >= 0 and units_per_period <= 1000)),
+  pay_type             text check (pay_type is null or pay_type in ('hourly', 'per_session', 'salary', 'other')),
+  rate                 numeric check (rate is null or (rate >= 0 and rate <= 10000000)),
+  units_per_week       numeric check (units_per_week is null or (units_per_week >= 0 and units_per_week <= 168)),
+  weekdays             smallint[] check (weekdays is null or weekdays <@ array[0, 1, 2, 3, 4, 5, 6]::smallint[]),
   next_pay_date        date,
   withholding_rate     numeric check (withholding_rate is null or (withholding_rate >= 0 and withholding_rate < 1)),
   condition            text check (condition is null or char_length(condition) <= 200),
+  pending_units        numeric check (pending_units is null or (pending_units >= 0 and pending_units <= 1000)),
+  pending_period_end   date,
+  semimonthly_days     smallint[] check (semimonthly_days is null or (cardinality(semimonthly_days) = 2
+                                          and 1 <= all(semimonthly_days) and 31 >= all(semimonthly_days))),
+  period_lag_days      smallint check (period_lag_days is null or period_lag_days between 0 and 60),
+  weekend_rule         text check (weekend_rule is null or weekend_rule in ('none', 'previous_business_day')),
   currency             text not null default 'USD',
   created_at           timestamptz not null default now(),
   updated_at           timestamptz not null default now(),
   unique (linked_item_id, provider_stream_id),
   check (source <> 'plaid' or (linked_item_id is not null and provider_stream_id is not null and pay_type is null)),
-  check (source <> 'manual' or (linked_item_id is null and provider_stream_id is null and pay_type is not null and rate is not null
-                                and status in ('active', 'paused')))
+  check (source <> 'manual' or (linked_item_id is null and provider_stream_id is null and pay_type is not null
+                                and rate is not null and next_pay_date is not null and status in ('active', 'paused')
+                                and frequency in ('weekly', 'biweekly', 'semimonthly', 'monthly'))),
+  check ((pending_units is null) = (pending_period_end is null))
 );
 create index income_streams_user_idx on public.income_streams (user_id);
 
@@ -224,10 +236,12 @@ grant select on public.cash_accounts, public.liabilities, public.transactions, p
                 public.money_snapshots, public.money_snapshot_notes
   to authenticated;
 -- Manual income streams: users choose only the manual fields; source/status are pinned by policy.
-grant insert (user_id, source, description, frequency, status, pay_type, rate, units_per_period, next_pay_date,
-              withholding_rate, condition, currency),
-      update (description, frequency, status, pay_type, rate, units_per_period, next_pay_date, withholding_rate,
-              condition, currency),
+grant insert (user_id, source, description, frequency, status, pay_type, rate, units_per_week, weekdays, next_pay_date,
+              withholding_rate, condition, pending_units, pending_period_end, semimonthly_days, period_lag_days,
+              weekend_rule, currency),
+      update (description, frequency, status, pay_type, rate, units_per_week, weekdays, next_pay_date, withholding_rate,
+              condition, pending_units, pending_period_end, semimonthly_days, period_lag_days, weekend_rule, currency,
+              updated_at),
       delete
   on public.income_streams to authenticated;
 grant insert (user_id, snapshot_id, note) on public.money_snapshot_notes to authenticated;
@@ -280,7 +294,7 @@ declare
   v_tx_del    integer := 0;
   v_tx_old    integer := 0;
   v_streams   integer := 0;
-  v_cutoff    date := (current_date - interval '24 months')::date;
+  v_cutoff    date := (coalesce((p_payload->>'as_of')::date, current_date) - interval '24 months')::date;
   v_tx        jsonb := p_payload->'transactions';
 begin
   select * into v_item from public.linked_items where id = p_item_id;

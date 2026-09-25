@@ -207,7 +207,7 @@ export interface TransactionsDelta {
   next_cursor: string;
 }
 
-export type IncomeFrequency = "weekly" | "biweekly" | "semi_monthly" | "monthly" | "annually" | "irregular" | "unknown";
+export type IncomeFrequency = "weekly" | "biweekly" | "semimonthly" | "monthly" | "annually" | "irregular" | "unknown";
 
 export interface NormalizedIncomeStream {
   provider_stream_id: string;

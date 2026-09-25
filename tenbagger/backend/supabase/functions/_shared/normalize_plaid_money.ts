@@ -197,7 +197,11 @@ export function normalizePlaidBalances(raw: PlaidAccountsResponse): NormalizedBa
       continue;
     }
     if (type === "investment" || type === "brokerage") {
-      warnings.push({ code: "investment_account_skipped", message: "investment balances come from the holdings sync", provider_account_id: a.account_id });
+      warnings.push({
+        code: "investment_account_skipped",
+        message: "investment balances come from the holdings sync",
+        provider_account_id: a.account_id,
+      });
       continue;
     }
     const kind = liabilityKind(a);
@@ -206,10 +210,18 @@ export function normalizePlaidBalances(raw: PlaidAccountsResponse): NormalizedBa
       continue;
     }
     if (type === "loan") {
-      warnings.push({ code: "mortgage_skipped", message: `${a.subtype ?? "loan"} is outside the Money hub scope`, provider_account_id: a.account_id });
+      warnings.push({
+        code: "mortgage_skipped",
+        message: `${a.subtype ?? "loan"} is outside the Money hub scope`,
+        provider_account_id: a.account_id,
+      });
       continue;
     }
-    warnings.push({ code: "unsupported_account_type", message: `account type ${type || "unknown"} skipped`, provider_account_id: a.account_id });
+    warnings.push({
+      code: "unsupported_account_type",
+      message: `account type ${type || "unknown"} skipped`,
+      provider_account_id: a.account_id,
+    });
   }
   return { cash_accounts, debt_accounts, warnings };
 }
@@ -244,7 +256,11 @@ export function normalizePlaidLiabilities(raw: PlaidLiabilitiesResponse): Normal
       details_available: true,
     };
     if (!l.next_payment_due_date) {
-      warnings.push({ code: "missing_due_date", message: "card has no next payment due date (e.g. zero balance)", provider_account_id: a.account_id });
+      warnings.push({
+        code: "missing_due_date",
+        message: "card has no next payment due date (e.g. zero balance)",
+        provider_account_id: a.account_id,
+      });
     }
     out.push(l);
   }
@@ -330,14 +346,19 @@ export function foldTransactionsSync(pages: PlaidTransactionsSyncResponse[], sta
     }
   }
   const last = pages.at(-1);
-  return { added: [...added.values()], modified: [...modified.values()], removed: [...removed], next_cursor: last?.next_cursor ?? startCursor ?? "" };
+  return {
+    added: [...added.values()],
+    modified: [...modified.values()],
+    removed: [...removed],
+    next_cursor: last?.next_cursor ?? startCursor ?? "",
+  };
 }
 
 // ---- recurring income -------------------------------------------------------------------
 const FREQ: Record<string, IncomeFrequency> = {
   WEEKLY: "weekly",
   BIWEEKLY: "biweekly",
-  SEMI_MONTHLY: "semi_monthly",
+  SEMI_MONTHLY: "semimonthly",
   MONTHLY: "monthly",
   ANNUALLY: "annually",
   UNKNOWN: "unknown",
@@ -368,13 +389,23 @@ export function normalizePlaidRecurring(raw: PlaidRecurringResponse): Normalized
     if (!s?.stream_id) continue;
     const detailed = s.personal_finance_category?.detailed ?? "";
     if (NOT_INCOME.has(detailed)) {
-      warnings.push({ code: "transfer_stream_skipped", message: `${detailed} is a transfer, not income`, provider_account_id: s.account_id ?? undefined });
+      warnings.push({
+        code: "transfer_stream_skipped",
+        message: `${detailed} is a transfer, not income`,
+        provider_account_id: s.account_id ?? undefined,
+      });
       continue;
     }
     let status = STATUS[(s.status ?? "UNKNOWN").toUpperCase()] ?? "unknown";
     if (s.is_active === false) status = "tombstoned";
     const cur = currencyOf(s.average_amount);
-    if (cur !== "USD") warnings.push({ code: "non_usd", message: `income stream in ${cur} is not converted to USD`, provider_account_id: s.account_id ?? undefined });
+    if (cur !== "USD") {
+      warnings.push({
+        code: "non_usd",
+        message: `income stream in ${cur} is not converted to USD`,
+        provider_account_id: s.account_id ?? undefined,
+      });
+    }
     income_streams.push({
       provider_stream_id: s.stream_id,
       provider_account_id: s.account_id ?? null,
