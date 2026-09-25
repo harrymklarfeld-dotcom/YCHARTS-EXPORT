@@ -39,7 +39,7 @@ IN-APP PURCHASES (auto-renewable subscriptions, one group "Tenbagger Pro")
 - tenbagger_pro_annual   $79.99 / year, 7-day free trial for new subscribers
 - tenbagger_student_annual $39.99 / year (requires .edu verification in-app)
 To reach the paywall: open any company and tap "Practice with this company" (a Pro feature), or
-tap any "Pro" badge. Profile → Subscription also opens it. (New installs get unlimited lessons for
+tap any "Pro" badge. [TODO: confirm the exact navigation path on the final build.] (New installs get unlimited lessons for
 the first 3 days, so the daily lesson limit will not trigger during review.) The paywall shows price, period,
 trial terms, and links to Terms of Use (Apple standard EULA) and Privacy Policy, plus Restore
 Purchases. Purchases work with a Sandbox Apple Account.
