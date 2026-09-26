@@ -66,6 +66,9 @@ describe('style recommendation', () => {
     expect(r.style).toBe('paycheck');
     expect(r.reason).toMatch(/changes with your hours/);
   });
+  it('only the quick-setup paycheck known → paycheck plan (we don\'t know the rest yet)', () => {
+    expect(recommendStyle({ income: [{ ...paycheck(), id: 'main-pay' }], goals: [] }).style).toBe('paycheck');
+  });
   it('steady pay + savings goal → pay yourself first; steady only → 50/30/20', () => {
     expect(recommendStyle({ income: [{ ...paycheck(), kind: 'salary', rate: 40000 }], goals: [{ id: 'e', kind: 'emergency_fund', title: 'E' }] }).style).toBe('pay_yourself_first');
     expect(recommendStyle({ income: [{ ...paycheck(), kind: 'salary', rate: 40000 }], goals: [] }).style).toBe('fifty_thirty_twenty');

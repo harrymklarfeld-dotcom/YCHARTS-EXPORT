@@ -15,7 +15,7 @@ Prepared 2026-09-26 by the market analyst. Written for a first-time founder: eve
 
 - **"Personal finance apps" is not one market. It is at least six**, and they make money in very different ways: subscriptions, success fees, cash-advance fees, research subscriptions, brokerage revenue, and B2B licensing.
 - **Rocket Money is in the biggest consumer-paid one (budgeting and bill tools).** Tenbagger's *money hub* touches it. Tenbagger's *core* (lessons on real SEC filings, the screener and fund X-ray) sits in two other markets: **investing research** and **financial education**.
-- **Tenbagger is a hybrid, and no single incumbent looks like it.** On features, the closest products are Simply Wall St (about 34% overlap), YNAB (about 33%) and Koyfin (about 28%). **Rocket Money overlaps about 23%**, and almost all of that is the money hub (§6, and `ROCKET_MONEY_VS_US.md`).
+- **Tenbagger is a hybrid, and no single incumbent looks like it.** On features, the closest products are Simply Wall St (about 34% overlap), YNAB (about 33%) and Koyfin (about 28%). **Rocket Money overlaps about 23%**, and almost all of that is the money hub (§4, and `ROCKET_MONEY_VS_US.md`).
 - **The biggest consumer-paid pools are PFM and cash advances.** PFM (personal financial management: the budgeting and tracking apps) is roughly **$0.6–0.8B a year in the US**; Rocket Money alone booked about $390M in FY2025 [M1]. Cash-advance apps plus AI coaches bring in about $1–1.5B, but that money is fee revenue under regulators' scrutiny. Consumer-paid *finance learning* is small: probably low hundreds of millions of dollars worldwide [U, our estimate].
 - **What this means for Tenbagger.** The learning side has little direct competition, but that also means little proven spending. The money side has proven spending, but also well-funded incumbents, several of them free for students. Win the learning side, and use the money hub only to bring people back every day.
 
@@ -150,7 +150,7 @@ The coordinates are in `data.json` → `competitors[].position`. They are author
 
 **The white space we claim.** Lessons that use *real company filings* and then apply the same metric to *your own money* ("Costco's current ratio → your liquidity"). Nobody in any of the six segments does this (BENCHMARKS §D; MONEY_HUB §5).
 
-**The honest risk.** The white space might be empty because nobody wants it. CONTRARIAN (2026-09-26) warns that the budgeting side fights incumbents who are free for students: YNAB gives students 12 months free [M18], and Monarch has a student discount. The market data supports that warning: the paid PFM money goes to salaried households, and the money made from our exact persona goes to cash-advance apps.
+**The honest risk.** The white space might be empty because nobody wants it. CONTRARIAN (2026-09-26) warns that the budgeting side fights incumbents who are free for students: YNAB gives students 12 months free [M18], and so does Monarch for .edu accounts (MARKET_ENTRY §3). The market data supports that warning: the paid PFM money goes to salaried households, and the money made from our exact persona goes to cash-advance apps.
 
 ---
 

@@ -196,7 +196,7 @@
       "name": "Monarch",
       "segment": "Budgeting/PFM",
       "price_monthly": "$14.99",
-      "price_annual": "$99.99 (Plus $199)",
+      "price_annual": "$99.99 (Plus $199); .edu students 12 months free",
       "model": "Hard paywall subscription (7-day trial)",
       "users": "~1M users, 500k+ payers (unverified)",
       "revenue": "Not disclosed (estimates conflict: $12.6M vs ~$50M implied)",
@@ -207,7 +207,7 @@
         "Best-in-class household/partner budgeting",
         "Forecasting (Monarch Plus)",
         "Caught Mint exodus",
-        "Student discount"
+        ".edu students 12 months free"
       ],
       "weaknesses": [
         "$100/yr is steep for students",
@@ -1384,6 +1384,15 @@
       "url": "https://www.cnbc.com/2023/11/07/budgeting-app-mint-is-shutting-down-users-are-disappointed.html",
       "date": "2023-11-07",
       "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S57",
+      "title": "FinChat is now Fiscal.ai - Announcing our $10M Series A",
+      "url": "https://fiscal.ai/blog/series-a-announcement/",
+      "date": "2025-06",
+      "confidence": "P",
       "accessed": "2026-09-25",
       "note": "from tenbagger/docs/sources.json"
     }

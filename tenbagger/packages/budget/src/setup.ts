@@ -64,6 +64,12 @@ export function hasIrregularIncome(p: Pick<BudgetProfile, 'income'>): boolean {
 }
 
 export function recommendStyle(p: Pick<BudgetProfile, 'income' | 'goals'>): { style: BudgetStyle; reason: string } {
+  if (p.income.length > 0 && p.income.every((s) => s.id === 'main-pay')) {
+    return {
+      style: 'paycheck',
+      reason: 'So far we know one payday. Until we know all your income, planning each paycheck when it lands only uses money that is actually there.',
+    };
+  }
   if (hasIrregularIncome(p)) {
     return {
       style: 'paycheck',

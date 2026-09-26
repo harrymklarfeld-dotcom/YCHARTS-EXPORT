@@ -77,8 +77,12 @@ export default function FullPlanFlow({ initialStep }: { initialStep?: SetupStep 
   const asOf = today();
   const stored = useBudgetStore((s) => s.profile);
   const saveStep = useBudgetStore((s) => s.saveStep);
-  const [draft, setDraft] = useState<BudgetProfile>(() => stored ?? emptyProfile(asOf));
   const startIdx = Math.max(0, initialStep ? FULL_PLAN_STEPS.indexOf(initialStep) : 0);
+  const [draft, setDraft] = useState<BudgetProfile>(() => {
+    const d = stored ?? emptyProfile(asOf);
+    // Pre-select the recommended style until the user has chosen one.
+    return FULL_PLAN_STEPS[startIdx] === 'style' && !d.answered.includes('style') ? { ...d, style: recommendStyle(d).style } : d;
+  });
   const [idx, setIdx] = useState(startIdx);
   const step = FULL_PLAN_STEPS[idx]!;
   const progress = setupProgress(draft);
@@ -103,8 +107,10 @@ export default function FullPlanFlow({ initialStep }: { initialStep?: SetupStep 
       saveStep(step, p, asOf);
       setDraft((d) => ({ ...d, answered: d.answered.includes(step) ? d.answered : [...d.answered, step] }));
     }
-    if (idx + 1 < FULL_PLAN_STEPS.length) setIdx(idx + 1);
-    else finish();
+    if (idx + 1 < FULL_PLAN_STEPS.length) {
+      if (FULL_PLAN_STEPS[idx + 1] === 'style') setDraft((d) => (d.answered.includes('style') ? d : { ...d, style: recommendStyle(d).style }));
+      setIdx(idx + 1);
+    } else finish();
   };
   const common = {
     progress: progress.pct / 100,

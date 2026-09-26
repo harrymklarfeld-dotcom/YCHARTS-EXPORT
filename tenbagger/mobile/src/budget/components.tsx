@@ -119,7 +119,7 @@ export function PaycheckPlanCard({ plans }: { plans: PaycheckPlan[] }) {
       </Card>
     );
   }
-  const colors: Record<string, string> = { bill: t.c.inkSoft, card: t.c.ink, goal: t.c.primary, cushion: t.c.unitB, flexible: t.c.accent };
+  const colors: Record<string, string> = { bill: t.c.inkSoft, card: t.c.ink, goal: t.c.primary, cushion: t.c.unitB, flexible: t.c.primarySoft };
   return (
     <View style={{ gap: 10 }}>
       {plans.map((pc, idx) => (
@@ -139,7 +139,7 @@ export function PaycheckPlanCard({ plans }: { plans: PaycheckPlan[] }) {
             {pc.lines.filter((l) => l.amount > 0 || l.kind === 'flexible').map((l) => (
               <View key={l.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 3 }}>
                 <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors[l.kind] }} />
-                <Text style={{ flex: 1, color: t.c.ink, fontSize: 13 }}>{l.kind === 'card' ? l.label.replace(/ payment/, '') : l.kind === 'flexible' ? 'Flexible (yours to spend)' : l.label}</Text>
+                <Text style={{ flex: 1, color: t.c.ink, fontSize: 13 }}>{l.kind === 'card' ? l.label.replace(/ payment/, '') : l.kind === 'flexible' ? 'Flexible (yours to spend)' : l.label.charAt(0).toUpperCase() + l.label.slice(1)}</Text>
                 <Text style={{ color: t.c.ink, fontWeight: '800', fontVariant: ['tabular-nums'] }}>{formatUSD(l.amount)}</Text>
               </View>
             ))}
@@ -273,6 +273,13 @@ export function InsightList({ insights, limit }: { insights: Insight[]; limit?: 
       )}
     </View>
   );
+}
+
+/** Connected insights (reads the store). Renders nothing until there is a plan. */
+export function BudgetInsights({ limit }: { limit?: number }) {
+  const view = useBudgetView();
+  if (!view.budget) return null;
+  return <InsightList insights={view.budget.insights} {...(limit ? { limit } : {})} />;
 }
 
 // ------------------------------------------------------------------ summary for the Money dashboard

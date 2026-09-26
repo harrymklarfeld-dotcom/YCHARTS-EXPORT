@@ -1,6 +1,7 @@
 ---
 name: code-health
 description: Standing code-health monitor for Tenbagger. Use after new code lands or on a schedule to run every test suite, type check and build, catch regressions and integration breaks between packages, and report exactly what is failing and why. Writes to tenbagger/docs/HEALTH.md.
+model: sonnet
 tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 

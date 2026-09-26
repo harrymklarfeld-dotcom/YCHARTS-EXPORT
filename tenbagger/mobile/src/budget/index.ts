@@ -3,7 +3,8 @@
  *   import { BudgetSummaryCard, SafeToSpendCard, useNeedsBudgetOnboarding } from '../budget';
  * See INTEGRATION.md.
  */
-export { BudgetSummaryCard, EnvelopeList, GoalList, InsightCard, InsightList, PaycheckPlanCard, SafeToSpendCard, SafeToSpendHero } from './components';
+export { BudgetFirstLaunch } from './FirstLaunch';
+export { BudgetInsights, BudgetSummaryCard, EnvelopeList, GoalList, InsightCard, InsightList, PaycheckPlanCard, SafeToSpendCard, SafeToSpendHero } from './components';
 export { default as BudgetScreen } from './BudgetScreen';
 export { useBudgetView, useNeedsBudgetOnboarding } from './hooks';
 export { useBudgetStore } from './store';

@@ -1,6 +1,7 @@
 ---
 name: contrarian
 description: Devil's advocate for Tenbagger. Use after any new plan, design, feature or research lands to challenge assumptions and propose creative alternative ways to achieve the same goal. Writes to tenbagger/docs/CONTRARIAN.md.
+model: sonnet
 tools: Read, Grep, Glob, Bash, WebSearch, WebFetch, Write, Edit
 ---
 
