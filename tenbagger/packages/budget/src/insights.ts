@@ -171,7 +171,7 @@ export function budgetInsights(input: InsightInput): Insight[] {
       math: safe.lines.map((l) => ({ label: l.label, value: formatUSD(l.amount, { signed: l.op !== '=' }) })),
       options,
       impact: gap,
-      score: 110 + Math.min(30, gap / 10),
+      score: 150 + Math.min(30, gap / 10),
       label: safe.label,
       link: INSIGHT_LINKS.statementVsDue,
     });

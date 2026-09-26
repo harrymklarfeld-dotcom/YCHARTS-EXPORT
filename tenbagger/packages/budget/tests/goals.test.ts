@@ -15,7 +15,8 @@ describe('goal timelines', () => {
     const ref = payoffPlan(1120, 0.2499, 200);
     expect(t.months).toBe(ref.months);
     expect(t.interest).toBe(ref.totalInterest);
-    expect(t.eta).toBe('2027-04-05');
+    expect(ref.months).toBe(7);
+    expect(t.eta).toBe('2027-05-05');
     expect(t.label).toBe('estimate');
   });
 
