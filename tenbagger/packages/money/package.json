@@ -27,7 +27,8 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "check": "npm run typecheck && npm run build && npm test"
+    "check": "npm run typecheck && npm run build && npm test",
+    "gen:sample": "node scripts/gen-sample.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

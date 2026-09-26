@@ -39,6 +39,26 @@ directly (mobile imports `../../../packages/money/src/index`).
 | `appendSnapshot(log, snapshot)` / `buildLog(snapshots)` | Validated, frozen, append-only log (strictly increasing `takenAt`) |
 | `companyAnalogies(breakdown, {monthlyFreeCashFlow})` | Personal ↔ company metric pairs with lesson ids |
 
+### Dashboard functions (transactions, credit, investments, report)
+
+| Function | What it does |
+|---|---|
+| `categorize(tx, {rules, overrides})`, `categorizeAll`, `DEFAULT_CATEGORY_RULES` | Rule-based categories: user override → provider category → first matching keyword (word-start match) → income/other. The rule map is plain data and editable |
+| `spendingByCategory(txs, month)`, `compareCategories`, `spendingLeaks` | Spending (outflows minus card payments/transfers) by category; month vs prior; "leaks" = +25% and +$20 |
+| `detectSubscriptions(txs)` | Same merchant, 26–35 days apart, amounts within ±15%, 3+ charges; next expected date is PROJECTED |
+| `averageDailySpend`, `cashRunwayDays(cash, dailySpend)`, `spendingPace` | Runway and month pace (ESTIMATE) |
+| `paymentRebounds(txs, cardId)` | Transaction-level "paydown outrun" (charges ≥ 50% of a payment within 14 days) |
+| `utilization(balance, limit)`, `UTILIZATION_BANDS` | Utilization with plain-English <10% / <30% bands |
+| `payoffPlan(balance, apr, monthlyPayment)`, `minimumOnlyPlan`, `requiredMonthlyPayment`, `interestAvoided`, `statementCycle` | Card math, monthly rate = APR/12 (ESTIMATE; real cards use a daily rate) |
+| `netWorthSeries(snapshots)`, `netWorthChange` | Net-worth history points |
+| `holdingsSummary`, `allocation`, `benchmarkComparison`, `dividendSummary`, `rothTracker`, `IRA_CONTRIBUTION_LIMITS` | Investments; the benchmark line is "same deposits into VOO" (ESTIMATE); IRA limits are dated constants with IRS sources |
+| `annualizedIncome`, `pendingPayLedger`, `applyWorkLog`, goal helpers | Income extras and goals |
+| `personal10K(month, data)` | Monthly income statement, balance sheet, cash-flow summary, scorecard, company analogs, share text (no account names/numbers) |
+| `moneyAlerts(input)` | Ranked plain-English alerts |
+
+`BANNED_PHRASES` also rejects lending offers (cash advance, payday loan, pre-approved, apply now,
+limit increase, balance transfer, "open a card") and product picks ("best ETF", "top picks").
+
 Dates are `YYYY-MM-DD` strings handled with integer day numbers (no `Date`, no timezone), so DST
 can't shift a payday. Debt balances are positive amounts owed.
 
@@ -89,5 +109,7 @@ win back ≥ 50% of it. Short-term debt = card balances + loan payments currentl
 ## Sample data
 
 `tests/fixtures/alex.sample.json` is a **fictional** persona (Alex, 20, sophomore) with made-up
-numbers. The mobile app bundles an identical copy at `mobile/assets/data/money.sample.json`
+numbers, enriched by `node scripts/gen-sample.mjs` (seeded) with ~90 days of transactions,
+month-end snapshots back to April, holdings, dividends, Roth contributions and detected streams.
+The mobile app bundles an identical copy at `mobile/assets/data/money.sample.json`
 (a mobile test checks they match).
