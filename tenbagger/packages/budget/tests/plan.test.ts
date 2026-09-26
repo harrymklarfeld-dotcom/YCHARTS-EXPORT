@@ -66,7 +66,7 @@ describe('pay yourself first', () => {
   it('takes max(goals, rate × income) off the top, the rest is free to spend', () => {
     const plan = buildMonthlyPlan(withSpending('pay_yourself_first'), { monthly: 2000 }, AS_OF);
     expect(plan.totals.savings).toBe(200); // 10% (balanced) > $150 goal
-    expect(plan.buckets.find((b) => b.id === 'flexible')!.planned).toBe(200);
+    expect(plan.buckets.find((b) => b.id === 'flexible')!.planned).toBe(400); // 2000 − 1000 needs − 400 wants − 200
     expect(plan.unassigned).toBe(0);
   });
 });
