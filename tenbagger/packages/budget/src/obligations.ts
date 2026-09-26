@@ -68,9 +68,9 @@ export function sortObligations<T extends Obligation>(xs: T[]): T[] {
   return xs.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.id.localeCompare(b.id)));
 }
 
-/** Fixed monthly essentials: bills + "need" envelopes. The size of one buffer month. */
+/** One month of planned spending: bills + every envelope. The size of one buffer month. */
 export function essentialsMonthly(p: Pick<BudgetProfile, 'bills' | 'categories'>): number {
-  return round2(p.bills.reduce((t, b) => t + Math.max(0, b.amount), 0) + p.categories.filter((c) => c.kind === 'need').reduce((t, c) => t + Math.max(0, c.monthly), 0));
+  return round2(p.bills.reduce((t, b) => t + Math.max(0, b.amount), 0) + p.categories.reduce((t, c) => t + Math.max(0, c.monthly), 0));
 }
 
 function monthsUntil(asOf: ISODate, byDate: ISODate): number {

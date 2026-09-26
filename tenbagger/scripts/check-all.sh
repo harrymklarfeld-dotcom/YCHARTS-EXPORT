@@ -83,6 +83,7 @@ count_from_log() {
 }
 _count() {
   local f="$1" p fl
+  grep -q '^TIMEOUT after' "$f" && { grep -m1 '^TIMEOUT after' "$f"; return; }
   # pytest: "12 passed, 1 failed, 2 skipped in 0.3s"
   p=$(grep -Eo '[0-9]+ passed' "$f" | tail -1 | grep -Eo '[0-9]+')
   if [[ -n "$p" ]] && grep -Eq '(passed|failed).* in [0-9.]+s' "$f"; then
@@ -166,7 +167,12 @@ for s in "${ALL_SUITES[@]}"; do
   ( "suite_$s" ) >"$log" 2>&1 &
   pid=$!
   # watchdog so one hung suite can't stall the run
-  ( sleep "$SUITE_TIMEOUT"; kill -TERM "$pid" 2>/dev/null && echo "TIMEOUT after ${SUITE_TIMEOUT}s" >>"$log" ) &
+  # (detached from stdout and kills its own sleep, so a piped `check-all.sh | tee` never hangs on it)
+  ( trap 'kill "$sp" 2>/dev/null; exit 0' TERM
+    sleep "$SUITE_TIMEOUT" & sp=$!; wait "$sp"
+    trap '' TERM; kill -0 "$pid" 2>/dev/null && printf "\nTIMEOUT after %ss\n" "$SUITE_TIMEOUT" >>"$log"
+    pkill -TERM -P "$pid" 2>/dev/null; kill -TERM "$pid" 2>/dev/null
+  ) </dev/null >/dev/null 2>&1 &
   wd=$!
   wait "$pid"; rc=$?
   kill "$wd" 2>/dev/null; wait "$wd" 2>/dev/null

@@ -20,7 +20,7 @@ export type BudgetGoal = {
   id: string;
   kind: GoalKind;
   title: string;
-  /** Dollar target. emergency_fund defaults to one month of essentials; roth is the yearly amount. */
+  /** Dollar target. emergency_fund defaults to one month of spending (bills + envelopes); roth is the yearly amount. */
   target?: number;
   /** Target date. roth defaults to Dec 31 of this year; emergency_fund to 6 months out. */
   byDate?: ISODate;

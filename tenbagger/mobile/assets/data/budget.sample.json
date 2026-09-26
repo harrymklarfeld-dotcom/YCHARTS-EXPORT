@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "sample": true,
+  "sampleLabel": "Sample plan: Alex is fictional",
+  "persona": { "name": "Alex", "age": 20, "year": "sophomore", "blurb": "Fictional student with a campus library job, math tutoring and an occasional hand from family. Every number is made up and matches money.sample.json." },
+  "asOf": "2026-10-05",
+  "workLog": [
+    { "id": "w-sample-1", "streamId": "tutoring", "date": "2026-10-06", "units": 1, "submitted": false }
+  ],
+  "profile": {
+    "version": 1,
+    "createdAt": "2026-09-01",
+    "updatedAt": "2026-10-05",
+    "mode": "full",
+    "name": "Alex",
+    "goals": [
+      { "id": "card-payoff", "kind": "pay_off_card", "title": "Pay off my card by March", "byDate": "2027-03-31" },
+      { "id": "buffer", "kind": "emergency_fund", "title": "1-month buffer" },
+      { "id": "roth", "kind": "roth", "title": "Roth IRA for 2026", "target": 1000, "current": 300, "byDate": "2027-04-15" }
+    ],
+    "income": [
+      {
+        "id": "campus-job", "name": "Campus library job", "kind": "hourly", "rate": 15.5, "unitsPerWeek": 10, "weekdays": [1, 3, 5],
+        "frequency": "biweekly", "nextPayDate": "2026-10-09", "withholdingRate": 0.05, "paidOnlyIfSubmitted": true, "condition": "hours submitted",
+        "pendingUnsubmitted": { "units": 19.5, "periodEnd": "2026-10-03" }
+      },
+      {
+        "id": "tutoring", "name": "Math tutoring", "kind": "per_session", "rate": 30, "unitsPerWeek": 2, "weekdays": [2, 4],
+        "frequency": "biweekly", "nextPayDate": "2026-10-15", "withholdingRate": 0, "paidOnlyIfSubmitted": true, "condition": "session reports filed"
+      },
+      { "id": "family", "name": "Family help", "kind": "allowance", "rate": 250, "frequency": "occasional" }
+    ],
+    "bills": [
+      { "id": "phone", "name": "Phone (PinePhone Wireless)", "amount": 30, "dueDay": 8, "kind": "phone" },
+      { "id": "music", "name": "StreamTunes Music", "amount": 10.99, "dueDay": 12, "kind": "subscription" },
+      { "id": "video", "name": "FlixBox Video", "amount": 15.49, "dueDay": 21, "kind": "subscription" },
+      { "id": "storage", "name": "CloudBox Storage", "amount": 2.99, "dueDay": 3, "kind": "subscription" }
+    ],
+    "categories": [
+      { "id": "groceries", "title": "Groceries", "monthly": 110, "kind": "need", "rollover": true, "matches": ["groceries"] },
+      { "id": "eating_out", "title": "Eating out", "monthly": 150, "kind": "want", "rollover": true, "matches": ["food"] },
+      { "id": "getting_around", "title": "Rides & transit", "monthly": 60, "kind": "need", "rollover": true, "matches": ["rideshare", "transport"] },
+      { "id": "fun", "title": "Fun", "monthly": 40, "kind": "want", "rollover": true, "matches": ["entertainment"] },
+      { "id": "stuff", "title": "Shopping & supplies", "monthly": 40, "kind": "want", "rollover": false, "matches": ["shopping", "books"] },
+      { "id": "other", "title": "Everything else", "monthly": 20, "kind": "want", "rollover": false, "matches": ["other", "fees"] }
+    ],
+    "balances": {
+      "asOf": "2026-10-05", "basis": "manual", "cash": 840, "savings": 410, "investments": 2900,
+      "card": { "name": "Student card", "balance": 1120, "statementBalance": 1120, "minimumDue": 25, "dueDate": "2026-10-17", "apr": 0.2499, "limit": 1500 }
+    },
+    "comfort": { "tightness": "balanced", "notify": "paycheck", "buffer": 75 },
+    "style": "paycheck",
+    "answered": ["quick", "goals", "income", "bills", "spending", "balances", "comfort", "style"]
+  }
+}

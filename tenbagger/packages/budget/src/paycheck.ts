@@ -5,7 +5,7 @@
  *  1. bills and card payments due after it lands and before the next paycheck can reach them
  *     (see allocate.ts; pending paychecks never fund bills)
  *  2. goals, in the order the user listed them: each gets its monthly amount × this paycheck's
- *     share of monthly income (pay-yourself-first and 50/30/20 raise the savings slice)
+ *     share of usual monthly income (pay-yourself-first and 50/30/20 raise the savings slice)
  *  3. the rest is flexible (the envelopes)
  * Lines always add up to the paycheck exactly.
  */
@@ -47,7 +47,7 @@ function goalShortName(title: string): string {
   return title;
 }
 
-export function planPaychecks(p: BudgetProfile, asOf: ISODate, baseline: Pick<IncomeBaseline, 'monthly'>, opts: PaycheckPlanOptions = {}): PaycheckPlan[] {
+export function planPaychecks(p: BudgetProfile, asOf: ISODate, baseline: Pick<IncomeBaseline, 'monthly'> & Partial<Pick<IncomeBaseline, 'planned'>>, opts: PaycheckPlanOptions = {}): PaycheckPlan[] {
   const horizonEnd = addDays(asOf, opts.horizonDays ?? 45);
   const deposits = projectedDeposits(p, addDays(asOf, 1), horizonEnd);
   const next = deposits.find((d) => d.basis === 'projected');
@@ -61,7 +61,9 @@ export function planPaychecks(p: BudgetProfile, asOf: ISODate, baseline: Pick<In
   ]);
   const funding = fundObligations(deposits, later);
   const byId = new Map(later.map((o) => [o.id, o]));
-  const monthly = Math.max(0, baseline.monthly);
+  // A paycheck's share of the month: vs the usual schedule when known (the conservative baseline
+  // would over-weight each paycheck and starve flexible money).
+  const monthly = Math.max(0, baseline.monthly, baseline.planned ?? 0);
   const goals = p.goals
     .filter((g) => g.kind !== 'cover_card' && g.kind !== 'pay_off_card' && g.transferDay === undefined)
     .map((g) => ({ g, m: goalMonthly(g, p, asOf) }))
