@@ -1,0 +1,138 @@
+# Tenbagger CI: every test suite, type check and build, one job per project.
+# Mirrors tenbagger/scripts/check-all.sh (run that locally for the same checks).
+name: tenbagger-ci
+
+on:
+  push:
+    paths:
+      - "tenbagger/**"
+      - ".github/workflows/tenbagger-ci.yml"
+  pull_request:
+    paths:
+      - "tenbagger/**"
+      - ".github/workflows/tenbagger-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tenbagger-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CHECK_NO_INSTALL: "1" # deps are installed explicitly below
+  FORCE_COLOR: "0"
+
+jobs:
+  python:
+    name: python (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [pipeline, lessons, datasources, funds, finance]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: tenbagger/pipeline/requirements.txt
+      - name: Install deps
+        run: python -m pip install -r tenbagger/pipeline/requirements.txt pyyaml
+      - name: Test
+        run: bash tenbagger/scripts/check-all.sh --only ${{ matrix.suite }}
+
+  node-packages:
+    name: node (${{ matrix.suite }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: content
+            dir: tenbagger/content
+          - suite: screener
+            dir: tenbagger/packages/screener
+          - suite: money
+            dir: tenbagger/packages/money
+          - suite: budget
+            dir: tenbagger/packages/budget
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # actions/cache rather than setup-node's cache: content (and a new budget package) may have no lockfile
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ matrix.suite }}-${{ hashFiles(format('{0}/package-lock.json', matrix.dir), format('{0}/package.json', matrix.dir)) }}
+          restore-keys: npm-${{ matrix.suite }}-
+      - name: Install deps (npm ci, cached)
+        working-directory: ${{ matrix.dir }}
+        run: |
+          if [[ ! -f package.json ]]; then echo "no package.json; the suite will be skipped"; exit 0; fi
+          if [[ -f package-lock.json ]]; then npm ci --no-audit --no-fund
+          elif grep -q '"dependencies"\|"devDependencies"' package.json; then npm install --no-audit --no-fund
+          fi
+      - name: Test
+        run: bash tenbagger/scripts/check-all.sh --only ${{ matrix.suite }}
+
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tenbagger/mobile/package-lock.json
+      - name: npm ci
+        working-directory: tenbagger/mobile
+        run: npm ci --no-audit --no-fund
+      - name: Type check, jest, web export
+        run: bash tenbagger/scripts/check-all.sh --only mobile
+
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tenbagger/web/package-lock.json
+      - name: npm ci
+        working-directory: tenbagger/web
+        run: npm ci --no-audit --no-fund
+      - name: Build + link check
+        run: bash tenbagger/scripts/check-all.sh --only web
+
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+          cache: true
+          cache-hash: ${{ hashFiles('tenbagger/backend/deno.json', 'tenbagger/backend/**/*.ts') }}
+      - name: deno check, lint, test
+        run: bash tenbagger/scripts/check-all.sh --only backend

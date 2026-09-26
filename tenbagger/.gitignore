@@ -10,3 +10,7 @@ pipeline/.cache/
 coverage/
 .env
 .env.*
+
+# Personal financial data: never commit
+private/
+*.local.json
