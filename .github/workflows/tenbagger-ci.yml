@@ -25,6 +25,19 @@ env:
   FORCE_COLOR: "0"
 
 jobs:
+  compliance:
+    name: compliance (advice / shaming / lending language)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tenbagger/scripts/compliance-scan.mjs
+
   python:
     name: python (${{ matrix.suite }})
     runs-on: ubuntu-latest

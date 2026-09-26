@@ -18,7 +18,7 @@ SUITE_TIMEOUT="${SUITE_TIMEOUT:-1200}"
 QUICK=0
 ONLY=()
 
-ALL_SUITES=(pipeline lessons datasources funds finance content screener money budget
+ALL_SUITES=(compliance pipeline lessons datasources funds finance content screener money budget
   mobile-tsc mobile-jest mobile-export web-build backend-check backend-lint backend-test)
 SLOW_SUITES=" mobile-export web-build "
 
@@ -117,6 +117,7 @@ _count() {
 }
 
 # ---------- suite definitions (each runs in a subshell; stdout+stderr go to the log) ----------
+suite_compliance()  { cd "$ROOT" && node scripts/compliance-scan.mjs; }
 suite_pipeline()    { py_deps && cd "$ROOT" && "$PY" -m pytest pipeline -q; }
 suite_lessons()     { py_deps && cd "$ROOT/lessons" && "$PY" -m pytest -q; }
 suite_datasources() { py_deps && cd "$ROOT" && "$PY" -m pytest datasources/tests -q; }
