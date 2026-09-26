@@ -1,0 +1,700 @@
+<title>Tenbagger Zine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Direction: Zine. A loud Gen Z editorial prototype of Tenbagger: story lessons on real SEC data, a sticker screener, magazine company spreads and a private money Wrapped.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,400..900&family=DM+Mono:wght@400;500&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F2EC; --surface:#FFFFFF; --ink:#141414; --muted:#4E4E48; --line:#141414;
+  --pink:#FF4FA3; --yellow:#FFE24A; --green:#22C47F; --orange:#FF6B2C; --blue:#0A4FD6; --lilac:#C9B8FF;
+  --on:#141414; --on-blue:#FFFFFF; --hot-text:#B8005F; --blue-text:#0A45BD; --good-text:#0B6B42;
+  --dot:rgba(20,20,20,.17); --shadow:#141414; --tape:rgba(255,226,74,.78);
+  --display:"Anton","Archivo Narrow",Impact,sans-serif; --sans:"Archivo",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,Menlo,monospace; --hand:"Permanent Marker","Archivo",cursive;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#121212; --surface:#1D1D1B; --ink:#F2F2EC; --muted:#B9B9AF; --line:#F2F2EC;
+    --hot-text:#FF86C3; --blue-text:#8FB0FF; --good-text:#5EE0A5;
+    --dot:rgba(242,242,236,.13); --shadow:#000000; --tape:rgba(255,226,74,.55);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121212; --surface:#1D1D1B; --ink:#F2F2EC; --muted:#B9B9AF; --line:#F2F2EC;
+  --hot-text:#FF86C3; --blue-text:#8FB0FF; --good-text:#5EE0A5;
+  --dot:rgba(242,242,236,.13); --shadow:#000000; --tape:rgba(255,226,74,.55);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blue-text);outline-offset:2px}
+.ht{background-image:radial-gradient(var(--dot) 1.3px,transparent 1.7px);background-size:7px 7px}
+.ht-on{background-image:radial-gradient(rgba(20,20,20,.22) 1.3px,transparent 1.7px);background-size:6px 6px}
+.mono{font-family:var(--mono)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- page chrome ---------- */
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px clamp(16px,4vw,48px);border-bottom:3px solid var(--line)}
+.logo{font-family:var(--display);font-size:28px;letter-spacing:.02em;line-height:1;display:flex;align-items:center;gap:8px}
+.logo b{display:inline-block;background:var(--pink);color:var(--on);padding:2px 6px 0;transform:rotate(-3deg);border:2px solid var(--ink)}
+.dir{flex:1;max-width:640px;display:flex;gap:12px;align-items:flex-start}
+.dir-tag{flex:none;font-family:var(--mono);font-size:12px;font-weight:500;background:var(--yellow);color:var(--on);border:2px solid var(--ink);padding:3px 8px;transform:rotate(-2deg);white-space:nowrap}
+.dir p{margin:0;font-size:13px;line-height:1.4;color:var(--muted)}
+.dir p strong{color:var(--ink)}
+.theme-btn{flex:none;font-family:var(--mono);font-size:12px;background:var(--surface);border:2px solid var(--ink);padding:6px 10px;box-shadow:3px 3px 0 var(--shadow)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:clamp(24px,4vw,64px);align-items:start;padding:clamp(20px,4vw,48px);max-width:1360px;margin:0 auto}
+@media (max-width:1000px){.stage{grid-template-columns:minmax(0,1fr)}.top{flex-wrap:wrap}.dir{order:3;flex-basis:100%}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding-top:8px;min-width:0}
+.kicker{font-family:var(--mono);font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.kicker span{border:2px solid var(--ink);padding:2px 8px}
+.h1{font-family:var(--display);font-weight:400;font-size:clamp(64px,10.5vw,148px);line-height:.86;letter-spacing:-.005em;margin:18px 0 22px;text-transform:uppercase}
+.h1 .w{display:block;width:max-content;max-width:100%}
+.h1 .blk{background:var(--pink);color:var(--on);padding:.02em .12em 0;border:3px solid var(--ink);transform:rotate(-2.5deg);margin:.04em 0 .06em -.04em;box-shadow:6px 6px 0 var(--shadow)}
+.h1 .hl{display:inline-block;line-height:.86;background:var(--yellow);color:#141414;padding:.06em .08em 0;margin:.06em 0 0 -.06em;transform:rotate(1.2deg)}
+.h1 .riso{text-shadow:4px 3px 0 var(--blue)}
+.lede{font-size:clamp(17px,1.6vw,20px);max-width:36ch;margin:0 0 24px;font-weight:500;font-stretch:95%}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--display);text-transform:uppercase;font-size:20px;letter-spacing:.02em;line-height:1;border:3px solid var(--ink);background:var(--yellow);color:var(--on);padding:14px 20px 12px;box-shadow:5px 5px 0 var(--shadow);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--shadow)}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--shadow)}
+.btn.pink{background:var(--pink)}.btn.green{background:var(--green)}.btn.ghost{background:var(--surface);color:var(--ink)}
+.btn.sm{font-size:16px;padding:10px 14px 8px;box-shadow:3px 3px 0 var(--shadow)}
+.proof{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px;font-family:var(--mono);font-size:13px}
+.proof b{display:block;font-family:var(--display);font-weight:400;font-size:40px;line-height:1}
+.hero-art{position:absolute;right:0;top:-6px;width:170px;pointer-events:none}
+@media (max-width:700px){.hero-art{width:96px;top:44px;right:-4px}.h1{font-size:clamp(52px,15.5vw,110px)}}
+.guard{margin-top:26px;display:inline-flex;gap:8px;align-items:center;font-family:var(--mono);font-size:12px;border:2px dashed var(--ink);padding:6px 10px}
+
+.marquee{border-block:3px solid var(--line);background:var(--ink);color:var(--paper);overflow:hidden;white-space:nowrap;font-family:var(--display);font-size:22px;letter-spacing:.03em;padding:8px 0 6px}
+.marquee div{display:inline-block;animation:mq 50s linear infinite;padding-left:100%}
+.marquee i{font-style:normal;color:var(--yellow);margin:0 14px}
+@keyframes mq{to{transform:translateX(-100%)}}
+
+/* ---------- phone ---------- */
+.phone-wrap{position:sticky;top:12px;justify-self:center;width:100%;max-width:410px}
+@media (max-width:1000px){.phone-wrap{position:relative;top:0}}
+.phone-label{font-family:var(--hand);font-size:18px;transform:rotate(-4deg);margin:0 0 8px 12px;color:var(--hot-text)}
+.phone{position:relative;width:100%;max-width:400px;height:clamp(660px,calc(100vh - 60px),820px);border:3px solid var(--ink);border-radius:46px;background:var(--ink);padding:10px;box-shadow:12px 12px 0 var(--pink)}
+.scr{position:relative;height:100%;border-radius:36px;overflow:hidden;background:var(--paper);display:flex;flex-direction:column;isolation:isolate}
+@media (max-width:520px){.phone{height:780px;border-radius:30px;padding:6px;box-shadow:6px 6px 0 var(--pink)}.scr{border-radius:24px}}
+.status{flex:none;height:34px;display:flex;justify-content:space-between;align-items:center;padding:4px 24px 0;font-family:var(--mono);font-size:12px;font-weight:500}
+.status .pill{width:90px;height:22px;background:var(--ink);border-radius:20px}
+.view{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.nad{flex:none;font-family:var(--mono);font-size:10.5px;text-align:center;background:var(--yellow);color:var(--on);border-top:2px solid var(--ink);padding:3px 6px;letter-spacing:.02em}
+.tabs{flex:none;display:grid;grid-template-columns:repeat(4,1fr);border-top:3px solid var(--ink);background:var(--surface)}
+.tab{border:0;background:none;padding:8px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--display);font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-right:2px solid var(--ink)}
+.tab:last-child{border-right:0}
+.tab svg{width:22px;height:22px}
+.tab[aria-selected="true"]{background:var(--yellow);color:var(--on)}
+.pad{padding:14px 16px 28px}
+
+/* ---------- learn ---------- */
+.mast{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--ink);padding-bottom:8px;margin-bottom:14px}
+.mast h2{font-family:var(--display);font-weight:400;font-size:44px;line-height:.9;margin:0;text-transform:uppercase}
+.mast small{font-family:var(--mono);font-size:11px;text-align:right;line-height:1.3}
+.cover{position:relative;border:3px solid var(--ink);background:var(--pink);color:var(--on);padding:16px;box-shadow:6px 6px 0 var(--shadow);overflow:hidden}
+.cover .no{font-family:var(--mono);font-size:12px;display:flex;justify-content:space-between}
+.cover h3{font-family:var(--display);font-weight:400;font-size:52px;line-height:.9;margin:14px 0 10px;text-transform:uppercase;max-width:9ch;position:relative}
+.cover p{margin:0 0 14px;font-size:14px;font-weight:600;max-width:24ch;position:relative}
+.cover .burst{position:absolute;right:-18px;top:44px;width:132px;transform:rotate(12deg)}
+.cover .btn{position:relative;background:var(--surface);color:var(--ink)}
+.tape{position:absolute;width:86px;height:24px;background:var(--tape);transform:rotate(-8deg);z-index:2;mix-blend-mode:multiply}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 10px}
+.sec-h h3{font-family:var(--display);font-weight:400;font-size:26px;margin:0;text-transform:uppercase;line-height:1}
+.sec-h span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.toc{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
+.toc li{border-bottom:2px solid var(--ink)}
+.toc button{width:100%;display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:10px 0}
+.toc .n{font-family:var(--display);font-size:38px;line-height:1}
+.toc .t{font-weight:800;font-stretch:88%;font-size:16px;line-height:1.15}
+.toc .d{display:flex;gap:3px;margin-top:5px}
+.toc .d i{width:14px;height:8px;border:1.5px solid var(--ink)}
+.toc .d i.on{background:var(--ink)}
+.toc .st{width:44px;height:44px}
+.toc .lessons{display:none;padding:0 0 12px 58px}
+.toc li.open .lessons{display:block}
+.lz{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;padding:6px 0;border-top:1px dashed var(--muted)}
+.lz em{font-style:normal;font-family:var(--mono);font-size:11px;padding:1px 6px;border:1.5px solid var(--ink);white-space:nowrap}
+.lz em.done{background:var(--green);color:var(--on)}
+.lz em.now{background:var(--pink);color:var(--on)}
+.note{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:12px;line-height:1.5}
+
+/* ---------- hot list ---------- */
+.hot-h{background:var(--orange);color:var(--on);margin:-14px -16px 0;padding:16px 16px 18px;border-bottom:3px solid var(--ink);position:relative;overflow:hidden}
+.hot-h h2{font-family:var(--display);font-weight:400;font-size:62px;line-height:.85;margin:0;text-transform:uppercase;letter-spacing:-.01em}
+.hot-h p{margin:8px 0 0;font-size:13px;font-weight:600;max-width:28ch}
+.stix{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+.stk{border:2px solid var(--ink);background:var(--surface);color:var(--ink);font-weight:800;font-stretch:85%;font-size:13px;padding:6px 10px;border-radius:999px;transform:rotate(var(--r,0deg));transition:transform .15s}
+.stk[aria-pressed="true"]{background:var(--c,var(--yellow));color:var(--on);box-shadow:3px 3px 0 var(--shadow);transform:rotate(calc(var(--r,0deg) * -1)) scale(1.04)}
+.stk[aria-pressed="true"]::before{content:"";display:inline-block;width:7px;height:7px;background:var(--on);border-radius:50%;margin-right:6px;vertical-align:middle}
+.seg{display:flex;border:2px solid var(--ink);margin:10px 0 12px}
+.seg button{flex:1;border:0;background:none;padding:7px 2px;font-family:var(--mono);font-size:11px;border-right:2px solid var(--ink)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.row{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;text-align:left;border:2px solid var(--ink);background:var(--surface);padding:10px 12px;margin-bottom:10px;position:relative;box-shadow:4px 4px 0 var(--shadow)}
+.row:nth-child(even){transform:rotate(.6deg)}.row:nth-child(odd){transform:rotate(-.5deg)}
+.row:hover{transform:rotate(0) translate(-1px,-1px)}
+.row .rk{font-family:var(--mono);font-size:11px;writing-mode:vertical-rl;transform:rotate(180deg)}
+.row .tk,.row .nm,.row .bar{display:block}
+.row .tk{font-family:var(--display);font-size:32px;line-height:.95}
+.row .nm{font-size:12px;color:var(--muted);font-weight:600;line-height:1.2}
+.row .v{text-align:right;font-family:var(--display);font-size:26px;line-height:1}
+.row .v small{display:block;font-family:var(--mono);font-size:10px;color:var(--muted)}
+.bar{height:6px;background:var(--paper);border:1.5px solid var(--ink);margin-top:6px}
+.bar i{display:block;height:100%;background:var(--pink)}
+.empty{border:2px dashed var(--ink);padding:18px;text-align:center;font-weight:700}
+
+/* ---------- spread ---------- */
+.back{font-family:var(--mono);font-size:12px;background:none;border:2px solid var(--ink);padding:4px 10px;margin-bottom:12px}
+.spread-top{margin:-14px -16px 0;padding:16px;background:var(--blue);color:var(--on-blue);border-bottom:3px solid var(--ink);position:relative;overflow:hidden}
+.spread-top .meta{font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;gap:8px;position:relative}
+.spread-top h2{font-family:var(--display);font-weight:400;font-size:50px;line-height:.9;margin:12px 0 6px;text-transform:uppercase;position:relative}
+.spread-top h2 em{font-style:normal;background:var(--yellow);color:var(--on);padding:0 .1em;display:inline-block;transform:rotate(-2deg)}
+.spread-top p{margin:0;font-size:14px;position:relative;max-width:32ch}
+.coin{position:absolute;right:-36px;top:-34px;width:150px;opacity:.45}
+.stack{margin:18px 0 6px}
+.stack .ln{display:grid;grid-template-columns:92px 1fr 56px;gap:8px;align-items:center;margin:6px 0;font-size:13px;font-weight:700}
+.stack .tr{height:26px;border:2px solid var(--ink);background:var(--surface);position:relative}
+.stack .tr i{position:absolute;inset:0 auto 0 0;border-right:2px solid var(--ink)}
+.stack b{font-family:var(--display);font-weight:400;font-size:20px;text-align:right}
+.quote{font-family:var(--hand);font-size:21px;line-height:1.25;border-left:6px solid var(--pink);padding:4px 0 4px 12px;margin:18px 0}
+.chart{display:flex;align-items:flex-end;gap:5px;height:120px;border-bottom:3px solid var(--ink);padding-top:10px}
+.chart div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:3px}
+.chart i{display:block;width:100%;background:var(--green);border:2px solid var(--ink);border-bottom:0}
+.chart span{font-family:var(--mono);font-size:9px}
+.chart-x{display:flex;gap:5px}.chart-x span{flex:1;text-align:center;font-family:var(--mono);font-size:9px;padding-top:3px}
+.rcpt{background:var(--surface);border:2px solid var(--ink);padding:12px 14px;font-family:var(--mono);font-size:12.5px;margin-top:18px;position:relative;-webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 8px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 8px repeat-x;mask:linear-gradient(#000,#000) top/100% calc(100% - 8px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 8px repeat-x;padding-bottom:22px}
+.rcpt h4{font-family:var(--display);font-weight:400;font-size:20px;margin:0 0 8px;text-align:center;letter-spacing:.06em}
+.rcpt div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--muted);padding:4px 0}
+.rcpt .why{display:block;border:0;color:var(--muted);font-size:11px;padding-top:8px}
+
+/* ---------- money hub ---------- */
+.wr-cover{position:relative;border:3px solid var(--ink);background:var(--green);color:var(--on);padding:18px 16px;box-shadow:6px 6px 0 var(--shadow);overflow:hidden;width:100%;text-align:left;display:block}
+.wr-cover h2{font-family:var(--display);font-weight:400;font-size:46px;line-height:.9;margin:8px 0;text-transform:uppercase;max-width:8ch;position:relative}
+.wr-cover .mono{font-size:11px;position:relative;display:block;padding-right:84px}
+.wr-cover .play{position:absolute;right:14px;bottom:14px;width:64px;height:64px;border-radius:50%;background:var(--ink);color:var(--yellow);display:grid;place-items:center;font-family:var(--display);font-size:14px;border:3px solid var(--ink)}
+.persona{font-family:var(--mono);font-size:11px;display:inline-block;border:2px solid var(--ink);padding:2px 8px;margin:0 0 12px;background:var(--surface)}
+.acct{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-bottom:2px solid var(--ink)}
+.acct b{font-weight:800;font-stretch:90%}
+.acct .amt{font-family:var(--display);font-size:24px;text-align:right;line-height:1;transition:filter .2s}
+.acct small{font-family:var(--mono);font-size:11px;color:var(--muted);grid-column:1/-1}
+.blur .amt{filter:blur(7px)}
+.switch{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;background:none;border:0;padding:0}
+.switch .k{width:44px;height:24px;border:2px solid var(--ink);border-radius:20px;position:relative;background:var(--surface);flex:none}
+.switch .k::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--ink);transition:left .15s}
+.switch[aria-checked="true"] .k{background:var(--green)}
+.switch[aria-checked="true"] .k::after{left:22px;background:var(--on)}
+
+/* ---------- stickers ---------- */
+.book{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.slot{border:2px dashed var(--muted);padding:10px;text-align:center;font-size:12px;position:relative;background:var(--surface)}
+.slot.got{border:2px solid var(--ink)}
+.slot svg{width:100%;max-width:130px;height:auto;display:block;margin:0 auto 6px}
+.slot b{display:block;font-weight:800;font-stretch:88%;font-size:13px}
+.slot span{color:var(--muted);font-family:var(--mono);font-size:10.5px}
+.slot.new::after{content:"NEW";position:absolute;top:-10px;right:-6px;background:var(--pink);color:var(--on);font-family:var(--display);font-size:13px;padding:2px 6px;border:2px solid var(--ink);transform:rotate(8deg)}
+.shelf{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px}
+.mini{flex:none;width:92px;height:136px;border:2px solid var(--ink);padding:6px;font-family:var(--display);font-size:15px;line-height:.95;text-transform:uppercase;display:flex;flex-direction:column;justify-content:space-between;color:var(--on)}
+.mini small{font-family:var(--mono);font-size:9px}
+
+/* ---------- story overlay ---------- */
+.story{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;background:var(--bgc,var(--pink));color:var(--fgc,var(--on));animation:up .28s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+.story .segs{display:flex;gap:4px;padding:44px 14px 8px}
+.story .segs i{flex:1;height:4px;background:rgba(20,20,20,.25);border-radius:2px;overflow:hidden}
+.story .segs i.on{background:currentColor}
+.story .snad{flex:none;font-family:var(--mono);font-size:10.5px;text-align:center;background:#141414;color:#FFE24A;padding:4px 6px}
+.story .bar2{display:flex;justify-content:space-between;align-items:center;padding:2px 14px;font-family:var(--mono);font-size:11px}
+.x{border:2px solid currentColor;background:none;width:34px;height:34px;font-family:var(--display);font-size:16px;line-height:1;border-radius:50%;color:inherit}
+.slide{flex:1;position:relative;overflow-y:auto;overflow-x:hidden;padding:12px 18px 18px;display:flex;flex-direction:column}
+.slide .big{font-family:var(--display);font-weight:400;text-transform:uppercase;line-height:.9;margin:0}
+.slide .kk{font-family:var(--mono);font-size:12px;letter-spacing:.04em;margin-bottom:10px;display:inline-block;border:2px solid currentColor;padding:2px 8px;align-self:flex-start}
+.slide p.body{font-size:17px;font-weight:600;line-height:1.4;margin:14px 0 0}
+.slide p.body mark{background:var(--surface);color:var(--ink);padding:0 3px;border:1.5px solid var(--ink)}
+.tapz{position:absolute;inset:0;display:grid;grid-template-columns:1fr 2fr;z-index:1}
+.tapz button{background:none;border:0}
+.slide .fg{position:relative;z-index:2;pointer-events:none}
+.slide .fg .pe{pointer-events:auto}
+.hint{margin-top:auto;font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;padding-top:14px;position:relative;z-index:2;pointer-events:none}
+.q-prompt{font-family:var(--display);font-weight:400;font-size:31px;line-height:1.02;margin:6px 0 16px;text-transform:uppercase}
+.choices{display:grid;gap:10px}
+.choice{text-align:left;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:12px 14px;font-weight:800;font-stretch:90%;font-size:18px;box-shadow:4px 4px 0 var(--ink);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.choice .lt{font-family:var(--mono);font-size:12px;border:2px solid currentColor;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;flex:none}
+.choice.right{background:var(--green);color:var(--on)}
+.choice.wrong{background:var(--ink);color:var(--paper);text-decoration:line-through}
+.choice:disabled{cursor:default}
+.choices.tf{grid-template-columns:1fr 1fr}
+.choices.tf .choice{font-family:var(--display);font-weight:400;font-size:34px;justify-content:center;padding:18px 8px}
+.fb{margin-top:22px;border:3px solid var(--ink);background:var(--surface);color:var(--ink);padding:24px 14px 14px;position:relative;animation:up .25s ease-out}
+.stamp{position:absolute;top:-18px;right:10px;font-family:var(--display);font-size:22px;padding:4px 10px 2px;border:3px solid var(--ink);transform:rotate(4deg);background:var(--green);color:var(--on)}
+.stamp.soft{background:var(--yellow)}
+.fb p{margin:6px 0 10px;font-size:14.5px;line-height:1.45}
+.src{font-family:var(--mono);font-size:10.5px;color:var(--muted);border-top:1px dashed var(--muted);padding-top:8px;margin-bottom:10px}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-20px;width:12px;height:18px;border:2px solid var(--ink);animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(760px) rotate(540deg)}}
+.slap{animation:slap .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes slap{from{transform:scale(2.4) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-8deg);opacity:1}}
+.pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{transform:translateY(30px) scale(.9);opacity:0}}
+
+/* ---------- share ---------- */
+.share{position:absolute;inset:0;z-index:30;background:var(--paper);overflow-y:auto;overflow-x:hidden;padding:44px 16px 20px;animation:up .28s ease-out}
+.share-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.share-h h3{font-family:var(--display);font-weight:400;font-size:26px;margin:0;text-transform:uppercase}
+.card{--cc:var(--pink);position:relative;aspect-ratio:9/14;width:100%;max-width:310px;margin:0 auto;border:3px solid var(--ink);background:var(--cc);color:var(--on);padding:14px;overflow:hidden;box-shadow:8px 8px 0 var(--shadow);display:flex;flex-direction:column}
+.card .mh{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--on);padding-bottom:4px;position:relative}
+.card .mh b{font-family:var(--display);font-weight:400;font-size:40px;line-height:.85;letter-spacing:-.01em}
+.card .mh span{font-family:var(--mono);font-size:10px;text-align:right;line-height:1.25}
+.card .ican{font-family:var(--hand);font-size:22px;margin-top:14px;transform:rotate(-3deg);position:relative}
+.card .headline{font-family:var(--display);font-weight:400;font-size:62px;line-height:.84;text-transform:uppercase;margin:4px 0 0;position:relative;text-shadow:3px 3px 0 var(--surface)}
+.card .ghost{position:absolute;left:8px;bottom:120px;font-family:var(--display);font-size:190px;line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(20,20,20,.35);pointer-events:none}
+.card .lines{margin-top:auto;display:grid;gap:4px;position:relative}
+.card .lines div{font-weight:800;font-stretch:85%;font-size:13px;background:var(--on);color:var(--cc);padding:3px 7px;justify-self:start;text-transform:uppercase;letter-spacing:.02em}
+.card .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;position:relative}
+.card .bc{width:84px;height:26px;background:repeating-linear-gradient(90deg,var(--on) 0 2px,transparent 2px 4px,var(--on) 4px 5px,transparent 5px 8px,var(--on) 8px 11px,transparent 11px 12px)}
+.card .foot small{font-family:var(--mono);font-size:9px;text-align:right;line-height:1.3}
+.card .badge{position:absolute;right:-14px;top:92px;width:120px}
+.card .priv{font-family:var(--mono);font-size:10px;border:2px solid var(--on);padding:4px 6px;margin-top:8px;position:relative;align-self:flex-start}
+.opts{max-width:310px;margin:22px auto 0;display:grid;gap:14px}
+.sw{display:flex;gap:10px;align-items:center;font-weight:700;font-size:14px}
+.sw button{width:34px;height:34px;border:2px solid var(--ink);border-radius:50%;padding:0}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--ink)}
+.opts label{font-weight:700;font-size:14px;display:grid;gap:4px}
+.opts input{font:inherit;font-family:var(--mono);border:2px solid var(--ink);background:var(--surface);color:var(--ink);padding:8px}
+.opts .fine{font-family:var(--mono);font-size:11px;color:var(--muted);margin:0}
+.toast{position:absolute;left:12px;right:12px;bottom:92px;z-index:50;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:12px;padding:10px 12px;border:2px solid var(--yellow);animation:up .2s ease-out}
+
+.foot-note{padding:8px clamp(16px,4vw,48px) 40px;font-family:var(--mono);font-size:12px;color:var(--muted);max-width:1360px;margin:0 auto}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .marquee div{animation:none;padding-left:16px}
+  .confetti{display:none}
+}
+</style>
+
+<header class="top">
+  <div class="logo"><b>TEN</b>BAGGER</div>
+  <div class="dir">
+    <span class="dir-tag">Direction: Zine</span>
+    <p><strong>Identity over points:</strong> every concept mastered becomes a sticker, every lesson ends on a cover worth posting (self-expression, Wrapped-style social proof, competence).<br><strong>Peak-end, zero shame:</strong> fast novel story cards build to a designed finale, you pick the path, and money stays private and calm by default (autonomy, SDT).</p>
+  </div>
+  <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme">THEME: AUTO</button>
+</header>
+
+<main class="stage">
+  <section class="hero" aria-labelledby="heroH">
+    <svg class="hero-art" viewBox="0 0 200 200" aria-hidden="true" id="heroArt"></svg>
+    <div class="kicker"><span>ISSUE 01</span><span>FALL 2026</span><span>FREE, FOREVER-ish</span></div>
+    <h1 class="h1" id="heroH">
+      <span class="w">Read the</span>
+      <span class="w blk">receipts</span>
+      <span class="w riso">of real</span>
+      <span class="w"><span class="hl">companies.</span></span>
+    </h1>
+    <p class="lede">Tenbagger turns SEC filings into two-minute story lessons you tap through. Master a concept, earn its sticker. Finish a lesson, get a cover worth posting. Your balances stay yours.</p>
+    <div class="cta-row">
+      <button class="btn pink" type="button" data-act="start">Start Issue #07</button>
+      <button class="btn ghost" type="button" data-act="wrapped">Play Alex's Wrapped</button>
+    </div>
+    <div class="proof" id="proof"></div>
+    <div class="guard">Educational only. Not investment advice. No trading, no loot boxes, no streak guilt.</div>
+  </section>
+
+  <div class="phone-wrap">
+    <p class="phone-label">tap it, it's real &darr;</p>
+    <div class="phone" id="phone">
+      <div class="scr" id="scr">
+        <div class="status"><span>9:41</span><span class="pill"></span><span>5G</span></div>
+        <div class="view" id="view" tabindex="-1"></div>
+        <div class="nad">Educational only. Not investment advice.</div>
+        <nav class="tabs" role="tablist" aria-label="App sections" id="tabs"></nav>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="marquee" aria-hidden="true"><div id="mq"></div></div>
+<p class="foot-note" id="footNote"></p>
+
+<script>
+const D={"source":"fixture","generated_at":"2026-09-25T22:01:11Z","disclaimer":"Educational content built from reported financials. Not investment advice.","companies":[{"t":"MU","n":"Micron Technology, Inc.","s":"Technology","i":"Semiconductors","p":1000.26,"pd":"2026-09-08","fy":2025,"m":{"market_cap":1125542565000,"pe":131.786561,"ps":30.112434,"ev_ebitda":61.742635,"fcf_yield":0.001482,"dividend_yield":0.000464,"gross_margin":0.400583,"operating_margin":0.266734,"net_margin":0.22845,"roe":0.157648,"roic":0.147136,"debt_to_equity":0.28343,"current_ratio":2.517985,"net_cash":-5706000000,"revenue_growth_yoy":0.488511,"revenue_cagr_3y":0.067135},"f":{"revenue":37378000000,"gross_profit":14973000000,"operating_income":9970000000,"net_income":8539000000,"free_cash_flow":1668000000,"cash":9646000000,"total_debt":15352000000},"h":{"revenue":[[2016,12399000000],[2017,20322000000],[2018,30391000000],[2019,23406000000],[2020,21435000000],[2021,27705000000],[2022,30758000000],[2023,15540000000],[2024,25111000000],[2025,37378000000]],"net_income":[[2016,-276000000],[2017,5089000000],[2018,14135000000],[2019,6313000000],[2020,2687000000],[2021,5861000000],[2022,8687000000],[2023,-5833000000],[2024,778000000],[2025,8539000000]],"free_cash_flow":[[2016,-2649000000],[2017,3419000000],[2018,8521000000],[2019,3409000000],[2020,83000000],[2021,2438000000],[2022,3114000000],[2023,-6117000000],[2024,121000000],[2025,1668000000]],"gross_margin":[[2016,0.202032],[2017,0.415117],[2018,0.588694],[2019,0.457233],[2020,0.305668],[2021,0.375203],[2022,0.45185],[2023,-0.09112],[2024,0.223528],[2025,0.400583]]}},{"t":"AAPL","n":"Apple Inc.","s":"Technology","i":"Consumer Electronics","p":255.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3826275000000,"pe":34.182306,"ps":9.194218,"ev_ebitda":26.867369,"fcf_yield":0.025813,"dividend_yield":0.00403,"gross_margin":0.469052,"operating_margin":0.319708,"net_margin":0.269151,"roe":1.51913,"roic":0.822836,"debt_to_equity":1.33803,"current_ratio":0.893293,"net_cash":-62723000000,"revenue_growth_yoy":0.064255,"revenue_cagr_3y":0.018125},"f":{"revenue":416161000000,"gross_profit":195201000000,"operating_income":133050000000,"net_income":112010000000,"free_cash_flow":98767000000,"cash":35934000000,"total_debt":98657000000},"h":{"revenue":[[2020,274515000000],[2021,365817000000],[2022,394328000000],[2023,383285000000],[2024,391035000000],[2025,416161000000]],"net_income":[[2020,57411000000],[2021,94680000000],[2022,99803000000],[2023,96995000000],[2024,93736000000],[2025,112010000000]],"free_cash_flow":[[2020,73365000000],[2021,92953000000],[2022,111443000000],[2023,99584000000],[2024,108807000000],[2025,98767000000]],"gross_margin":[[2020,0.382332],[2021,0.417794],[2022,0.433096],[2023,0.441311],[2024,0.462063],[2025,0.469052]]}},{"t":"MSFT","n":"Microsoft Corporation","s":"Technology","i":"Software","p":515.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3844475000000,"pe":37.756598,"ps":13.646246,"ev_ebitda":23.711337,"fcf_yield":0.018627,"dividend_yield":0.006264,"gross_margin":0.688237,"operating_margin":0.45622,"net_margin":0.36146,"roe":0.296472,"roic":0.297068,"debt_to_equity":0.125629,"current_ratio":1.353446,"net_cash":-12909000000,"revenue_growth_yoy":0.149322,"revenue_cagr_3y":0.124231},"f":{"revenue":281724000000,"gross_profit":193893000000,"operating_income":128528000000,"net_income":101832000000,"free_cash_flow":71611000000,"cash":30242000000,"total_debt":43151000000},"h":{"revenue":[[2021,168088000000],[2022,198270000000],[2023,211915000000],[2024,245122000000],[2025,281724000000]],"net_income":[[2021,61271000000],[2022,72738000000],[2023,72361000000],[2024,88136000000],[2025,101832000000]],"free_cash_flow":[[2021,56118000000],[2022,65149000000],[2023,59475000000],[2024,74071000000],[2025,71611000000]],"gross_margin":[[2021,0.689258],[2022,0.684017],[2023,0.689201],[2024,0.697644],[2025,0.688237]]}},{"t":"COST","n":"Costco Wholesale Corporation","s":"Consumer Staples","i":"Discount Stores","p":925.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":411625000000,"pe":50.796266,"ps":1.49554,"ev_ebitda":31.476072,"fcf_yield":0.019039,"dividend_yield":0.005328,"gross_margin":0.128432,"operating_margin":0.037724,"net_margin":0.029426,"roe":0.277705,"roic":0.376242,"debt_to_equity":0.195892,"current_ratio":0.999479,"net_cash":8448000000,"revenue_growth_yoy":0.081673,"revenue_cagr_3y":0.066404},"f":{"revenue":275235000000,"gross_profit":35349000000,"operating_income":10383000000,"net_income":8099000000,"free_cash_flow":7837000000,"cash":14161000000,"total_debt":5713000000},"h":{"revenue":[[2021,195929000000],[2022,226954000000],[2023,242290000000],[2024,254453000000],[2025,275235000000]],"net_income":[[2021,5007000000],[2022,5844000000],[2023,6292000000],[2024,7367000000],[2025,8099000000]],"free_cash_flow":[[2021,5370000000],[2022,3501000000],[2023,6745000000],[2024,6629000000],[2025,7837000000]],"gross_margin":[[2021,0.128848],[2022,0.121487],[2023,0.122597],[2024,0.126133],[2025,0.128432]]}},{"t":"KO","n":"The Coca-Cola Company","s":"Consumer Staples","i":"Beverages","p":66.5,"pd":"2025-09-30","fy":2024,"m":{"market_cap":287280000000,"pe":27.03252,"ps":6.104418,"ev_ebitda":29.319508,"fcf_yield":0.016503,"dividend_yield":0.029097,"gross_margin":0.610633,"operating_margin":0.21232,"net_margin":0.225898,"roe":0.427704,"roic":0.131032,"debt_to_equity":1.93221,"current_ratio":1.029625,"net_cash":-37199000000,"revenue_growth_yoy":0.028566,"revenue_cagr_3y":0.067788},"f":{"revenue":47061000000,"gross_profit":28737000000,"operating_income":9992000000,"net_income":10631000000,"free_cash_flow":4741000000,"cash":10828000000,"total_debt":48027000000},"h":{"revenue":[[2020,33014000000],[2021,38655000000],[2022,43004000000],[2023,45754000000],[2024,47061000000]],"net_income":[[2020,7747000000],[2021,9771000000],[2022,9542000000],[2023,10714000000],[2024,10631000000]],"free_cash_flow":[[2020,8667000000],[2021,11258000000],[2022,9534000000],[2023,9747000000],[2024,4741000000]],"gross_margin":[[2020,0.593112],[2021,0.602716],[2022,0.581434],[2023,0.595227],[2024,0.610633]]}},{"t":"NVDA","n":"NVIDIA Corporation","s":"Technology","i":"Semiconductors","p":186.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":4613544000000,"pe":63.265306,"ps":35.35364,"ev_ebitda":55.371869,"fcf_yield":0.01319,"dividend_yield":0.000181,"gross_margin":0.749887,"operating_margin":0.624175,"net_margin":0.55848,"roe":0.918729,"roic":0.892013,"debt_to_equity":0.106685,"current_ratio":4.439851,"net_cash":126000000,"revenue_growth_yoy":1.142034,"revenue_cagr_3y":0.692547},"f":{"revenue":130497000000,"gross_profit":97858000000,"operating_income":81453000000,"net_income":72880000000,"free_cash_flow":60853000000,"cash":8589000000,"total_debt":8463000000},"h":{"revenue":[[2021,16675000000],[2022,26914000000],[2023,26974000000],[2024,60922000000],[2025,130497000000]],"net_income":[[2021,4332000000],[2022,9752000000],[2023,4368000000],[2024,29760000000],[2025,72880000000]],"free_cash_flow":[[2021,4694000000],[2022,8132000000],[2023,3808000000],[2024,27021000000],[2025,60853000000]],"gross_margin":[[2021,0.623448],[2022,0.64929],[2023,0.569289],[2024,0.727176],[2025,0.749887]]}},{"t":"JPM","n":"JPMorgan Chase & Co.","s":"Financials","i":"Banks","p":315.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":905940000000,"pe":15.949367,"ps":5.102278,"ev_ebitda":null,"fcf_yield":null,"dividend_yield":0.016579,"gross_margin":null,"operating_margin":null,"net_margin":0.32931,"roe":0.1696,"roic":null,"debt_to_equity":1.164347,"current_ratio":null,"net_cash":-378046000000,"revenue_growth_yoy":0.123033,"revenue_cagr_3y":0.134337},"f":{"revenue":177556000000,"gross_profit":null,"operating_income":null,"net_income":58471000000,"free_cash_flow":null,"cash":23372000000,"total_debt":401418000000},"h":{"revenue":[[2020,119543000000],[2021,121649000000],[2022,128695000000],[2023,158104000000],[2024,177556000000]],"net_income":[[2020,29131000000],[2021,48334000000],[2022,37676000000],[2023,49552000000],[2024,58471000000]],"free_cash_flow":[],"gross_margin":[]}},{"t":"XOM","n":"Exxon Mobil Corporation","s":"Energy","i":"Oil & Gas Integrated","p":113.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":485787000000,"pe":14.413265,"ps":1.389611,"ev_ebitda":null,"fcf_yield":0.063229,"dividend_yield":0.034385,"gross_margin":null,"operating_margin":null,"net_margin":0.096343,"roe":0.127718,"roic":null,"debt_to_equity":0.158169,"current_ratio":1.308405,"net_cash":-18681000000,"revenue_growth_yoy":0.014519,"revenue_cagr_3y":0.069657},"f":{"revenue":349585000000,"gross_profit":null,"operating_income":null,"net_income":33680000000,"free_cash_flow":30716000000,"cash":23029000000,"total_debt":41710000000},"h":{"revenue":[[2020,181502000000],[2021,285640000000],[2022,413680000000],[2023,344582000000],[2024,349585000000]],"net_income":[[2020,-22440000000],[2021,23040000000],[2022,55740000000],[2023,36010000000],[2024,33680000000]],"free_cash_flow":[[2020,-2614000000],[2021,36053000000],[2022,58390000000],[2023,33450000000],[2024,30716000000]],"gross_margin":[]}},{"t":"JNJ","n":"Johnson & Johnson","s":"Health Care","i":"Pharmaceuticals","p":185.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":449365000000,"pe":31.951641,"ps":5.05922,"ev_ebitda":null,"fcf_yield":0.044156,"dividend_yield":0.02631,"gross_margin":0.690715,"operating_margin":null,"net_margin":0.158363,"roe":0.196755,"roic":null,"debt_to_equity":0.512435,"current_ratio":1.110689,"net_cash":-12529000000,"revenue_growth_yoy":0.043002,"revenue_cagr_3y":0.040974},"f":{"revenue":88821000000,"gross_profit":61350000000,"operating_income":null,"net_income":14066000000,"free_cash_flow":19842000000,"cash":24105000000,"total_debt":36634000000},"h":{"revenue":[[2020,82584000000],[2021,78740000000],[2022,79990000000],[2023,85159000000],[2024,88821000000]],"net_income":[[2020,14714000000],[2021,20878000000],[2022,17941000000],[2023,35153000000],[2024,14066000000]],"free_cash_flow":[[2020,20189000000],[2021,19758000000],[2022,18185000000],[2023,18248000000],[2024,19842000000]],"gross_margin":[[2020,0.655781],[2021,0.702794],[2022,0.692512],[2023,0.688195],[2024,0.690715]]}},{"t":"TSLA","n":"Tesla, Inc.","s":"Consumer Discretionary","i":"Automobiles","p":445.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":1556610000000,"pe":218.137255,"ps":15.93418,"ev_ebitda":124.443185,"fcf_yield":0.002302,"dividend_yield":0.0,"gross_margin":0.178626,"operating_margin":0.072433,"net_margin":0.072587,"roe":0.097253,"roic":0.086803,"debt_to_equity":0.111091,"current_ratio":2.024912,"net_cash":8039000000,"revenue_growth_yoy":0.009476,"revenue_cagr_3y":0.219815},"f":{"revenue":97690000000,"gross_profit":17450000000,"operating_income":7076000000,"net_income":7091000000,"free_cash_flow":3584000000,"cash":16139000000,"total_debt":8100000000},"h":{"revenue":[[2020,31536000000],[2021,53823000000],[2022,81462000000],[2023,96773000000],[2024,97690000000]],"net_income":[[2020,721000000],[2021,5519000000],[2022,12556000000],[2023,14997000000],[2024,7091000000]],"free_cash_flow":[[2020,2786000000],[2021,5015000000],[2022,7566000000],[2023,4358000000],[2024,3584000000]],"gross_margin":[[2020,0.210236],[2021,0.252792],[2022,0.255984],[2023,0.182489],[2024,0.178626]]}},{"t":"AMZN","n":"Amazon.com, Inc.","s":"Consumer Discretionary","i":"Internet Retail","p":220.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":2358620000000,"pe":39.783002,"ps":3.697134,"ev_ebitda":19.256409,"fcf_yield":0.013937,"dividend_yield":0.0,"gross_margin":0.488544,"operating_margin":0.107519,"net_margin":0.092871,"roe":0.207183,"roic":0.224019,"debt_to_equity":0.201616,"current_ratio":1.063735,"net_cash":21123000000,"revenue_growth_yoy":0.109909,"revenue_cagr_3y":0.107354},"f":{"revenue":637959000000,"gross_profit":311671000000,"operating_income":68593000000,"net_income":59248000000,"free_cash_flow":32873000000,"cash":78779000000,"total_debt":57656000000},"h":{"revenue":[[2020,386064000000],[2021,469822000000],[2022,513983000000],[2023,574785000000],[2024,637959000000]],"net_income":[[2020,21331000000],[2021,33364000000],[2022,-2722000000],[2023,30425000000],[2024,59248000000]],"free_cash_flow":[[2020,25924000000],[2021,-14726000000],[2022,-16893000000],[2023,32217000000],[2024,32873000000]],"gross_margin":[[2020,0.395678],[2021,0.420325],[2022,0.438053],[2023,0.469821],[2024,0.488544]]}},{"t":"PG","n":"The Procter & Gamble Company","s":"Consumer Staples","i":"Household Products","p":154.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":380842000000,"pe":25.581395,"ps":4.531729,"ev_ebitda":18.83401,"fcf_yield":0.043388,"dividend_yield":0.024451,"gross_margin":0.51394,"operating_margin":0.220671,"net_margin":0.177049,"roe":0.29429,"roic":0.201778,"debt_to_equity":0.642022,"current_ratio":0.734796,"net_cash":-22978000000,"revenue_growth_yoy":0.024791,"revenue_cagr_3y":0.033549},"f":{"revenue":84039000000,"gross_profit":43191000000,"operating_income":18545000000,"net_income":14879000000,"free_cash_flow":16524000000,"cash":9482000000,"total_debt":32460000000},"h":{"revenue":[[2020,70950000000],[2021,76118000000],[2022,80187000000],[2023,82006000000],[2024,84039000000]],"net_income":[[2020,13027000000],[2021,14306000000],[2022,14742000000],[2023,14653000000],[2024,14879000000]],"free_cash_flow":[[2020,14330000000],[2021,15584000000],[2022,13567000000],[2023,13786000000],[2024,16524000000]],"gross_margin":[[2020,0.503171],[2021,0.512494],[2022,0.474266],[2023,0.478575],[2024,0.51394]]}}],"units":[{"id":"u1-revenue","title":"What a company sells","summary":"Revenue is where every analysis starts: how much a company sells and how fast that is growing.","lessons":[{"id":"u1-l1","title":"Revenue: the top line","xp":10,"n":7},{"id":"u1-l2","title":"Revenue growth","xp":10,"n":7},{"id":"u1-l3","title":"Compounding: 3-year CAGR","xp":10,"n":6}]},{"id":"u2-margins","title":"Margins","summary":"Margins show how many cents of each sales dollar a company keeps at each step of the income statement.","lessons":[{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"n":7},{"id":"u2-l2","title":"Operating margin","xp":10,"n":7},{"id":"u2-l3","title":"Net margin","xp":10,"n":6},{"id":"u2-l4","title":"The margin stack","xp":10,"n":7}]},{"id":"u3-profit","title":"Profit & EPS","summary":"From total profit to one share's slice of it, and what taxes take along the way.","lessons":[{"id":"u3-l1","title":"Net income","xp":10,"n":7},{"id":"u3-l2","title":"Earnings per share","xp":10,"n":6},{"id":"u3-l3","title":"EPS growth","xp":10,"n":6},{"id":"u3-l4","title":"Taxes: the effective rate","xp":10,"n":6}]},{"id":"u4-cashflow","title":"Cash flow & FCF","summary":"Profit is an opinion, cash is a fact: reading the cash-flow statement.","lessons":[{"id":"u4-l1","title":"Cash from operations vs. profit","xp":10,"n":7},{"id":"u4-l2","title":"Free cash flow","xp":10,"n":6},{"id":"u4-l3","title":"FCF margin","xp":10,"n":6},{"id":"u4-l4","title":"Capex intensity","xp":10,"n":6}]},{"id":"u5-balance","title":"Balance sheet & debt","summary":"What a company owns, what it owes, and whether it can pay its bills.","lessons":[{"id":"u5-l1","title":"Assets = liabilities + equity","xp":10,"n":6},{"id":"u5-l2","title":"Net cash vs. net debt","xp":10,"n":7},{"id":"u5-l3","title":"Debt-to-equity","xp":10,"n":6},{"id":"u5-l4","title":"Current ratio","xp":10,"n":6}]},{"id":"u6-returns","title":"Returns on capital","summary":"How much profit a business squeezes out of the money invested in it.","lessons":[{"id":"u6-l1","title":"Return on equity (ROE)","xp":10,"n":6},{"id":"u6-l2","title":"Return on assets (ROA)","xp":10,"n":6},{"id":"u6-l3","title":"Return on invested capital (ROIC)","xp":15,"n":7},{"id":"u6-l4","title":"Leverage and ROE","xp":15,"n":7}]},{"id":"u7-valuation","title":"Valuation multiples","summary":"Bringing in the share price: what the market is paying for each dollar of sales, profit and cash.","lessons":[{"id":"u7-l1","title":"Market cap & enterprise value","xp":10,"n":7},{"id":"u7-l2","title":"P/E & earnings yield","xp":15,"n":7},{"id":"u7-l3","title":"P/S & EV/EBITDA","xp":15,"n":7},{"id":"u7-l4","title":"FCF yield & dividend yield","xp":15,"n":6},{"id":"u7-l5","title":"What a P/E implies about growth","xp":20,"n":7}]},{"id":"u8-intrinsic","title":"Intrinsic value","summary":"Discounted cash flow basics: estimating what a business is worth, and why the estimate is fragile.","lessons":[{"id":"u8-l1","title":"A one-line DCF","xp":20,"n":6},{"id":"u8-l2","title":"A two-stage DCF","xp":20,"n":5},{"id":"u8-l3","title":"Price vs. estimate & sensitivity","xp":20,"n":6},{"id":"u8-l4","title":"Cycles: why one DCF can mislead","xp":20,"n":8}]}],"lesson":{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"intro":"**Gross profit** is revenue minus the **cost of revenue**: what it cost to make or purchase the things the company sold. **Gross margin** is gross profit \u00f7 revenue. A software company with a 70% gross margin keeps 70 cents of each sales dollar after delivering its product; a warehouse retailer might keep 12 cents. Neither is automatically better. Low-margin retailers can win on volume, while high gross margins leave room to spend on research and marketing. The classic mistake is using net income instead of gross profit.","questions":[{"id":"q-u2-l1-01","type":"multiple_choice","prompt":"In FY2024, Coca-Cola (KO) had revenue of $47.1B and cost of revenue of $18.3B. What was its gross profit?","choices":["$65.4B","$10.6B","$18.3B","$28.7B"],"answer":3,"explanation":"Gross profit = revenue \u2212 cost of revenue = $47.1B \u2212 $18.3B = $28.7B. Gross profit is what's left from sales after paying for the products or services themselves. Common slip: adding cost instead of subtracting it gives $65.4B.","source":{"ticker":"KO","fy":2024,"metrics":["gross_profit"],"formula":"revenue - cost_of_revenue","inputs":{"revenue":47061000000.0,"cost_of_revenue":18324000000.0}}},{"id":"q-u2-l1-04","type":"compare","prompt":"Which company had the higher gross margin in its latest fiscal year?","choices":["Costco Wholesale (COST)","Microsoft (MSFT)"],"answer":1,"explanation":"Gross margin = gross profit \u00f7 revenue. Costco Wholesale (COST), FY2025: $35.3B \u00f7 $275.2B = 12.8%. Microsoft (MSFT), FY2025: $193.9B \u00f7 $281.7B = 68.8%. So Microsoft (MSFT) is higher.","source":{"ticker":"MSFT","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":193893000000.0,"revenue":281724000000.0},"tickers":["COST","MSFT"],"fys":[2025,2025],"direction":"higher"}},{"id":"q-u2-l1-05","type":"true_false","prompt":"True or false? Apple (AAPL)'s gross margin in FY2025 was above 60.0%.","answer":false,"explanation":"False. Gross margin = gross profit \u00f7 revenue = $195.2B \u00f7 $416.2B = 46.9%, which is below 60.0%. Out of every $1 of sales, Apple kept about 47 cents after paying for what it sold.","source":{"ticker":"AAPL","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":195201000000.0,"revenue":416161000000.0},"threshold":0.6}}]}};
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const RM=()=>window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+const C={};D.companies.forEach(c=>C[c.t]=c);
+const SHORT={MU:"Micron",AAPL:"Apple",MSFT:"Microsoft",COST:"Costco",KO:"Coca-Cola",NVDA:"Nvidia",JPM:"JPMorgan",XOM:"Exxon",JNJ:"J&J",TSLA:"Tesla",AMZN:"Amazon",PG:"P&G"};
+const COLORS=["var(--pink)","var(--yellow)","var(--green)","var(--orange)","var(--lilac)"];
+const fmtB=v=>{if(v==null)return"—";const a=Math.abs(v),s=v<0?"−":"";return a>=1e12?s+"$"+(a/1e12).toFixed(2)+"T":s+"$"+(a/1e9).toFixed(1)+"B"};
+const pct=(v,d=1)=>v==null?"—":(v*100).toFixed(d)+"%";
+const cents=v=>(v*100).toFixed(1)+"¢";
+const usd=v=>"$"+v.toLocaleString("en-US");
+const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<mark>$1</mark>");
+
+/* ---------- fictional persona (not real data) ---------- */
+const A={checking:840,savings:410,card:1120,due:"Oct 17",min:25,brokerage:2600,roth:300,pending:93};
+A.cash=A.checking+A.savings; A.assets=A.cash+A.brokerage+A.roth; A.nw=A.assets-A.card;
+A.liq=A.cash/A.card; A.liqP=(A.cash+A.pending)/A.card; A.left=A.cash-A.card; A.inv=(A.brokerage+A.roth)/A.assets;
+const costcoCR=C.COST.m.current_ratio;
+
+/* ---------- shapes ---------- */
+function starPts(n,r1,r2,cx=50,cy=50){let p=[];for(let i=0;i<n*2;i++){const r=i%2?r2:r1,a=Math.PI*i/n-Math.PI/2;p.push((cx+r*Math.cos(a)).toFixed(1)+","+(cy+r*Math.sin(a)).toFixed(1))}return p.join(" ")}
+function scallop(n,r,w){let d="";for(let i=0;i<n;i++){const a=2*Math.PI*i/n;d+=`<circle cx="${(50+r*Math.cos(a)).toFixed(1)}" cy="${(50+r*Math.sin(a)).toFixed(1)}" r="${w}"/>`}return d}
+function sticker(o){ // {lines:[], color, shape, locked, rot}
+  const col=o.locked?"none":o.color, stroke=o.locked?"var(--muted)":"#141414", dash=o.locked?' stroke-dasharray="4 4"':"";
+  let shape;
+  if(o.shape==="burst") shape=`<polygon points="${starPts(14,48,38)}" fill="${col}" stroke="${stroke}" stroke-width="2.5"${dash}/>`;
+  else if(o.shape==="scallop") shape=`<g fill="${col}" stroke="${stroke}" stroke-width="2.5"${dash}>${scallop(12,36,11)}<circle cx="50" cy="50" r="37" stroke="none"/></g>`;
+  else if(o.shape==="pill") shape=`<rect x="4" y="24" width="92" height="52" rx="26" fill="${col}" stroke="${stroke}" stroke-width="2.5"${dash}/>`;
+  else shape=`<rect x="12" y="12" width="76" height="76" fill="${col}" stroke="${stroke}" stroke-width="2.5"${dash} transform="rotate(8 50 50)"/>`;
+  const L=o.lines, fs=L.length>2?12:15, y0=50-((L.length-1)*fs*.95)/2+fs*.34;
+  const txt=L.map((l,i)=>`<text x="50" y="${(y0+i*fs*.95).toFixed(1)}" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="${fs}" fill="${o.locked?"var(--muted)":"#141414"}">${esc(l)}</text>`).join("");
+  return `<svg viewBox="0 0 100 100" role="img" aria-label="${esc(L.join(" "))} sticker${o.locked?" (not earned yet)":""}" class="${o.cls||""}" style="transform:rotate(${o.rot||0}deg);overflow:visible">${o.locked?"":`<g transform="translate(3 3)" opacity="1">${shape.replace(/fill="[^"]*"/,'fill="#141414"').replace(/stroke-dasharray="[^"]*"/,"")}</g>`}${shape}${txt}</svg>`;
+}
+const BADGES=[
+ {u:"u1-revenue",lines:["TOP-LINE","READER"],color:"#FFE24A",shape:"burst"},
+ {u:"u2-margins",lines:["MARGIN","READER"],color:"#FF4FA3",shape:"scallop"},
+ {u:"u3-profit",lines:["EPS","DECODER"],color:"#22C47F",shape:"pill"},
+ {u:"u4-cashflow",lines:["CASH FLOW","SLEUTH"],color:"#FF6B2C",shape:"square"},
+ {u:"u5-balance",lines:["BALANCE","SHEET","BUILDER"],color:"#C9B8FF",shape:"burst"},
+ {u:"u6-returns",lines:["RETURNS","NERD"],color:"#FFE24A",shape:"scallop"},
+ {u:"u7-valuation",lines:["MULTIPLE","MATH"],color:"#22C47F",shape:"square"},
+ {u:"u8-intrinsic",lines:["DCF","DRAFTER"],color:"#FF4FA3",shape:"pill"}
+];
+
+/* ---------- state ---------- */
+const unitDone=u=>u.lessons.every(l=>S.done.has(l.id)||(S.lessonDone&&l.id===D.lesson.id));
+const badgeGot=i=>unitDone(D.units[i])||(i===1&&S.lessonDone);
+const S={tab:"learn",company:null,lessonDone:false,score:0,filters:new Set(),sort:"gross_margin",hide:false,openUnit:"u2-margins",
+  done:new Set(["u1-l1","u1-l2","u1-l3","u5-l2","u5-l4","u7-l1"]),cover:0,handle:"@alex.reads",showBal:false,theme:"auto"};
+const view=$("#view"), scr=$("#scr");
+
+/* ---------- tabs ---------- */
+const ICONS={
+ learn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5h11v15H4zM8 3h12v15"/></svg>',
+ hot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 7h16M4 12h11M4 17h7"/><circle cx="19" cy="17" r="2.5" fill="currentColor"/></svg>',
+ money:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="16"/><path d="M7 15v2M11 11v6M15 8v9"/></svg>',
+ stickers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12,2 14.6,8.4 21.5,9 16.2,13.4 17.9,20.2 12,16.6 6.1,20.2 7.8,13.4 2.5,9 9.4,8.4"/></svg>'
+};
+const TABS=[["learn","Learn"],["hot","Hot list"],["money","Wrapped"],["stickers","Stickers"]];
+function renderTabs(){
+  $("#tabs").innerHTML=TABS.map(([k,l])=>`<button class="tab" role="tab" type="button" data-tab="${k}" aria-selected="${S.tab===k}">${ICONS[k]}<span>${l}</span></button>`).join("");
+}
+function go(tab){S.tab=tab;if(tab!=="hot")S.company=null;renderTabs();render();view.scrollTop=0}
+
+/* ---------- render ---------- */
+function render(){
+  if(S.tab==="learn")view.innerHTML=learnV();
+  else if(S.tab==="hot")view.innerHTML=S.company?spreadV(C[S.company]):hotV();
+  else if(S.tab==="money")view.innerHTML=moneyV();
+  else view.innerHTML=stickersV();
+}
+function issueNo(){return String(S.done.size+(S.lessonDone?0:1)).padStart(2,"0")}
+function learnV(){
+  const total=D.units.reduce((a,u)=>a+u.lessons.length,0);
+  const cov=S.lessonDone
+    ?`<div class="cover ht-on" style="background:var(--green)"><span class="tape" style="left:-14px;top:8px"></span><div class="no"><span>ISSUE #07 · OUT NOW</span><span>3 Qs · 10 XP</span></div>
+      <h3>You read a gross margin.</h3><p>Sticker earned: Margin Reader. Your cover is ready whenever you are.</p>
+      <div class="burst" aria-hidden="true">${sticker({lines:["MARGIN","READER"],color:"#FF4FA3",shape:"scallop",rot:0})}</div>
+      <div class="cta-row"><button class="btn sm" type="button" data-act="share">View cover</button><button class="btn sm ghost" type="button" data-act="start">Replay</button></div></div>`
+    :`<div class="cover ht-on"><span class="tape" style="left:-14px;top:8px"></span><div class="no"><span>NEXT UP · ISSUE #07</span><span>~2 MIN · 10 XP</span></div>
+      <h3>${esc(D.lesson.title)}</h3><p>3 questions on real Coca-Cola, Costco, Microsoft and Apple filings.</p>
+      <div class="burst" aria-hidden="true">${sticker({lines:["REAL","10-K","DATA"],color:"#FFE24A",shape:"burst"})}</div>
+      <button class="btn sm" type="button" data-act="start">Read it &rarr;</button></div>`;
+  const toc=D.units.map((u,i)=>{
+    const ls=u.lessons, dn=ls.filter(l=>S.done.has(l.id)||(S.lessonDone&&l.id===D.lesson.id)).length, b=BADGES[i], got=badgeGot(i);
+    return `<li class="${S.openUnit===u.id?"open":""}"><button type="button" data-unit="${u.id}" aria-expanded="${S.openUnit===u.id}">
+      <span class="n">${String(i+1).padStart(2,"0")}</span>
+      <span><span class="t">${esc(u.title)}</span><span class="d" aria-label="${dn} of ${ls.length} lessons done">${ls.map(l=>`<i class="${S.done.has(l.id)||(S.lessonDone&&l.id===D.lesson.id)?"on":""}"></i>`).join("")}</span></span>
+      <span class="st" aria-hidden="true">${sticker({...b,locked:!got,lines:b.lines})}</span></button>
+      <div class="lessons">${ls.map(l=>{const d=S.done.has(l.id)||(S.lessonDone&&l.id===D.lesson.id), now=l.id===D.lesson.id&&!S.lessonDone;
+        return `<div class="lz"><span>${esc(l.title)}</span>${d?'<em class="done">READ</em>':now?`<button class="btn sm" style="font-size:13px;padding:6px 8px 4px" type="button" data-act="start">Read</button>`:`<em>${l.n} Qs</em>`}</div>`}).join("")}</div></li>`}).join("");
+  return `<div class="pad"><div class="mast"><h2>Your<br>zine</h2><small>${S.done.size+(S.lessonDone?1:0)} ISSUES READ<br>OF ${total} · ANY ORDER</small></div>
+    ${cov}
+    <div class="sec-h"><h3>Back issues</h3><span>pick your own path</span></div>
+    <ul class="toc">${toc}</ul>
+    <p class="note">No streak to protect, no hearts to lose. Stickers unlock only when you finish a unit's concepts.</p></div>`;
+}
+
+/* hot list */
+const FILTERS=[
+ {k:"fat",l:"Fat margins >40%",c:"var(--pink)",r:"-3deg",f:c=>c.m.gross_margin!=null&&c.m.gross_margin>.4},
+ {k:"cash",l:"More cash than debt",c:"var(--green)",r:"2deg",f:c=>c.m.net_cash>0},
+ {k:"grow",l:"Sales up >10%",c:"var(--yellow)",r:"-1deg",f:c=>c.m.revenue_growth_yoy>.1},
+ {k:"div",l:"Pays a dividend",c:"var(--lilac)",r:"3deg",f:c=>c.m.dividend_yield>0},
+ {k:"cr",l:"Current ratio ≥1",c:"var(--orange)",r:"-2deg",f:c=>c.m.current_ratio!=null&&c.m.current_ratio>=1}
+];
+const SORTS=[["gross_margin","GROSS MGN",v=>pct(v),"gross margin"],["revenue_growth_yoy","GROWTH",v=>(v>=0?"+":"")+pct(v),"sales growth"],["net_margin","NET MGN",v=>pct(v),"net margin"],["pe","P/E",v=>v==null?"—":v.toFixed(1)+"×","P/E at sample price"]];
+function hotV(){
+  const so=SORTS.find(s=>s[0]===S.sort);
+  let list=D.companies.filter(c=>[...S.filters].every(k=>FILTERS.find(f=>f.k===k).f(c)));
+  list.sort((a,b)=>{const x=a.m[S.sort],y=b.m[S.sort];if(x==null)return 1;if(y==null)return -1;return S.sort==="pe"?x-y:y-x});
+  const max=Math.max(...list.map(c=>Math.abs(c.m[S.sort]||0)),.0001);
+  return `<div class="pad"><div class="hot-h ht-on"><h2>The<br>hot list</h2><p>12 companies, straight from their filings. Slap on filter stickers to shape the list.</p></div>
+  <div class="stix" role="group" aria-label="Filter stickers">${FILTERS.map(f=>`<button type="button" class="stk" style="--c:${f.c};--r:${f.r}" data-filter="${f.k}" aria-pressed="${S.filters.has(f.k)}">${f.l}</button>`).join("")}</div>
+  <div class="seg" role="group" aria-label="Rank by">${SORTS.map(s=>`<button type="button" data-sort="${s[0]}" aria-pressed="${S.sort===s[0]}">${s[1]}</button>`).join("")}</div>
+  <div>${list.length?list.map((c,i)=>{const v=c.m[S.sort];return `<button type="button" class="row" data-co="${c.t}" aria-label="${esc(c.n)}, ${so[3]} ${esc(so[2](v))}. Open spread">
+    <span class="rk">NO.${String(i+1).padStart(2,"0")}</span>
+    <span><span class="tk">${c.t}</span><span class="nm">${esc(SHORT[c.t])} · FY${c.fy}</span><span class="bar"><i style="width:${v==null?0:Math.max(3,Math.abs(v)/max*100)}%"></i></span></span>
+    <span class="v">${esc(so[2](v))}<small>${so[3]}</small></span></button>`}).join("")
+    :`<div class="empty">Nothing matches all those stickers. Peel one off?</div>`}</div>
+  <p class="note">A learning tool, not a to-do list. P/E uses a sample price. Educational only.</p></div>`;
+}
+
+/* spread */
+function spreadV(c){
+  const m=c.m,f=c.f,hasG=m.gross_margin!=null, key=hasG?m.gross_margin:m.net_margin, nm=SHORT[c.t];
+  const rows=[["Gross","gross_margin","var(--yellow)"],["Operating","operating_margin","var(--orange)"],["Net profit","net_margin","var(--pink)"]];
+  const hist=c.h.revenue.slice(-6), hmax=Math.max(...hist.map(x=>x[1]));
+  const quote=hasG
+    ? (m.gross_margin<.3?`Thin slice, huge pie: ${fmtB(f.revenue)} of sales at ${cents(m.gross_margin)} each still adds up to ${fmtB(f.gross_profit)} of gross profit.`
+       :`${cents(m.gross_margin)} left after paying for the product leaves room to spend on research, marketing and more.`)
+    : `${nm} doesn't report a cost of revenue the way a retailer does, so the spread starts from net margin instead.`;
+  return `<div class="pad"><div class="spread-top"><svg class="coin" viewBox="0 0 100 100" aria-hidden="true"><polygon points="${starPts(18,48,40)}" fill="none" stroke="#FFE24A" stroke-width="3"/><text x="50" y="62" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="34" fill="#FFE24A">$1</text></svg>
+    <div class="meta"><span>THE SPREAD · ${c.t}</span><span>${esc(c.s)} · FY${c.fy}</span></div>
+    <h2>${esc(nm)} keeps <em>${cents(key)}</em> of every dollar</h2>
+    <p>${hasG?"…after paying for what it sold (gross margin).":"…as net profit, after every cost, interest and tax."} Here's where the rest goes.</p></div>
+    <button class="back" type="button" data-act="back" style="margin-top:14px">&larr; Hot list</button>
+    <div class="stack" aria-label="Margin stack per dollar of sales">
+      <div class="ln"><span>Sales</span><span class="tr"><i style="width:100%;background:var(--green)"></i></span><b>100¢</b></div>
+      ${rows.map(r=>{const v=m[r[1]];return `<div class="ln"><span>${r[0]}</span><span class="tr"><i style="width:${v==null?0:Math.max(1,v*100)}%;background:${r[2]}"></i></span><b>${v==null?"n/a":cents(v)}</b></div>`}).join("")}
+    </div>
+    <div class="quote">"${esc(quote)}"</div>
+    <div class="sec-h" style="margin-top:8px"><h3>Sales, by year</h3><span>reported revenue</span></div>
+    <div class="chart" role="img" aria-label="Revenue ${hist.map(x=>x[0]+": "+fmtB(x[1])).join(", ")}">${hist.map(x=>`<div><span>${fmtB(x[1]).replace("$","")}</span><i style="height:${Math.max(4,x[1]/hmax*82)}%"></i></div>`).join("")}</div>
+    <div class="chart-x">${hist.map(x=>`<span>${String(x[0]).slice(2)}</span>`).join("")}</div>
+    <div class="rcpt"><h4>THE RECEIPT · FY${c.fy}</h4>
+      <div><span>Revenue</span><span>${fmtB(f.revenue)}</span></div>
+      <div><span>Gross profit</span><span>${fmtB(f.gross_profit)}</span></div>
+      <div><span>Net income</span><span>${fmtB(f.net_income)}</span></div>
+      <div><span>Free cash flow</span><span>${fmtB(f.free_cash_flow)}</span></div>
+      <div><span>Cash / Debt</span><span>${fmtB(f.cash)} / ${fmtB(f.total_debt)}</span></div>
+      <div><span>Current ratio</span><span>${m.current_ratio==null?"—":m.current_ratio.toFixed(2)+"×"}</span></div>
+      <div><span>Sales growth</span><span>${pct(m.revenue_growth_yoy)}</span></div>
+      <div><span>Sample price</span><span>$${c.p} (${c.pd})</span></div>
+      <div><span>P/E at sample price</span><span>${m.pe==null?"—":m.pe.toFixed(1)+"×"}</span></div>
+      <span class="why">Figures from reported financials. Sample price is illustrative, not a quote.</span></div>
+    <div class="cta-row" style="margin-top:16px"><button class="btn sm pink" type="button" data-act="start">Learn gross margin &rarr;</button></div>
+    <p class="note">${esc(D.disclaimer)}</p></div>`;
+}
+
+/* money */
+function moneyV(){
+  const r=(n,a,s)=>`<div class="acct"><b>${n}</b><span class="amt">${a}</span>${s?`<small>${s}</small>`:""}</div>`;
+  return `<div class="pad"><span class="persona">FICTIONAL SAMPLE PERSONA · ALEX, 20</span>
+  <button type="button" class="wr-cover ht-on" data-act="wrapped"><span class="tape" style="right:30px;top:-6px"></span><span class="mono">YOUR PERSONAL 10-K</span><h2>Wrapped</h2><span class="mono">7 slides · 60 seconds · private to you</span><span class="play">PLAY</span></button>
+  <div class="sec-h"><h3>The receipts</h3><button type="button" class="switch" role="switch" aria-checked="${S.hide}" data-act="hide"><span class="k"></span>Hide amounts</button></div>
+  <div class="${S.hide?"blur":""}">
+    ${r("Checking",usd(A.checking))}${r("Savings",usd(A.savings))}
+    ${r("Credit card",usd(A.card),`Due ${A.due} · minimum ${usd(A.min)}`)}
+    ${r("Brokerage",usd(A.brokerage))}${r("Roth IRA",usd(A.roth))}
+    ${r("Pending pay",usd(A.pending),"From hours not submitted yet")}
+  </div>
+  <p class="note">Nothing here is ever posted. Share cards show ratios, not balances, unless you flip a switch.</p></div>`;
+}
+
+/* stickers */
+function stickersV(){
+  const got=badgeGot;
+  const prog=i=>{const u=D.units[i];return u.lessons.filter(l=>S.done.has(l.id)||(S.lessonDone&&l.id===D.lesson.id)).length+"/"+u.lessons.length};
+  const covers=[["#03","Revenue growth","var(--yellow)"],["#05","Net cash vs net debt","var(--lilac)"],["#06","Market cap & EV","var(--green)"]];
+  if(S.lessonDone)covers.push(["#07","Gross margin",COLORS[S.cover]]);
+  return `<div class="pad"><div class="mast"><h2>Sticker<br>book</h2><small>${BADGES.filter((b,i)=>got(i)).length} OF 8 EARNED<br>${esc(S.handle)}</small></div>
+  <div class="book">${BADGES.map((b,i)=>{const g=got(i);return `<div class="slot ${g?"got":""} ${g&&i===1&&S.lessonDone?"new":""}">${sticker({...b,locked:!g,rot:g?(i%2?5:-6):0})}<b>${esc(D.units[i].title)}</b><span>${g?(unitDone(D.units[i])?"UNIT COMPLETE":"CONCEPT MASTERED · "+prog(i)):"Lessons "+prog(i)}</span></div>`}).join("")}</div>
+  <div class="sec-h"><h3>Your covers</h3><span>issues you've made</span></div>
+  <div class="shelf">${covers.map(c=>`<div class="mini ht-on" style="background:${c[2]}"><small>TENBAGGER ${c[0]}</small><span>${esc(c[1])}</span></div>`).join("")}</div>
+  <p class="note">Stickers are earned by learning a concept. Never for trading, never at random.</p></div>`;
+}
+
+/* ---------- story engine ---------- */
+let ST=null; // {kind, i, slides, picked:{}}
+function lessonSlides(){
+  const sent=D.lesson.intro.match(/[^.]+(?:\.(?!\d)[^.]*)*?\.(?=\s|$)/g)||[D.lesson.intro];
+  const g=[[0],[1,2],[3,4,5]].map(ix=>ix.map(i=>sent[i]).filter(Boolean).join(" ").trim());
+  return [
+    {k:"cover"},
+    {k:"read",bg:"var(--yellow)",kk:"THE FORMULA",big:"Revenue<br>− cost<br>= gross<br>profit",t:g[0]},
+    {k:"read",bg:"var(--green)",kk:"THE RATIO",big:`Costco ${cents(C.COST.m.gross_margin)}<br>Microsoft ${cents(C.MSFT.m.gross_margin)}`,t:g[1]},
+    {k:"read",bg:"var(--lilac)",kk:"THE NUANCE",big:"Neither is<br>better.",t:g[2]},
+    ...D.lesson.questions.map((q,i)=>({k:"q",q,n:i+1,bg:["var(--surface)","var(--yellow)","var(--pink)"][i]})),
+    {k:"end",bg:"var(--green)"}
+  ];
+}
+function wrappedSlides(){
+  return [
+    {k:"w0",bg:"var(--pink)"},{k:"w1",bg:"var(--yellow)"},{k:"w2",bg:"var(--green)"},{k:"w3",bg:"var(--blue)",fg:"#fff"},
+    {k:"w4",bg:"var(--orange)"},{k:"w5",bg:"var(--lilac)"},{k:"w6",bg:"var(--yellow)"}
+  ];
+}
+function openStory(kind){
+  closeLayers();
+  ST={kind,i:0,slides:kind==="lesson"?lessonSlides():wrappedSlides(),picked:{},score:0};
+  const el=document.createElement("div");el.className="story";el.id="story";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");
+  el.setAttribute("aria-label",kind==="lesson"?"Lesson: "+D.lesson.title:"Your Personal 10-K, Wrapped");
+  scr.appendChild(el);drawStory();
+  if(window.innerWidth<1000) $("#phone").scrollIntoView({behavior:RM()?"auto":"smooth",block:"start"});
+}
+function closeLayers(){["#story","#share"].forEach(s=>{const e=$(s);if(e)e.remove()});ST=null}
+function drawStory(){
+  const el=$("#story");if(!el||!ST)return;const s=ST.slides[ST.i];
+  el.style.setProperty("--bgc",s.bg||"var(--pink)");el.style.setProperty("--fgc",s.fg||(s.bg==="var(--surface)"?"var(--ink)":"#141414"));
+  const segs=ST.slides.map((x,j)=>`<i class="${j<=ST.i?"on":""}"></i>`).join("");
+  const label=ST.kind==="lesson"?`ISSUE #07 · ${ST.i+1}/${ST.slides.length}`:`ALEX'S 10-K · ${ST.i+1}/${ST.slides.length}`;
+  el.innerHTML=`<div class="segs" aria-hidden="true">${segs}</div><div class="bar2"><span>${label}</span><button class="x" type="button" data-act="close" aria-label="Close">X</button></div>${slideHTML(s)}<div class="snad">Educational only. Not investment advice.</div>`;
+  const f=el.querySelector(".pe button:not(:disabled),.pe .btn");
+  (f||el.querySelector(".x")).focus({preventScroll:true});
+}
+const tapz=(canBack=true)=>`<div class="tapz"><button type="button" data-act="prev" aria-label="Previous card" ${canBack?"":"disabled"}></button><button type="button" data-act="next" aria-label="Next card"></button></div>`;
+const hint=`<div class="hint"><span>&larr; tap back</span><span>tap for next &rarr;</span></div>`;
+function slideHTML(s){
+  const L=D.lesson;
+  if(s.k==="cover") return `<div class="slide ht-on">${tapz(false)}<div class="fg"><span class="kk">ISSUE #07 · UNIT 02 MARGINS</span>
+    <h2 class="big pop" style="font-size:78px">Gross<br>profit &amp;<br><span style="background:#141414;color:var(--yellow);padding:0 .08em">margin</span></h2>
+    <p class="body">3 questions. Real numbers from Coca-Cola, Costco, Microsoft and Apple filings. ~2 minutes.</p>
+    <div style="width:130px;margin-top:14px">${sticker({lines:["+"+L.xp+" XP","FOR","LEARNING"],color:"#FFE24A",shape:"burst",rot:-8})}</div></div>${hint}</div>`;
+  if(s.k==="read") return `<div class="slide ht-on">${tapz()}<div class="fg"><span class="kk">${s.kk}</span>
+    <h2 class="big pop" style="font-size:${s.big.length>40?50:62}px">${s.big}</h2><p class="body">${md(s.t)}</p></div>${hint}</div>`;
+  if(s.k==="q"){
+    const q=s.q, tf=q.type==="true_false", ch=tf?["True","False"]:q.choices, ans=tf?(q.answer?0:1):q.answer, p=ST.picked[q.id];
+    const done=p!==undefined, ok=p===ans;
+    const src=q.source, ins=src.inputs?Object.entries(src.inputs).map(([k,v])=>k.replace(/_/g," ")+" "+fmtB(v)).join(" · "):"";
+    return `<div class="slide">${done?tapz():""}<div class="fg"><span class="kk">QUESTION ${s.n} OF 3 · ${q.type.replace("_"," ").toUpperCase()}</span>
+      <h2 class="q-prompt">${esc(q.prompt)}</h2>
+      <div class="choices pe ${tf?"tf":""}" role="group" aria-label="Answer choices">${ch.map((c,j)=>`<button type="button" class="choice ${done&&j===ans?"right":""} ${done&&j===p&&!ok?"wrong":""}" data-pick="${j}" ${done?"disabled":""} aria-label="${esc(c)}${done&&j===ans?" (correct answer)":""}">${tf?esc(c):`<span>${esc(c)}</span><span class="lt">${"ABCD"[j]}</span>`}</button>`).join("")}</div>
+      ${done?`<div class="fb pe" role="status"><span class="stamp ${ok?"":"soft"}">${ok?"NAILED IT":"CLOSE. HERE'S THE MOVE"}</span>
+        <p>${esc(q.explanation)}</p><div class="src">SOURCE · ${src.ticker} FY${src.fy} · ${esc(src.formula)}${ins?"<br>"+esc(ins):""}</div>
+        <button class="btn sm" type="button" data-act="next">${s.n===3?"Finish issue":"Next card"} &rarr;</button></div>`:""}</div></div>`;
+  }
+  if(s.k==="end"){
+    const conf=RM()?"":`<div class="confetti" aria-hidden="true">${Array.from({length:22},(_,i)=>`<i style="left:${(i*37)%100}%;background:${["#FF4FA3","#FFE24A","#0A4FD6","#FF6B2C","#fff"][i%5]};animation-delay:${(i%7)*.09}s;${i%3?"border-radius:50%":""}"></i>`).join("")}</div>`;
+    return `<div class="slide ht-on">${conf}<div class="fg"><span class="kk">ISSUE #07 · COMPLETE</span>
+      <h2 class="big pop" style="font-size:74px">You can<br>read a<br>margin.</h2>
+      <p class="body">${ST.score}/3 on real filings.${ST.score<3?" And you saw exactly where the slip was, which is the whole point.":" Clean sweep."}</p>
+      <div style="width:170px;margin:10px 0 0 auto">${sticker({lines:["MARGIN","READER"],color:"#FF4FA3",shape:"scallop",cls:"slap"})}</div>
+      <p class="body" style="font-size:14px;margin-top:4px">Sticker earned: <b>Margin Reader</b>, unit 02. +${L.xp} XP.</p>
+      <div class="cta-row pe" style="margin-top:14px"><button class="btn sm ghost" type="button" data-act="share" style="background:#fff;color:#141414">Make my cover &rarr;</button></div></div></div>`;
+  }
+  // wrapped
+  const W={
+   w0:`<span class="kk">FICTIONAL PERSONA · ALEX, 20</span><h2 class="big pop" style="font-size:80px">Your<br>personal<br>10-K,<br><span style="background:#141414;color:var(--yellow);padding:0 .08em">wrapped.</span></h2><p class="body">Companies file a 10-K every year. Here's yours, read the same way analysts read Costco's.</p>`,
+   w1:`<span class="kk">NET WORTH</span><h2 class="big pop" style="font-size:96px">${usd(A.nw)}</h2><p class="body">What you own (${usd(A.assets)}: checking, savings, brokerage, Roth) minus what you owe (${usd(A.card)} on the card). Same math as a company's shareholders' equity.</p>`,
+   w2:`<span class="kk">LIQUIDITY RATIO</span><h2 class="big pop" style="font-size:110px">${A.liq.toFixed(2)}×</h2><p class="body">Your cash (${usd(A.cash)}) covers what's due soon (${usd(A.card)}) ${A.liq.toFixed(2)} times.</p><p class="body" style="border:2px solid #141414;padding:8px 10px;background:#fff">Like Costco's ${costcoCR.toFixed(2)}× current ratio (FY${C.COST.fy}). Tight, but it covers.</p>`,
+   w3:`<span class="kk">CAN I COVER THE CARD?</span><h2 class="big pop" style="font-size:88px">Yes.</h2><p class="body">${usd(A.cash)} in cash vs ${usd(A.card)} due ${A.due}. Nothing is late. A few calm options:</p>
+     <div style="display:grid;gap:8px;margin-top:12px;font-size:15px;font-weight:600">
+      <div style="border:2px solid #fff;padding:8px 10px">Pay it in full: ${usd(A.left)} of cash left, no interest.</div>
+      <div style="border:2px solid #fff;padding:8px 10px">Pay ${usd(A.checking)} from checking now, the rest before ${A.due}.</div>
+      <div style="border:2px solid #fff;padding:8px 10px">Pay the ${usd(A.min)} minimum: account stays in good standing; interest usually applies to what's left.</div></div>
+     <p class="body" style="font-size:13px">Your call. We'll just show the math.</p>`,
+   w4:`<span class="kk">MONEY IN TRANSIT</span><h2 class="big pop" style="font-size:96px">${usd(A.pending)}</h2><p class="body">is waiting on hours you haven't submitted yet. Submit them and your liquidity ratio goes from ${A.liq.toFixed(2)}× to ${A.liqP.toFixed(2)}×.</p>`,
+   w5:`<span class="kk">THE LONG GAME</span><h2 class="big pop" style="font-size:96px">${Math.round(A.inv*100)}%</h2><p class="body">of what you own sits in your brokerage and Roth IRA (${usd(A.brokerage+A.roth)}), set aside for later. Short-term cash, long-term money: two separate jobs.</p>`,
+   w6:`<span class="kk">YOUR ISSUE TYPE</span><h2 class="big pop" style="font-size:72px">The<br>cushion<br>builder.</h2><p class="body">Covered, calm, and compounding. Share the type, never the balances.</p><div class="cta-row pe" style="margin-top:14px"><button class="btn sm" type="button" data-act="share-money" style="background:#141414;color:var(--yellow)">Make my cover &rarr;</button></div>`
+  };
+  const last=s.k==="w6";
+  return `<div class="slide ${s.k==="w3"?"":"ht-on"}">${last?"":tapz(ST.i>0)}<div class="fg">${W[s.k]}</div>${last?"":hint}</div>`;
+}
+function step(d){
+  if(!ST)return;const s=ST.slides[ST.i];
+  if(d>0&&s.k==="q"&&ST.picked[s.q.id]===undefined)return;
+  const n=ST.i+d;if(n<0||n>=ST.slides.length)return;
+  ST.i=n;
+  if(ST.slides[n].k==="end"&&ST.kind==="lesson"){S.lessonDone=true;S.score=ST.score}
+  drawStory();
+}
+function pick(j){
+  const s=ST.slides[ST.i];if(s.k!=="q"||ST.picked[s.q.id]!==undefined)return;
+  const ans=s.q.type==="true_false"?(s.q.answer?0:1):s.q.answer;
+  ST.picked[s.q.id]=j;if(j===ans)ST.score++;drawStory();
+}
+
+/* ---------- share card ---------- */
+let shareKind="lesson";
+function openShare(kind){
+  shareKind=kind;const wasStory=ST;closeLayers();if(kind==="lesson")S.lessonDone=true;
+  const el=document.createElement("div");el.className="share";el.id="share";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");el.setAttribute("aria-label","Share card");
+  scr.appendChild(el);drawShare();render();
+}
+function drawShare(){
+  const el=$("#share");if(!el)return;const cc=COLORS[S.cover], L=shareKind==="lesson";
+  const lines=L?[`Costco keeps ${cents(C.COST.m.gross_margin)}`,`Microsoft keeps ${cents(C.MSFT.m.gross_margin)}`,`Apple keeps ${cents(C.AAPL.m.gross_margin)}`]
+              :[`Liquidity ${A.liq.toFixed(2)}× (Costco: ${costcoCR.toFixed(2)}×)`,`${Math.round(A.inv*100)}% in the long game`,"Card: covered"];
+  const bal=S.showBal?`<div class="priv">NET WORTH ${usd(A.nw)} · CASH ${usd(A.cash)}</div>`:`<div class="priv">BALANCES HIDDEN</div>`;
+  el.innerHTML=`<div class="share-h"><h3>Your cover</h3><button class="x" type="button" data-act="close" aria-label="Close share card">X</button></div>
+   <div class="card ht-on" style="--cc:${cc}" id="card" aria-label="Share card preview">
+     <div class="mh"><b>TENBAGGER</b><span>ISSUE #${L?"07":"10-K"}<br>SEPT 2026</span></div>
+     <div class="ican">${L?"I can read a":"Alex's 10-K type:"}</div>
+     <div class="headline" style="${L?"":"font-size:52px"}">${L?"Gross<br>margin":"Cushion<br>builder"}</div>
+     <div class="badge" aria-hidden="true">${L?sticker({lines:["MARGIN","READER"],color:"#FFFFFF",shape:"scallop",rot:10}):sticker({lines:["1.12×","COVERED"],color:"#FFFFFF",shape:"burst",rot:10})}</div>
+     <div class="ghost" aria-hidden="true">${L?"07":"10K"}</div><div class="lines">${lines.map(l=>`<div>${esc(l)}</div>`).join("")}</div>
+     ${bal}
+     <div class="foot"><span class="bc" aria-hidden="true"></span><small>${esc(S.handle)}<br>real SEC data · educational only</small></div>
+   </div>
+   <div class="opts">
+     <div class="sw" role="group" aria-label="Cover color"><span>Color</span>${COLORS.map((c,i)=>`<button type="button" style="background:${c}" data-color="${i}" aria-pressed="${S.cover===i}" aria-label="Color ${i+1}"></button>`).join("")}</div>
+     <label>Your zine name<input id="handle" value="${esc(S.handle)}" maxlength="18" autocomplete="off"></label>
+     <button type="button" class="switch" role="switch" aria-checked="${S.showBal}" data-act="bal"><span class="k"></span>Show balances on card</button>
+     <p class="fine">Off by default. Ratios are shareable; dollar amounts are yours.</p>
+     <div class="cta-row"><button class="btn pink sm" type="button" data-act="post">Share cover</button><button class="btn ghost sm" type="button" data-act="close">Done</button></div>
+     <p class="fine">Educational only. Not investment advice.</p>
+   </div>`;
+}
+function toast(msg){const o=$(".toast");if(o)o.remove();const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");t.textContent=msg;scr.appendChild(t);setTimeout(()=>t.remove(),2600)}
+
+/* ---------- events ---------- */
+function onClick(e){
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.tab){closeLayers();go(b.dataset.tab);return}
+  if(b.dataset.unit){S.openUnit=S.openUnit===b.dataset.unit?null:b.dataset.unit;render();return}
+  if(b.dataset.filter){const k=b.dataset.filter;S.filters.has(k)?S.filters.delete(k):S.filters.add(k);render();return}
+  if(b.dataset.sort){S.sort=b.dataset.sort;render();return}
+  if(b.dataset.co){S.company=b.dataset.co;render();view.scrollTop=0;return}
+  if(b.dataset.pick){pick(+b.dataset.pick);return}
+  if(b.dataset.color){S.cover=+b.dataset.color;drawShare();if(S.tab==="stickers")render();return}
+  const a=b.dataset.act;
+  if(a==="start"){if(S.tab!=="learn")go("learn");openStory("lesson")}
+  else if(a==="wrapped"){if(S.tab!=="money")go("money");openStory("wrapped")}
+  else if(a==="next")step(1);
+  else if(a==="prev")step(-1);
+  else if(a==="close"){closeLayers();render()}
+  else if(a==="share")openShare("lesson");
+  else if(a==="share-money")openShare("money");
+  else if(a==="back"){S.company=null;render();view.scrollTop=0}
+  else if(a==="hide"){S.hide=!S.hide;render()}
+  else if(a==="bal"){S.showBal=!S.showBal;drawShare();$('[data-act="bal"]').focus()}
+  else if(a==="post")toast(S.showBal?"Prototype: share sheet opens here. Heads up, balances are ON.":"Prototype: share sheet opens here. Balances stay hidden.");
+}
+function onKey(e){
+  if(!ST&&!$("#share"))return;
+  if(e.key==="Escape"){closeLayers();render();return}
+  if(!ST)return;
+  if(e.key==="ArrowRight")step(1);else if(e.key==="ArrowLeft")step(-1);
+}
+function applyTheme(){
+  const r=document.documentElement;
+  if(S.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",S.theme);
+  $("#themeBtn").textContent="THEME: "+S.theme.toUpperCase();
+}
+function init(){
+  if(typeof D==="undefined"||!$("#view"))return;
+  const total=D.units.reduce((a,u)=>a+u.lessons.length,0);
+  $("#proof").innerHTML=`<span><b>${D.companies.length}</b>real companies</span><span><b>${total}</b>story lessons</span><span><b>${D.units.length}</b>stickers to earn</span>`;
+  $("#heroArt").innerHTML=`<polygon points="${starPts(16,92,70,100,100)}" fill="#FFE24A" stroke="#141414" stroke-width="4"/><polygon points="${starPts(16,92,70,100,100)}" fill="none" stroke="#FF4FA3" stroke-width="4" transform="translate(6 5)"/><text x="100" y="92" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="30" fill="#141414">REAL</text><text x="100" y="124" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="30" fill="#141414">10-K DATA</text>`;
+  const mq=D.companies.filter(c=>c.m.gross_margin!=null).map(c=>`${SHORT[c.t].toUpperCase()} KEEPS ${cents(c.m.gross_margin)} OF EVERY DOLLAR <i>/</i>`).join(" ");
+  $("#mq").innerHTML=mq+" GROSS MARGIN, LATEST FISCAL YEAR <i>/</i> "+esc(D.disclaimer.toUpperCase());
+  $("#footNote").textContent=D.disclaimer+" Company figures from reported financials; prices are sample prices. Alex is a fictional persona.";
+  renderTabs();render();
+  document.addEventListener("click",onClick);
+  document.addEventListener("keydown",onKey);
+  document.addEventListener("input",e=>{if(e.target.id==="handle"){S.handle=e.target.value||"@you";const c=$("#card small");if(c)c.innerHTML=esc(S.handle)+"<br>real SEC data · educational only"}});
+  $("#themeBtn").addEventListener("click",()=>{S.theme={auto:"light",light:"dark",dark:"auto"}[S.theme];applyTheme()});
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>

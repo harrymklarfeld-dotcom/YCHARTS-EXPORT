@@ -1,0 +1,90 @@
+---
+/**
+ * Server-rendered SVG chart of an annual series ([fy, value] pairs).
+ * Zero JS: hover/focus a bar to see its value (CSS), plus a screen-reader table.
+ */
+import { formatByUnit, type Unit } from '../../../packages/screener/src/index.ts';
+
+interface Props {
+  series: Array<[number, number | null]>;
+  unit?: Unit;
+  title: string;
+  caption?: string;
+  kind?: 'bar' | 'line';
+  height?: number;
+  /** Draw a dashed line at the average of all years. */
+  average?: boolean;
+  /** Override the value formatter (e.g. article widget formats). */
+  format?: (v: number) => string;
+}
+const { series = [], unit = 'usd', title, caption, kind = 'bar', height = 180, average = false, format } = Astro.props;
+const pts = series.filter((p): p is [number, number] => typeof p[1] === 'number' && Number.isFinite(p[1]));
+const W = 440;
+const H = height;
+const padL = 8, padR = 8, padT = 22, padB = 24;
+const vals = pts.map((p) => p[1]);
+const max = Math.max(0, ...vals);
+const min = Math.min(0, ...vals);
+const span = max - min || 1;
+const y = (v: number) => padT + ((max - v) / span) * (H - padT - padB);
+const zeroY = y(0);
+const n = pts.length || 1;
+const slot = (W - padL - padR) / n;
+const bw = Math.max(6, Math.min(44, slot * 0.62));
+const fmt = (v: number) => (format ? format(v) : formatByUnit(unit, v));
+const id = 'c' + Math.random().toString(36).slice(2, 8);
+
+function barPath(x: number, v: number) {
+  const top = y(Math.max(v, 0));
+  const bottom = y(Math.min(v, 0));
+  const h = Math.max(1, bottom - top);
+  const r = Math.min(4, h / 2, bw / 2);
+  if (v >= 0) {
+    return `M${x},${bottom} V${top + r} Q${x},${top} ${x + r},${top} H${x + bw - r} Q${x + bw},${top} ${x + bw},${top + r} V${bottom} Z`;
+  }
+  return `M${x},${top} V${bottom - r} Q${x},${bottom} ${x + r},${bottom} H${x + bw - r} Q${x + bw},${bottom} ${x + bw},${bottom - r} V${top} Z`;
+}
+const cx = (i: number) => padL + slot * i + slot / 2;
+const linePath = pts.map((p, i) => `${i ? 'L' : 'M'}${cx(i).toFixed(1)},${y(p[1]).toFixed(1)}`).join(' ');
+const last = pts[pts.length - 1];
+const first = pts[0];
+const avg = pts.length ? vals.reduce((a, b) => a + b, 0) / pts.length : 0;
+---
+<figure class="chart" aria-labelledby={`${id}-t`}>
+  <figcaption id={`${id}-t`} class="chart-title">
+    <span>{title}</span>
+    {last && <span class="chart-latest">FY{last[0]}: <strong>{fmt(last[1])}</strong>{average && pts.length > 1 && <> · avg {fmt(avg)}</>}</span>}
+  </figcaption>
+  {pts.length < 2 ? (
+    <p class="chart-empty">Not enough history to chart yet.</p>
+  ) : (
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${title}, fiscal ${first[0]} to ${last[0]}`} class={`chart-svg chart-kind-${kind}`}>
+      <line x1={padL} x2={W - padR} y1={zeroY} y2={zeroY} class="chart-base" />
+      {kind === 'line' && <path d={linePath} class="chart-line" fill="none" />}
+      {average && (
+        <g class="chart-avg">
+          <line x1={padL} x2={W - padR} y1={y(avg)} y2={y(avg)} />
+          <text x={padL + 2} y={y(avg) - 5} text-anchor="start">avg {fmt(avg)}</text>
+        </g>
+      )}
+      {pts.map((p, i) => (
+        <g class="chart-pt">
+          <rect x={padL + slot * i} y={0} width={slot} height={H} class="chart-hit" />
+          {kind === 'bar' ? (
+            <path d={barPath(cx(i) - bw / 2, p[1])} class={p[1] < 0 ? 'chart-bar neg' : 'chart-bar'} />
+          ) : (
+            <circle cx={cx(i)} cy={y(p[1])} r="4.5" class={p[1] < 0 ? 'chart-dot neg' : 'chart-dot'} />
+          )}
+          <text x={cx(i)} y={Math.max(12, (p[1] >= 0 ? y(p[1]) : y(0)) - 7)} text-anchor="middle" class={`chart-val ${i === pts.length - 1 ? 'show' : ''}`}>{fmt(p[1])}</text>
+          <text x={cx(i)} y={H - 6} text-anchor="middle" class="chart-x">{n > 7 ? `’${String(p[0]).slice(2)}` : p[0]}</text>
+        </g>
+      ))}
+    </svg>
+  )}
+  {caption && <p class="chart-caption">{caption}</p>}
+  <table class="sr-only">
+    <caption>{title}</caption>
+    <thead><tr><th scope="col">Fiscal year</th><th scope="col">Value</th></tr></thead>
+    <tbody>{pts.map((p) => <tr><td>{p[0]}</td><td>{fmt(p[1])}</td></tr>)}</tbody>
+  </table>
+</figure>

@@ -1,0 +1,27 @@
+{
+  "name": "@tenbagger/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:links": "node scripts/check-links.mjs",
+    "serve": "node scripts/serve.mjs",
+    "screenshots": "node scripts/screenshots.mjs",
+    "verify": "npm run build && npm run check:links",
+    "og": "node --experimental-strip-types scripts/make-og.mjs",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^7.3.5",
+    "marked": "^18.0.14",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.20.4",
+    "typescript": "^5.9.3"
+  }
+}

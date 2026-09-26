@@ -1,0 +1,36 @@
+---
+/**
+ * Honesty banner. For one company: says whether its financials are sample data
+ * (dev fixtures) and whether its share price is a placeholder. Without a company:
+ * a site-wide note if any data is sample.
+ */
+import type { Company } from '../lib/data.ts';
+import { companies } from '../lib/data.ts';
+import { isSampleFundamentals } from '../lib/widgets.ts';
+interface Props { company?: Company }
+const { company } = Astro.props;
+const list = company ? [company] : companies();
+const sampleFund = list.filter((c) => isSampleFundamentals(c));
+const samplePrice = list.some((c) => c.price_is_sample);
+const realTickers = list.filter((c) => !isSampleFundamentals(c)).map((c) => c.ticker);
+---
+{(sampleFund.length > 0 || samplePrice) && (
+  <div class="banner" role="note">
+    <span class="banner-icon" aria-hidden="true">i</span>
+    <p style="margin:0">
+      {company ? (
+        <>
+          {sampleFund.length > 0 && <><strong>Sample data.</strong> This company’s financials are development placeholders (approximate), not yet a live SEC EDGAR pull. </>}
+          {sampleFund.length === 0 && <><strong>Reported data.</strong> Financials come from the company’s SEC filings. </>}
+          {company.price_is_sample && <><strong>Sample price.</strong> The ${company.price} share price{company.price_date ? ` (${company.price_date})` : ''} is a placeholder, so market cap, P/E and yields are illustrations.</>}
+        </>
+      ) : (
+        <>
+          <strong>Preview data.</strong> {realTickers.length > 0 ? `Only ${realTickers.join(', ')} ${realTickers.length === 1 ? 'uses' : 'use'} reported SEC figures right now; ` : ''}
+          {sampleFund.length > 0 && `${sampleFund.length} ${sampleFund.length === 1 ? 'company uses' : 'companies use'} approximate sample financials until the live EDGAR pull runs. `}
+          {samplePrice && 'Share prices are placeholders, so price-based numbers are illustrations.'}
+        </>
+      )}
+    </p>
+  </div>
+)}

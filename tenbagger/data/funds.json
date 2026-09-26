@@ -1,0 +1,1094 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-25T22:36:40Z",
+  "source": "fixture",
+  "funds": [
+    {
+      "ticker": "VOO",
+      "name": "Vanguard S&P 500 ETF",
+      "issuer": "Vanguard",
+      "category": "US Large Cap",
+      "expense_ratio": 0.0003,
+      "total_net_assets": 1400000000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 505,
+      "top_holdings": [
+        {
+          "name": "NVIDIA Corp",
+          "ticker": "NVDA",
+          "weight": 0.073,
+          "mapped": true
+        },
+        {
+          "name": "Microsoft Corp",
+          "ticker": "MSFT",
+          "weight": 0.067,
+          "mapped": true
+        },
+        {
+          "name": "Apple Inc",
+          "ticker": "AAPL",
+          "weight": 0.058,
+          "mapped": true
+        },
+        {
+          "name": "Amazon.com Inc",
+          "ticker": "AMZN",
+          "weight": 0.039,
+          "mapped": true
+        },
+        {
+          "name": "Meta Platforms Inc",
+          "ticker": "META",
+          "weight": 0.03,
+          "mapped": false
+        },
+        {
+          "name": "Broadcom Inc",
+          "ticker": "AVGO",
+          "weight": 0.025,
+          "mapped": false
+        },
+        {
+          "name": "Alphabet Inc Class A",
+          "ticker": "GOOGL",
+          "weight": 0.02,
+          "mapped": false
+        },
+        {
+          "name": "Tesla Inc",
+          "ticker": "TSLA",
+          "weight": 0.019,
+          "mapped": true
+        },
+        {
+          "name": "Berkshire Hathaway Inc Class B",
+          "ticker": "BRK.B",
+          "weight": 0.017,
+          "mapped": false
+        },
+        {
+          "name": "Alphabet Inc Class C",
+          "ticker": "GOOG",
+          "weight": 0.016,
+          "mapped": false
+        },
+        {
+          "name": "JPMorgan Chase & Co",
+          "ticker": "JPM",
+          "weight": 0.015,
+          "mapped": true
+        },
+        {
+          "name": "Eli Lilly & Co",
+          "ticker": "LLY",
+          "weight": 0.012,
+          "mapped": false
+        },
+        {
+          "name": "Visa Inc",
+          "ticker": "V",
+          "weight": 0.011,
+          "mapped": false
+        },
+        {
+          "name": "Netflix Inc",
+          "ticker": "NFLX",
+          "weight": 0.009,
+          "mapped": false
+        },
+        {
+          "name": "Exxon Mobil Corp",
+          "ticker": "XOM",
+          "weight": 0.009,
+          "mapped": true
+        },
+        {
+          "name": "Mastercard Inc",
+          "ticker": "MA",
+          "weight": 0.009,
+          "mapped": false
+        },
+        {
+          "name": "Costco Wholesale Corp",
+          "ticker": "COST",
+          "weight": 0.009,
+          "mapped": true
+        },
+        {
+          "name": "Walmart Inc",
+          "ticker": "WMT",
+          "weight": 0.009,
+          "mapped": false
+        },
+        {
+          "name": "Johnson & Johnson",
+          "ticker": "JNJ",
+          "weight": 0.008,
+          "mapped": true
+        },
+        {
+          "name": "Procter & Gamble Co/The",
+          "ticker": "PG",
+          "weight": 0.007,
+          "mapped": true
+        },
+        {
+          "name": "Home Depot Inc/The",
+          "ticker": "HD",
+          "weight": 0.007,
+          "mapped": false
+        },
+        {
+          "name": "AbbVie Inc",
+          "ticker": "ABBV",
+          "weight": 0.007,
+          "mapped": false
+        },
+        {
+          "name": "Bank of America Corp",
+          "ticker": "BAC",
+          "weight": 0.006,
+          "mapped": false
+        },
+        {
+          "name": "UnitedHealth Group Inc",
+          "ticker": "UNH",
+          "weight": 0.005,
+          "mapped": false
+        },
+        {
+          "name": "Coca-Cola Co/The",
+          "ticker": "KO",
+          "weight": 0.005,
+          "mapped": true
+        }
+      ],
+      "allocation": {
+        "stock": 0.999,
+        "bond": 0.0,
+        "cash": 0.001,
+        "commodity": 0.0,
+        "other": 0.0
+      },
+      "sector_weights": {
+        "Technology": 0.2255,
+        "Communication Services": 0.075,
+        "Consumer Discretionary": 0.065,
+        "Financials": 0.058,
+        "Health Care": 0.032,
+        "Consumer Staples": 0.03,
+        "Energy": 0.009,
+        "Unclassified": 0.5045
+      },
+      "look_through": {
+        "weighted_pe": 38.1621,
+        "weighted_fcf_yield": 0.01949,
+        "weighted_roic": 0.532925,
+        "coverage_pct": 0.3115
+      },
+      "is_sample": true,
+      "note": null,
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/VOO.xml",
+          "sample": true
+        },
+        {
+          "type": "prospectus-ixbrl",
+          "ref": "data/fixtures/nport/VOO.rr.htm",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    },
+    {
+      "ticker": "VTI",
+      "name": "Vanguard Total Stock Market ETF",
+      "issuer": "Vanguard",
+      "category": "Total Market",
+      "expense_ratio": 0.0003,
+      "total_net_assets": 1900000000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 3580,
+      "top_holdings": [
+        {
+          "name": "NVIDIA Corp",
+          "ticker": "NVDA",
+          "weight": 0.063,
+          "mapped": true
+        },
+        {
+          "name": "Microsoft Corp",
+          "ticker": "MSFT",
+          "weight": 0.059,
+          "mapped": true
+        },
+        {
+          "name": "Apple Inc",
+          "ticker": "AAPL",
+          "weight": 0.05,
+          "mapped": true
+        },
+        {
+          "name": "Amazon.com Inc",
+          "ticker": "AMZN",
+          "weight": 0.034,
+          "mapped": true
+        },
+        {
+          "name": "Meta Platforms Inc",
+          "ticker": "META",
+          "weight": 0.026,
+          "mapped": false
+        },
+        {
+          "name": "Broadcom Inc",
+          "ticker": "AVGO",
+          "weight": 0.022,
+          "mapped": false
+        },
+        {
+          "name": "Alphabet Inc Class A",
+          "ticker": "GOOGL",
+          "weight": 0.017,
+          "mapped": false
+        },
+        {
+          "name": "Tesla Inc",
+          "ticker": "TSLA",
+          "weight": 0.016,
+          "mapped": true
+        },
+        {
+          "name": "Berkshire Hathaway Inc Class B",
+          "ticker": "BRK.B",
+          "weight": 0.015,
+          "mapped": false
+        },
+        {
+          "name": "Alphabet Inc Class C",
+          "ticker": "GOOG",
+          "weight": 0.014,
+          "mapped": false
+        },
+        {
+          "name": "JPMorgan Chase & Co",
+          "ticker": "JPM",
+          "weight": 0.013,
+          "mapped": true
+        },
+        {
+          "name": "Eli Lilly & Co",
+          "ticker": "LLY",
+          "weight": 0.01,
+          "mapped": false
+        },
+        {
+          "name": "Visa Inc",
+          "ticker": "V",
+          "weight": 0.0095,
+          "mapped": false
+        },
+        {
+          "name": "Exxon Mobil Corp",
+          "ticker": "XOM",
+          "weight": 0.008,
+          "mapped": true
+        },
+        {
+          "name": "Costco Wholesale Corp",
+          "ticker": "COST",
+          "weight": 0.0078,
+          "mapped": true
+        },
+        {
+          "name": "Johnson & Johnson",
+          "ticker": "JNJ",
+          "weight": 0.007,
+          "mapped": true
+        },
+        {
+          "name": "Procter & Gamble Co/The",
+          "ticker": "PG",
+          "weight": 0.0062,
+          "mapped": true
+        },
+        {
+          "name": "Coca-Cola Co/The",
+          "ticker": "KO",
+          "weight": 0.0044,
+          "mapped": true
+        },
+        {
+          "name": "Micron Technology Inc",
+          "ticker": "MU",
+          "weight": 0.0022,
+          "mapped": true
+        }
+      ],
+      "allocation": {
+        "stock": 0.998,
+        "bond": 0.0,
+        "cash": 0.002,
+        "commodity": 0.0,
+        "other": 0.0
+      },
+      "sector_weights": {
+        "Technology": 0.1962,
+        "Communication Services": 0.057,
+        "Consumer Discretionary": 0.05,
+        "Financials": 0.0375,
+        "Consumer Staples": 0.0184,
+        "Health Care": 0.017,
+        "Energy": 0.008,
+        "Unclassified": 0.6139
+      },
+      "look_through": {
+        "weighted_pe": 38.0394,
+        "weighted_fcf_yield": 0.019564,
+        "weighted_roic": 0.531563,
+        "coverage_pct": 0.2706
+      },
+      "is_sample": true,
+      "note": null,
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/VTI.xml",
+          "sample": true
+        },
+        {
+          "type": "sample-expense-ratio",
+          "ref": "funds/reference.py",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    },
+    {
+      "ticker": "QQQ",
+      "name": "Invesco QQQ Trust",
+      "issuer": "Invesco",
+      "category": "Nasdaq-100",
+      "expense_ratio": 0.002,
+      "total_net_assets": 360000000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 101,
+      "top_holdings": [
+        {
+          "name": "NVIDIA Corp",
+          "ticker": "NVDA",
+          "weight": 0.09,
+          "mapped": true
+        },
+        {
+          "name": "Microsoft Corp",
+          "ticker": "MSFT",
+          "weight": 0.086,
+          "mapped": true
+        },
+        {
+          "name": "Apple Inc",
+          "ticker": "AAPL",
+          "weight": 0.076,
+          "mapped": true
+        },
+        {
+          "name": "Amazon.com Inc",
+          "ticker": "AMZN",
+          "weight": 0.055,
+          "mapped": true
+        },
+        {
+          "name": "Broadcom Inc",
+          "ticker": "AVGO",
+          "weight": 0.05,
+          "mapped": false
+        },
+        {
+          "name": "Meta Platforms Inc",
+          "ticker": "META",
+          "weight": 0.037,
+          "mapped": false
+        },
+        {
+          "name": "Netflix Inc",
+          "ticker": "NFLX",
+          "weight": 0.03,
+          "mapped": false
+        },
+        {
+          "name": "Tesla Inc",
+          "ticker": "TSLA",
+          "weight": 0.028,
+          "mapped": true
+        },
+        {
+          "name": "Alphabet Inc Class A",
+          "ticker": "GOOGL",
+          "weight": 0.026,
+          "mapped": false
+        },
+        {
+          "name": "Costco Wholesale Corp",
+          "ticker": "COST",
+          "weight": 0.026,
+          "mapped": true
+        },
+        {
+          "name": "Alphabet Inc Class C",
+          "ticker": "GOOG",
+          "weight": 0.025,
+          "mapped": false
+        },
+        {
+          "name": "Palantir Technologies Inc",
+          "ticker": "PLTR",
+          "weight": 0.021,
+          "mapped": false
+        },
+        {
+          "name": "Advanced Micro Devices Inc",
+          "ticker": "AMD",
+          "weight": 0.016,
+          "mapped": false
+        },
+        {
+          "name": "Cisco Systems Inc",
+          "ticker": "CSCO",
+          "weight": 0.015,
+          "mapped": false
+        },
+        {
+          "name": "T-Mobile US Inc",
+          "ticker": "TMUS",
+          "weight": 0.015,
+          "mapped": false
+        },
+        {
+          "name": "Micron Technology Inc",
+          "ticker": "MU",
+          "weight": 0.008,
+          "mapped": true
+        }
+      ],
+      "allocation": {
+        "stock": 0.9995,
+        "bond": 0.0,
+        "cash": 0.0005,
+        "commodity": 0.0,
+        "other": 0.0
+      },
+      "sector_weights": {
+        "Technology": 0.362,
+        "Communication Services": 0.133,
+        "Consumer Discretionary": 0.083,
+        "Consumer Staples": 0.026,
+        "Unclassified": 0.3955
+      },
+      "look_through": {
+        "weighted_pe": 46.0847,
+        "weighted_fcf_yield": 0.0165,
+        "weighted_roic": 0.52595,
+        "coverage_pct": 0.369
+      },
+      "is_sample": true,
+      "note": "QQQ is a unit investment trust and does not file N-PORT; live builds read QQQM (same index, open-end fund) instead.",
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/QQQ.xml",
+          "sample": true
+        },
+        {
+          "type": "sample-expense-ratio",
+          "ref": "funds/reference.py",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    },
+    {
+      "ticker": "SCHD",
+      "name": "Schwab U.S. Dividend Equity ETF",
+      "issuer": "Schwab",
+      "category": "Dividend",
+      "expense_ratio": 0.0006,
+      "total_net_assets": 70000000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 103,
+      "top_holdings": [
+        {
+          "name": "Chevron Corp",
+          "ticker": "CVX",
+          "weight": 0.043,
+          "mapped": false
+        },
+        {
+          "name": "Coca-Cola Co/The",
+          "ticker": "KO",
+          "weight": 0.042,
+          "mapped": true
+        },
+        {
+          "name": "ConocoPhillips",
+          "ticker": "COP",
+          "weight": 0.041,
+          "mapped": false
+        },
+        {
+          "name": "AbbVie Inc",
+          "ticker": "ABBV",
+          "weight": 0.04,
+          "mapped": false
+        },
+        {
+          "name": "Altria Group Inc",
+          "ticker": "MO",
+          "weight": 0.04,
+          "mapped": false
+        },
+        {
+          "name": "PepsiCo Inc",
+          "ticker": "PEP",
+          "weight": 0.039,
+          "mapped": false
+        },
+        {
+          "name": "Verizon Communications Inc",
+          "ticker": "VZ",
+          "weight": 0.039,
+          "mapped": false
+        },
+        {
+          "name": "Home Depot Inc/The",
+          "ticker": "HD",
+          "weight": 0.039,
+          "mapped": false
+        },
+        {
+          "name": "Cisco Systems Inc",
+          "ticker": "CSCO",
+          "weight": 0.039,
+          "mapped": false
+        },
+        {
+          "name": "Amgen Inc",
+          "ticker": "AMGN",
+          "weight": 0.038,
+          "mapped": false
+        },
+        {
+          "name": "Merck & Co Inc",
+          "ticker": "MRK",
+          "weight": 0.037,
+          "mapped": false
+        },
+        {
+          "name": "Lockheed Martin Corp",
+          "ticker": "LMT",
+          "weight": 0.036,
+          "mapped": false
+        },
+        {
+          "name": "Bristol-Myers Squibb Co",
+          "ticker": "BMY",
+          "weight": 0.035,
+          "mapped": false
+        },
+        {
+          "name": "Texas Instruments Inc",
+          "ticker": "TXN",
+          "weight": 0.034,
+          "mapped": false
+        },
+        {
+          "name": "United Parcel Service Inc Class B",
+          "ticker": "UPS",
+          "weight": 0.031,
+          "mapped": false
+        }
+      ],
+      "allocation": {
+        "stock": 0.9985,
+        "bond": 0.0,
+        "cash": 0.0015,
+        "commodity": 0.0,
+        "other": 0.0
+      },
+      "sector_weights": {
+        "Health Care": 0.15,
+        "Consumer Staples": 0.121,
+        "Energy": 0.084,
+        "Technology": 0.073,
+        "Industrials": 0.067,
+        "Communication Services": 0.039,
+        "Consumer Discretionary": 0.039,
+        "Unclassified": 0.4255
+      },
+      "look_through": {
+        "weighted_pe": 27.0329,
+        "weighted_fcf_yield": 0.016503,
+        "weighted_roic": 0.131032,
+        "coverage_pct": 0.042
+      },
+      "is_sample": true,
+      "note": null,
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/SCHD.xml",
+          "sample": true
+        },
+        {
+          "type": "prospectus-ixbrl",
+          "ref": "data/fixtures/nport/SCHD.rr.htm",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    },
+    {
+      "ticker": "XLV",
+      "name": "Health Care Select Sector SPDR Fund",
+      "issuer": "State Street",
+      "category": "Sector – Health Care",
+      "expense_ratio": 0.0008,
+      "total_net_assets": 34000000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 61,
+      "top_holdings": [
+        {
+          "name": "Eli Lilly & Co",
+          "ticker": "LLY",
+          "weight": 0.12,
+          "mapped": false
+        },
+        {
+          "name": "Johnson & Johnson",
+          "ticker": "JNJ",
+          "weight": 0.075,
+          "mapped": true
+        },
+        {
+          "name": "AbbVie Inc",
+          "ticker": "ABBV",
+          "weight": 0.065,
+          "mapped": false
+        },
+        {
+          "name": "UnitedHealth Group Inc",
+          "ticker": "UNH",
+          "weight": 0.05,
+          "mapped": false
+        },
+        {
+          "name": "Abbott Laboratories",
+          "ticker": "ABT",
+          "weight": 0.045,
+          "mapped": false
+        },
+        {
+          "name": "Merck & Co Inc",
+          "ticker": "MRK",
+          "weight": 0.04,
+          "mapped": false
+        },
+        {
+          "name": "Thermo Fisher Scientific Inc",
+          "ticker": "TMO",
+          "weight": 0.037,
+          "mapped": false
+        },
+        {
+          "name": "Intuitive Surgical Inc",
+          "ticker": "ISRG",
+          "weight": 0.036,
+          "mapped": false
+        },
+        {
+          "name": "Amgen Inc",
+          "ticker": "AMGN",
+          "weight": 0.032,
+          "mapped": false
+        },
+        {
+          "name": "Boston Scientific Corp",
+          "ticker": "BSX",
+          "weight": 0.03,
+          "mapped": false
+        },
+        {
+          "name": "Danaher Corp",
+          "ticker": "DHR",
+          "weight": 0.028,
+          "mapped": false
+        },
+        {
+          "name": "Gilead Sciences Inc",
+          "ticker": "GILD",
+          "weight": 0.028,
+          "mapped": false
+        },
+        {
+          "name": "Pfizer Inc",
+          "ticker": "PFE",
+          "weight": 0.028,
+          "mapped": false
+        },
+        {
+          "name": "Stryker Corp",
+          "ticker": "SYK",
+          "weight": 0.027,
+          "mapped": false
+        },
+        {
+          "name": "Vertex Pharmaceuticals Inc",
+          "ticker": "VRTX",
+          "weight": 0.023,
+          "mapped": false
+        }
+      ],
+      "allocation": {
+        "stock": 0.999,
+        "bond": 0.0,
+        "cash": 0.001,
+        "commodity": 0.0,
+        "other": 0.0
+      },
+      "sector_weights": {
+        "Health Care": 0.999
+      },
+      "look_through": {
+        "weighted_pe": 31.9519,
+        "weighted_fcf_yield": 0.044156,
+        "weighted_roic": null,
+        "coverage_pct": 0.075
+      },
+      "is_sample": true,
+      "note": null,
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/XLV.xml",
+          "sample": true
+        },
+        {
+          "type": "sample-expense-ratio",
+          "ref": "funds/reference.py",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    },
+    {
+      "ticker": "XLE",
+      "name": "Energy Select Sector SPDR Fund",
+      "issuer": "State Street",
+      "category": "Sector – Energy",
+      "expense_ratio": 0.0008,
+      "total_net_assets": 27000000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 23,
+      "top_holdings": [
+        {
+          "name": "Exxon Mobil Corp",
+          "ticker": "XOM",
+          "weight": 0.23,
+          "mapped": true
+        },
+        {
+          "name": "Chevron Corp",
+          "ticker": "CVX",
+          "weight": 0.165,
+          "mapped": false
+        },
+        {
+          "name": "ConocoPhillips",
+          "ticker": "COP",
+          "weight": 0.068,
+          "mapped": false
+        },
+        {
+          "name": "Williams Cos Inc/The",
+          "ticker": "WMB",
+          "weight": 0.046,
+          "mapped": false
+        },
+        {
+          "name": "EOG Resources Inc",
+          "ticker": "EOG",
+          "weight": 0.044,
+          "mapped": false
+        },
+        {
+          "name": "Kinder Morgan Inc",
+          "ticker": "KMI",
+          "weight": 0.043,
+          "mapped": false
+        },
+        {
+          "name": "Schlumberger NV",
+          "ticker": "SLB",
+          "weight": 0.039,
+          "mapped": false
+        },
+        {
+          "name": "Phillips 66",
+          "ticker": "PSX",
+          "weight": 0.038,
+          "mapped": false
+        },
+        {
+          "name": "Marathon Petroleum Corp",
+          "ticker": "MPC",
+          "weight": 0.036,
+          "mapped": false
+        },
+        {
+          "name": "ONEOK Inc",
+          "ticker": "OKE",
+          "weight": 0.033,
+          "mapped": false
+        },
+        {
+          "name": "Valero Energy Corp",
+          "ticker": "VLO",
+          "weight": 0.032,
+          "mapped": false
+        },
+        {
+          "name": "Baker Hughes Co",
+          "ticker": "BKR",
+          "weight": 0.031,
+          "mapped": false
+        }
+      ],
+      "allocation": {
+        "stock": 0.999,
+        "bond": 0.0,
+        "cash": 0.001,
+        "commodity": 0.0,
+        "other": 0.0
+      },
+      "sector_weights": {
+        "Energy": 0.999
+      },
+      "look_through": {
+        "weighted_pe": 14.4132,
+        "weighted_fcf_yield": 0.063229,
+        "weighted_roic": null,
+        "coverage_pct": 0.23
+      },
+      "is_sample": true,
+      "note": null,
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/XLE.xml",
+          "sample": true
+        },
+        {
+          "type": "sample-expense-ratio",
+          "ref": "funds/reference.py",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    },
+    {
+      "ticker": "GLD",
+      "name": "SPDR Gold Shares",
+      "issuer": "State Street",
+      "category": "Gold",
+      "expense_ratio": 0.004,
+      "total_net_assets": 100000000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 1,
+      "top_holdings": [
+        {
+          "name": "Gold bullion (London Good Delivery bars)",
+          "ticker": null,
+          "weight": 1.0,
+          "mapped": false
+        }
+      ],
+      "allocation": {
+        "stock": 0.0,
+        "bond": 0.0,
+        "cash": 0.0,
+        "commodity": 1.0,
+        "other": 0.0
+      },
+      "sector_weights": {},
+      "look_through": {
+        "weighted_pe": null,
+        "weighted_fcf_yield": null,
+        "weighted_roic": null,
+        "coverage_pct": 0
+      },
+      "is_sample": true,
+      "note": "GLD is a grantor trust holding gold bars; it files 10-K/10-Q, not N-PORT. Its holdings are modelled as a single commodity position.",
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/GLD.xml",
+          "sample": true
+        },
+        {
+          "type": "sample-expense-ratio",
+          "ref": "funds/reference.py",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    },
+    {
+      "ticker": "HACK",
+      "name": "Amplify Cybersecurity ETF",
+      "issuer": "Amplify",
+      "category": "Cybersecurity",
+      "expense_ratio": 0.006,
+      "total_net_assets": 2200000000.0,
+      "as_of": "2025-06-30",
+      "holdings_count": 60,
+      "top_holdings": [
+        {
+          "name": "Broadcom Inc",
+          "ticker": "AVGO",
+          "weight": 0.06,
+          "mapped": false
+        },
+        {
+          "name": "Cisco Systems Inc",
+          "ticker": "CSCO",
+          "weight": 0.055,
+          "mapped": false
+        },
+        {
+          "name": "Palo Alto Networks Inc",
+          "ticker": "PANW",
+          "weight": 0.05,
+          "mapped": false
+        },
+        {
+          "name": "CrowdStrike Holdings Inc",
+          "ticker": "CRWD",
+          "weight": 0.05,
+          "mapped": false
+        },
+        {
+          "name": "Fortinet Inc",
+          "ticker": "FTNT",
+          "weight": 0.045,
+          "mapped": false
+        },
+        {
+          "name": "Cloudflare Inc",
+          "ticker": "NET",
+          "weight": 0.04,
+          "mapped": false
+        },
+        {
+          "name": "Zscaler Inc",
+          "ticker": "ZS",
+          "weight": 0.035,
+          "mapped": false
+        },
+        {
+          "name": "Okta Inc",
+          "ticker": "OKTA",
+          "weight": 0.03,
+          "mapped": false
+        },
+        {
+          "name": "Gen Digital Inc",
+          "ticker": "GEN",
+          "weight": 0.03,
+          "mapped": false
+        },
+        {
+          "name": "Check Point Software Technologies Ltd",
+          "ticker": "CHKP",
+          "weight": 0.03,
+          "mapped": false
+        },
+        {
+          "name": "CyberArk Software Ltd",
+          "ticker": "CYBR",
+          "weight": 0.03,
+          "mapped": false
+        },
+        {
+          "name": "Qualys Inc",
+          "ticker": "QLYS",
+          "weight": 0.022,
+          "mapped": false
+        },
+        {
+          "name": "Microsoft Corp",
+          "ticker": "MSFT",
+          "weight": 0.02,
+          "mapped": true
+        }
+      ],
+      "allocation": {
+        "stock": 0.997,
+        "bond": 0.0,
+        "cash": 0.003,
+        "commodity": 0.0,
+        "other": 0.0
+      },
+      "sector_weights": {
+        "Technology": 0.997
+      },
+      "look_through": {
+        "weighted_pe": 37.7572,
+        "weighted_fcf_yield": 0.018627,
+        "weighted_roic": 0.297068,
+        "coverage_pct": 0.02
+      },
+      "is_sample": true,
+      "note": null,
+      "sources": [
+        {
+          "type": "nport-p-fixture",
+          "ref": "data/fixtures/nport/HACK.xml",
+          "sample": true
+        },
+        {
+          "type": "sample-expense-ratio",
+          "ref": "funds/reference.py",
+          "sample": true
+        },
+        {
+          "type": "companies.json",
+          "ref": "data/companies.json"
+        }
+      ]
+    }
+  ]
+}

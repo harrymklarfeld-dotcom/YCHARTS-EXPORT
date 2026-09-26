@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE fixture for XLV: approximate weights from memory, NOT a real SEC filing. Replace with a live N-PORT-P pull. -->
+<edgarSubmission xmlns="http://www.sec.gov/edgar/nport" xmlns:com="http://www.sec.gov/edgar/common" xmlns:ncom="http://www.sec.gov/edgar/nportcommon">
+  <headerData>
+    <submissionType>NPORT-P</submissionType>
+    <filerInfo><seriesClassInfo><seriesId>S000006410</seriesId></seriesClassInfo></filerInfo>
+  </headerData>
+  <formData>
+    <genInfo>
+      <regName>SELECT SECTOR SPDR TRUST</regName><regCik>0000000000</regCik>
+      <seriesName>The Health Care Select Sector SPDR Fund</seriesName><seriesId>S000006410</seriesId>
+      <repPdEnd>2025-12-31</repPdEnd><repPdDate>2025-06-30</repPdDate><isFinalFiling>N</isFinalFiling>
+    </genInfo>
+    <fundInfo>
+      <totAssets>34034000000.00</totAssets><totLiabs>34000000.00</totLiabs><netAssets>34000000000.00</netAssets>
+    </fundInfo>
+    <invstOrSecs>
+      <invstOrSec>
+        <name>Eli Lilly &amp; Co</name><lei>N/A</lei><title>Eli Lilly &amp; Co</title><cusip>N/A</cusip>
+        <identifiers><ticker value="LLY"/></identifiers>
+        <balance>40800000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>4080000000.0</valUSD><pctVal>12.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Johnson &amp; Johnson</name><lei>N/A</lei><title>Johnson &amp; Johnson</title><cusip>478160104</cusip>
+        <identifiers><isin value="US4781601040"/><ticker value="JNJ"/></identifiers>
+        <balance>25500000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2550000000.0</valUSD><pctVal>7.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>AbbVie Inc</name><lei>N/A</lei><title>AbbVie Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="ABBV"/></identifiers>
+        <balance>22100000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2210000000.0</valUSD><pctVal>6.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>UnitedHealth Group Inc</name><lei>N/A</lei><title>UnitedHealth Group Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="UNH"/></identifiers>
+        <balance>17000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1700000000.0</valUSD><pctVal>5.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Abbott Laboratories</name><lei>N/A</lei><title>Abbott Laboratories</title><cusip>N/A</cusip>
+        <identifiers><ticker value="ABT"/></identifiers>
+        <balance>15300000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1530000000.0</valUSD><pctVal>4.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Merck &amp; Co Inc</name><lei>N/A</lei><title>Merck &amp; Co Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="MRK"/></identifiers>
+        <balance>13600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1360000000.0</valUSD><pctVal>4.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Thermo Fisher Scientific Inc</name><lei>N/A</lei><title>Thermo Fisher Scientific Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="TMO"/></identifiers>
+        <balance>12580000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1258000000.0</valUSD><pctVal>3.7</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Intuitive Surgical Inc</name><lei>N/A</lei><title>Intuitive Surgical Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="ISRG"/></identifiers>
+        <balance>12240000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1224000000.0</valUSD><pctVal>3.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Amgen Inc</name><lei>N/A</lei><title>Amgen Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="AMGN"/></identifiers>
+        <balance>10880000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1088000000.0</valUSD><pctVal>3.2</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Boston Scientific Corp</name><lei>N/A</lei><title>Boston Scientific Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="BSX"/></identifiers>
+        <balance>10200000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1020000000.0</valUSD><pctVal>3.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Danaher Corp</name><lei>N/A</lei><title>Danaher Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="DHR"/></identifiers>
+        <balance>9520000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>952000000.0</valUSD><pctVal>2.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Gilead Sciences Inc</name><lei>N/A</lei><title>Gilead Sciences Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="GILD"/></identifiers>
+        <balance>9520000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>952000000.0</valUSD><pctVal>2.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Pfizer Inc</name><lei>N/A</lei><title>Pfizer Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="PFE"/></identifiers>
+        <balance>9520000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>952000000.0</valUSD><pctVal>2.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Stryker Corp</name><lei>N/A</lei><title>Stryker Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="SYK"/></identifiers>
+        <balance>9180000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>918000000.0</valUSD><pctVal>2.7</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Vertex Pharmaceuticals Inc</name><lei>N/A</lei><title>Vertex Pharmaceuticals Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="VRTX"/></identifiers>
+        <balance>7820000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>782000000.0</valUSD><pctVal>2.3</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Money market sweep (sample)</name><lei>N/A</lei><title>Money market sweep (sample)</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>340000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>34000000.0</valUSD><pctVal>0.1</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>STIV</assetCat><issuerCat>RF</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>SAMPLE AGGREGATE: remaining 46 positions</name><lei>N/A</lei><title>SAMPLE AGGREGATE: remaining 46 positions</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>113900000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>11390000000.0</valUSD><pctVal>33.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+    </invstOrSecs>
+  </formData>
+</edgarSubmission>

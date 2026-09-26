@@ -1,0 +1,803 @@
+[
+  {
+    "id": "S1",
+    "title": "Duolingo Q2 2026 Shareholder Letter (Form 8-K exhibit)",
+    "publisher": "Duolingo, Inc. / SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026053299/q2fy26duolingo6-30x26share.htm",
+    "date": "2026-08",
+    "confidence": "P",
+    "used_for": "Q2-26 DAU 58.7M, MAU 140.6M, paid subs 12.7M, revenue $298.5M, bookings $289.1M"
+  },
+  {
+    "id": "S2",
+    "title": "Duolingo Q4/FY2025 Shareholder Letter",
+    "publisher": "Duolingo, Inc. / SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026012246/q4fy25duolingo12-31x25shar.htm",
+    "date": "2026-02",
+    "confidence": "P",
+    "used_for": "Q4-25 DAU 52.7M, MAU 133.1M, DAU/MAU 39.6%, FY25 bookings $1,158.4M, FY25 revenue guidance, FY26 guidance"
+  },
+  {
+    "id": "S3",
+    "title": "Duolingo Form 10-K FY2025",
+    "publisher": "Duolingo, Inc. / SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026012494/duol-20251231.htm",
+    "date": "2026-02-27",
+    "confidence": "P",
+    "used_for": "Subscribers 9.2% of avg LTM MAU (FY25) vs 8.8% (FY24)"
+  },
+  {
+    "id": "S4",
+    "title": "Duolingo Form S-1",
+    "publisher": "Duolingo, Inc. / SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828021013065/duolingos-1.htm",
+    "date": "2021-06-28",
+    "confidence": "P",
+    "used_for": "$41.8M aggregate external marketing through 2020; ~1.6M subs at 2020-12-31; ~4% of MAU paying (2020); Plus launched 2017"
+  },
+  {
+    "id": "S5",
+    "title": "Duolingo Q2 2025 Shareholder Letter",
+    "publisher": "Duolingo, Inc. / SEC EDGAR",
+    "url": "https://www.sec.gov/Archives/edgar/data/1562088/000156208825000165/q2fy25duolingo6-30x25share.htm",
+    "date": "2025-08-06",
+    "confidence": "P",
+    "used_for": "Chess >1M DAU, fastest-growing subject; 40% DAU growth"
+  },
+  {
+    "id": "S6",
+    "title": "Duolingo Q3 2024 Shareholder Letter",
+    "publisher": "Duolingo, Inc. (IR)",
+    "url": "https://investors.duolingo.com/static-files/a1b3dab2-4153-4e35-83a6-d32ffb38f2bf",
+    "date": "2024-11",
+    "confidence": "P",
+    "used_for": "Math/music not expected to contribute meaningfully to monetization near-term; long-streak share; DAU +54%"
+  },
+  {
+    "id": "S7",
+    "title": "How Duolingo reignited user growth (Jorge Mazal)",
+    "publisher": "Lenny's Newsletter",
+    "url": "https://www.lennysnewsletter.com/p/how-duolingo-reignited-user-growth",
+    "date": "2022 (approx.)",
+    "confidence": "S",
+    "used_for": "CURR focus, leaderboards, streaks; 4.5x DAU growth over ~4 years"
+  },
+  {
+    "id": "S8",
+    "title": "When Duolingo was young: the early years",
+    "publisher": "VatorNews",
+    "url": "https://vator.tv/2018-06-22-when-duolingo-was-young-the-early-years/",
+    "date": "2018-06-22",
+    "confidence": "S",
+    "used_for": "June 2012 launch; ~300k beta signups after TED talk; 250k weekly actives at 3 months; iPhone App of the Year 2013"
+  },
+  {
+    "id": "S10",
+    "title": "Duolingo in 2025: Breaks Record Numbers",
+    "publisher": "Class Central",
+    "url": "https://www.classcentral.com/report/duolingo-2025/",
+    "date": "2026-02",
+    "confidence": "S",
+    "used_for": "12.2M paid subs Q4-25; MAU ~133M; slowing conversion growth"
+  },
+  {
+    "id": "S12",
+    "title": "State of Subscription Apps 2026 - Education",
+    "publisher": "RevenueCat",
+    "url": "https://www.revenuecat.com/state-of-subscription-apps-2026-education",
+    "date": "2026-03",
+    "confidence": "S",
+    "used_for": "Education 6.5% median (download-to-trial, label ambiguous); ARPPU early monetization"
+  },
+  {
+    "id": "S13",
+    "title": "The State of Subscription Apps in 10 minutes: benchmarks for 2026",
+    "publisher": "RevenueCat",
+    "url": "https://www.revenuecat.com/blog/growth/subscription-app-trends-benchmarks-2026",
+    "date": "2026-03",
+    "confidence": "S",
+    "used_for": "Freemium 2.1% vs hard paywall 10.7% D35 download-to-paid; trial-to-paid by length; RPI D14/D60; NA RPI $0.55; ~50% conversions Day 0"
+  },
+  {
+    "id": "S14",
+    "title": "State of Subscription Apps 2025",
+    "publisher": "RevenueCat",
+    "url": "https://www.revenuecat.com/state-of-subscription-apps-2025",
+    "date": "2025-03",
+    "confidence": "S",
+    "used_for": "Annual plan 1-yr retention 44.1%, monthly 17.0%; ~30% annual cancel in month 1; freemium 2.2% vs hard paywall 12.1%; education median prices"
+  },
+  {
+    "id": "S15",
+    "title": "AI-powered apps struggle with long-term retention, new report shows",
+    "publisher": "TechCrunch",
+    "url": "https://techcrunch.com/2026/03/10/ai-powered-apps-struggle-with-long-term-retention-new-report-shows",
+    "date": "2026-03-10",
+    "confidence": "S",
+    "used_for": "RevenueCat 2026: non-AI annual retention 30.7%, monthly 9.5% (bear-case retention)"
+  },
+  {
+    "id": "S16",
+    "title": "What is a good free-to-paid conversion rate",
+    "publisher": "Lenny's Newsletter (with Kyle Poyar/OpenView)",
+    "url": "https://www.lennysnewsletter.com/p/what-is-a-good-free-to-paid-conversion",
+    "date": "2023-08",
+    "confidence": "S",
+    "used_for": "Freemium self-serve: 3-5% good, 6-8% great"
+  },
+  {
+    "id": "S17",
+    "title": "Finance Apps: Apple Ads & ASO Trends 2025",
+    "publisher": "SplitMetrics",
+    "url": "https://splitmetrics.com/finance-apps-apple-search-ads-aso-trends-2025/",
+    "date": "2025",
+    "confidence": "S",
+    "used_for": "Finance CPT $6.06, CPA $13.28; overall CPT $2.25, CPA $3.76"
+  },
+  {
+    "id": "S18",
+    "title": "Apple Search Ads Costs (2026)",
+    "publisher": "Business of Apps",
+    "url": "https://www.businessofapps.com/marketplace/apple-search-ads/research/apple-search-ads-costs/",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "Education CPT ~$1.24 (attribution unclear)"
+  },
+  {
+    "id": "S19",
+    "title": "Mobile App CPI Benchmarks 2026 / App User Acquisition Cost 2026",
+    "publisher": "The Social Outline / ApsteQ (agency blogs)",
+    "url": "https://thesocialoutline.com/blog/mobile-app-cpi-benchmarks-2026",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "TikTok ~$2.45 CPI; fintech iOS US $10-25 CPI; finance up to $22"
+  },
+  {
+    "id": "S20",
+    "title": "YouTube Sponsorship Rates for Finance Micro-Influencers in 2026",
+    "publisher": "Creators Agency (plus SponsorRadar)",
+    "url": "https://creatorsagency.co/blog/youtube-sponsorship-rates-micro-influencers-finance",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "Finance integration CPM $40-80; micro $50-120 CPM; Shorts $5-15 CPM"
+  },
+  {
+    "id": "S21",
+    "title": "About Simply Wall St",
+    "publisher": "Simply Wall St",
+    "url": "https://simplywall.st/about",
+    "date": "undated (accessed 2026-09)",
+    "confidence": "P",
+    "used_for": "Founded 2014 Sydney; 7M+ investors"
+  },
+  {
+    "id": "S22",
+    "title": "Simply Wall St raises $1.8 million from its own customers",
+    "publisher": "TechCrunch",
+    "url": "https://techcrunch.com/2017/06/20/simply-wall-st-raises-1-8-million-from-its-own-customers-to-build-out-investment-advisory-services/",
+    "date": "2017-06-20",
+    "confidence": "S",
+    "used_for": "Customer-funded raise; users 25k->100k in a year; ~$2.5M total funding"
+  },
+  {
+    "id": "S23",
+    "title": "Simply Wall St Review 2026: Features, Pricing",
+    "publisher": "StockUnlock (review site); verify at simplywall.st/plans",
+    "url": "https://stockunlock.com/simply-wall-st-review.html",
+    "date": "2026-09",
+    "confidence": "U",
+    "used_for": "Premium $131.40/yr, Unlimited $258/yr, $15.99 monthly"
+  },
+  {
+    "id": "S24",
+    "title": "Simply Wall St growth channels",
+    "publisher": "Superhuman Docs (third-party analysis)",
+    "url": "https://docs.superhuman.com/@anthony-yuan/simply-wall-st-growth-channels",
+    "date": "undated",
+    "confidence": "U",
+    "used_for": "Acquisition channels: SWS News, Yahoo Finance, Apple News, organic"
+  },
+  {
+    "id": "S25",
+    "title": "Brilliant (website) / Latka / Crunchbase profiles",
+    "publisher": "Wikipedia / GetLatka / Crunchbase",
+    "url": "https://getlatka.com/companies/Brilliant",
+    "date": "2024-2026",
+    "confidence": "U",
+    "used_for": "10M+ learners; ~$14.3M 2024 revenue estimate; $50M Series C May 2022 (unconfirmed)"
+  },
+  {
+    "id": "S26",
+    "title": "How much does Brilliant Premium cost?",
+    "publisher": "Brilliant.org Help",
+    "url": "https://brilliant.org/help/pricing-and-plans/how-much-does-brilliant-premium-cost/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "$24.99/mo, $161.88/yr, 7-day trial"
+  },
+  {
+    "id": "S27",
+    "title": "Brilliant.org marketing strategy / sponsored creators",
+    "publisher": "businessmodelcanvastemplate.com / Modash",
+    "url": "https://www.modash.io/content-library/brands/brilliant-org-examples/influencers",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "YouTube/podcast creator sponsorship as main channel"
+  },
+  {
+    "id": "S28",
+    "title": "Personal finance app Monarch raises $75 million despite 'nuclear winter'",
+    "publisher": "CNBC",
+    "url": "https://www.cnbc.com/2025/05/23/personal-finance-app-monarch-raises-75-million.html",
+    "date": "2025-05-23",
+    "confidence": "S",
+    "used_for": "$75M Series B, $850M valuation, ~20x paid subs since Mint shutdown; founder ex-Mint"
+  },
+  {
+    "id": "S29",
+    "title": "Monarch Money valuation, funding & news",
+    "publisher": "Sacra",
+    "url": "https://sacra.com/c/monarch-money/",
+    "date": "2025",
+    "confidence": "U",
+    "used_for": "500k+ paying subs, ~1M users, ~$12.6M ARR (inconsistent)"
+  },
+  {
+    "id": "S30",
+    "title": "Monarch Money Review 2026",
+    "publisher": "The Penny Hoarder",
+    "url": "https://www.thepennyhoarder.com/budgeting/monarch-money-review/",
+    "date": "2026",
+    "confidence": "S",
+    "used_for": "$14.99/mo, $99.99/yr, Plus $199/yr, 7-day trial, no free tier"
+  },
+  {
+    "id": "S31",
+    "title": "Copilot Money pricing / company profiles",
+    "publisher": "FinCompareLab / Startup Intros",
+    "url": "https://www.fincomparelab.com/guides/copilot-money-pricing/",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "$13/mo, $95/yr; 100k+ subs; ~$2.9M revenue; ~$16.8M total funding"
+  },
+  {
+    "id": "S32",
+    "title": "Budgeting app Copilot is booming now that Mint is dead, leading to $6M Series A",
+    "publisher": "TechCrunch",
+    "url": "https://techcrunch.com/2024/03/21/budgeting-app-copilot-mint-6m-series-a/",
+    "date": "2024-03-21",
+    "confidence": "S",
+    "used_for": "$6M Series A (Adjacent); grew more in 4 months than prior 4 years"
+  },
+  {
+    "id": "S33",
+    "title": "Finelo Review 2026 (company structure, subscriber claims)",
+    "publisher": "Plisio / review sites",
+    "url": "https://plisio.net/profiles/finelo-review",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "Zimran holding (2021); Finelo Limited Cyprus; 1.15M-2M premium claims; 'profitable'"
+  },
+  {
+    "id": "S34",
+    "title": "About Finelo",
+    "publisher": "Finelo",
+    "url": "https://finelo.com/about-us",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "1.5M+ learners; 8.8M lessons; Trustpilot 4.6 / 17k reviews (claim)"
+  },
+  {
+    "id": "S35",
+    "title": "Finelo: Master Trading - download estimates",
+    "publisher": "Apptopia",
+    "url": "https://apptopia.com/google-play/app/io.zimran.finelo/about",
+    "date": "2026",
+    "confidence": "S",
+    "used_for": "Android ~1.3M downloads, ~2.1k/day"
+  },
+  {
+    "id": "S36",
+    "title": "Is Finelo Legit? / Finelo pricing & refunds",
+    "publisher": "Plain English / review sites",
+    "url": "https://plainenglish.io/business/is-finelo-legit-what-17-000-reviews-actually-say",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "$6.99/wk, $19.99/4wk, $39.99/12wk then $39.99/mo; billing complaints"
+  },
+  {
+    "id": "S37",
+    "title": "Finelo BBB Complaints",
+    "publisher": "Better Business Bureau",
+    "url": "https://www.bbb.org/us/nv/las-vegas/profile/training-program/finelo-1086-90094067/complaints",
+    "date": "2026",
+    "confidence": "S",
+    "used_for": "Billing complaint record"
+  },
+  {
+    "id": "S38",
+    "title": "Financial Literacy App Helps Credit Unions Connect With Gen Z",
+    "publisher": "Next City",
+    "url": "https://nextcity.org/urbanist-news/financial-literacy-app-helps-credit-unions-connect-with-gen-z",
+    "date": "2023",
+    "confidence": "S",
+    "used_for": "~700k users by 6/2022; ~1M by early 2023; FIs pay license fee"
+  },
+  {
+    "id": "S39",
+    "title": "Gen Z-Targeted Zogo App Reaches Milestone Signing 200 Financial Institution Partners",
+    "publisher": "PR Newswire (Zogo)",
+    "url": "https://www.prnewswire.com/news-releases/gen-z-targeted-zogo-app-reaches-milestone-signing-200-financial-institution-partners-301571996.html",
+    "date": "2022",
+    "confidence": "P",
+    "used_for": "200 FI partners"
+  },
+  {
+    "id": "S40",
+    "title": "Zogo - Credit Unions",
+    "publisher": "Zogo",
+    "url": "https://zogo.com/credit-unions",
+    "date": "2025-2026",
+    "confidence": "P",
+    "used_for": "250+ institutional partners; licensing/co-branding; price not public"
+  },
+  {
+    "id": "S41",
+    "title": "Transform your credit union's financial education with Zogo",
+    "publisher": "CUInsight",
+    "url": "https://www.cuinsight.com/transform-your-credit-unions-financial-education-with-zogo/",
+    "date": "2024",
+    "confidence": "S",
+    "used_for": "Credit-union licensing model; free to members"
+  },
+  {
+    "id": "S42",
+    "title": "Zogo funding profile",
+    "publisher": "Tracxn",
+    "url": "https://tracxn.com/d/companies/zogo/__0RIFq3XEWIj-xzoGoXbQptnRKNoy50fc5-XB3mhIe18/funding-and-investors",
+    "date": "2025",
+    "confidence": "U",
+    "used_for": "~$140k-295k seed (Techstars, MassChallenge)"
+  },
+  {
+    "id": "S43",
+    "title": "Seeking Alpha",
+    "publisher": "Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Seeking_Alpha",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "Founded 2004 by David Jackson; contributor model; ~17M monthly visitors; syndication partners"
+  },
+  {
+    "id": "S44",
+    "title": "seekingalpha.com Traffic Analytics",
+    "publisher": "Similarweb",
+    "url": "https://www.similarweb.com/website/seekingalpha.com/",
+    "date": "2026-07",
+    "confidence": "S",
+    "used_for": "~42M visits/mo; revenue estimate $25-50M (estimate, U)"
+  },
+  {
+    "id": "S45",
+    "title": "Seeking Alpha Premium Review 2026",
+    "publisher": "Financer / review sites",
+    "url": "https://financer.com/invest/seeking-alpha-premium-review/",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "250k+ Premium members; Alpha Picks $499; Pro $2,400"
+  },
+  {
+    "id": "S46",
+    "title": "Premium Subscription Price Update",
+    "publisher": "Seeking Alpha",
+    "url": "https://about.seekingalpha.com/premium-subscription-price-update",
+    "date": "2025-2026",
+    "confidence": "P",
+    "used_for": "Premium $239 (2023) -> $269 (2024) -> $299"
+  },
+  {
+    "id": "S47",
+    "title": "Personal finance apps like Monarch see surge after Intuit shuts Mint",
+    "publisher": "TechCrunch",
+    "url": "https://techcrunch.com/2023/11/02/personal-finance-monarch-intuit-mint",
+    "date": "2023-11-02",
+    "confidence": "S",
+    "used_for": "Monarch positioned as Mint replacement"
+  },
+  {
+    "id": "S48",
+    "title": "Investment Memo: Koyfin",
+    "publisher": "Tradeoffs (Substack)",
+    "url": "https://ebentimko.substack.com/p/investment-memo-koyfin",
+    "date": "2023",
+    "confidence": "U",
+    "used_for": "Founded 2016 by Rob Koyfman; ~100k (2020) -> 500k+ (2023) users"
+  },
+  {
+    "id": "S49",
+    "title": "Koyfin Pricing 2026",
+    "publisher": "G2",
+    "url": "https://www.g2.com/products/koyfin/pricing",
+    "date": "2026",
+    "confidence": "S",
+    "used_for": "Plus $39/mo, Pro $79/mo, Advisor $209-299/mo, free tier"
+  },
+  {
+    "id": "S50",
+    "title": "Koyfin Raises $3M",
+    "publisher": "AlleyWatch",
+    "url": "https://www.alleywatch.com/2019/09/koyfin-invest-financial-data-analytics-rob-koyfman/",
+    "date": "2019-09",
+    "confidence": "S",
+    "used_for": "$3M seed"
+  },
+  {
+    "id": "S51",
+    "title": "Koyfin funding rounds",
+    "publisher": "Tracxn",
+    "url": "https://tracxn.com/d/companies/koyfin/__Q4MMOXLLNKBuiJ5QrMtB144HmOmv2CgadPoraVLYGeI/funding-and-investors",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "~$6.7-7.3M total; last round 2021"
+  },
+  {
+    "id": "S52",
+    "title": "About - Stock Analysis",
+    "publisher": "Stock Analysis",
+    "url": "https://stockanalysis.com/about/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "Founded 2019 by Kris Gunnars; bootstrapped; operated by Vefir ehf."
+  },
+  {
+    "id": "S53",
+    "title": "Interview with Kris Gunnars from StockAnalysis.com (Ep. 121)",
+    "publisher": "Mastermind.fm",
+    "url": "https://mastermind.fm/kris-gunnars-stockanalysis-authority-nutrition/",
+    "date": "undated",
+    "confidence": "S",
+    "used_for": "Founder previously built Authority Nutrition (sold to Healthline); SEO background"
+  },
+  {
+    "id": "S54",
+    "title": "stockanalysis.com Traffic Analytics",
+    "publisher": "Similarweb",
+    "url": "https://www.similarweb.com/website/stockanalysis.com/",
+    "date": "2026-08",
+    "confidence": "S",
+    "used_for": "~8.4M visits/mo (Nov-25 to Jan-26); #24 Investing; 59% US; 64% direct / 20% Google"
+  },
+  {
+    "id": "S55",
+    "title": "Stock Analysis Review (2026)",
+    "publisher": "Ryan O'Connell Finance",
+    "url": "https://ryanoconnellfinance.com/stock-analysis-review/",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "40M+ monthly pageviews claim"
+  },
+  {
+    "id": "S56",
+    "title": "Stock Analysis Pro",
+    "publisher": "Stock Analysis",
+    "url": "https://stockanalysis.com/pro/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "$9.99/mo or $79/yr"
+  },
+  {
+    "id": "S57",
+    "title": "FinChat is now Fiscal.ai - Announcing our $10M Series A",
+    "publisher": "Fiscal.ai",
+    "url": "https://fiscal.ai/blog/series-a-announcement/",
+    "date": "2025-06",
+    "confidence": "P",
+    "used_for": "$10M Series A led by Portage; $13M total; 350k+ registered users"
+  },
+  {
+    "id": "S58",
+    "title": "Fiscal.ai Review, Pricing, and Features (2026)",
+    "publisher": "Find My Moat",
+    "url": "https://www.findmymoat.com/tools/fiscal-ai",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "Pro $39-49/mo, Max $79-99/mo"
+  },
+  {
+    "id": "S59",
+    "title": "Robinhood Financial Education policy / Learn / Money Drills",
+    "publisher": "Robinhood",
+    "url": "https://robinhood.com/us/en/policy/financial-education",
+    "date": "2026-01",
+    "confidence": "P",
+    "used_for": "Robinhood Learn; Money Drills with 17 universities"
+  },
+  {
+    "id": "S60",
+    "title": "Introducing Robinhood Strategies, Robinhood Banking, and Robinhood Cortex",
+    "publisher": "Robinhood Newsroom",
+    "url": "https://robinhood.com/newsroom/introducing-strategies-banking-and-cortex",
+    "date": "2025-03-27",
+    "confidence": "P",
+    "used_for": "Cortex AI launched for Gold members"
+  },
+  {
+    "id": "S61",
+    "title": "Robinhood Reports Second Quarter 2026 Results",
+    "publisher": "Robinhood Markets (IR)",
+    "url": "https://investors.robinhood.com/news-releases/news-release-details/robinhood-reports-second-quarter-2026-results",
+    "date": "2026-07-29",
+    "confidence": "P",
+    "used_for": "Funded customers 28.4M; Gold 4.8M (+39%), ~17% adoption; ARPU $187"
+  },
+  {
+    "id": "S62",
+    "title": "How Robinhood's Referral Built a 1M User Waiting List",
+    "publisher": "Viral Loops (blog)",
+    "url": "https://viral-loops.com/blog/how-robinhoods-referral-built-a-1m-user/",
+    "date": "undated",
+    "confidence": "U",
+    "used_for": "~1M pre-launch waitlist via referral queue"
+  },
+  {
+    "id": "S63",
+    "title": "Public.com company profiles (Latka/Tracxn/Startup Intros)",
+    "publisher": "Aggregators",
+    "url": "https://startupintros.com/orgs/public-com",
+    "date": "2025",
+    "confidence": "U",
+    "used_for": "Founded 2019; $2B valuation (2021); Alpha AI; ~$554M raised"
+  },
+  {
+    "id": "S64",
+    "title": "Public.com Announces $220 Million in Series D Funding",
+    "publisher": "Business Wire (Public)",
+    "url": "https://www.businesswire.com/news/home/20210217005317/en/Public.com-Announces-220-Million-in-Series-D-Funding",
+    "date": "2021-02-17",
+    "confidence": "P",
+    "used_for": "$220M Series D; 1M members; 10x growth in 2020"
+  },
+  {
+    "id": "S65",
+    "title": "Leif Abraham - Building a loyal user base of 3M users in 3 years",
+    "publisher": "Fintech Leaders (Substack)",
+    "url": "https://fintechleaders.substack.com/p/leif-abraham-co-founder-of-publiccom",
+    "date": "2022-2023",
+    "confidence": "U",
+    "used_for": "~3M users"
+  },
+  {
+    "id": "S66",
+    "title": "Public.com Raises $135 Million",
+    "publisher": "FinanceFeeds",
+    "url": "https://financefeeds.com/public-com-raises-135-million-to-further-expand-multi-asset-brokerage/",
+    "date": "2024-12",
+    "confidence": "S",
+    "used_for": "$135M ($105M equity + $30M debt) led by Accel"
+  },
+  {
+    "id": "S67",
+    "title": "Social-Investing App Startup Public Raises $15 Million From Will Smith, JJ Watt...",
+    "publisher": "Variety",
+    "url": "https://variety.com/2020/digital/news/public-com-funding-will-smith-jj-watt-sophia-amoruso-1203520261/",
+    "date": "2020",
+    "confidence": "S",
+    "used_for": "Celebrity-investor PR-led growth"
+  },
+  {
+    "id": "S68",
+    "title": "CFI Membership Pricing",
+    "publisher": "Corporate Finance Institute",
+    "url": "https://corporatefinanceinstitute.com/pricing/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "$347 / $497 / $847 per year; FMVA included"
+  },
+  {
+    "id": "S69",
+    "title": "BIWS Premium",
+    "publisher": "Breaking Into Wall Street",
+    "url": "https://breakingintowallstreet.com/biws-premium/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "~$497 one-year access"
+  },
+  {
+    "id": "S70",
+    "title": "Wall Street Prep: Our take (review, pricing, alternatives)",
+    "publisher": "IGotAnOffer",
+    "url": "https://igotanoffer.com/en/advice/wall-street-prep-alternatives",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "WSP Premium ~$499; 300+ corporate clients"
+  },
+  {
+    "id": "S71",
+    "title": "About CFI",
+    "publisher": "Corporate Finance Institute",
+    "url": "https://corporatefinanceinstitute.com/about-cfi/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "3M+ learners, 180+ countries, since 2016"
+  },
+  {
+    "id": "S72",
+    "title": "CFI Announces Acquisition of Macabacus and Surpasses 4 Million Course Enrollments",
+    "publisher": "PR Newswire (CFI)",
+    "url": "https://www.prnewswire.com/news-releases/corporate-finance-institute-cfi-announces-acquisition-of-macabacus-and-surpasses-4-million-course-enrollments-301250727.html",
+    "date": "2021",
+    "confidence": "P",
+    "used_for": "4M course enrollments; Macabacus acquisition"
+  },
+  {
+    "id": "S73",
+    "title": "Intuit to Acquire Mint.com",
+    "publisher": "Intuit (IR)",
+    "url": "https://investors.intuit.com/news-events/press-releases/detail/1019/intuit-to-acquire-mint-com",
+    "date": "2009-09-14",
+    "confidence": "P",
+    "used_for": "~$170M; 1.5M users; growth via blog/email/PR"
+  },
+  {
+    "id": "S74",
+    "title": "Budgeting app Mint is shutting down",
+    "publisher": "CNBC",
+    "url": "https://www.cnbc.com/2023/11/07/budgeting-app-mint-is-shutting-down-users-are-disappointed.html",
+    "date": "2023-11-07",
+    "confidence": "S",
+    "used_for": "Shutdown, migration to Credit Karma"
+  },
+  {
+    "id": "S75",
+    "title": "Intuit Mint",
+    "publisher": "Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/Intuit_Mint",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "~3.6M active users (2021); final shutdown 2024-03-23"
+  },
+  {
+    "id": "S76",
+    "title": "Toggle AI Acquires Atom Finance",
+    "publisher": "Business Wire",
+    "url": "https://www.businesswire.com/news/home/20240515882640/en/Toggle-AI-Acquires-Atom-Finance",
+    "date": "2024-05-15",
+    "confidence": "P",
+    "used_for": "Acquisition; Atom as front-end infra for banks/brokers"
+  },
+  {
+    "id": "S77",
+    "title": "Atom Finance Raises $28 Million Series B Led by SoftBank",
+    "publisher": "Business Wire (Atom)",
+    "url": "https://www.businesswire.com/news/home/20210623005116/en/Atom-Finance-Raises-$28-Million-Series-B-Led-by-SoftBank-to-Empower-Informed-Investment-Decisions-Globally",
+    "date": "2021-06-23",
+    "confidence": "P",
+    "used_for": "$28M B; ~$50M total; premium subs +250% since early 2021; B2B partnerships"
+  },
+  {
+    "id": "S78",
+    "title": "Invstr Shutdown",
+    "publisher": "Fat Wallet Refugee (blog)",
+    "url": "https://fatwalletrefugee.com/2024/05/21/invstr-shutdown/",
+    "date": "2024-05-21",
+    "confidence": "U",
+    "used_for": "Ended Apex brokerage relationship; no notice; ~$40M raised"
+  },
+  {
+    "id": "S79",
+    "title": "Online Investing Platform Targeting Sports Fans For Fantasy Finance Game",
+    "publisher": "Forbes",
+    "url": "https://www.forbes.com/sites/timcasey/2020/05/26/online-investing-platform-targeting-sports-fans-for-fantasy-finance-game/",
+    "date": "2020-05-26",
+    "confidence": "S",
+    "used_for": "~1M downloads by May 2020"
+  },
+  {
+    "id": "S80",
+    "title": "a16z-backed fintech Tally, which raised $172M, is shutting down",
+    "publisher": "TechCrunch",
+    "url": "https://techcrunch.com/2024/08/12/a16z-backed-fintech-tally-which-raised-172m-in-funding-is-shutting-down-after-running-out-of-cash",
+    "date": "2024-08-12",
+    "confidence": "S",
+    "used_for": "$172M raised; shut down after failing to raise"
+  },
+  {
+    "id": "S81",
+    "title": "Tally sunsets over failure to raise capital",
+    "publisher": "Banking Dive",
+    "url": "https://www.bankingdive.com/news/fintech-tally-closes-over-failure-to-raise-capital/724263/",
+    "date": "2024-08",
+    "confidence": "S",
+    "used_for": "Failed B2B pivot; $855M last valuation (per Finextra)"
+  },
+  {
+    "id": "S82",
+    "title": "Insights from RevenueCat's 2025 Report: LTV, Paywalls, and Pricing",
+    "publisher": "ARPU Brothers (blog)",
+    "url": "https://arpubrothers.com/blog/2025-saas-mobile-apps-trends/",
+    "date": "2025",
+    "confidence": "U",
+    "used_for": "Education median $8.13/mo, $43.94/yr (secondary summary of RevenueCat)"
+  },
+  {
+    "id": "S83",
+    "title": "The 15% App Store Fee: A Guide for Developers (2026)",
+    "publisher": "RevenueCat",
+    "url": "https://www.revenuecat.com/blog/engineering/small-business-program",
+    "date": "2026",
+    "confidence": "S",
+    "used_for": "Apple SBP 15% under $1M proceeds; Google 15% on subscriptions"
+  },
+  {
+    "id": "S84",
+    "title": "Pricing & Plans",
+    "publisher": "RevenueCat",
+    "url": "https://www.revenuecat.com/pricing",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "Free to $2.5k MTR, then 1%"
+  },
+  {
+    "id": "S85",
+    "title": "Mobile App Retention Benchmarks by Industry (2026)",
+    "publisher": "UXCam / Enable3 (aggregating Adjust, AppsFlyer)",
+    "url": "https://uxcam.com/blog/mobile-app-retention-benchmarks/",
+    "date": "2026",
+    "confidence": "U",
+    "used_for": "Finance D30 ~2-6%"
+  },
+  {
+    "id": "S86",
+    "title": "SnapTrade Pricing",
+    "publisher": "SnapTrade",
+    "url": "https://snaptrade.com/pricing",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "$100/mo + $2 (real-time) or $1 (daily) per connected user/mo"
+  },
+  {
+    "id": "S87",
+    "title": "Supabase Pricing",
+    "publisher": "Supabase",
+    "url": "https://supabase.com/pricing",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "Pro $25/mo"
+  },
+  {
+    "id": "S88",
+    "title": "Expo subscriptions, plans and add-ons",
+    "publisher": "Expo",
+    "url": "https://docs.expo.dev/billing/plans/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "Starter $19/mo, Production $199/mo"
+  },
+  {
+    "id": "S89",
+    "title": "Plaid Pricing - US & Canada",
+    "publisher": "Plaid",
+    "url": "https://plaid.com/pricing/",
+    "date": "2026",
+    "confidence": "P",
+    "used_for": "Investments billed as subscription per Item; rates not public"
+  },
+  {
+    "id": "S90",
+    "title": "Apple must allow External Payment Links (Epic v. Apple)",
+    "publisher": "RevenueCat",
+    "url": "https://www.revenuecat.com/blog/growth/apple-anti-steering-ruling-monetization-strategy",
+    "date": "2025-05",
+    "confidence": "S",
+    "used_for": "April 30 2025 ruling: US apps may link to web checkout without commission"
+  },
+  {
+    "id": "S91",
+    "title": "Apple Wins Ability to Charge Fees on External Payment Links as Appeals Court Modifies Epic Injunction",
+    "publisher": "MacRumors",
+    "url": "https://www.macrumors.com/2025/12/11/apple-app-store-fees-external-payment-links/",
+    "date": "2025-12-11",
+    "confidence": "S",
+    "used_for": "Ninth Circuit modification allows some fee on external links"
+  }
+]

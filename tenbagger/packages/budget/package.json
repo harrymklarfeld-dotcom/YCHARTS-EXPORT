@@ -1,0 +1,22 @@
+{
+  "name": "@tenbagger/budget",
+  "version": "0.1.0",
+  "description": "Zero-dependency personal budgeting engine for Tenbagger: profile, conservative income baseline, safe-to-spend, per-paycheck plans, envelopes, goals and explainable insights.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "react-native": "./src/index.ts",
+  "files": ["src", "README.md"],
+  "sideEffects": false,
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import Waitlist from '../../components/Waitlist.astro';
+import { articles } from '../../lib/articles.ts';
+import { lessonsFile } from '../../lib/data.ts';
+const list = articles();
+const units = lessonsFile().units;
+const unitTitle = (id?: string) => units.find((u) => u.id === id)?.title;
+---
+<Base title="Learn: plain-English explainers" description="Short, interactive explainers on reading financial statements, built on real company filings.">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Learn</p>
+      <h1>Read the numbers like an analyst.</h1>
+      <p class="lede">Five-minute explainers with live charts and calculators, each paired with a lesson you can practice.</p>
+    </header>
+    {list.length === 0 ? (
+      <div class="card empty">
+        <h2>Explainers are on the way.</h2>
+        <p class="muted">The article library is being written. Meanwhile, try a lesson on the home page or browse the <a href="/metrics/">metric guides</a>.</p>
+      </div>
+    ) : (
+      <ul class="alist">
+        {list.map((a, i) => (
+          <li>
+            <a href={`/learn/${a.slug}/`} class="acard">
+              <span class="anum mono">{String(i + 1).padStart(2, '0')}</span>
+              <span class="abody">
+                <span class="ameta">{[unitTitle(a.unitId), a.level, `${a.readingMinutes} min`].filter(Boolean).join(' · ')}</span>
+                <span class="atitle">{a.title}</span>
+                <span class="adesc">{a.description}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+    <div class="lcta"><Waitlist source="learn" compact /></div>
+  </div>
+</Base>
+<style>
+  .alist { list-style: none; padding: 0; margin: 0 0 48px; border-top: 2px solid var(--ink); }
+  .acard { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
+  .acard:hover .atitle { color: var(--accent); }
+  .anum { color: var(--signal); padding-top: 4px; }
+  .abody { display: grid; gap: 4px; }
+  .ameta { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .atitle { font-family: var(--font-display); font-size: clamp(1.3rem, 2.4vw, 1.75rem); font-weight: 600; line-height: 1.2; }
+  .adesc { color: var(--muted); max-width: 46em; }
+  .empty { margin-bottom: 48px; }
+  .lcta { padding-bottom: 64px; }
+</style>

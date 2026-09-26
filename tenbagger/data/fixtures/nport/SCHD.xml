@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE fixture for SCHD: approximate weights from memory, NOT a real SEC filing. Replace with a live N-PORT-P pull. -->
+<edgarSubmission xmlns="http://www.sec.gov/edgar/nport" xmlns:com="http://www.sec.gov/edgar/common" xmlns:ncom="http://www.sec.gov/edgar/nportcommon">
+  <headerData>
+    <submissionType>NPORT-P</submissionType>
+    <filerInfo><seriesClassInfo><seriesId>S000033650</seriesId></seriesClassInfo></filerInfo>
+  </headerData>
+  <formData>
+    <genInfo>
+      <regName>SCHWAB STRATEGIC TRUST</regName><regCik>0000000000</regCik>
+      <seriesName>Schwab U.S. Dividend Equity ETF</seriesName><seriesId>S000033650</seriesId>
+      <repPdEnd>2025-12-31</repPdEnd><repPdDate>2025-06-30</repPdDate><isFinalFiling>N</isFinalFiling>
+    </genInfo>
+    <fundInfo>
+      <totAssets>70070000000.00</totAssets><totLiabs>70000000.00</totLiabs><netAssets>70000000000.00</netAssets>
+    </fundInfo>
+    <invstOrSecs>
+      <invstOrSec>
+        <name>Chevron Corp</name><lei>N/A</lei><title>Chevron Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CVX"/></identifiers>
+        <balance>30100000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>3010000000.0</valUSD><pctVal>4.3</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Coca-Cola Co/The</name><lei>N/A</lei><title>Coca-Cola Co/The</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>29400000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2940000000.0</valUSD><pctVal>4.2</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>ConocoPhillips</name><lei>N/A</lei><title>ConocoPhillips</title><cusip>N/A</cusip>
+        <identifiers><ticker value="COP"/></identifiers>
+        <balance>28700000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2870000000.0</valUSD><pctVal>4.1</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>AbbVie Inc</name><lei>N/A</lei><title>AbbVie Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="ABBV"/></identifiers>
+        <balance>28000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2800000000.0</valUSD><pctVal>4.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Altria Group Inc</name><lei>N/A</lei><title>Altria Group Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="MO"/></identifiers>
+        <balance>28000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2800000000.0</valUSD><pctVal>4.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>PepsiCo Inc</name><lei>N/A</lei><title>PepsiCo Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="PEP"/></identifiers>
+        <balance>27300000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2730000000.0</valUSD><pctVal>3.9</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Verizon Communications Inc</name><lei>N/A</lei><title>Verizon Communications Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="VZ"/></identifiers>
+        <balance>27300000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2730000000.0</valUSD><pctVal>3.9</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Home Depot Inc/The</name><lei>N/A</lei><title>Home Depot Inc/The</title><cusip>N/A</cusip>
+        <identifiers><ticker value="HD"/></identifiers>
+        <balance>27300000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2730000000.0</valUSD><pctVal>3.9</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Cisco Systems Inc</name><lei>N/A</lei><title>Cisco Systems Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CSCO"/></identifiers>
+        <balance>27300000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2730000000.0</valUSD><pctVal>3.9</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Amgen Inc</name><lei>N/A</lei><title>Amgen Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="AMGN"/></identifiers>
+        <balance>26600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2660000000.0</valUSD><pctVal>3.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Merck &amp; Co Inc</name><lei>N/A</lei><title>Merck &amp; Co Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="MRK"/></identifiers>
+        <balance>25900000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2590000000.0</valUSD><pctVal>3.7</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Lockheed Martin Corp</name><lei>N/A</lei><title>Lockheed Martin Corp</title><cusip>N/A</cusip>
+        <identifiers><ticker value="LMT"/></identifiers>
+        <balance>25200000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2520000000.0</valUSD><pctVal>3.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Bristol-Myers Squibb Co</name><lei>N/A</lei><title>Bristol-Myers Squibb Co</title><cusip>N/A</cusip>
+        <identifiers><ticker value="BMY"/></identifiers>
+        <balance>24500000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2450000000.0</valUSD><pctVal>3.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Texas Instruments Inc</name><lei>N/A</lei><title>Texas Instruments Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="TXN"/></identifiers>
+        <balance>23800000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2380000000.0</valUSD><pctVal>3.4</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>United Parcel Service Inc Class B</name><lei>N/A</lei><title>United Parcel Service Inc Class B</title><cusip>N/A</cusip>
+        <identifiers><ticker value="UPS"/></identifiers>
+        <balance>21700000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2170000000.0</valUSD><pctVal>3.1</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Money market sweep (sample)</name><lei>N/A</lei><title>Money market sweep (sample)</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>1050000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>105000000.0</valUSD><pctVal>0.15</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>STIV</assetCat><issuerCat>RF</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>SAMPLE AGGREGATE: remaining 88 positions</name><lei>N/A</lei><title>SAMPLE AGGREGATE: remaining 88 positions</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>297850000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>29785000000.0</valUSD><pctVal>42.55</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+    </invstOrSecs>
+  </formData>
+</edgarSubmission>

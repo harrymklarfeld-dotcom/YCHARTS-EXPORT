@@ -1,0 +1,51 @@
+{
+  "accounts": [
+    {
+      "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp",
+      "balances": { "available": null, "current": 8505.55, "iso_currency_code": "USD", "limit": null, "unofficial_currency_code": null },
+      "mask": "4321", "name": "Plaid Brokerage", "official_name": "Plaid Individual Brokerage", "subtype": "brokerage", "type": "investment"
+    },
+    {
+      "account_id": "dVzbVMLjrxTnLjX4G66XUp5GLklm4oiZy88yK",
+      "balances": { "available": null, "current": 8280, "iso_currency_code": "USD", "limit": null, "unofficial_currency_code": null },
+      "mask": "8765", "name": "Plaid 401k", "official_name": null, "subtype": "401k", "type": "investment"
+    }
+  ],
+  "holdings": [
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_mu", "quantity": 10.5, "cost_basis": 950, "institution_price": 100, "institution_price_as_of": "2026-09-24", "institution_value": 1050, "iso_currency_code": "USD", "unofficial_currency_code": null, "vested_quantity": null, "vested_value": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_cost", "quantity": 2, "cost_basis": 1500, "institution_price": 900, "institution_price_as_of": "2026-09-24", "institution_value": 1800, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_aapl", "quantity": 4, "cost_basis": null, "institution_price": 250, "institution_price_as_of": "2026-09-24", "institution_value": 1000, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_ewz", "quantity": 30, "cost_basis": 900, "institution_price": 28.5, "institution_price_as_of": "2026-09-24", "institution_value": 855, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_cash_usd", "quantity": 1200.55, "cost_basis": 1200.55, "institution_price": 1, "institution_price_as_of": null, "institution_value": 1200.55, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_btc", "quantity": 0.01, "cost_basis": 450, "institution_price": 60000, "institution_price_as_of": "2026-09-24", "institution_value": 600, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_nflx_opt", "quantity": 1, "cost_basis": 400, "institution_price": 5.25, "institution_price_as_of": "2026-09-24", "institution_value": 525, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_achn", "quantity": 0, "cost_basis": 0, "institution_price": 2.3, "institution_price_as_of": "2026-09-24", "institution_value": 0, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_ry_cad", "quantity": 10, "cost_basis": 1200, "institution_price": 140, "institution_price_as_of": "2026-09-24", "institution_value": 1400, "iso_currency_code": "CAD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_private", "quantity": 10, "cost_basis": 100, "institution_price": 10, "institution_price_as_of": null, "institution_value": 100, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "BxBXxLj1m4HMXBm9WZZmCWVbPjX16EHwv99vp", "security_id": "sec_missing", "quantity": 1, "cost_basis": 1, "institution_price": 1, "institution_price_as_of": null, "institution_value": 1, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "dVzbVMLjrxTnLjX4G66XUp5GLklm4oiZy88yK", "security_id": "sec_mu", "quantity": 5, "cost_basis": 400, "institution_price": 100, "institution_price_as_of": "2026-09-24", "institution_value": 500, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "dVzbVMLjrxTnLjX4G66XUp5GLklm4oiZy88yK", "security_id": "sec_tr2050_cit", "quantity": 100, "cost_basis": null, "institution_price": 50, "institution_price_as_of": "2026-09-23", "institution_value": 5000, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "dVzbVMLjrxTnLjX4G66XUp5GLklm4oiZy88yK", "security_id": "sec_ust", "quantity": 1000, "cost_basis": 1000, "institution_price": 0.98, "institution_price_as_of": "2026-09-24", "institution_value": 980, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "dVzbVMLjrxTnLjX4G66XUp5GLklm4oiZy88yK", "security_id": "sec_spaxx", "quantity": 300, "cost_basis": 300, "institution_price": 1, "institution_price_as_of": "2026-09-24", "institution_value": 300, "iso_currency_code": "USD", "unofficial_currency_code": null },
+    { "account_id": "dVzbVMLjrxTnLjX4G66XUp5GLklm4oiZy88yK", "security_id": "sec_cost", "quantity": 1.5, "cost_basis": null, "institution_price": 900, "institution_price_as_of": null, "institution_value": null, "iso_currency_code": "USD", "unofficial_currency_code": null }
+  ],
+  "securities": [
+    { "security_id": "sec_mu", "name": "Micron Technology Inc", "ticker_symbol": "MU", "cusip": "595112103", "isin": "US5951121038", "type": "equity", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 100, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null, "market_identifier_code": "XNAS", "sector": "Electronic Technology", "industry": "Semiconductors" },
+    { "security_id": "sec_cost", "name": "Costco Wholesale Corp", "ticker_symbol": "COST", "cusip": "22160K105", "isin": "US22160K1051", "type": "equity", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 900, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_aapl", "name": "Apple Inc", "ticker_symbol": "aapl ", "cusip": "037833100", "isin": "US0378331005", "type": "equity", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 250, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_ewz", "name": "iShares Inc MSCI Brazil", "ticker_symbol": "EWZ", "cusip": "464286400", "isin": "US4642864007", "type": "etf", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 28.5, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_cash_usd", "name": "U S Dollar", "ticker_symbol": "CUR:USD", "cusip": null, "isin": null, "type": "cash", "is_cash_equivalent": true, "proxy_security_id": null, "close_price": 1, "close_price_as_of": null, "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_btc", "name": "Bitcoin", "ticker_symbol": "BTC", "cusip": null, "isin": null, "type": "cryptocurrency", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 60000, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_nflx_opt", "name": "NFLX 2027-01-15 Call 800", "ticker_symbol": "NFLX270115C00800000", "cusip": null, "isin": null, "type": "derivative", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 5.25, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD",
+      "option_contract": { "contract_type": "call", "expiration_date": "2027-01-15", "strike_price": 800, "underlying_security_ticker": "NFLX" } },
+    { "security_id": "sec_achn", "name": "Achillion Pharmaceuticals Inc.", "ticker_symbol": "ACHN", "cusip": "00448Q201", "isin": null, "type": "equity", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 2.3, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_ry_cad", "name": "Royal Bank of Canada", "ticker_symbol": "RY", "cusip": "780087102", "isin": "CA7800871021", "type": "equity", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 140, "close_price_as_of": "2026-09-24", "iso_currency_code": "CAD", "option_contract": null },
+    { "security_id": "sec_private", "name": "Acme Private Holdings LP", "ticker_symbol": null, "cusip": "BAD", "isin": null, "type": "equity", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 10, "close_price_as_of": null, "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_tr2050_cit", "name": "Vanguard Target Retirement 2050 Trust II", "ticker_symbol": null, "cusip": null, "isin": null, "type": "mutual fund", "is_cash_equivalent": false, "proxy_security_id": "sec_vfifx", "close_price": 50, "close_price_as_of": "2026-09-23", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_vfifx", "name": "Vanguard Target Retirement 2050 Fund", "ticker_symbol": "VFIFX", "cusip": "92202E805", "isin": null, "type": "mutual fund", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 55, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_ust", "name": "U S Treasury Note 4.25% 2029", "ticker_symbol": null, "cusip": "91282CKA8", "isin": null, "type": "fixed income", "is_cash_equivalent": false, "proxy_security_id": null, "close_price": 0.98, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null },
+    { "security_id": "sec_spaxx", "name": "Fidelity Government Money Market", "ticker_symbol": "SPAXX", "cusip": "31617H102", "isin": null, "type": "mutual fund", "is_cash_equivalent": true, "proxy_security_id": null, "close_price": 1, "close_price_as_of": "2026-09-24", "iso_currency_code": "USD", "option_contract": null }
+  ],
+  "item": { "item_id": "M5eVJqLnv3tbzdngLDp9FL5OlDNxlNhlE55op", "institution_id": "ins_115616", "webhook": "https://example.test/functions/v1/plaid-webhook", "available_products": [], "billed_products": ["investments"], "consent_expiration_time": null, "update_type": "background" },
+  "request_id": "l68wb8zpS0hqmsJ"
+}

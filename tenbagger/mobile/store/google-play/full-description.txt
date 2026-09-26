@@ -1,0 +1,26 @@
+Learn to read any public company's numbers, 3 minutes a day.
+
+Tenbagger turns real company financials into short, game-like lessons. Every question is built from a company's own SEC filings, so you practise on the numbers analysts actually read: revenue, margins, cash flow, debt and valuation. No jargon walls, no stock tips.
+
+HOW IT WORKS
+• Bite-size lessons: multiple choice, true/false, number entry, compare and rank questions, each with an instant explanation.
+• Every answer shows its source, for example "COST FY2025 10-K · gross profit / revenue", so you learn where numbers come from.
+• A learning path from the basics (what a margin is) to cash flow, returns on capital and valuation.
+• Streaks, XP and a daily goal keep the habit going. They come only from learning, never from trading.
+
+PRACTISE ON REAL COMPANIES
+• Beginner-friendly screener: start from preset screens or build your own with plain-English metric explanations.
+• Company pages with key metrics and up to 10 years of history as simple charts.
+• "Practice with this company" builds a drill from that company's own numbers.
+
+TENBAGGER PRO
+Free includes the full first unit, a new lesson every day, the screener presets and company pages. Pro unlocks every unit, unlimited lessons, practice mode, all screens and an ad-free app.
+• Pro Monthly and Pro Annual (the annual plan includes a 7-day free trial for new subscribers).
+• Student Annual for verified students, with everything in Pro.
+Subscriptions are billed through Google Play and renew automatically until cancelled. Cancel any time in Google Play > Payments & subscriptions. Prices are shown in the app before you subscribe.
+
+EDUCATION, NOT ADVICE
+Tenbagger is an educational tool. Nothing in the app is investment, tax or legal advice, a recommendation to buy or sell any security, or an offer of any financial product. Tenbagger does not execute trades, hold money or manage accounts. Company data comes from public filings and may contain errors; check the original filing before relying on any number.
+
+Terms of Service: https://tenbagger.example/legal/terms
+Privacy Policy: https://tenbagger.example/legal/privacy

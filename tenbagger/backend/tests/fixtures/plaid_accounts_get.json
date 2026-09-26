@@ -1,0 +1,32 @@
+{
+  "_comment": "FICTIONAL sandbox-shaped /accounts/get response. Institution, names, ids and masks are invented.",
+  "accounts": [
+    {
+      "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK",
+      "balances": { "available": 587.44, "current": 612.44, "iso_currency_code": "USD", "limit": null, "unofficial_currency_code": null },
+      "mask": "0101", "name": "Everyday Checking", "official_name": "Northwind Student Checking", "subtype": "checking", "type": "depository"
+    },
+    {
+      "account_id": "mhSav9Lp4wYcM1qAs2bZuO4lXt0eFf5gHi6kL",
+      "balances": { "available": 1500, "current": 1500, "iso_currency_code": "USD", "limit": null, "unofficial_currency_code": null },
+      "mask": "0202", "name": "Rainy Day Savings", "official_name": null, "subtype": "savings", "type": "depository"
+    },
+    {
+      "account_id": "mhCrd3Xz8uZdN2rBt3cAvP5mYu1fGg6hIj7lM",
+      "balances": { "available": 1265.79, "current": 734.21, "iso_currency_code": "USD", "limit": 2000, "unofficial_currency_code": null },
+      "mask": "0303", "name": "Campus Rewards Card", "official_name": "Northwind Campus Rewards Visa", "subtype": "credit card", "type": "credit"
+    },
+    {
+      "account_id": "mhLon5Rt1tAeO3sCu4dBwQ6nZv2gHh7iJk8mN",
+      "balances": { "available": null, "current": 12450, "iso_currency_code": "USD", "limit": null, "unofficial_currency_code": null },
+      "mask": "0404", "name": "Student Loan", "official_name": null, "subtype": "student", "type": "loan"
+    },
+    {
+      "account_id": "mhInv2Wq6sBfP4tDv5eCxR7oAw3hIi8jKl9nO",
+      "balances": { "available": null, "current": 850, "iso_currency_code": "USD", "limit": null, "unofficial_currency_code": null },
+      "mask": "0505", "name": "Starter Brokerage", "official_name": null, "subtype": "brokerage", "type": "investment"
+    }
+  ],
+  "item": { "item_id": "mhItemFictional0001", "institution_id": "ins_fictional_northwind" },
+  "request_id": "fictional-req-1"
+}

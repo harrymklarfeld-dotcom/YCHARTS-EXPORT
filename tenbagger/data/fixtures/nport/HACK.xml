@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE fixture for HACK: approximate weights from memory, NOT a real SEC filing. Replace with a live N-PORT-P pull. -->
+<edgarSubmission xmlns="http://www.sec.gov/edgar/nport" xmlns:com="http://www.sec.gov/edgar/common" xmlns:ncom="http://www.sec.gov/edgar/nportcommon">
+  <headerData>
+    <submissionType>NPORT-P</submissionType>
+    <filerInfo><seriesClassInfo><seriesId>S000000000</seriesId></seriesClassInfo></filerInfo>
+  </headerData>
+  <formData>
+    <genInfo>
+      <regName>ETF MANAGERS GROUP COMMODITY TRUST / AMPLIFY ETF TRUST</regName><regCik>0000000000</regCik>
+      <seriesName>Amplify Cybersecurity ETF</seriesName><seriesId>S000000000</seriesId>
+      <repPdEnd>2025-12-31</repPdEnd><repPdDate>2025-06-30</repPdDate><isFinalFiling>N</isFinalFiling>
+    </genInfo>
+    <fundInfo>
+      <totAssets>2202200000.00</totAssets><totLiabs>2200000.00</totLiabs><netAssets>2200000000.00</netAssets>
+    </fundInfo>
+    <invstOrSecs>
+      <invstOrSec>
+        <name>Broadcom Inc</name><lei>N/A</lei><title>Broadcom Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="AVGO"/></identifiers>
+        <balance>1320000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>132000000.0</valUSD><pctVal>6.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Cisco Systems Inc</name><lei>N/A</lei><title>Cisco Systems Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CSCO"/></identifiers>
+        <balance>1210000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>121000000.0</valUSD><pctVal>5.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Palo Alto Networks Inc</name><lei>N/A</lei><title>Palo Alto Networks Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="PANW"/></identifiers>
+        <balance>1100000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>110000000.0</valUSD><pctVal>5.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>CrowdStrike Holdings Inc</name><lei>N/A</lei><title>CrowdStrike Holdings Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CRWD"/></identifiers>
+        <balance>1100000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>110000000.0</valUSD><pctVal>5.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Fortinet Inc</name><lei>N/A</lei><title>Fortinet Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="FTNT"/></identifiers>
+        <balance>990000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>99000000.0</valUSD><pctVal>4.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Cloudflare Inc</name><lei>N/A</lei><title>Cloudflare Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="NET"/></identifiers>
+        <balance>880000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>88000000.0</valUSD><pctVal>4.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Zscaler Inc</name><lei>N/A</lei><title>Zscaler Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="ZS"/></identifiers>
+        <balance>770000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>77000000.0</valUSD><pctVal>3.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Okta Inc</name><lei>N/A</lei><title>Okta Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="OKTA"/></identifiers>
+        <balance>660000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>66000000.0</valUSD><pctVal>3.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Gen Digital Inc</name><lei>N/A</lei><title>Gen Digital Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="GEN"/></identifiers>
+        <balance>660000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>66000000.0</valUSD><pctVal>3.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Check Point Software Technologies Ltd</name><lei>N/A</lei><title>Check Point Software Technologies Ltd</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CHKP"/></identifiers>
+        <balance>660000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>66000000.0</valUSD><pctVal>3.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>CyberArk Software Ltd</name><lei>N/A</lei><title>CyberArk Software Ltd</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CYBR"/></identifiers>
+        <balance>660000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>66000000.0</valUSD><pctVal>3.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Qualys Inc</name><lei>N/A</lei><title>Qualys Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="QLYS"/></identifiers>
+        <balance>484000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>48400000.0</valUSD><pctVal>2.2</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Microsoft Corp</name><lei>N/A</lei><title>Microsoft Corp</title><cusip>594918104</cusip>
+        <identifiers><isin value="US5949181040"/><ticker value="MSFT"/></identifiers>
+        <balance>440000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>44000000.0</valUSD><pctVal>2.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Money market sweep (sample)</name><lei>N/A</lei><title>Money market sweep (sample)</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>66000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>6600000.0</valUSD><pctVal>0.3</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>STIV</assetCat><issuerCat>RF</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>SAMPLE AGGREGATE: remaining 47 positions</name><lei>N/A</lei><title>SAMPLE AGGREGATE: remaining 47 positions</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>11000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>1100000000.0</valUSD><pctVal>50.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+    </invstOrSecs>
+  </formData>
+</edgarSubmission>

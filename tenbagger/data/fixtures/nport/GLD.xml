@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE fixture for GLD: approximate weights from memory, NOT a real SEC filing. Replace with a live N-PORT-P pull. -->
+<edgarSubmission xmlns="http://www.sec.gov/edgar/nport" xmlns:com="http://www.sec.gov/edgar/common" xmlns:ncom="http://www.sec.gov/edgar/nportcommon">
+  <headerData>
+    <submissionType>NPORT-P</submissionType>
+    <filerInfo><seriesClassInfo><seriesId>S000000000</seriesId></seriesClassInfo></filerInfo>
+  </headerData>
+  <formData>
+    <genInfo>
+      <regName>SPDR GOLD TRUST</regName><regCik>0000000000</regCik>
+      <seriesName>SPDR Gold Shares</seriesName><seriesId>S000000000</seriesId>
+      <repPdEnd>2025-12-31</repPdEnd><repPdDate>2025-06-30</repPdDate><isFinalFiling>N</isFinalFiling>
+    </genInfo>
+    <fundInfo>
+      <totAssets>100100000000.00</totAssets><totLiabs>100000000.00</totLiabs><netAssets>100000000000.00</netAssets>
+    </fundInfo>
+    <invstOrSecs>
+      <invstOrSec>
+        <name>Gold bullion (London Good Delivery bars)</name><lei>N/A</lei><title>Gold bullion (London Good Delivery bars)</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>1000000000.0</balance><units>OU</units><curCd>USD</curCd><valUSD>100000000000.0</valUSD><pctVal>100.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetConditional assetCat="OTHER" desc="Gold bullion"/><issuerCat>OTHER</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+    </invstOrSecs>
+  </formData>
+</edgarSubmission>

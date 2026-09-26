@@ -1,0 +1,117 @@
+---
+/** widget:calculator kind=pe|dcf|liquidity — sliders with live results (island). */
+import { companyByTicker, shortName } from '../../lib/data.ts';
+import { value, historySeries } from '../../lib/widgets.ts';
+import { renderCalc, type CalcState } from '../../lib/calc-render.ts';
+import { wfmt } from '../../lib/wformat.ts';
+import SampleTags from './SampleTags.astro';
+import WidgetError from './WidgetError.astro';
+
+type P = Record<string, unknown>;
+const props = Astro.props as P;
+const num = (k: string, d: number | null = null): number | null => {
+  const v = props[k];
+  const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN;
+  return Number.isFinite(n) ? n : d;
+};
+const kind = String(props.kind ?? '');
+const c = props.ticker ? companyByTicker(String(props.ticker)) : undefined;
+const caption = typeof props.caption === 'string' ? props.caption : undefined;
+
+type Slider = { key: string; label: string; min: number; max: number; step: number; value: number; format: string };
+let state: CalcState | null = null;
+let sliders: Slider[] = [];
+let toggle: { key: string; label: string; checked: boolean } | null = null;
+let error = '';
+let title = '';
+
+if (kind === 'pe') {
+  const price = num('price', c ? value(c, 'price') : null);
+  const eps = num('eps', c ? value(c, 'eps_diluted') : null);
+  if (price === null || eps === null) error = 'the P/E calculator needs a ticker or price + eps.';
+  else {
+    state = { kind: 'pe', price, eps, requiredReturn: num('required_return', 0.09)! };
+    const epsSpan = Math.max(Math.abs(eps) * 3, 1);
+    sliders = [
+      { key: 'price', label: 'Share price', min: 1, max: Math.max(price * 3, 10), step: Math.max(0.01, +(price / 200).toPrecision(1)), value: price, format: 'per_share' },
+      { key: 'eps', label: 'Earnings per share (EPS)', min: -Math.round(epsSpan / 3), max: +epsSpan.toFixed(2), step: Math.max(0.01, +(epsSpan / 300).toPrecision(1)), value: eps, format: 'per_share' },
+    ];
+    title = 'P/E calculator';
+  }
+} else if (kind === 'dcf') {
+  const fcf = num('fcf', c ? value(c, 'free_cash_flow') : null);
+  if (fcf === null) error = 'the DCF calculator needs a ticker or fcf.';
+  else {
+    const hist = c ? historySeries(c, 'free_cash_flow').map((p) => p[1]).filter((v): v is number => typeof v === 'number') : [];
+    const normalized = num('normalized_fcf', hist.length ? hist.reduce((a, b) => a + b, 0) / hist.length : null);
+    const maxF = 3 * Math.max(Math.abs(fcf), Math.abs(normalized ?? 0), 1);
+    state = {
+      kind: 'dcf',
+      fcf,
+      normalized,
+      useNormalized: props.cyclical === true || props.cyclical === 'true',
+      growth: num('growth', 0.05)!,
+      discount: num('discount', 0.09)!,
+      terminal: num('terminal', 15)!,
+      years: Math.round(num('years', 5)!),
+      netCash: num('net_cash', c ? value(c, 'net_cash') ?? 0 : 0)!,
+      shares: num('shares', c ? value(c, 'shares_diluted') : null),
+      price: c ? value(c, 'price') : null,
+    };
+    sliders = [
+      { key: 'fcf', label: 'Starting free cash flow', min: 0, max: maxF, step: +(maxF / 300).toPrecision(2), value: Math.max(0, fcf), format: 'usd' },
+      { key: 'growth', label: 'Yearly growth', min: -0.1, max: 0.25, step: 0.005, value: state.growth, format: 'percent' },
+      { key: 'discount', label: 'Discount rate', min: 0.05, max: 0.15, step: 0.0025, value: state.discount, format: 'percent' },
+      { key: 'terminal', label: 'Exit multiple of FCF', min: 5, max: 30, step: 0.5, value: state.terminal, format: 'multiple' },
+    ];
+    if (normalized !== null) toggle = { key: 'useNormalized', label: `Cyclical: use normalized FCF (${wfmt('usd', normalized)}, the average of every year)`, checked: state.useNormalized };
+    title = 'DCF calculator';
+  }
+} else if (kind === 'liquidity') {
+  const cash = num('cash', 3000)!;
+  const card = num('card', 1500)!;
+  state = { kind: 'liquidity', cash, card };
+  sliders = [
+    { key: 'cash', label: 'Cash (checking + savings)', min: 0, max: Math.max(20000, 3 * cash), step: 100, value: cash, format: 'usd' },
+    { key: 'card', label: 'Credit card balance', min: 0, max: Math.max(10000, 3 * card), step: 50, value: card, format: 'usd' },
+  ];
+  title = 'Your liquidity ratio';
+} else {
+  error = `unknown calculator kind “${kind}”.`;
+}
+const fmtSlider = (s: Slider) => wfmt(s.format, s.value);
+---
+{error || !state ? (
+  <WidgetError message={error || 'missing settings.'} />
+) : (
+  <calc-widget class="widget w-calc">
+    <script type="application/json" set:html={JSON.stringify(state)}></script>
+    <div class="w-head">
+      <p class="widget-kicker">{title}{c && <> · <span class="ticker">{c.ticker}</span> {shortName(c.name)}</>}{kind === 'liquidity' && ' · try your own numbers'}</p>
+      {c && <SampleTags companies={[c]} usesPrice />}
+    </div>
+    <div class="calc-grid">
+      <form class="calc-controls" onsubmit="return false">
+        {sliders.map((s) => (
+          <label data-fcf-row={s.key === 'fcf' ? '' : undefined}>
+            <span>{s.label} <output data-for={s.key}>{fmtSlider(s)}</output></span>
+            <input type="range" data-key={s.key} data-format={s.format} min={s.min} max={s.max} step={s.step} value={s.value} />
+          </label>
+        ))}
+        {toggle && (
+          <label class="calc-toggle">
+            <input type="checkbox" data-key={toggle.key} checked={toggle.checked} />
+            <span>{toggle.label}</span>
+          </label>
+        )}
+      </form>
+      <div class="calc-outs" data-out aria-live="polite" set:html={renderCalc(state)} />
+    </div>
+    {caption && <p class="w-caption">{caption}</p>}
+    <p class="w-caption small">An educational model, not a valuation or advice.</p>
+  </calc-widget>
+)}
+
+<script>
+  import '../../scripts/calc.ts';
+</script>

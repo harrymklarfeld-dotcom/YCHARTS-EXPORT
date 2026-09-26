@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE fixture for QQQ: approximate weights from memory, NOT a real SEC filing. Replace with a live N-PORT-P pull. -->
+<edgarSubmission xmlns="http://www.sec.gov/edgar/nport" xmlns:com="http://www.sec.gov/edgar/common" xmlns:ncom="http://www.sec.gov/edgar/nportcommon">
+  <headerData>
+    <submissionType>NPORT-P</submissionType>
+    <filerInfo><seriesClassInfo><seriesId>S000000000</seriesId></seriesClassInfo></filerInfo>
+  </headerData>
+  <formData>
+    <genInfo>
+      <regName>INVESCO QQQ TRUST, SERIES 1</regName><regCik>0000000000</regCik>
+      <seriesName>Invesco QQQ Trust, Series 1</seriesName><seriesId>S000000000</seriesId>
+      <repPdEnd>2025-12-31</repPdEnd><repPdDate>2025-06-30</repPdDate><isFinalFiling>N</isFinalFiling>
+    </genInfo>
+    <fundInfo>
+      <totAssets>360360000000.00</totAssets><totLiabs>360000000.00</totLiabs><netAssets>360000000000.00</netAssets>
+    </fundInfo>
+    <invstOrSecs>
+      <invstOrSec>
+        <name>NVIDIA Corp</name><lei>N/A</lei><title>NVIDIA Corp</title><cusip>67066G104</cusip>
+        <identifiers><isin value="US67066G1040"/><ticker value="NVDA"/></identifiers>
+        <balance>324000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>32400000000.0</valUSD><pctVal>9.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Microsoft Corp</name><lei>N/A</lei><title>Microsoft Corp</title><cusip>594918104</cusip>
+        <identifiers><isin value="US5949181040"/><ticker value="MSFT"/></identifiers>
+        <balance>309600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>30960000000.0</valUSD><pctVal>8.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Apple Inc</name><lei>N/A</lei><title>Apple Inc</title><cusip>037833100</cusip>
+        <identifiers><isin value="US0378331000"/><ticker value="AAPL"/></identifiers>
+        <balance>273600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>27360000000.0</valUSD><pctVal>7.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Amazon.com Inc</name><lei>N/A</lei><title>Amazon.com Inc</title><cusip>023135106</cusip>
+        <identifiers><isin value="US0231351060"/><ticker value="AMZN"/></identifiers>
+        <balance>198000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>19800000000.0</valUSD><pctVal>5.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Broadcom Inc</name><lei>N/A</lei><title>Broadcom Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="AVGO"/></identifiers>
+        <balance>180000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>18000000000.0</valUSD><pctVal>5.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Meta Platforms Inc</name><lei>N/A</lei><title>Meta Platforms Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="META"/></identifiers>
+        <balance>133200000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>13320000000.0</valUSD><pctVal>3.7</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Netflix Inc</name><lei>N/A</lei><title>Netflix Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="NFLX"/></identifiers>
+        <balance>108000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>10800000000.0</valUSD><pctVal>3.0</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Tesla Inc</name><lei>N/A</lei><title>Tesla Inc</title><cusip>88160R101</cusip>
+        <identifiers><isin value="US88160R1010"/><ticker value="TSLA"/></identifiers>
+        <balance>100800000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>10080000000.0</valUSD><pctVal>2.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Alphabet Inc Class A</name><lei>N/A</lei><title>Alphabet Inc Class A</title><cusip>N/A</cusip>
+        <identifiers><ticker value="GOOGL"/></identifiers>
+        <balance>93600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>9360000000.0</valUSD><pctVal>2.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Costco Wholesale Corp</name><lei>N/A</lei><title>Costco Wholesale Corp</title><cusip>22160K105</cusip>
+        <identifiers><isin value="US22160K1050"/><ticker value="COST"/></identifiers>
+        <balance>93600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>9360000000.0</valUSD><pctVal>2.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Alphabet Inc Class C</name><lei>N/A</lei><title>Alphabet Inc Class C</title><cusip>N/A</cusip>
+        <identifiers><ticker value="GOOG"/></identifiers>
+        <balance>90000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>9000000000.0</valUSD><pctVal>2.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Palantir Technologies Inc</name><lei>N/A</lei><title>Palantir Technologies Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="PLTR"/></identifiers>
+        <balance>75600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>7560000000.0</valUSD><pctVal>2.1</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Advanced Micro Devices Inc</name><lei>N/A</lei><title>Advanced Micro Devices Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="AMD"/></identifiers>
+        <balance>57600000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>5760000000.0</valUSD><pctVal>1.6</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Cisco Systems Inc</name><lei>N/A</lei><title>Cisco Systems Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="CSCO"/></identifiers>
+        <balance>54000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>5400000000.0</valUSD><pctVal>1.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>T-Mobile US Inc</name><lei>N/A</lei><title>T-Mobile US Inc</title><cusip>N/A</cusip>
+        <identifiers><ticker value="TMUS"/></identifiers>
+        <balance>54000000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>5400000000.0</valUSD><pctVal>1.5</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Micron Technology Inc</name><lei>N/A</lei><title>Micron Technology Inc</title><cusip>595112103</cusip>
+        <identifiers><isin value="US5951121030"/><ticker value="MU"/></identifiers>
+        <balance>28800000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>2880000000.0</valUSD><pctVal>0.8</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>Money market sweep (sample)</name><lei>N/A</lei><title>Money market sweep (sample)</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>1800000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>180000000.0</valUSD><pctVal>0.05</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>STIV</assetCat><issuerCat>RF</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+      <invstOrSec>
+        <name>SAMPLE AGGREGATE: remaining 85 positions</name><lei>N/A</lei><title>SAMPLE AGGREGATE: remaining 85 positions</title><cusip>N/A</cusip>
+        <identifiers><other otherDesc="Internal" value="SAMPLE"/></identifiers>
+        <balance>1423800000.0</balance><units>NS</units><curCd>USD</curCd><valUSD>142380000000.0</valUSD><pctVal>39.55</pctVal>
+        <payoffProfile>Long</payoffProfile><assetCat>EC</assetCat><issuerCat>CORP</issuerCat><invCountry>US</invCountry>
+        <isRestrictedSec>N</isRestrictedSec><fairValLevel>1</fairValLevel>
+      </invstOrSec>
+    </invstOrSecs>
+  </formData>
+</edgarSubmission>

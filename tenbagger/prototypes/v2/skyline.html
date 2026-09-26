@@ -1,0 +1,729 @@
+<title>Tenbagger Skyline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Direction: Skyline. A Tenbagger prototype where every lesson raises a building in a city you own, and money checks read as calm weather.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E7ECE8;--surface:#F7F9F5;--surface-2:#DEE6E1;--ink:#0F2429;--muted:#526669;--line:#C8D3CD;
+  --accent:#D57D22;--accent-ink:#1C1104;--accent-soft:#F5DEC2;--moss:#3B7449;--moss-soft:#D3E5D3;
+  --sky:#2F7494;--sky-soft:#D2E4EC;--cloud:#7F939B;--shadow:rgba(15,36,41,.20);--phone:#10262B;--app:#EEF2EE;
+  --map-street:#F2F5F1;--map-block:#D5DED8;--map-bldg:#B9C6C0;
+  --tod-1:#A9D0DD;--tod-2:#E4EFE8;
+  --display:"Bricolage Grotesque",ui-rounded,system-ui,sans-serif;--sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1418;--surface:#112127;--surface-2:#182F37;--ink:#E3ECE8;--muted:#8FA5A8;--line:#233A42;
+    --accent:#F0A24A;--accent-ink:#1C1104;--accent-soft:#3A2A16;--moss:#7DBA8B;--moss-soft:#17301F;
+    --sky:#82BED6;--sky-soft:#15303C;--cloud:#91A4AC;--shadow:rgba(0,0,0,.55);--phone:#02080A;--app:#0D1A1F;
+    --map-street:#0F1D22;--map-block:#16282F;--map-bldg:#24404A;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1418;--surface:#112127;--surface-2:#182F37;--ink:#E3ECE8;--muted:#8FA5A8;--line:#233A42;
+  --accent:#F0A24A;--accent-ink:#1C1104;--accent-soft:#3A2A16;--moss:#7DBA8B;--moss-soft:#17301F;
+  --sky:#82BED6;--sky-soft:#15303C;--cloud:#91A4AC;--shadow:rgba(0,0,0,.55);--phone:#02080A;--app:#0D1A1F;
+  --map-street:#0F1D22;--map-block:#16282F;--map-bldg:#24404A;color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(60% 50% at 18% 8%,color-mix(in srgb,var(--tod-1) 38%,transparent),transparent 70%),radial-gradient(50% 40% at 90% 100%,color-mix(in srgb,var(--tod-2) 30%,transparent),transparent 70%);transition:background 1.2s}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* header */
+.top{position:relative;z-index:2;display:flex;align-items:center;gap:20px;justify-content:space-between;padding:12px 32px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em;white-space:nowrap}
+.brand svg{flex-shrink:0}
+.dir{display:flex;align-items:center;gap:14px;min-width:0;flex:1;justify-content:flex-end}
+.dirtag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--ink);padding:4px 9px;border-radius:4px;white-space:nowrap}
+.dir p{margin:0;font-size:12.5px;color:var(--muted);max-width:620px;line-height:1.4}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;width:34px;height:34px;display:grid;place-items:center;flex-shrink:0}
+
+/* stage */
+.stage{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;max-width:1220px;margin:0 auto;padding:20px 32px 20px;align-items:center}
+.hero{min-width:0}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(40px,5.4vw,68px);line-height:.95;letter-spacing:-.035em;margin:0 0 18px;font-variation-settings:"opsz" 96}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{font-size:17px;max-width:540px;margin:0 0 22px;color:color-mix(in srgb,var(--ink) 82%,var(--muted))}
+.pano{position:relative;height:190px;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 40px -28px var(--shadow)}
+.pano canvas{width:100%;height:100%;display:block}
+.pano .todbar{position:absolute;left:10px;top:10px}
+.todbar{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(6px);border:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.todbar button{border:0;background:none;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted)}
+.todbar button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.principles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 22px;margin:22px 0 0;padding:0;list-style:none}
+.principles li{border-top:1px solid var(--line);padding-top:9px;font-size:13.5px;color:var(--muted)}
+.principles b{display:block;color:var(--ink);font-family:var(--display);font-weight:700;font-size:15px;margin-bottom:1px}
+.foot{position:relative;z-index:1;max-width:1220px;margin:0 auto;padding:6px 32px 28px;font-size:12px;color:var(--muted)}
+.foot strong{color:var(--ink)}
+
+/* phone */
+.phonewrap{justify-self:end}
+.phone{--ph:clamp(640px,calc(100vh - 110px),780px);width:390px;max-width:100%;height:var(--ph);border-radius:46px;border:10px solid var(--phone);background:var(--app);box-shadow:0 40px 80px -40px var(--shadow),0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.status{display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-family:var(--mono);font-size:12px;font-weight:600}
+.screens{flex:1;position:relative;overflow:hidden}
+.scr{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:6px 16px 24px;display:none;scrollbar-width:thin}
+.scr.on{display:block;animation:fadein .35s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.disc{font-size:10.5px;text-align:center;color:var(--muted);padding:4px 10px;border-top:1px solid var(--line);background:var(--app);letter-spacing:.01em}
+.tabbar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 6px 12px}
+.tabbar button{border:0;background:none;display:grid;justify-items:center;gap:2px;padding:6px 0;font-size:11px;font-weight:600;color:var(--muted);border-radius:12px}
+.tabbar button[aria-current="true"]{color:var(--ink)}
+.tabbar button[aria-current="true"] svg{color:var(--accent)}
+.tabbar svg{width:22px;height:22px}
+
+.shead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:6px 0 10px}
+.shead h2{font-family:var(--display);font-size:25px;font-weight:800;letter-spacing:-.025em;line-height:1;margin:0}
+.shead .sub{font-size:12px;color:var(--muted);margin-top:4px}
+.pill{font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:12px}
+.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.card h3{font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.015em;margin:3px 0 4px;line-height:1.15}
+.card p{margin:0;font-size:13.5px;color:color-mix(in srgb,var(--ink) 78%,var(--muted))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:13px 18px;font-weight:700;font-size:15px;background:var(--ink);color:var(--surface);width:100%;transition:transform .15s}
+.btn:active{transform:scale(.98)}
+.btn.amber{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:default}
+.bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:10px 0 6px}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#FFE1A8));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.small{font-size:12px;color:var(--muted)}
+
+/* city */
+.cityview{position:relative;height:292px;border-radius:22px;overflow:hidden;border:1px solid var(--line);margin-top:4px}
+.cityview canvas{width:100%;height:100%;display:block;cursor:pointer}
+.cityview .todbar{position:absolute;right:8px;top:8px}
+.cityview .todbar button{padding:4px 7px;font-size:11px}
+.cityview .hint{position:absolute;left:10px;bottom:9px;font-family:var(--mono);font-size:10.5px;color:#fff;background:rgba(6,16,20,.42);padding:3px 8px;border-radius:99px;backdrop-filter:blur(4px)}
+.binfo{border-left:3px solid var(--accent)}
+.fresh{display:flex;gap:12px;align-items:flex-start}
+.fresh .cal{flex-shrink:0;width:44px;border-radius:10px;border:1px solid var(--line);text-align:center;overflow:hidden;background:var(--app)}
+.fresh .cal span{display:block;font-size:9.5px;font-weight:700;letter-spacing:.08em;background:var(--accent);color:var(--accent-ink);padding:2px 0}
+.fresh .cal b{display:block;font-family:var(--display);font-size:20px;padding:2px 0 3px}
+
+/* learn */
+.unit{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:13px 14px;margin-top:10px}
+.unit.cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.unit.later{opacity:.72}
+.unit .uh{display:flex;gap:12px;align-items:center}
+.unit .glyph{width:38px;height:38px;border-radius:11px;background:var(--surface-2);display:grid;place-items:center;flex-shrink:0;color:var(--ink)}
+.unit.done .glyph{background:var(--moss-soft);color:var(--moss)}
+.unit.cur .glyph{background:var(--accent-soft);color:var(--accent)}
+.unit h4{margin:0;font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-.01em}
+.segs{display:flex;gap:4px;margin-top:9px}
+.segs i{flex:1;height:5px;border-radius:9px;background:var(--surface-2)}
+.segs i.on{background:var(--moss)}
+.segs i.now{background:var(--accent)}
+.lessons{margin:10px 0 0;padding:0;list-style:none}
+.lessons li{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:14px}
+.lessons li .dot{width:10px;height:10px;border-radius:3px;border:1.5px solid var(--muted);flex-shrink:0}
+.lessons li.now .dot{background:var(--accent);border-color:var(--accent)}
+.lessons li.built .dot{background:var(--moss);border-color:var(--moss)}
+.lessons li span.t{flex:1}
+.mini{border:0;border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px;background:var(--accent);color:var(--accent-ink)}
+
+/* map */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 10px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.mapbox{border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--map-street);position:relative}
+.mapbox svg{display:block;width:100%;height:auto}
+.mapbox .blk{fill:var(--map-block)}
+.mapbox .river{fill:none;stroke:color-mix(in srgb,var(--sky) 40%,var(--map-street));stroke-width:9;stroke-linecap:round}
+.mapbox .dl{font-family:var(--mono);font-size:7.5px;letter-spacing:.08em;fill:var(--muted);text-transform:uppercase}
+.mapbox .co rect.b{fill:var(--map-bldg);transition:fill .5s,opacity .5s}
+.mapbox .co text{font-family:var(--mono);font-size:8.5px;font-weight:600;fill:var(--muted);transition:fill .4s}
+.mapbox .co .glow{fill:var(--accent);opacity:0;transition:opacity .6s}
+.mapbox .co .w{fill:var(--accent-ink);opacity:0;transition:opacity .6s}
+.mapbox .co.lit rect.b{fill:var(--accent)}
+.mapbox .co.lit .glow{opacity:.28}
+.mapbox .co.lit .w{opacity:.55}
+.mapbox .co.lit text{fill:var(--ink)}
+.mapbox .co.dim rect.b{opacity:.55}
+.mapbox .co{cursor:pointer}
+@media (prefers-reduced-motion:no-preference){.mapbox .co.lit .glow{animation:breathe 3.2s ease-in-out infinite}}
+@keyframes breathe{50%{opacity:.12}}
+.res{list-style:none;margin:8px 0 0;padding:0}
+.res li button{width:100%;display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:10px 2px}
+.res .tk{font-family:var(--mono);font-weight:600;font-size:12px;background:var(--accent-soft);border-radius:8px;padding:5px 0;text-align:center}
+.res .nm{font-size:13.5px;font-weight:600;line-height:1.2}
+.res .mt{font-size:11.5px;color:var(--muted)}
+.res .px{text-align:right;font-family:var(--mono);font-size:12px}
+.res .px small{display:block;font-family:var(--sans);font-size:10px;color:var(--muted)}
+
+/* money */
+.wx{position:relative;height:210px;border-radius:22px;overflow:hidden;border:1px solid var(--line)}
+.wx canvas{width:100%;height:100%;display:block}
+.wx::after{content:"";position:absolute;inset:0 0 35% 0;background:linear-gradient(180deg,rgba(6,20,26,.55),rgba(6,20,26,.28) 60%,transparent);pointer-events:none}
+.wx .wxt{z-index:1}
+.wx .wxt{position:absolute;left:14px;right:14px;top:12px;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.28)}
+.wx .wxt .kicker{color:rgba(255,255,255,.85)}
+.wx .wxt h3{font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:-.03em;margin:2px 0 3px;line-height:1}
+.wx .wxt p{margin:0;font-size:13px;max-width:290px;line-height:1.35}
+.kv{display:grid;grid-template-columns:1fr auto;gap:7px 10px;font-size:13.5px;margin-top:8px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:var(--mono);font-size:13px;text-align:right}
+.lever{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.lever:first-of-type{border-top:0}
+.lever .lt{flex:1;font-size:13.5px}
+.lever .lt small{display:block;color:var(--muted);font-size:11.5px}
+.sw{width:46px;height:28px;border-radius:99px;border:0;background:var(--surface-2);position:relative;flex-shrink:0;transition:background .25s}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px var(--shadow);transition:transform .25s}
+.sw[aria-checked="true"]{background:var(--moss)}
+.sw[aria-checked="true"]::after{transform:translateX(18px)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.accts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.acct{border:1px solid var(--line);border-radius:14px;padding:10px 11px;background:var(--app)}
+.acct .small{display:block}
+.acct b{font-family:var(--mono);font-size:16px;font-weight:600}
+.acct.wide{grid-column:1/-1}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:99px;background:var(--sky-soft);color:var(--sky)}
+
+/* lesson */
+.lesson{position:absolute;inset:0;z-index:30;background:var(--surface);display:flex;flex-direction:column}
+.lesson[hidden]{display:none}
+.lbar{display:flex;align-items:center;gap:12px;padding:14px 18px 10px}
+.lbar .x{border:0;background:none;padding:4px;color:var(--muted);display:grid}
+.lsegs{flex:1;display:flex;gap:5px}
+.lsegs i{flex:1;height:6px;border-radius:9px;background:var(--surface-2);transition:background .4s}
+.lsegs i.on{background:var(--accent)}
+.lbody{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 20px 16px}
+.lbody h2{font-family:var(--display);font-size:25px;font-weight:800;letter-spacing:-.025em;line-height:1.08;margin:6px 0 12px}
+.lbody .prompt{font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:-.012em;line-height:1.25;margin:8px 0 18px}
+.lbody p.intro{font-size:15px;line-height:1.55;margin:0 0 12px}
+.plotcard{display:flex;gap:12px;align-items:center;background:var(--app);border:1px dashed var(--accent);border-radius:14px;padding:12px;margin-top:6px;font-size:13px}
+.opts{display:grid;gap:9px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:13px 14px;font-size:16px;font-weight:600;transition:border-color .2s,background .2s,transform .15s}
+.opt .k{width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:12px;flex-shrink:0;color:var(--muted)}
+.opt[aria-pressed="true"]{border-color:var(--ink);background:var(--app)}
+.opt[aria-pressed="true"] .k{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.opt.right{border-color:var(--moss);background:var(--moss-soft)}
+.opt.right .k{background:var(--moss);border-color:var(--moss);color:#fff}
+.opt.miss{border-color:var(--sky);background:var(--sky-soft)}
+.opts.two{grid-template-columns:1fr 1fr}
+.opts.two .opt{flex-direction:column;justify-content:center;text-align:center;padding:20px 10px;font-family:var(--display);font-size:18px}
+.lfoot{padding:12px 20px 18px;border-top:1px solid var(--line);background:var(--surface)}
+.fb{border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:13.5px;line-height:1.45;animation:fadein .3s ease}
+.fb.good{background:var(--moss-soft)}
+.fb.soft{background:var(--sky-soft)}
+.fb h4{margin:0 0 4px;font-family:var(--display);font-size:17px}
+.fb.good h4{color:var(--moss)}
+.fb.soft h4{color:var(--sky)}
+.src{display:inline-flex;gap:6px;align-items:center;margin-top:8px;font-family:var(--mono);font-size:10.5px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:3px 9px;background:var(--surface)}
+.build{position:relative;height:300px;border-radius:20px;overflow:hidden;margin:4px 0 14px;border:1px solid var(--line)}
+.build canvas{width:100%;height:100%;display:block}
+.done-copy{opacity:0;transform:translateY(10px);transition:opacity .6s,transform .6s}
+.done-copy.show{opacity:1;transform:none}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 4px}
+.stats div{border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;background:var(--app)}
+.stats b{display:block;font-family:var(--display);font-size:19px}
+.stats span{font-size:10.5px;color:var(--muted)}
+
+/* sheet */
+.scrim{position:absolute;inset:0;z-index:40;background:rgba(5,14,18,.38);opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:41;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 18px 22px;max-height:86%;overflow-y:auto;transform:translateY(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.sheet.on{transform:none}
+.sheet .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 10px}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.mgrid div{background:var(--app);border-radius:12px;padding:8px;border:1px solid var(--line)}
+.mgrid span{display:block;font-size:10.5px;color:var(--muted)}
+.mgrid b{font-family:var(--mono);font-size:13.5px;font-weight:600}
+.hist{margin-top:12px}
+.hist svg{width:100%;height:auto;display:block}
+.hist rect{fill:var(--accent)}
+.hist rect.neg{fill:var(--cloud)}
+.hist text{font-family:var(--mono);font-size:8px;fill:var(--muted)}
+
+@media (max-width:980px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:28px;padding:20px 16px}
+  .phonewrap{justify-self:center;width:100%;max-width:390px}
+  .top{padding:10px 16px;flex-wrap:wrap}
+  .foot{padding:6px 16px 24px}
+}
+@media (max-width:620px){
+  .dir{flex-basis:100%;flex-direction:column;align-items:flex-start;gap:6px;order:3}
+  .dir p{font-size:11.5px}
+  .top .iconbtn{order:2}
+  .principles{grid-template-columns:1fr}
+  .phone{border-width:0;border-radius:26px;height:780px;box-shadow:0 0 0 1px var(--line),0 30px 60px -40px var(--shadow)}
+  .pano{height:160px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="2" y="12" width="5" height="12" rx="1" fill="currentColor"/><rect x="8.5" y="5" width="5" height="19" rx="1" fill="var(--accent)"/><rect x="15" y="9" width="4" height="15" rx="1" fill="currentColor"/><rect x="20.5" y="15" width="4" height="9" rx="1" fill="currentColor"/></svg>
+    Tenbagger
+  </div>
+  <div class="dir">
+    <span class="dirtag">Direction: Skyline</span>
+    <p>Lessons become buildings you own, so knowledge feels earned and yours (endowment, competence).<br>Money shows as calm weather, not red alerts, so checking it lowers stress (calm tech).</p>
+  </div>
+  <button class="iconbtn" id="themeBtn" aria-label="Toggle light or dark theme"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5a6.5 6.5 0 1 0 0 13z" fill="currentColor"/><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+</header>
+
+<main class="stage">
+  <section class="hero" aria-labelledby="heroTitle">
+    <p class="eyebrow">Tenbagger · Investing, learned on real filings</p>
+    <h1 id="heroTitle">Every lesson raises <em>a building.</em></h1>
+    <p class="lede">Learn gross margin, and Costco's warehouse and Microsoft's tower rise to their actual FY2025 margins. Your city grows with what you understand, never shrinks, and your money lives in a calm neighbourhood where the forecast replaces the red alert.</p>
+    <div class="pano">
+      <canvas id="heroCv" role="img" aria-label="Illustrated skyline of the buildings earned from completed lessons"></canvas>
+      <div class="todbar" role="group" aria-label="Time of day">
+        <button data-tod="auto">Auto</button><button data-tod="dawn">Dawn</button><button data-tod="day">Day</button><button data-tod="dusk">Dusk</button><button data-tod="night">Night</button>
+      </div>
+    </div>
+    <ul class="principles">
+      <li><b>It's your city</b>Buildings carry the real numbers you learned. Ownership makes the knowledge sticky.</li>
+      <li><b>Nothing decays</b>No streak debt, no crumbling towers. Miss a week and your skyline waits.</li>
+      <li><b>Visible next plot</b>Scaffolding marks the next build, so the goal feels one step away.</li>
+      <li><b>Weather, not warnings</b>"Can I cover the card?" answered as sky, never red panic.</li>
+    </ul>
+  </section>
+
+  <div class="phonewrap">
+    <div class="phone" id="app">
+      <div class="status"><span id="clock">9:41</span><span id="todLabel">Day</span></div>
+      <div class="screens">
+        <!-- CITY -->
+        <section class="scr on" data-screen="city" aria-label="Your city">
+          <div class="shead">
+            <div><h2>Alex's Skyline</h2><div class="sub" id="levelSub">Village · 30 XP</div></div>
+            <span class="pill" id="bCount">3 buildings</span>
+          </div>
+          <div class="cityview">
+            <canvas id="cityCv" role="img" aria-label="Your city: buildings from completed lessons, scaffolding on the next plot"></canvas>
+            <div class="todbar" role="group" aria-label="Time of day">
+              <button data-tod="dawn">Dawn</button><button data-tod="day">Day</button><button data-tod="dusk">Dusk</button><button data-tod="night">Night</button>
+            </div>
+            <span class="hint">Tap a building</span>
+          </div>
+          <div class="card binfo" id="bInfo" aria-live="polite"></div>
+          <div class="card" id="nextCard"></div>
+          <div class="card">
+            <div class="row"><span class="kicker">Next skyline tier</span><span class="mono small" id="tierTxt">30 / 50 XP</span></div>
+            <div class="bar"><i id="tierBar" style="width:60%"></i></div>
+            <p id="tierCopy">Two builds to <b>Town</b>. You're already 60% of the way there.</p>
+          </div>
+          <div class="card fresh">
+            <div class="cal" aria-hidden="true"><span>OCT</span><b>1</b></div>
+            <div><span class="kicker">Fresh plot</span><h3>New month, clean block.</h3><p>October opens Thursday with an empty plot in your city. Whatever September looked like, the new block starts blank.</p></div>
+          </div>
+          <p class="small" style="margin:14px 2px 0">Your city never decays and there are no streaks to lose. Buildings are earned only by learning.</p>
+        </section>
+
+        <!-- LEARN -->
+        <section class="scr" data-screen="learn" aria-label="Districts">
+          <div class="shead"><div><h2>Districts</h2><div class="sub">Each unit is a district. Each lesson, one building.</div></div></div>
+          <div id="units"></div>
+        </section>
+
+        <!-- MAP -->
+        <section class="scr" data-screen="map" aria-label="Market map screener">
+          <div class="shead"><div><h2>Market map</h2><div class="sub">Zoom out. Companies that match your filters light up.</div></div><span class="pill" id="matchPill">0 lit</span></div>
+          <div class="chips" id="chips" role="group" aria-label="Filters"></div>
+          <div class="mapbox" id="mapbox"></div>
+          <p class="small" style="margin:8px 2px 0">Filters are for study: they show which businesses share a trait, not what to own. Figures from SEC filings; prices are sample prices.</p>
+          <ul class="res" id="results"></ul>
+        </section>
+
+        <!-- MONEY -->
+        <section class="scr" data-screen="money" aria-label="Money neighbourhood">
+          <div class="shead"><div><h2>Your block</h2><div class="sub">Alex, 20 · fictional persona</div></div><span class="pill">Sep 25</span></div>
+          <div class="wx">
+            <canvas id="wxCv" role="img" aria-label="Weather over your neighbourhood showing whether the card is covered"></canvas>
+            <div class="wxt" aria-live="polite"><span class="kicker">Can I cover the card?</span><h3 id="wxTitle">Light clouds</h3><p id="wxLine"></p></div>
+          </div>
+          <div class="card">
+            <div class="row"><span class="kicker">Card statement</span><span class="tag">Due Oct 17 · 22 days</span></div>
+            <dl class="kv">
+              <dt>Statement balance</dt><dd>$1,120</dd>
+              <dt>Minimum due</dt><dd>$25</dd>
+              <dt>Checking today</dt><dd>$840</dd>
+              <dt>Ready for the card</dt><dd id="availDd">$840</dd>
+            </dl>
+          </div>
+          <div class="card">
+            <span class="kicker">Ways the sky clears</span>
+            <div class="lever">
+              <div class="lt">Submit your logged hours<small>$93 in pay is waiting on a timesheet</small></div>
+              <button class="sw" id="hoursSw" role="switch" aria-checked="false" aria-label="Include $93 from submitting hours"></button>
+            </div>
+            <div class="lever" style="display:block">
+              <div class="row"><div class="lt">Move from savings</div><span class="mono" id="moveVal">$0</span></div>
+              <input type="range" id="moveRange" min="0" max="410" step="5" value="0" aria-label="Amount to move from savings">
+              <div class="row small"><span id="saveLeft">Savings stays $410</span><button class="chip" id="justEnough" style="padding:3px 9px">Just enough</button></div>
+            </div>
+            <p class="small" style="margin-top:6px">Paying the full statement balance by the due date avoids interest. Paying at least the minimum keeps the account in good standing.</p>
+          </div>
+          <div class="card">
+            <span class="kicker">The neighbourhood</span>
+            <div class="accts">
+              <div class="acct"><span class="small">Checking</span><b>$840</b></div>
+              <div class="acct"><span class="small">Savings</span><b id="saveB">$410</b></div>
+              <div class="acct"><span class="small">Card balance</span><b>$1,120</b></div>
+              <div class="acct"><span class="small">Pending hours</span><b>$93</b></div>
+              <div class="acct"><span class="small">Brokerage · long-term park</span><b>$2,600</b></div>
+              <div class="acct"><span class="small">Roth IRA · slow garden</span><b>$300</b></div>
+              <div class="acct wide"><div class="row"><span class="small">Everything, minus the card</span><b>$3,030</b></div><span class="small">Long-term accounts aren't counted for bills. They're for decades, not due dates.</span></div>
+            </div>
+          </div>
+          <p class="small" style="margin:14px 2px 0">A forecast, not a grade. Skies change, and so do balances.</p>
+        </section>
+      </div>
+      <div class="disc">Educational only. Not investment advice.</div>
+      <nav class="tabbar" aria-label="Sections">
+        <button data-tab="city" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 21h18M5 21V10h4v11M10 21V4h5v17M16 21v-8h3v8"/></svg>City</button>
+        <button data-tab="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 20V8l4-3v15M10 20V11l5-4 5 4v9M3 20h18"/></svg>Districts</button>
+        <button data-tab="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></svg>Map</button>
+        <button data-tab="money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M7 17a4 4 0 1 1 1-7.9A5 5 0 0 1 17.6 10 3.5 3.5 0 1 1 17 17z"/></svg>Money</button>
+      </nav>
+
+      <div class="lesson" id="lesson" hidden>
+        <div class="lbar">
+          <button class="x" id="lclose" aria-label="Close lesson"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 5l12 12M17 5L5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <div class="lsegs" id="lsegs"></div>
+          <span class="mono small" id="lcount"></span>
+        </div>
+        <div class="lbody" id="lbody"></div>
+        <div class="lfoot" id="lfoot"></div>
+      </div>
+      <div class="scrim" id="scrim"></div>
+      <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Company details"></div>
+    </div>
+  </div>
+</main>
+<footer class="foot"><strong>Educational only. Not investment advice.</strong> Company figures come from SEC filings (fixture generated Sep 25, 2026); prices shown are sample prices with their dates. Alex is a fictional persona. Rewards are earned only by finishing lessons.</footer>
+
+<script>
+const D={"source":"fixture","generated_at":"2026-09-25T22:01:11Z","disclaimer":"Educational content built from reported financials. Not investment advice.","companies":[{"t":"MU","n":"Micron Technology, Inc.","s":"Technology","i":"Semiconductors","p":1000.26,"pd":"2026-09-08","fy":2025,"m":{"market_cap":1125542565000,"pe":131.786561,"ps":30.112434,"ev_ebitda":61.742635,"fcf_yield":0.001482,"dividend_yield":0.000464,"gross_margin":0.400583,"operating_margin":0.266734,"net_margin":0.22845,"roe":0.157648,"roic":0.147136,"debt_to_equity":0.28343,"current_ratio":2.517985,"net_cash":-5706000000,"revenue_growth_yoy":0.488511,"revenue_cagr_3y":0.067135},"f":{"revenue":37378000000,"gross_profit":14973000000,"operating_income":9970000000,"net_income":8539000000,"free_cash_flow":1668000000,"cash":9646000000,"total_debt":15352000000},"h":{"revenue":[[2016,12399000000],[2017,20322000000],[2018,30391000000],[2019,23406000000],[2020,21435000000],[2021,27705000000],[2022,30758000000],[2023,15540000000],[2024,25111000000],[2025,37378000000]],"net_income":[[2016,-276000000],[2017,5089000000],[2018,14135000000],[2019,6313000000],[2020,2687000000],[2021,5861000000],[2022,8687000000],[2023,-5833000000],[2024,778000000],[2025,8539000000]],"free_cash_flow":[[2016,-2649000000],[2017,3419000000],[2018,8521000000],[2019,3409000000],[2020,83000000],[2021,2438000000],[2022,3114000000],[2023,-6117000000],[2024,121000000],[2025,1668000000]],"gross_margin":[[2016,0.202032],[2017,0.415117],[2018,0.588694],[2019,0.457233],[2020,0.305668],[2021,0.375203],[2022,0.45185],[2023,-0.09112],[2024,0.223528],[2025,0.400583]]}},{"t":"AAPL","n":"Apple Inc.","s":"Technology","i":"Consumer Electronics","p":255.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3826275000000,"pe":34.182306,"ps":9.194218,"ev_ebitda":26.867369,"fcf_yield":0.025813,"dividend_yield":0.00403,"gross_margin":0.469052,"operating_margin":0.319708,"net_margin":0.269151,"roe":1.51913,"roic":0.822836,"debt_to_equity":1.33803,"current_ratio":0.893293,"net_cash":-62723000000,"revenue_growth_yoy":0.064255,"revenue_cagr_3y":0.018125},"f":{"revenue":416161000000,"gross_profit":195201000000,"operating_income":133050000000,"net_income":112010000000,"free_cash_flow":98767000000,"cash":35934000000,"total_debt":98657000000},"h":{"revenue":[[2020,274515000000],[2021,365817000000],[2022,394328000000],[2023,383285000000],[2024,391035000000],[2025,416161000000]],"net_income":[[2020,57411000000],[2021,94680000000],[2022,99803000000],[2023,96995000000],[2024,93736000000],[2025,112010000000]],"free_cash_flow":[[2020,73365000000],[2021,92953000000],[2022,111443000000],[2023,99584000000],[2024,108807000000],[2025,98767000000]],"gross_margin":[[2020,0.382332],[2021,0.417794],[2022,0.433096],[2023,0.441311],[2024,0.462063],[2025,0.469052]]}},{"t":"MSFT","n":"Microsoft Corporation","s":"Technology","i":"Software","p":515.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3844475000000,"pe":37.756598,"ps":13.646246,"ev_ebitda":23.711337,"fcf_yield":0.018627,"dividend_yield":0.006264,"gross_margin":0.688237,"operating_margin":0.45622,"net_margin":0.36146,"roe":0.296472,"roic":0.297068,"debt_to_equity":0.125629,"current_ratio":1.353446,"net_cash":-12909000000,"revenue_growth_yoy":0.149322,"revenue_cagr_3y":0.124231},"f":{"revenue":281724000000,"gross_profit":193893000000,"operating_income":128528000000,"net_income":101832000000,"free_cash_flow":71611000000,"cash":30242000000,"total_debt":43151000000},"h":{"revenue":[[2021,168088000000],[2022,198270000000],[2023,211915000000],[2024,245122000000],[2025,281724000000]],"net_income":[[2021,61271000000],[2022,72738000000],[2023,72361000000],[2024,88136000000],[2025,101832000000]],"free_cash_flow":[[2021,56118000000],[2022,65149000000],[2023,59475000000],[2024,74071000000],[2025,71611000000]],"gross_margin":[[2021,0.689258],[2022,0.684017],[2023,0.689201],[2024,0.697644],[2025,0.688237]]}},{"t":"COST","n":"Costco Wholesale Corporation","s":"Consumer Staples","i":"Discount Stores","p":925.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":411625000000,"pe":50.796266,"ps":1.49554,"ev_ebitda":31.476072,"fcf_yield":0.019039,"dividend_yield":0.005328,"gross_margin":0.128432,"operating_margin":0.037724,"net_margin":0.029426,"roe":0.277705,"roic":0.376242,"debt_to_equity":0.195892,"current_ratio":0.999479,"net_cash":8448000000,"revenue_growth_yoy":0.081673,"revenue_cagr_3y":0.066404},"f":{"revenue":275235000000,"gross_profit":35349000000,"operating_income":10383000000,"net_income":8099000000,"free_cash_flow":7837000000,"cash":14161000000,"total_debt":5713000000},"h":{"revenue":[[2021,195929000000],[2022,226954000000],[2023,242290000000],[2024,254453000000],[2025,275235000000]],"net_income":[[2021,5007000000],[2022,5844000000],[2023,6292000000],[2024,7367000000],[2025,8099000000]],"free_cash_flow":[[2021,5370000000],[2022,3501000000],[2023,6745000000],[2024,6629000000],[2025,7837000000]],"gross_margin":[[2021,0.128848],[2022,0.121487],[2023,0.122597],[2024,0.126133],[2025,0.128432]]}},{"t":"KO","n":"The Coca-Cola Company","s":"Consumer Staples","i":"Beverages","p":66.5,"pd":"2025-09-30","fy":2024,"m":{"market_cap":287280000000,"pe":27.03252,"ps":6.104418,"ev_ebitda":29.319508,"fcf_yield":0.016503,"dividend_yield":0.029097,"gross_margin":0.610633,"operating_margin":0.21232,"net_margin":0.225898,"roe":0.427704,"roic":0.131032,"debt_to_equity":1.93221,"current_ratio":1.029625,"net_cash":-37199000000,"revenue_growth_yoy":0.028566,"revenue_cagr_3y":0.067788},"f":{"revenue":47061000000,"gross_profit":28737000000,"operating_income":9992000000,"net_income":10631000000,"free_cash_flow":4741000000,"cash":10828000000,"total_debt":48027000000},"h":{"revenue":[[2020,33014000000],[2021,38655000000],[2022,43004000000],[2023,45754000000],[2024,47061000000]],"net_income":[[2020,7747000000],[2021,9771000000],[2022,9542000000],[2023,10714000000],[2024,10631000000]],"free_cash_flow":[[2020,8667000000],[2021,11258000000],[2022,9534000000],[2023,9747000000],[2024,4741000000]],"gross_margin":[[2020,0.593112],[2021,0.602716],[2022,0.581434],[2023,0.595227],[2024,0.610633]]}},{"t":"NVDA","n":"NVIDIA Corporation","s":"Technology","i":"Semiconductors","p":186.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":4613544000000,"pe":63.265306,"ps":35.35364,"ev_ebitda":55.371869,"fcf_yield":0.01319,"dividend_yield":0.000181,"gross_margin":0.749887,"operating_margin":0.624175,"net_margin":0.55848,"roe":0.918729,"roic":0.892013,"debt_to_equity":0.106685,"current_ratio":4.439851,"net_cash":126000000,"revenue_growth_yoy":1.142034,"revenue_cagr_3y":0.692547},"f":{"revenue":130497000000,"gross_profit":97858000000,"operating_income":81453000000,"net_income":72880000000,"free_cash_flow":60853000000,"cash":8589000000,"total_debt":8463000000},"h":{"revenue":[[2021,16675000000],[2022,26914000000],[2023,26974000000],[2024,60922000000],[2025,130497000000]],"net_income":[[2021,4332000000],[2022,9752000000],[2023,4368000000],[2024,29760000000],[2025,72880000000]],"free_cash_flow":[[2021,4694000000],[2022,8132000000],[2023,3808000000],[2024,27021000000],[2025,60853000000]],"gross_margin":[[2021,0.623448],[2022,0.64929],[2023,0.569289],[2024,0.727176],[2025,0.749887]]}},{"t":"JPM","n":"JPMorgan Chase & Co.","s":"Financials","i":"Banks","p":315.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":905940000000,"pe":15.949367,"ps":5.102278,"ev_ebitda":null,"fcf_yield":null,"dividend_yield":0.016579,"gross_margin":null,"operating_margin":null,"net_margin":0.32931,"roe":0.1696,"roic":null,"debt_to_equity":1.164347,"current_ratio":null,"net_cash":-378046000000,"revenue_growth_yoy":0.123033,"revenue_cagr_3y":0.134337},"f":{"revenue":177556000000,"gross_profit":null,"operating_income":null,"net_income":58471000000,"free_cash_flow":null,"cash":23372000000,"total_debt":401418000000},"h":{"revenue":[[2020,119543000000],[2021,121649000000],[2022,128695000000],[2023,158104000000],[2024,177556000000]],"net_income":[[2020,29131000000],[2021,48334000000],[2022,37676000000],[2023,49552000000],[2024,58471000000]],"free_cash_flow":[],"gross_margin":[]}},{"t":"XOM","n":"Exxon Mobil Corporation","s":"Energy","i":"Oil & Gas Integrated","p":113.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":485787000000,"pe":14.413265,"ps":1.389611,"ev_ebitda":null,"fcf_yield":0.063229,"dividend_yield":0.034385,"gross_margin":null,"operating_margin":null,"net_margin":0.096343,"roe":0.127718,"roic":null,"debt_to_equity":0.158169,"current_ratio":1.308405,"net_cash":-18681000000,"revenue_growth_yoy":0.014519,"revenue_cagr_3y":0.069657},"f":{"revenue":349585000000,"gross_profit":null,"operating_income":null,"net_income":33680000000,"free_cash_flow":30716000000,"cash":23029000000,"total_debt":41710000000},"h":{"revenue":[[2020,181502000000],[2021,285640000000],[2022,413680000000],[2023,344582000000],[2024,349585000000]],"net_income":[[2020,-22440000000],[2021,23040000000],[2022,55740000000],[2023,36010000000],[2024,33680000000]],"free_cash_flow":[[2020,-2614000000],[2021,36053000000],[2022,58390000000],[2023,33450000000],[2024,30716000000]],"gross_margin":[]}},{"t":"JNJ","n":"Johnson & Johnson","s":"Health Care","i":"Pharmaceuticals","p":185.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":449365000000,"pe":31.951641,"ps":5.05922,"ev_ebitda":null,"fcf_yield":0.044156,"dividend_yield":0.02631,"gross_margin":0.690715,"operating_margin":null,"net_margin":0.158363,"roe":0.196755,"roic":null,"debt_to_equity":0.512435,"current_ratio":1.110689,"net_cash":-12529000000,"revenue_growth_yoy":0.043002,"revenue_cagr_3y":0.040974},"f":{"revenue":88821000000,"gross_profit":61350000000,"operating_income":null,"net_income":14066000000,"free_cash_flow":19842000000,"cash":24105000000,"total_debt":36634000000},"h":{"revenue":[[2020,82584000000],[2021,78740000000],[2022,79990000000],[2023,85159000000],[2024,88821000000]],"net_income":[[2020,14714000000],[2021,20878000000],[2022,17941000000],[2023,35153000000],[2024,14066000000]],"free_cash_flow":[[2020,20189000000],[2021,19758000000],[2022,18185000000],[2023,18248000000],[2024,19842000000]],"gross_margin":[[2020,0.655781],[2021,0.702794],[2022,0.692512],[2023,0.688195],[2024,0.690715]]}},{"t":"TSLA","n":"Tesla, Inc.","s":"Consumer Discretionary","i":"Automobiles","p":445.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":1556610000000,"pe":218.137255,"ps":15.93418,"ev_ebitda":124.443185,"fcf_yield":0.002302,"dividend_yield":0.0,"gross_margin":0.178626,"operating_margin":0.072433,"net_margin":0.072587,"roe":0.097253,"roic":0.086803,"debt_to_equity":0.111091,"current_ratio":2.024912,"net_cash":8039000000,"revenue_growth_yoy":0.009476,"revenue_cagr_3y":0.219815},"f":{"revenue":97690000000,"gross_profit":17450000000,"operating_income":7076000000,"net_income":7091000000,"free_cash_flow":3584000000,"cash":16139000000,"total_debt":8100000000},"h":{"revenue":[[2020,31536000000],[2021,53823000000],[2022,81462000000],[2023,96773000000],[2024,97690000000]],"net_income":[[2020,721000000],[2021,5519000000],[2022,12556000000],[2023,14997000000],[2024,7091000000]],"free_cash_flow":[[2020,2786000000],[2021,5015000000],[2022,7566000000],[2023,4358000000],[2024,3584000000]],"gross_margin":[[2020,0.210236],[2021,0.252792],[2022,0.255984],[2023,0.182489],[2024,0.178626]]}},{"t":"AMZN","n":"Amazon.com, Inc.","s":"Consumer Discretionary","i":"Internet Retail","p":220.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":2358620000000,"pe":39.783002,"ps":3.697134,"ev_ebitda":19.256409,"fcf_yield":0.013937,"dividend_yield":0.0,"gross_margin":0.488544,"operating_margin":0.107519,"net_margin":0.092871,"roe":0.207183,"roic":0.224019,"debt_to_equity":0.201616,"current_ratio":1.063735,"net_cash":21123000000,"revenue_growth_yoy":0.109909,"revenue_cagr_3y":0.107354},"f":{"revenue":637959000000,"gross_profit":311671000000,"operating_income":68593000000,"net_income":59248000000,"free_cash_flow":32873000000,"cash":78779000000,"total_debt":57656000000},"h":{"revenue":[[2020,386064000000],[2021,469822000000],[2022,513983000000],[2023,574785000000],[2024,637959000000]],"net_income":[[2020,21331000000],[2021,33364000000],[2022,-2722000000],[2023,30425000000],[2024,59248000000]],"free_cash_flow":[[2020,25924000000],[2021,-14726000000],[2022,-16893000000],[2023,32217000000],[2024,32873000000]],"gross_margin":[[2020,0.395678],[2021,0.420325],[2022,0.438053],[2023,0.469821],[2024,0.488544]]}},{"t":"PG","n":"The Procter & Gamble Company","s":"Consumer Staples","i":"Household Products","p":154.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":380842000000,"pe":25.581395,"ps":4.531729,"ev_ebitda":18.83401,"fcf_yield":0.043388,"dividend_yield":0.024451,"gross_margin":0.51394,"operating_margin":0.220671,"net_margin":0.177049,"roe":0.29429,"roic":0.201778,"debt_to_equity":0.642022,"current_ratio":0.734796,"net_cash":-22978000000,"revenue_growth_yoy":0.024791,"revenue_cagr_3y":0.033549},"f":{"revenue":84039000000,"gross_profit":43191000000,"operating_income":18545000000,"net_income":14879000000,"free_cash_flow":16524000000,"cash":9482000000,"total_debt":32460000000},"h":{"revenue":[[2020,70950000000],[2021,76118000000],[2022,80187000000],[2023,82006000000],[2024,84039000000]],"net_income":[[2020,13027000000],[2021,14306000000],[2022,14742000000],[2023,14653000000],[2024,14879000000]],"free_cash_flow":[[2020,14330000000],[2021,15584000000],[2022,13567000000],[2023,13786000000],[2024,16524000000]],"gross_margin":[[2020,0.503171],[2021,0.512494],[2022,0.474266],[2023,0.478575],[2024,0.51394]]}}],"units":[{"id":"u1-revenue","title":"What a company sells","summary":"Revenue is where every analysis starts: how much a company sells and how fast that is growing.","lessons":[{"id":"u1-l1","title":"Revenue: the top line","xp":10,"n":7},{"id":"u1-l2","title":"Revenue growth","xp":10,"n":7},{"id":"u1-l3","title":"Compounding: 3-year CAGR","xp":10,"n":6}]},{"id":"u2-margins","title":"Margins","summary":"Margins show how many cents of each sales dollar a company keeps at each step of the income statement.","lessons":[{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"n":7},{"id":"u2-l2","title":"Operating margin","xp":10,"n":7},{"id":"u2-l3","title":"Net margin","xp":10,"n":6},{"id":"u2-l4","title":"The margin stack","xp":10,"n":7}]},{"id":"u3-profit","title":"Profit & EPS","summary":"From total profit to one share's slice of it, and what taxes take along the way.","lessons":[{"id":"u3-l1","title":"Net income","xp":10,"n":7},{"id":"u3-l2","title":"Earnings per share","xp":10,"n":6},{"id":"u3-l3","title":"EPS growth","xp":10,"n":6},{"id":"u3-l4","title":"Taxes: the effective rate","xp":10,"n":6}]},{"id":"u4-cashflow","title":"Cash flow & FCF","summary":"Profit is an opinion, cash is a fact: reading the cash-flow statement.","lessons":[{"id":"u4-l1","title":"Cash from operations vs. profit","xp":10,"n":7},{"id":"u4-l2","title":"Free cash flow","xp":10,"n":6},{"id":"u4-l3","title":"FCF margin","xp":10,"n":6},{"id":"u4-l4","title":"Capex intensity","xp":10,"n":6}]},{"id":"u5-balance","title":"Balance sheet & debt","summary":"What a company owns, what it owes, and whether it can pay its bills.","lessons":[{"id":"u5-l1","title":"Assets = liabilities + equity","xp":10,"n":6},{"id":"u5-l2","title":"Net cash vs. net debt","xp":10,"n":7},{"id":"u5-l3","title":"Debt-to-equity","xp":10,"n":6},{"id":"u5-l4","title":"Current ratio","xp":10,"n":6}]},{"id":"u6-returns","title":"Returns on capital","summary":"How much profit a business squeezes out of the money invested in it.","lessons":[{"id":"u6-l1","title":"Return on equity (ROE)","xp":10,"n":6},{"id":"u6-l2","title":"Return on assets (ROA)","xp":10,"n":6},{"id":"u6-l3","title":"Return on invested capital (ROIC)","xp":15,"n":7},{"id":"u6-l4","title":"Leverage and ROE","xp":15,"n":7}]},{"id":"u7-valuation","title":"Valuation multiples","summary":"Bringing in the share price: what the market is paying for each dollar of sales, profit and cash.","lessons":[{"id":"u7-l1","title":"Market cap & enterprise value","xp":10,"n":7},{"id":"u7-l2","title":"P/E & earnings yield","xp":15,"n":7},{"id":"u7-l3","title":"P/S & EV/EBITDA","xp":15,"n":7},{"id":"u7-l4","title":"FCF yield & dividend yield","xp":15,"n":6},{"id":"u7-l5","title":"What a P/E implies about growth","xp":20,"n":7}]},{"id":"u8-intrinsic","title":"Intrinsic value","summary":"Discounted cash flow basics: estimating what a business is worth, and why the estimate is fragile.","lessons":[{"id":"u8-l1","title":"A one-line DCF","xp":20,"n":6},{"id":"u8-l2","title":"A two-stage DCF","xp":20,"n":5},{"id":"u8-l3","title":"Price vs. estimate & sensitivity","xp":20,"n":6},{"id":"u8-l4","title":"Cycles: why one DCF can mislead","xp":20,"n":8}]}],"lesson":{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"intro":"**Gross profit** is revenue minus the **cost of revenue**: what it cost to make or purchase the things the company sold. **Gross margin** is gross profit \u00f7 revenue. A software company with a 70% gross margin keeps 70 cents of each sales dollar after delivering its product; a warehouse retailer might keep 12 cents. Neither is automatically better. Low-margin retailers can win on volume, while high gross margins leave room to spend on research and marketing. The classic mistake is using net income instead of gross profit.","questions":[{"id":"q-u2-l1-01","type":"multiple_choice","prompt":"In FY2024, Coca-Cola (KO) had revenue of $47.1B and cost of revenue of $18.3B. What was its gross profit?","choices":["$65.4B","$10.6B","$18.3B","$28.7B"],"answer":3,"explanation":"Gross profit = revenue \u2212 cost of revenue = $47.1B \u2212 $18.3B = $28.7B. Gross profit is what's left from sales after paying for the products or services themselves. Common slip: adding cost instead of subtracting it gives $65.4B.","source":{"ticker":"KO","fy":2024,"metrics":["gross_profit"],"formula":"revenue - cost_of_revenue","inputs":{"revenue":47061000000.0,"cost_of_revenue":18324000000.0}}},{"id":"q-u2-l1-04","type":"compare","prompt":"Which company had the higher gross margin in its latest fiscal year?","choices":["Costco Wholesale (COST)","Microsoft (MSFT)"],"answer":1,"explanation":"Gross margin = gross profit \u00f7 revenue. Costco Wholesale (COST), FY2025: $35.3B \u00f7 $275.2B = 12.8%. Microsoft (MSFT), FY2025: $193.9B \u00f7 $281.7B = 68.8%. So Microsoft (MSFT) is higher.","source":{"ticker":"MSFT","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":193893000000.0,"revenue":281724000000.0},"tickers":["COST","MSFT"],"fys":[2025,2025],"direction":"higher"}},{"id":"q-u2-l1-05","type":"true_false","prompt":"True or false? Apple (AAPL)'s gross margin in FY2025 was above 60.0%.","answer":false,"explanation":"False. Gross margin = gross profit \u00f7 revenue = $195.2B \u00f7 $416.2B = 46.9%, which is below 60.0%. Out of every $1 of sales, Apple kept about 47 cents after paying for what it sold.","source":{"ticker":"AAPL","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":195201000000.0,"revenue":416161000000.0},"threshold":0.6}}]}};
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const C=Object.fromEntries(D.companies.map(c=>[c.t,c]));
+const pct=(v,d=1)=>v==null?'n/a':(v*100).toFixed(d)+'%';
+const big=v=>{if(v==null)return 'n/a';const a=Math.abs(v);let s=a>=1e12?(a/1e12).toFixed(2)+'T':a>=1e9?(a/1e9).toFixed(1)+'B':(a/1e6).toFixed(0)+'M';return (v<0?'−$':'$')+s};
+const usd=v=>'$'+Math.round(v).toLocaleString('en-US');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+const hash=n=>{const x=Math.sin(n*127.1+311.7)*43758.5453;return x-Math.floor(x)};
+const mq=window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
+
+/* ---------- palettes by time of day ---------- */
+const TOD={
+  dawn:{label:'Dawn',sky:['#86AFBE','#E6BFA2','#F7D9B2'],sun:'#FFE3B3',far:'#B49A8E',mid:'#857C77',near:'#3B4648',glass:'#F6D4B0',trim:'#E89B5B',lit:.18,water:['#C8AE9C','#7F9FA6'],stars:0,cloud:'rgba(255,240,228,.75)'},
+  day:{label:'Day',sky:['#5E9FC3','#A5CEDB','#E3EFE7'],sun:'#FFF7DA',far:'#A3BDB8',mid:'#7C9798',near:'#2C454B',glass:'#CFE6EB',trim:'#E2913A',lit:0,water:['#86B6C4','#4F8394'],stars:0,cloud:'rgba(255,255,255,.85)'},
+  dusk:{label:'Dusk',sky:['#1F4556','#C77158','#F1B46B'],sun:'#FFCB7D',far:'#6A5752',mid:'#3A393A',near:'#20252B',glass:'#F7B864',trim:'#F29A4A',lit:.55,water:['#6D4C49','#1B303A'],stars:.25,cloud:'rgba(250,196,160,.55)'},
+  night:{label:'Night',sky:['#06131A','#0E2A33','#1D4146'],sun:'#EDE7D2',far:'#12262E',mid:'#0D1D24',near:'#09141A',glass:'#F4B24A',trim:'#F4B24A',lit:.72,water:['#0A1B22','#040C10'],stars:1,cloud:'rgba(150,180,190,.18)'}
+};
+const todFromClock=()=>{const h=new Date().getHours();return h<5?'night':h<8?'dawn':h<17?'day':h<20?'dusk':'night'};
+
+/* ---------- state ---------- */
+const S={tab:'city',todMode:'auto',tod:'day',done:new Set(['u1-l1','u1-l2','u1-l3']),xp:30,hl:null,hlUntil:0,
+  filters:new Set(['gm']),money:{hours:false,move:0},les:null,info:'next',cloud:.5,cityHits:[],reduced:mq.matches};
+const UNIT_NAMES={'u1-revenue':'Revenue Row','u2-margins':'Margins District','u3-profit':'Profit Quarter','u4-cashflow':'Cashflow Canal','u5-balance':'Balance Heights','u6-returns':'Returns Park','u7-valuation':'Valuation Hill','u8-intrinsic':'Intrinsic Observatory'};
+const LEVELS=[[0,'Village'],[50,'Town'],[150,'City'],[400,'Metropolis']];
+const level=xp=>{let cur=LEVELS[0],nx=LEVELS[1];for(let i=0;i<LEVELS.length;i++){if(xp>=LEVELS[i][0]){cur=LEVELS[i];nx=LEVELS[i+1]||LEVELS[i]}}return {cur,nx}};
+
+/* ---------- plots (units = layout units, heights scaled to real data) ---------- */
+const GM_SCALE=170;
+const PLOTS=[
+  {id:'u1-l1',x:6,w:46,kind:'hall',h:66,name:'Apple Revenue Hall',dist:'Revenue Row',lesson:'Revenue: the top line',
+    fact:()=>`Apple sold ${big(C.AAPL.f.revenue)} in FY${C.AAPL.fy}. That's the top line: every analysis starts here.`},
+  {id:'u1-l2',x:60,w:26,kind:'spire',h:60+C.NVDA.m.revenue_growth_yoy*80,name:'NVIDIA Growth Spire',dist:'Revenue Row',lesson:'Revenue growth',
+    fact:()=>`NVIDIA's revenue grew ${pct(C.NVDA.m.revenue_growth_yoy)} in FY${C.NVDA.fy}, so this spire is the tallest on the row.`},
+  {id:'u1-l3',x:94,w:26,kind:'clock',h:112,name:'Compounding Clocktower',dist:'Revenue Row',lesson:'Compounding: 3-year CAGR',
+    fact:()=>`Microsoft compounded revenue at ${pct(C.MSFT.m.revenue_cagr_3y)} a year over three years. The hands keep turning.`},
+  {id:'u2-l1',x:128,w:136,kind:'gate',name:'The Margin Gate',dist:'Margins District',lesson:'Gross profit & gross margin',
+    fact:()=>`Costco's warehouse stands ${pct(C.COST.m.gross_margin)} tall and Microsoft's tower ${pct(C.MSFT.m.gross_margin)}: both drawn to their real FY2025 gross margins, on the same ruler.`},
+  {id:'u2-l2',x:276,w:56,kind:'fab',h:GM_SCALE*C.MU.m.operating_margin,name:"Micron's Fab",dist:'Margins District',lesson:'Operating margin',
+    fact:()=>`Reserved for Operating margin. Micron kept ${pct(C.MU.m.operating_margin)} of FY${C.MU.fy} sales as operating income; the fab will rise to that height.`},
+  {id:'u2-l3',x:340,w:34,kind:'plot',h:GM_SCALE*C.NVDA.m.net_margin,name:'Net Margin Lot',dist:'Margins District',lesson:'Net margin',
+    fact:()=>`Reserved for Net margin. NVIDIA kept ${pct(C.NVDA.m.net_margin)} of revenue as profit in FY${C.NVDA.fy}.`}
+];
+const U2=D.units.find(u=>u.id==='u2-margins');
+const nextId=()=>{for(const u of D.units){for(const l of u.lessons){if(!S.done.has(l.id))return l.id}}return null};
+const status=id=>S.done.has(id)?'built':id===nextId()?'building':'planned';
+
+/* ---------- canvas helpers ---------- */
+function fit(cv){if(!cv)return null;const r=cv.getBoundingClientRect();const w=Math.round(r.width),h=Math.round(r.height);if(w<2||h<2)return null;
+  const dpr=Math.min(2,window.devicePixelRatio||1);if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
+  const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w,h}}
+const ease=p=>1-Math.pow(1-Math.min(1,Math.max(0,p)),3);
+function rgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+
+function sky(ctx,W,H,gy,P,t,opts={}){
+  const g=ctx.createLinearGradient(0,0,0,gy);g.addColorStop(0,P.sky[0]);g.addColorStop(.62,P.sky[1]);g.addColorStop(1,P.sky[2]);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,gy+1);
+  if(P.stars){for(let i=0;i<70;i++){const x=hash(i)*W,y=hash(i+99)*gy*.62;const a=P.stars*(.35+.45*Math.sin(t/900+i*1.7));ctx.fillStyle=`rgba(255,246,225,${Math.max(0,a)})`;ctx.fillRect(x,y,i%9===0?1.8:1.1,i%9===0?1.8:1.1)}}
+  const tod=opts.tod,sp={dawn:[.16,.66],day:[.8,.2],dusk:[.64,.7],night:[.82,.2]}[tod]||[.8,.2];
+  const sx=sp[0]*W,sy=sp[1]*gy,r=Math.max(10,Math.min(W,H)*.055);
+  const rg=ctx.createRadialGradient(sx,sy,0,sx,sy,r*6);rg.addColorStop(0,rgba(P.sun,.55));rg.addColorStop(1,rgba(P.sun,0));ctx.fillStyle=rg;ctx.fillRect(0,0,W,gy);
+  ctx.fillStyle=P.sun;ctx.beginPath();ctx.arc(sx,sy,r,0,7);ctx.fill();
+  if(tod==='night'){ctx.fillStyle=P.sky[0];ctx.beginPath();ctx.arc(sx+r*.45,sy-r*.3,r*.88,0,7);ctx.fill()}
+  const amt=opts.cloud==null?.35:opts.cloud;const n=Math.round(2+amt*7);
+  for(let i=0;i<n;i++){const sp2=.000006*(1+hash(i+5)*1.2);let cx=((hash(i+3)+t*sp2)%1.25-.12)*W;const cy=gy*(.12+hash(i+11)*.42);const s=(18+hash(i+21)*26)*(W/360)*(.7+amt*.5);
+    ctx.fillStyle=opts.cloudCol||P.cloud;ctx.beginPath();ctx.ellipse(cx,cy,s*1.5,s*.42,0,0,7);ctx.ellipse(cx-s*.55,cy-s*.18,s*.62,s*.42,0,0,7);ctx.ellipse(cx+s*.35,cy-s*.3,s*.7,s*.5,0,0,7);ctx.fill()}
+}
+function farHills(ctx,W,gy,P,s){ctx.fillStyle=P.far;ctx.beginPath();ctx.moveTo(0,gy);for(let x=0;x<=W;x+=6){ctx.lineTo(x,gy-(34+16*Math.sin(x/W*5+1)+9*Math.sin(x/W*13+2))*s)}ctx.lineTo(W,gy);ctx.fill()}
+function midCity(ctx,W,gy,P,s,t){let x=-4,i=0;while(x<W){const w=(12+hash(i)*20)*s,h=(18+hash(i+40)*40)*s;ctx.fillStyle=P.mid;ctx.globalAlpha=.85;ctx.fillRect(x,gy-h,w,h);
+  if(P.lit){for(let yy=gy-h+5*s;yy<gy-6*s;yy+=7*s)for(let xx=x+3*s;xx<x+w-3*s;xx+=5*s){const k=i*31+xx*.7+yy*1.3;if(hash(k+Math.floor(t/7000+hash(k)*8))<P.lit*.45){ctx.fillStyle=rgba(P.glass,.55);ctx.fillRect(xx,yy,1.6*s,2.2*s)}}}
+  ctx.globalAlpha=1;x+=w+2*s;i++}}
+function windows(ctx,x,y,w,h,P,t,seed,s,cw=6,ch=8){const pw=Math.max(1.5,2.6*s),ph=Math.max(2,3.4*s);let i=0;
+  for(let yy=y+5*s;yy<y+h-5*s;yy+=ch*s){for(let xx=x+4*s;xx<x+w-4*s;xx+=cw*s){i++;const k=seed*13+i;
+    const on=P.lit>0&&hash(k+Math.floor(t/5000+hash(k)*12))<P.lit;ctx.fillStyle=on?P.glass:rgba(P.glass,P.lit?.1:.38);ctx.fillRect(xx,yy,pw,ph)}}}
+function shade(ctx,x,y,w,h){ctx.fillStyle='rgba(0,0,0,.16)';ctx.fillRect(x+w*.78,y,w*.22,h)}
+function scaffold(ctx,x,y,w,h,s,col){ctx.strokeStyle=col;ctx.lineWidth=Math.max(.8,1*s);ctx.strokeRect(x,y,w,h);const st=9*s;
+  for(let yy=y+h;yy>y;yy-=st){ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x+w,yy);ctx.stroke()}
+  for(let xx=x;xx<x+w;xx+=st*1.4){ctx.beginPath();ctx.moveTo(xx,y+h);ctx.lineTo(Math.min(x+w,xx+st*1.4),y);ctx.stroke()}}
+function crane(ctx,x,gy,mast,jib,s,t,col,reduced){ctx.strokeStyle=col;ctx.lineWidth=Math.max(1,1.3*s);const top=gy-mast;
+  ctx.beginPath();ctx.moveTo(x,gy);ctx.lineTo(x,top);ctx.moveTo(x+3*s,gy);ctx.lineTo(x+3*s,top);ctx.stroke();
+  for(let yy=gy;yy>top;yy-=6*s){ctx.beginPath();ctx.moveTo(x,yy);ctx.lineTo(x+3*s,yy-6*s);ctx.stroke()}
+  ctx.beginPath();ctx.moveTo(x-jib*.3,top);ctx.lineTo(x+jib,top);ctx.moveTo(x+1.5*s,top-8*s);ctx.lineTo(x+jib,top);ctx.moveTo(x+1.5*s,top-8*s);ctx.lineTo(x-jib*.3,top);ctx.stroke();
+  const sw=reduced?0:Math.sin(t/1300)*4*s;const hx=x+jib*.72;ctx.beginPath();ctx.moveTo(hx,top);ctx.lineTo(hx+sw,top+mast*.38);ctx.stroke();
+  ctx.fillStyle=col;ctx.fillRect(hx+sw-3*s,top+mast*.38,6*s,4*s);ctx.fillRect(x-jib*.3,top,6*s,5*s)}
+
+function drawBuilding(ctx,pl,X,gy,s,P,t,st,prog,o){
+  const w=pl.w*s;const near=P.near;const ghost=rgba(P.glass,P.lit?.55:.75);const hits=[];
+  const rise=(h,a,b)=>{if(st!=='anim')return h;const p=ease((prog-a)/(b-a));const fl=7*s;return Math.min(h,Math.ceil(h*p/fl)*fl*(p>0?1:0))};
+  const body=(x,y,ww,hh,seed,cw,ch)=>{ctx.fillStyle=near;ctx.fillRect(x,y,ww,hh);windows(ctx,x,y,ww,hh,P,t,seed,s,cw,ch);shade(ctx,x,y,ww,hh);ctx.fillStyle=P.trim;ctx.fillRect(x,y,ww,Math.max(1,1.4*s))};
+  if(st==='planned'){ctx.save();ctx.setLineDash([3*s,3*s]);ctx.strokeStyle=ghost;ctx.lineWidth=1;const h=(pl.h||60)*s;
+    if(pl.kind==='fab'){ctx.strokeRect(X,gy-h,w,h);ctx.strokeRect(X+w*.15,gy-h-22*s,6*s,22*s);ctx.strokeRect(X+w*.35,gy-h-16*s,6*s,16*s)}else ctx.strokeRect(X,gy-h,w,h);
+    ctx.restore();ctx.fillStyle=ghost;ctx.fillRect(X,gy-2*s,w,2*s);return [{x:X,y:gy-h-22*s,w,h:h+22*s}]}
+  if(pl.kind==='hall'){const h=pl.h*s;const y=gy-h;ctx.fillStyle=near;ctx.beginPath();ctx.moveTo(X,gy);ctx.lineTo(X,y+10*s);ctx.quadraticCurveTo(X+w/2,y-8*s,X+w,y+10*s);ctx.lineTo(X+w,gy);ctx.fill();
+    ctx.fillStyle=rgba(P.glass,P.lit?.8:.5);ctx.fillRect(X+6*s,gy-h*.55,w-12*s,h*.55-4*s);ctx.fillStyle=near;for(let i=1;i<4;i++)ctx.fillRect(X+6*s+(w-12*s)*i/4,gy-h*.55,1.2*s,h*.55);
+    windows(ctx,X,y+10*s,w,h*.3,P,t,3,s,7,7);shade(ctx,X,y,w,h);hits.push({x:X,y,w,h})}
+  if(pl.kind==='spire'){const h=pl.h*s;const b=h*.58,m=h*.28,tp=h*.14;body(X,gy-b,w,b,7,6,8);body(X+w*.15,gy-b-m,w*.7,m,8,5,8);body(X+w*.3,gy-b-m-tp,w*.4,tp,9,4,7);
+    const ay=gy-h;ctx.strokeStyle=near;ctx.lineWidth=1.2*s;ctx.beginPath();ctx.moveTo(X+w/2,ay);ctx.lineTo(X+w/2,ay-14*s);ctx.stroke();
+    const blink=o.reduced?1:(Math.sin(t/600)>0?1:.25);ctx.fillStyle=rgba(P.trim,blink);ctx.beginPath();ctx.arc(X+w/2,ay-14*s,2*s,0,7);ctx.fill();hits.push({x:X,y:ay-14*s,w,h:h+14*s})}
+  if(pl.kind==='clock'){const h=pl.h*s;const y=gy-h;body(X,y+14*s,w,h-14*s,11,6,9);ctx.fillStyle=near;ctx.beginPath();ctx.moveTo(X-2*s,y+14*s);ctx.lineTo(X+w/2,y-6*s);ctx.lineTo(X+w+2*s,y+14*s);ctx.fill();
+    const cx=X+w/2,cy=y+26*s,r=7.5*s;ctx.fillStyle=P.lit?P.glass:'#F4EFE3';ctx.beginPath();ctx.arc(cx,cy,r,0,7);ctx.fill();ctx.strokeStyle=near;ctx.lineWidth=1.2*s;
+    const a1=o.reduced?1:t/4000,a2=o.reduced?4:t/330;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a1)*r*.55,cy+Math.sin(a1)*r*.55);ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(a2)*r*.85,cy+Math.sin(a2)*r*.85);ctx.stroke();hits.push({x:X,y:y-6*s,w,h:h+6*s})}
+  if(pl.kind==='gate'){
+    const hw=Math.max(14,GM_SCALE*C.COST.m.gross_margin)*s,ht=GM_SCALE*C.MSFT.m.gross_margin*s;const ww=86*s,tw=34*s,tx=X+w-tw;
+    if(st==='building'){ctx.fillStyle=near;ctx.fillRect(X,gy-5*s,ww,5*s);ctx.fillRect(tx,gy-18*s,tw,18*s);scaffold(ctx,tx-2*s,gy-ht*.45,tw+4*s,ht*.45,s,ghost);scaffold(ctx,X,gy-hw,ww,hw-5*s,s,ghost);
+      crane(ctx,X+ww+6*s,gy,ht+18*s,58*s,s,t,rgba(P.trim,.95),o.reduced);ctx.save();ctx.setLineDash([3*s,3*s]);ctx.strokeStyle=ghost;ctx.strokeRect(tx,gy-ht,tw,ht);ctx.restore();
+      return [{x:X,y:gy-ht-18*s,w,h:ht+18*s}]}
+    const h1=rise(hw,0,.5),h2=rise(ht,.3,1);
+    if(h1>0){ctx.fillStyle=near;ctx.fillRect(X,gy-h1,ww,h1);ctx.fillStyle=P.trim;const teeth=7;for(let i=0;i<teeth;i++){const tx0=X+i*ww/teeth;ctx.beginPath();ctx.moveTo(tx0,gy-h1);ctx.lineTo(tx0+ww/teeth,gy-h1-6*s);ctx.lineTo(tx0+ww/teeth,gy-h1);ctx.fill()}
+      ctx.fillStyle=rgba(P.glass,P.lit?.85:.45);for(let i=0;i<4;i++)ctx.fillRect(X+8*s+i*19*s,gy-Math.min(h1,13*s)+3*s,11*s,Math.max(0,Math.min(h1,13*s)-3*s));shade(ctx,X,gy-h1,ww,h1)}
+    if(h2>0){ctx.fillStyle=near;ctx.fillRect(tx,gy-h2,tw,h2);windows(ctx,tx,gy-h2,tw,h2,P,t,17,s,5,7);ctx.fillStyle=rgba(P.glass,.25);for(let i=1;i<4;i++)ctx.fillRect(tx+tw*i/4,gy-h2,.8*s,h2);shade(ctx,tx,gy-h2,tw,h2);ctx.fillStyle=P.trim;ctx.fillRect(tx-2*s,gy-h2,tw+4*s,2*s)}
+    if(st==='anim'){if(prog<1)crane(ctx,X+ww+6*s,gy,ht+18*s,58*s,s,t,rgba(P.trim,.95),o.reduced);else{
+      const fx=tx+tw/2,fy=gy-ht;ctx.strokeStyle=P.trim;ctx.lineWidth=1.3*s;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx,fy-16*s);ctx.stroke();const wv=o.reduced?0:Math.sin(t/250)*2*s;
+      ctx.fillStyle=P.trim;ctx.beginPath();ctx.moveTo(fx,fy-16*s);ctx.lineTo(fx+12*s,fy-13*s+wv);ctx.lineTo(fx,fy-9*s);ctx.fill();
+      const a=Math.min(1,(prog-1)*3);ctx.font=`600 ${Math.max(9,10*s)}px "IBM Plex Mono",monospace`;ctx.fillStyle=rgba(P.lit?'#FFF3DC':'#10262B',a);ctx.textAlign='center';
+      ctx.fillText('COST '+pct(C.COST.m.gross_margin),X+ww/2,gy-hw-12*s);ctx.fillText('MSFT '+pct(C.MSFT.m.gross_margin),fx,fy-22*s)}}
+    hits.push({x:X,y:gy-ht,w,h:ht})}
+  if(pl.kind==='fab'||pl.kind==='plot'){const h=(pl.h||60)*s;
+    if(st==='building'){ctx.fillStyle=near;ctx.fillRect(X,gy-5*s,w,5*s);scaffold(ctx,X,gy-h*.4,w,h*.4-5*s,s,ghost);crane(ctx,X+w+4*s,gy,h+22*s,44*s,s,t,rgba(P.trim,.95),o.reduced);ctx.save();ctx.setLineDash([3*s,3*s]);ctx.strokeStyle=ghost;ctx.strokeRect(X,gy-h,w,h);ctx.restore()}
+    else{body(X,gy-h,w,h,23,7,7);ctx.fillStyle=near;ctx.fillRect(X+w*.15,gy-h-22*s,6*s,22*s);ctx.fillRect(X+w*.35,gy-h-16*s,6*s,16*s)}
+    hits.push({x:X,y:gy-h-22*s,w,h:h+22*s})}
+  return hits}
+
+function drawCity(ctx,W,H,t,tod,o={}){
+  const P=TOD[tod];const L=380;const s=Math.min(H/300,W/L);const gy=Math.round(H*.8);const ox=(W-L*s)/2;
+  sky(ctx,W,H,gy,P,t,{tod,cloud:.3});farHills(ctx,W,gy,P,Math.max(s,.6));midCity(ctx,W,gy,P,Math.max(.7,s*.9),t);
+  const hits=[];
+  for(const pl of PLOTS){const st=o.construct&&o.construct.id===pl.id?'anim':(o.construct&&pl.id===o.construct.id?'anim':status(pl.id));
+    const X=ox+pl.x*s;
+    if(o.hl===pl.id&&!o.construct){const a=.35+.25*Math.sin(t/300);const g=ctx.createRadialGradient(X+pl.w*s/2,gy,0,X+pl.w*s/2,gy,pl.w*s);g.addColorStop(0,rgba(P.trim,a));g.addColorStop(1,rgba(P.trim,0));ctx.fillStyle=g;ctx.fillRect(X-pl.w*s,gy-pl.w*s,pl.w*s*3,pl.w*s*2)}
+    drawBuilding(ctx,pl,X,gy,s,P,t,st,o.construct?o.construct.p:1,o).forEach(b=>hits.push({...b,id:pl.id}))}
+  const g=ctx.createLinearGradient(0,gy,0,H);g.addColorStop(0,P.water[0]);g.addColorStop(1,P.water[1]);ctx.fillStyle=g;ctx.fillRect(0,gy,W,H-gy);
+  ctx.fillStyle=P.near;ctx.fillRect(0,gy,W,Math.max(2,3*s));
+  for(let i=0;i<14;i++){const y=gy+6+i*((H-gy-6)/14);const off=o.reduced?0:(t/60*(1+i%3*.3))%W;const len=(20+hash(i)*60)*s;
+    for(let k=0;k<3;k++){const x=((hash(i*7+k)*W+off)%(W+len))-len;ctx.fillStyle=rgba(P.lit?P.glass:'#FFFFFF',P.lit?.22:.28);ctx.fillRect(x,y,len,1)}}
+  if(o.sparks){for(let i=0;i<26;i++){const life=((t/2200)+hash(i))%1;const x=ox+(128+hash(i+3)*136)*s;const y=gy-life*H*.7;ctx.fillStyle=rgba(P.trim,(1-life)*.9);ctx.fillRect(x,y,2*s,2*s)}}
+  return hits}
+
+/* weather neighbourhood */
+function drawWeather(ctx,W,H,t,tod,amt){const P=TOD[tod];const gy=H*.8;
+  const grey=amt>.6;sky(ctx,W,H,gy,P,t,{tod,cloud:amt,cloudCol:tod==='night'?`rgba(160,185,195,${.18+amt*.2})`:`rgba(255,255,255,${.55+amt*.3})`});
+  if(amt>.2){ctx.fillStyle=`rgba(120,140,150,${(amt-.2)*.35})`;ctx.fillRect(0,0,W,gy)}
+  farHills(ctx,W,gy,P,.8);
+  const houses=[[.06,.2,.22],[.28,.16,.3],[.47,.22,.26],[.7,.14,.4],[.86,.12,.2]];
+  houses.forEach(([fx,fw,fh],i)=>{const x=fx*W,w=fw*W,h=fh*H,y=gy-h;ctx.fillStyle=P.near;ctx.fillRect(x,y,w,h);ctx.beginPath();ctx.moveTo(x-4,y);ctx.lineTo(x+w/2,y-h*.45);ctx.lineTo(x+w+4,y);ctx.fill();
+    ctx.fillStyle=P.lit?P.glass:rgba(P.glass,.55);ctx.fillRect(x+w*.2,y+h*.28,w*.2,h*.22);ctx.fillRect(x+w*.6,y+h*.28,w*.2,h*.22);ctx.fillStyle=P.trim;ctx.fillRect(x+w*.42,y+h*.6,w*.16,h*.4);shade(ctx,x,y,w,h)});
+  for(let i=0;i<9;i++){const x=(i+.5)*W/9;ctx.fillStyle=P.near;ctx.beginPath();ctx.arc(x,gy-4,6,0,7);ctx.fill()}
+  ctx.fillStyle=P.near;ctx.fillRect(0,gy,W,H-gy);ctx.fillStyle=rgba(P.trim,.5);for(let x=8;x<W;x+=26)ctx.fillRect(x,gy+(H-gy)/2,12,2);
+  if(grey&&!S.reduced){ctx.strokeStyle='rgba(200,220,230,.4)';for(let i=0;i<30;i++){const x=(hash(i)*W+t*.05)%W,y=(hash(i+9)*gy+t*.18)%gy;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-2,y+7);ctx.stroke()}}}
+
+/* ---------- time of day ---------- */
+function applyTod(){S.tod=S.todMode==='auto'?todFromClock():S.todMode;const P=TOD[S.tod];
+  const r=document.documentElement.style;r.setProperty('--tod-1',P.sky[1]);r.setProperty('--tod-2',P.sky[2]);
+  $$('[data-tod]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tod===S.todMode||(b.dataset.tod===S.tod&&S.todMode==='auto'&&b.closest('.cityview')))));
+  $('#todLabel').textContent=P.label+(S.todMode==='auto'?' · auto':'');drawStatic()}
+
+/* ---------- tabs ---------- */
+function setTab(tab){S.tab=tab;$$('.scr').forEach(s=>s.classList.toggle('on',s.dataset.screen===tab));$$('.tabbar button').forEach(b=>b.setAttribute('aria-current',String(b.dataset.tab===tab)));
+  if(tab==='learn')renderUnits();if(tab==='map')renderMap();if(tab==='money')renderMoney();if(tab==='city')renderCity();closeSheet();
+  $('.scr.on').scrollTop=0;requestAnimationFrame(drawStatic)}
+
+/* ---------- city ---------- */
+function renderCity(){const n=S.done.size;const {cur,nx}=level(S.xp);
+  $('#bCount').textContent=n+' building'+(n===1?'':'s');$('#levelSub').textContent=`${cur[1]} · ${S.xp} XP`;
+  const span=nx[0]-cur[0]||1;const into=S.xp-cur[0];const p=Math.round(into/span*100);
+  $('#tierTxt').textContent=`${S.xp} / ${nx[0]} XP`;$('#tierBar').style.width=Math.max(4,p)+'%';
+  const left=Math.ceil((nx[0]-S.xp)/10);$('#tierCopy').innerHTML=left<=1?`One more build to <b>${nx[1]}</b>. You're ${p}% of the way there.`:`${left===2?'Two':left} builds to <b>${nx[1]}</b>. You're already ${p}% of the way there.`;
+  const nid=nextId();const L=U2.lessons.find(l=>l.id===nid);const pl=PLOTS.find(p=>p.id===nid);const playable=nid==='u2-l1';
+  $('#nextCard').innerHTML=`<span class="kicker">Next build · ${UNIT_NAMES['u2-margins']}</span><h3>${esc(L?L.title:'More districts soon')}</h3>
+    <p>${playable?`Scaffolding is up. Answer 3 questions on real filings and <b>${pl.name}</b> tops out, drawn to Costco's and Microsoft's actual gross margins.`:`The ${pl?pl.name:'next plot'} is scaffolded. This prototype's playable lesson ends here.`}</p>
+    <div class="bar" aria-hidden="true"><i style="width:${Math.round(U2.lessons.filter(l=>S.done.has(l.id)).length/U2.lessons.length*100)||3}%"></i></div>
+    <div class="row small" style="margin-bottom:10px"><span>Margins District</span><span>${U2.lessons.filter(l=>S.done.has(l.id)).length} of ${U2.lessons.length} built</span></div>
+    <button class="btn amber" id="startLesson" ${playable?'':'disabled'}>${playable?'Start building':'Preview ends here'}</button>`;
+  const b=$('#startLesson');if(b&&playable)b.onclick=startLesson;renderInfo()}
+function renderInfo(){const el=$('#bInfo');const id=S.info;
+  if(id==='next'){const pl=PLOTS.find(p=>p.id===nextId())||PLOTS[3];el.innerHTML=`<span class="kicker">Under construction</span><h3>${pl.name}</h3><p>Finish <b>${esc(pl.lesson)}</b> to top it out. Tap any building to see the number it's made of.</p>`;return}
+  const pl=PLOTS.find(p=>p.id===id);const st=status(id);
+  el.innerHTML=`<span class="kicker">${pl.dist} · ${st==='built'?'Built':st==='building'?'Under construction':'Plot reserved'}</span><h3>${pl.name}</h3><p>${pl.fact()}</p><p class="small" style="margin-top:6px">Lesson: ${esc(pl.lesson)}</p>`}
+
+/* ---------- learn ---------- */
+const GLYPH='<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 18h16M4 18V9h4v9M9 18V4h4v14M14 18v-6h3v6"/></svg>';
+function renderUnits(){const nid=nextId();
+  $('#units').innerHTML=D.units.map((u,ui)=>{const built=u.lessons.filter(l=>S.done.has(l.id)).length;const isCur=u.lessons.some(l=>l.id===nid);const done=built===u.lessons.length;
+    const cls=done?'done':isCur?'cur':'later';
+    const segs=u.lessons.map(l=>`<i class="${S.done.has(l.id)?'on':l.id===nid?'now':''}"></i>`).join('');
+    const list=(isCur||done)?`<ul class="lessons">${u.lessons.map(l=>{const b=S.done.has(l.id),now=l.id===nid;
+      return `<li class="${b?'built':now?'now':''}"><span class="dot"></span><span class="t">${esc(l.title)}</span>${now&&l.id==='u2-l1'?'<button class="mini" data-start>Build</button>':`<span class="small">${b?'Built':now?'Scaffolded':'Reserved'}</span>`}</li>`}).join('')}</ul>`:'';
+    return `<div class="unit ${cls}"><div class="uh"><div class="glyph">${GLYPH}</div><div style="flex:1;min-width:0"><div class="kicker">Unit ${ui+1} · ${esc(u.title)}</div><h4>${UNIT_NAMES[u.id]||esc(u.title)}</h4></div><span class="mono small">${built}/${u.lessons.length}</span></div>
+      <div class="segs">${segs}</div>${isCur?`<p class="small" style="margin:8px 0 0">${esc(u.summary)}</p>`:''}${list}</div>`}).join('');
+  $$('[data-start]').forEach(b=>b.onclick=startLesson)}
+
+/* ---------- map / screener ---------- */
+const FILTERS=[
+  {id:'gm',label:'Gross margin ≥ 40%',f:c=>c.m.gross_margin!=null&&c.m.gross_margin>=.4},
+  {id:'gr',label:'Revenue growth ≥ 10%',f:c=>c.m.revenue_growth_yoy!=null&&c.m.revenue_growth_yoy>=.1},
+  {id:'nm',label:'Net margin ≥ 20%',f:c=>c.m.net_margin!=null&&c.m.net_margin>=.2},
+  {id:'nc',label:'Net cash > 0',f:c=>c.m.net_cash!=null&&c.m.net_cash>0},
+  {id:'pe',label:'P/E ≤ 30',f:c=>c.m.pe!=null&&c.m.pe<=30},
+  {id:'dy',label:'Dividend yield ≥ 2%',f:c=>c.m.dividend_yield!=null&&c.m.dividend_yield>=.02}];
+const DISTRICTS=[
+  {name:'Technology',x:10,y:10,w:196,h:112,cos:['MU','AAPL','MSFT','NVDA']},
+  {name:'Consumer Staples',x:214,y:10,w:116,h:112,cos:['COST','KO','PG']},
+  {name:'Consumer Discretionary',x:10,y:132,w:118,h:118,cos:['TSLA','AMZN']},
+  {name:'Financials',x:138,y:132,w:92,h:52,cos:['JPM']},
+  {name:'Energy',x:138,y:194,w:92,h:56,cos:['XOM']},
+  {name:'Health Care',x:240,y:132,w:90,h:118,cos:['JNJ']}];
+const matches=()=>D.companies.filter(c=>[...S.filters].every(id=>FILTERS.find(f=>f.id===id).f(c)));
+function renderMap(){
+  $('#chips').innerHTML=FILTERS.map(f=>`<button class="chip" data-f="${f.id}" aria-pressed="${S.filters.has(f.id)}">${f.label}</button>`).join('');
+  $$('#chips .chip').forEach(b=>b.onclick=()=>{const id=b.dataset.f;S.filters.has(id)?S.filters.delete(id):S.filters.add(id);renderMap()});
+  if(!$('#mapbox svg')){let g='';
+    for(const d of DISTRICTS){g+=`<rect class="blk" x="${d.x}" y="${d.y}" width="${d.w}" height="${d.h}" rx="8"/><text class="dl" x="${d.x+7}" y="${d.y+12}">${d.name}</text>`;
+      const n=d.cos.length;const cols=Math.min(n,d.w>150?4:2);
+      d.cos.forEach((t,i)=>{const c=C[t];const sz=Math.max(18,Math.min(34,6*Math.log10(c.m.market_cap/1e9)+12));const cw=(d.w-14)/cols;const rows=Math.ceil(n/cols);const rh=(d.h-22)/rows;
+        const cx=d.x+7+cw*(i%cols)+cw/2,cy=d.y+18+rh*Math.floor(i/cols)+rh/2-4;let w='';
+        for(let yy=cy-sz/2+4;yy<cy+sz/2-3;yy+=5)for(let xx=cx-sz/2+4;xx<cx+sz/2-3;xx+=5)w+=`<rect class="w" x="${xx.toFixed(1)}" y="${yy.toFixed(1)}" width="2" height="2.4"/>`;
+        g+=`<g class="co" data-t="${t}" tabindex="0" role="button" aria-label="${esc(c.n)}"><circle class="glow" cx="${cx}" cy="${cy}" r="${sz*.72}"/><rect class="b" x="${cx-sz/2}" y="${cy-sz/2}" width="${sz}" height="${sz}" rx="3"/>${w}<text x="${cx}" y="${cy+sz/2+10}" text-anchor="middle">${t}</text></g>`})}
+    $('#mapbox').innerHTML=`<svg viewBox="0 0 340 262" role="img" aria-label="Map of companies grouped by sector"><path class="river" d="M-10 127 C 60 118, 110 138, 180 127 S 300 120, 350 127"/>${g}</svg>`;
+    $$('#mapbox .co').forEach(el=>{el.onclick=()=>openCompany(el.dataset.t);el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCompany(el.dataset.t)}}})}
+  const m=matches();const set=new Set(m.map(c=>c.t));
+  $$('#mapbox .co').forEach(el=>{const on=set.has(el.dataset.t);el.classList.toggle('lit',on);el.classList.toggle('dim',!on)});
+  $('#matchPill').textContent=`${m.length} of ${D.companies.length} lit`;
+  const act=[...S.filters];
+  $('#results').innerHTML=m.sort((a,b)=>b.m.market_cap-a.m.market_cap).map(c=>`<li><button data-co="${c.t}"><span class="tk">${c.t}</span><span><span class="nm">${esc(c.n)}</span><br><span class="mt">${act.length?act.map(id=>metricFor(id,c)).join(' · '):'Gross margin '+pct(c.m.gross_margin)}</span></span><span class="px">$${c.p.toFixed(2)}<small>sample price, ${c.pd}</small></span></button></li>`).join('')||`<li class="small" style="padding:12px 2px">No company in this sample matches every filter. Try removing one.</li>`;
+  $$('#results [data-co]').forEach(b=>b.onclick=()=>openCompany(b.dataset.co))}
+function metricFor(id,c){return {gm:'GM '+pct(c.m.gross_margin),gr:'Growth '+pct(c.m.revenue_growth_yoy),nm:'NM '+pct(c.m.net_margin),nc:'Net cash '+big(c.m.net_cash),pe:'P/E '+(c.m.pe?c.m.pe.toFixed(1):'n/a'),dy:'Yield '+pct(c.m.dividend_yield)}[id]}
+function openCompany(t){const c=C[t];const h=c.h.revenue;const max=Math.max(...h.map(r=>r[1]));
+  const bars=h.map((r,i)=>{const bh=Math.max(1,r[1]/max*70);return `<rect x="${i*30+4}" y="${80-bh}" width="22" height="${bh}" rx="2"/><text x="${i*30+15}" y="93" text-anchor="middle">'${String(r[0]).slice(2)}</text>`}).join('');
+  $('#sheet').innerHTML=`<div class="grab"></div><div class="row"><div><span class="kicker">${esc(c.s)} · ${esc(c.i)}</span><h3 style="font-family:var(--display);font-size:22px;margin:3px 0 0;letter-spacing:-.02em">${esc(c.n)}</h3></div><button class="iconbtn" id="sheetX" aria-label="Close">×</button></div>
+    <p class="small" style="margin:6px 0 0">FY${c.fy} filings · <span class="mono">$${c.p.toFixed(2)}</span> sample price as of ${c.pd} · Market cap ${big(c.m.market_cap)}</p>
+    <div class="mgrid"><div><span>Gross margin</span><b>${pct(c.m.gross_margin)}</b></div><div><span>Operating margin</span><b>${pct(c.m.operating_margin)}</b></div><div><span>Net margin</span><b>${pct(c.m.net_margin)}</b></div>
+    <div><span>Revenue growth</span><b>${pct(c.m.revenue_growth_yoy)}</b></div><div><span>P/E</span><b>${c.m.pe?c.m.pe.toFixed(1):'n/a'}</b></div><div><span>Net cash</span><b>${big(c.m.net_cash)}</b></div></div>
+    <div class="hist"><span class="kicker">Revenue, ${h[0][0]}–${h[h.length-1][0]}</span><svg viewBox="0 0 300 96" role="img" aria-label="Revenue history bars">${bars}</svg><p class="small" style="margin:2px 0 0">Latest: ${big(c.f.revenue)} revenue, ${big(c.f.net_income)} net income.</p></div>
+    <p class="small" style="margin-top:12px">Educational only. Not investment advice.</p>`;
+  $('#sheet').classList.add('on');$('#scrim').classList.add('on');$('#sheetX').onclick=closeSheet}
+function closeSheet(){$('#sheet').classList.remove('on');$('#scrim').classList.remove('on')}
+
+/* ---------- money ---------- */
+const M={checking:840,savings:410,card:1120,min:25,pending:93};
+function weather(){const m=S.money;const avail=M.checking+(m.hours?M.pending:0)+m.move;
+  if(avail>=M.card)return {k:'clear',amt:.08,avail,title:'Clear skies',line:`The full ${usd(M.card)} balance is covered, with ${usd(avail-M.card)} to spare.`};
+  if(avail>=M.min)return {k:'light',amt:.5,avail,title:'Light clouds',line:`Your ${usd(M.min)} minimum is covered with ${usd(avail-M.min)} to spare. The full balance is ${usd(M.card-avail)} away, and there are 22 days to close it.`};
+  return {k:'overcast',amt:.85,avail,title:'Overcast',line:`The ${usd(M.min)} minimum needs ${usd(M.min-avail)} more. Small moves below can clear it.`}}
+function renderMoney(){const w=weather();$('#wxTitle').textContent=w.title;$('#wxLine').textContent=w.line;$('#availDd').textContent=usd(w.avail);
+  $('#moveVal').textContent=usd(S.money.move);$('#saveLeft').textContent=`Savings stays ${usd(M.savings-S.money.move)}`;$('#saveB').textContent=usd(M.savings-S.money.move);
+  $('#hoursSw').setAttribute('aria-checked',String(S.money.hours));$('#moveRange').value=S.money.move;if(S.reduced)S.cloud=w.amt;drawStatic()}
+
+/* ---------- lesson ---------- */
+const Q=D.lesson.questions;
+function startLesson(){S.les={phase:'intro',i:0,pick:null,first:0};$('#lesson').hidden=false;renderLesson()}
+function closeLesson(){$('#lesson').hidden=true;S.les=null;renderCity();drawStatic()}
+function renderLesson(){const L=S.les;const body=$('#lbody'),foot=$('#lfoot');
+  const segN=Q.length+1;const done=L.phase==='intro'?0:L.phase==='build'?segN:L.i+(L.phase==='fb'?1:0);
+  $('#lsegs').innerHTML=Array.from({length:segN},(_,i)=>`<i class="${i<done?'on':''}"></i>`).join('');
+  $('#lcount').textContent=L.phase==='intro'?'Intro':L.phase==='build'?'Build':`${L.i+1}/${Q.length}`;
+  if(L.phase==='intro'){body.innerHTML=`<span class="kicker">Margins District · Lesson 1 of ${U2.lessons.length}</span><h2>${esc(D.lesson.title)}</h2><p class="intro">${md(D.lesson.intro)}</p>
+      <div class="plotcard"><svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect x="3" y="26" width="18" height="7" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 2"/><rect x="24" y="8" width="8" height="25" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 2"/></svg><span>You're building <b>The Margin Gate</b>: two buildings whose heights are these companies' real gross margins.</span></div>`;
+    foot.innerHTML=`<button class="btn" id="lnext">Begin</button>`;$('#lnext').onclick=()=>{L.phase='q';renderLesson()};return}
+  if(L.phase==='build'){renderBuild();return}
+  const q=Q[L.i];const fb=L.phase==='fb';const ok=fb&&isRight(q,L.pick);
+  let opts='';
+  if(q.type==='true_false'){opts=`<div class="opts two">${['True','False'].map((c,i)=>optBtn(q,i,c,fb)).join('')}</div>`}
+  else if(q.type==='compare'){opts=`<div class="opts two">${q.choices.map((c,i)=>optBtn(q,i,c.replace(/\s*\(([A-Z]+)\)/,'<small class="mono" style="display:block;font-size:12px;color:var(--muted);margin-top:4px">$1</small>'),fb)).join('')}</div>`}
+  else opts=`<div class="opts">${q.choices.map((c,i)=>optBtn(q,i,`<span class="k">${'ABCD'[i]}</span><span class="num">${esc(c)}</span>`,fb)).join('')}</div>`;
+  body.innerHTML=`<span class="kicker">${q.type.replace('_',' ')} · ${esc(q.source.ticker)} FY${q.source.fy}</span><p class="prompt">${esc(q.prompt)}</p>${opts}`;
+  $$('.opt',body).forEach(b=>b.onclick=()=>{if(L.phase!=='q')return;L.pick=+b.dataset.i;renderLesson()});
+  if(!fb){foot.innerHTML=`<button class="btn" id="lcheck" ${L.pick==null?'disabled':''}>Check</button>`;$('#lcheck').onclick=()=>{if(L.pick==null)return;L.phase='fb';if(isRight(q,L.pick))L.first++;renderLesson()}}
+  else{const src=q.source;body.insertAdjacentHTML('beforeend',`<div class="fb ${ok?'good':'soft'}" id="fbBox" style="margin-top:14px"><h4>${ok?'Right on the numbers.':"Here's the math."}</h4>${esc(q.explanation)}<br><span class="src">Source: ${esc(src.ticker)} FY${src.fy} filing · ${esc(src.formula)}</span></div>`);
+    const fbb=$('#fbBox');if(fbb&&fbb.scrollIntoView)fbb.scrollIntoView({block:'nearest',behavior:S.reduced?'auto':'smooth'});foot.innerHTML=`<button class="btn ${L.i===Q.length-1?'amber':''}" id="lcont">${L.i===Q.length-1?'Top out the building':'Continue'}</button>`;
+    $('#lcont').onclick=()=>{if(L.i<Q.length-1){L.i++;L.pick=null;L.phase='q'}else{L.phase='build';L.t0=performance.now()}renderLesson()}}}
+function isRight(q,pick){return q.type==='true_false'?(pick===0)===q.answer:pick===q.answer}
+function optBtn(q,i,html,fb){const right=fb&&(q.type==='true_false'?(i===0)===q.answer:i===q.answer);const miss=fb&&i===S.les.pick&&!right;
+  return `<button class="opt ${right?'right':''} ${miss?'miss':''}" data-i="${i}" aria-pressed="${S.les.pick===i}">${html}</button>`}
+function renderBuild(){const L=S.les;const lessonXp=D.lesson.xp;
+  if(!S.done.has('u2-l1')){S.done.add('u2-l1');S.xp+=lessonXp}
+  const {cur,nx}=level(S.xp);
+  $('#lbody').innerHTML=`<div class="build"><canvas id="buildCv" role="img" aria-label="Construction animation: Costco's warehouse and Microsoft's tower rising to their gross margins"></canvas></div>
+    <div class="done-copy" id="doneCopy"><span class="kicker">Construction complete</span><h2 style="margin-top:2px">The Margin Gate is standing.</h2>
+    <p class="intro" style="margin:0">Costco's warehouse rises to <b>${pct(C.COST.m.gross_margin)}</b>, Microsoft's tower to <b>${pct(C.MSFT.m.gross_margin)}</b>. Same ruler, real FY2025 gross margins. Neither height is "better": one wins on volume, one on markup.</p>
+    <div class="stats"><div><b>+${lessonXp}</b><span>XP for learning</span></div><div><b>1/${U2.lessons.length}</b><span>Margins District</span></div><div><b>${nx[0]-S.xp}</b><span>XP to ${nx[1]}</span></div></div>
+    <p class="small">${L.first===Q.length?`All ${Q.length} right on the first look.`:`${L.first} of ${Q.length} on the first look, and you read the math on the rest. The building is the same either way.`}</p></div>`;
+  $('#lfoot').innerHTML=`<button class="btn amber" id="seeCity">See it in your city</button>`;
+  $('#seeCity').onclick=()=>{S.hl='u2-l1';S.hlUntil=performance.now()+7000;S.info='u2-l1';closeLesson();setTab('city')};
+  const reveal=()=>{const d=$('#doneCopy');if(d)d.classList.add('show')};
+  if(S.reduced){L.t0=performance.now()-10000;reveal()}else setTimeout(reveal,2700);
+  requestAnimationFrame(drawStatic)}
+
+/* ---------- drawing loop ---------- */
+function drawAll(now){const t=S.reduced?42000:now;const tod=S.tod;
+  const hero=fit($('#heroCv'));if(hero)drawCity(hero.ctx,hero.w,hero.h,t,tod,{reduced:S.reduced});
+  if(S.les&&S.les.phase==='build'){const b=fit($('#buildCv'));if(b){const p=S.reduced?1.4:Math.min(1.6,(now-S.les.t0)/2500);drawCity(b.ctx,b.w,b.h,t,tod,{construct:{id:'u2-l1',p},reduced:S.reduced,sparks:p>=1&&!S.reduced})}}
+  else if(S.tab==='city'){const c=fit($('#cityCv'));if(c){const hl=S.hl&&(S.reduced||now<S.hlUntil)?S.hl:null;S.cityHits=drawCity(c.ctx,c.w,c.h,t,tod,{hl,reduced:S.reduced})}}
+  if(S.tab==='money'&&!S.les){const w=fit($('#wxCv'));if(w){const target=weather().amt;S.cloud+= (target-S.cloud)*(S.reduced?1:.04);drawWeather(w.ctx,w.w,w.h,t,tod,S.cloud)}}}
+function drawStatic(){drawAll(performance.now())}
+function loop(now){if(!document.hidden)drawAll(now);if(!S.reduced)requestAnimationFrame(loop)}
+
+/* ---------- init ---------- */
+function tickClock(){const d=new Date();$('#clock').textContent=d.getHours()%12||12;$('#clock').textContent=`${d.getHours()%12||12}:${String(d.getMinutes()).padStart(2,'0')}`}
+function init(){
+  $$('.tabbar button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+  $$('[data-tod]').forEach(b=>b.onclick=()=>{S.todMode=b.dataset.tod;applyTod()});
+  $('#lclose').onclick=closeLesson;$('#scrim').onclick=closeSheet;
+  $('#cityCv').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;
+    const hit=S.cityHits.find(h=>x>=h.x-4&&x<=h.x+h.w+4&&y>=h.y-4&&y<=h.y+h.h+8);S.info=hit?hit.id:'next';S.hl=hit?hit.id:null;S.hlUntil=performance.now()+2500;renderInfo();drawStatic()});
+  $('#hoursSw').onclick=()=>{S.money.hours=!S.money.hours;renderMoney()};
+  $('#moveRange').oninput=e=>{S.money.move=+e.target.value;renderMoney()};
+  $('#justEnough').onclick=()=>{const gap=M.card-(M.checking+(S.money.hours?M.pending:0));S.money.move=Math.min(M.savings,Math.max(0,Math.ceil(gap/5)*5));renderMoney()};
+  $('#themeBtn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark'};
+  if(mq.addEventListener)mq.addEventListener('change',e=>{S.reduced=e.matches;if(!S.reduced)requestAnimationFrame(loop);drawStatic()});
+  window.addEventListener('resize',drawStatic);
+  tickClock();setInterval(()=>{tickClock();if(S.todMode==='auto')applyTod()},60000);
+  S.cloud=weather().amt;renderCity();applyTod();
+  if(!S.reduced)requestAnimationFrame(loop);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>

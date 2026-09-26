@@ -1,0 +1,3 @@
+adsh	cik	name	sic	countryba	stprba	cityba	zipba	bas1	bas2	baph	countryma	stprma	cityma	zipma	mas1	mas2	countryinc	stprinc	ein	former	changed	afs	wksi	fye	form	period	fy	fp	filed	accepted	prevrpt	detail	instance	nciks	aciks
+0000723125-25-000028	723125	MICRON TECHNOLOGY INC	3674	US																		1-LAF	0	0828	10-K	20250831	2025	FY	20251003		0	0		1	
+0000999999-25-000001	999999	TEST QUARTERLY CO	7372	US																		1-LAF	0	1231	10-Q	20250930	2025	Q3	20251105		0	0		1	

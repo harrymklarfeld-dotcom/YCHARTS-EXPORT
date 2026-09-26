@@ -1,0 +1,29 @@
+---
+import site from '../../site.config.ts';
+import Logo from './Logo.astro';
+const socials = Object.entries(site.social).filter(([, v]) => v);
+const labels: Record<string, string> = { x: 'X', tiktok: 'TikTok', youtube: 'YouTube', instagram: 'Instagram', github: 'GitHub', email: 'Email' };
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <a class="brand" href="/"><Logo /><span class="brand-name">{site.name}</span></a>
+      <p class="muted small footer-tag">{site.tagline}</p>
+      <p class="footer-short"><strong>{site.disclaimerShort}</strong></p>
+    </div>
+    <nav aria-label="Footer" class="footer-links">
+      {site.nav.filter((l) => site.features.showPricing || !l.href.startsWith('/pricing')).map((l) => <a href={l.href}>{l.label}</a>)}
+      {site.footerLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    {socials.length > 0 && (
+      <ul class="footer-social" aria-label="Social">
+        {socials.map(([k, v]) => <li><a href={k === 'email' ? `mailto:${v}` : v} rel="me noopener">{labels[k] ?? k}</a></li>)}
+      </ul>
+    )}
+  </div>
+  <div class="wrap footer-legal">
+    <p class="small muted">{site.disclaimer} <a href="/legal/disclaimer/">Full disclaimer</a>.</p>
+    <p class="small muted">© {year} {site.companyLegalName}. Financial data from SEC EDGAR filings.</p>
+  </div>
+</footer>

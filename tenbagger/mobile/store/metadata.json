@@ -1,0 +1,37 @@
+{
+  "$comment": "Length-limited store strings. Source of truth for copy/paste into App Store Connect and Play Console. Run `node store/check-metadata.mjs` after editing. Long descriptions live in app-store/description.txt and google-play/full-description.txt.",
+  "appStore": {
+    "name": "Tenbagger: Learn Investing",
+    "subtitle": "Bite-size stock market lessons",
+    "promotionalText": "Learn to read any public company's numbers in 3 minutes a day. Every lesson is built from real SEC filings. Education only, never stock tips.",
+    "keywords": "finance,accounting,10-k,earnings,balance,sheet,cash,flow,valuation,dcf,ratio,screener,literacy,quiz",
+    "primaryCategory": "Education",
+    "secondaryCategory": "Finance",
+    "supportUrl": "https://tenbagger.example/support",
+    "marketingUrl": "https://tenbagger.example",
+    "privacyPolicyUrl": "https://tenbagger.example/legal/privacy",
+    "termsOfUseUrl": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+    "copyright": "2026 YOURCOMPANY LLC",
+    "whatsNew": "First release. Short lessons on margins, cash flow and valuation, built from real company filings, plus a beginner-friendly screener."
+  },
+  "googlePlay": {
+    "title": "Tenbagger: Learn Investing",
+    "shortDescription": "3-minute lessons on real company financials. Education, never stock tips.",
+    "category": "Education",
+    "tags": ["Education", "Finance", "Business"],
+    "contactEmail": "support@YOURCOMPANY.com",
+    "website": "https://tenbagger.example",
+    "privacyPolicyUrl": "https://tenbagger.example/legal/privacy"
+  },
+  "inAppProducts": {
+    "$comment": "Must match src/config/monetization.ts PLANS[*].storeProductId and RevenueCat. Plan ids are the app's internal ids.",
+    "subscriptionGroup": "Tenbagger Pro",
+    "entitlement": "pro",
+    "offering": "default",
+    "products": [
+      { "planId": "pro_monthly", "storeProductId": "tenbagger_pro_monthly", "rcPackage": "$rc_monthly", "priceUsd": 12.99, "period": "P1M", "introOffer": null, "groupLevel": 2 },
+      { "planId": "pro_annual", "storeProductId": "tenbagger_pro_annual", "rcPackage": "$rc_annual", "priceUsd": 79.99, "period": "P1Y", "introOffer": "7-day free trial", "groupLevel": 1 },
+      { "planId": "student_annual", "storeProductId": "tenbagger_student_annual", "rcPackage": "student_annual", "priceUsd": 39.99, "period": "P1Y", "introOffer": null, "groupLevel": 1 }
+    ]
+  }
+}

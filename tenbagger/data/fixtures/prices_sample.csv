@@ -1,0 +1,15 @@
+# SAMPLE PRICES - approximate, typed from memory (MU from data/mu_fundamentals.json, 2026-09-08).
+# NOT live quotes. Every row is flagged is_sample=true; supply a real file via --prices.
+ticker,price,price_date,is_sample
+MU,1000.26,2026-09-08,true
+AAPL,255.00,2025-09-30,true
+MSFT,515.00,2025-09-30,true
+COST,925.00,2025-09-30,true
+KO,66.50,2025-09-30,true
+NVDA,186.00,2025-09-30,true
+JPM,315.00,2025-09-30,true
+XOM,113.00,2025-09-30,true
+JNJ,185.00,2025-09-30,true
+TSLA,445.00,2025-09-30,true
+AMZN,220.00,2025-09-30,true
+PG,154.00,2025-09-30,true

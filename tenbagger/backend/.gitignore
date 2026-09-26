@@ -1,0 +1,6 @@
+# secrets
+.env
+supabase/functions/.env
+supabase/.temp/
+supabase/.branches/
+node_modules/

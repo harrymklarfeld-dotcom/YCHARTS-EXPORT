@@ -1,0 +1,1251 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-25T00:00:00Z",
+  "source": "fixture",
+  "companies": [
+    {
+      "ticker": "CSHM",
+      "cik": 900001,
+      "name": "Cashmere Software Inc.",
+      "sector": "Technology",
+      "industry": "Software",
+      "fiscal_year_end": "12-31",
+      "price": 250,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 0,
+        "dividends_paid": 0,
+        "revenue": 10000000000,
+        "cost_of_revenue": 2000000000,
+        "operating_income": 3500000000,
+        "net_income": 2800000000,
+        "shares_diluted": 1000000000,
+        "operating_cash_flow": 3600000000,
+        "capex": 400000000,
+        "cash": 8000000000,
+        "total_assets": 30000000000,
+        "total_equity": 20000000000,
+        "total_debt": 2000000000,
+        "current_assets": 15000000000,
+        "current_liabilities": 5000000000,
+        "d_and_a": 500000000,
+        "income_tax": 700000000,
+        "pretax_income": 3500000000,
+        "gross_profit": 8000000000,
+        "free_cash_flow": 3200000000,
+        "total_liabilities": 10000000000,
+        "eps_diluted": 2.8
+      },
+      "metrics": {
+        "market_cap": 250000000000,
+        "enterprise_value": 244000000000,
+        "pe": 89.285714,
+        "ps": 25,
+        "pb": 12.5,
+        "ev_ebitda": 61,
+        "fcf_yield": 0.0128,
+        "earnings_yield": 0.0112,
+        "dividend_yield": 0,
+        "gross_margin": 0.8,
+        "operating_margin": 0.35,
+        "net_margin": 0.28,
+        "fcf_margin": 0.32,
+        "roe": 0.14,
+        "roa": 0.093333,
+        "roic": 0.2,
+        "debt_to_equity": 0.1,
+        "current_ratio": 3,
+        "net_cash": 6000000000,
+        "revenue_growth_yoy": 0.25,
+        "eps_growth_yoy": 0.272727,
+        "revenue_cagr_3y": 0.259921
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            5000000000
+          ],
+          [
+            2023,
+            6500000000
+          ],
+          [
+            2024,
+            8000000000
+          ],
+          [
+            2025,
+            10000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            2800000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            3200000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            2.2
+          ],
+          [
+            2025,
+            2.8
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.8
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.35
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            2000000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            8000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "QLTY",
+      "cik": 900002,
+      "name": "Qualis Tools Corp.",
+      "sector": "Industrials",
+      "industry": "Machinery",
+      "fiscal_year_end": "12-31",
+      "price": 60,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 1200000000,
+        "dividends_paid": 400000000,
+        "revenue": 8000000000,
+        "cost_of_revenue": 4800000000,
+        "operating_income": 1600000000,
+        "net_income": 1200000000,
+        "shares_diluted": 400000000,
+        "operating_cash_flow": 1500000000,
+        "capex": 300000000,
+        "cash": 1000000000,
+        "total_assets": 12000000000,
+        "total_equity": 7000000000,
+        "total_debt": 1500000000,
+        "current_assets": 4000000000,
+        "current_liabilities": 2500000000,
+        "d_and_a": 300000000,
+        "income_tax": 300000000,
+        "pretax_income": 1500000000,
+        "gross_profit": 3200000000,
+        "free_cash_flow": 1200000000,
+        "total_liabilities": 5000000000,
+        "eps_diluted": 3
+      },
+      "metrics": {
+        "market_cap": 24000000000,
+        "enterprise_value": 24500000000,
+        "pe": 20,
+        "ps": 3,
+        "pb": 3.428571,
+        "ev_ebitda": 12.894737,
+        "fcf_yield": 0.05,
+        "earnings_yield": 0.05,
+        "dividend_yield": 0.016667,
+        "gross_margin": 0.4,
+        "operating_margin": 0.2,
+        "net_margin": 0.15,
+        "fcf_margin": 0.15,
+        "roe": 0.171429,
+        "roa": 0.1,
+        "roic": 0.170667,
+        "debt_to_equity": 0.214286,
+        "current_ratio": 1.6,
+        "net_cash": -500000000,
+        "revenue_growth_yoy": 0.066667,
+        "eps_growth_yoy": 0.111111,
+        "revenue_cagr_3y": 0.071665
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            6500000000
+          ],
+          [
+            2023,
+            7000000000
+          ],
+          [
+            2024,
+            7500000000
+          ],
+          [
+            2025,
+            8000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            1200000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            1200000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            2.7
+          ],
+          [
+            2025,
+            3
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.4
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.2
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            1500000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            1000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "DPST",
+      "cik": 900003,
+      "name": "Deepwater Steel Co.",
+      "sector": "Materials",
+      "industry": "Steel",
+      "fiscal_year_end": "12-31",
+      "price": 20,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 3000000000,
+        "dividends_paid": 300000000,
+        "revenue": 20000000000,
+        "cost_of_revenue": 17000000000,
+        "operating_income": 2000000000,
+        "net_income": 1200000000,
+        "shares_diluted": 500000000,
+        "operating_cash_flow": 2200000000,
+        "capex": 1500000000,
+        "cash": 1000000000,
+        "total_assets": 25000000000,
+        "total_equity": 10000000000,
+        "total_debt": 8000000000,
+        "current_assets": 7000000000,
+        "current_liabilities": 5000000000,
+        "d_and_a": 1000000000,
+        "income_tax": 400000000,
+        "pretax_income": 1600000000,
+        "gross_profit": 3000000000,
+        "free_cash_flow": 700000000,
+        "total_liabilities": 15000000000,
+        "eps_diluted": 2.4
+      },
+      "metrics": {
+        "market_cap": 10000000000,
+        "enterprise_value": 17000000000,
+        "pe": 8.333333,
+        "ps": 0.5,
+        "pb": 1,
+        "ev_ebitda": 5.666667,
+        "fcf_yield": 0.07,
+        "earnings_yield": 0.12,
+        "dividend_yield": 0.03,
+        "gross_margin": 0.15,
+        "operating_margin": 0.1,
+        "net_margin": 0.06,
+        "fcf_margin": 0.035,
+        "roe": 0.12,
+        "roa": 0.048,
+        "roic": 0.088235,
+        "debt_to_equity": 0.8,
+        "current_ratio": 1.4,
+        "net_cash": -7000000000,
+        "revenue_growth_yoy": -0.047619,
+        "eps_growth_yoy": -0.2,
+        "revenue_cagr_3y": -0.058964
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            24000000000
+          ],
+          [
+            2023,
+            23000000000
+          ],
+          [
+            2024,
+            21000000000
+          ],
+          [
+            2025,
+            20000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            1200000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            700000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            3
+          ],
+          [
+            2025,
+            2.4
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.15
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.1
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            8000000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            1000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "BURN",
+      "cik": 900004,
+      "name": "Burnrate Biotherapeutics",
+      "sector": "Health Care",
+      "industry": "Biotechnology",
+      "fiscal_year_end": "12-31",
+      "price": 40,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 0,
+        "dividends_paid": 0,
+        "revenue": 1000000000,
+        "cost_of_revenue": 300000000,
+        "operating_income": -600000000,
+        "net_income": -550000000,
+        "shares_diluted": 200000000,
+        "operating_cash_flow": -400000000,
+        "capex": 100000000,
+        "cash": 3000000000,
+        "total_assets": 4500000000,
+        "total_equity": 3800000000,
+        "total_debt": 200000000,
+        "current_assets": 3400000000,
+        "current_liabilities": 600000000,
+        "d_and_a": 50000000,
+        "income_tax": 0,
+        "pretax_income": -550000000,
+        "gross_profit": 700000000,
+        "free_cash_flow": -500000000,
+        "total_liabilities": 700000000,
+        "eps_diluted": -2.75
+      },
+      "metrics": {
+        "market_cap": 8000000000,
+        "enterprise_value": 5200000000,
+        "pe": null,
+        "ps": 8,
+        "pb": 2.105263,
+        "ev_ebitda": null,
+        "fcf_yield": -0.0625,
+        "earnings_yield": -0.06875,
+        "dividend_yield": 0,
+        "gross_margin": 0.7,
+        "operating_margin": -0.6,
+        "net_margin": -0.55,
+        "fcf_margin": -0.5,
+        "roe": -0.144737,
+        "roa": -0.122222,
+        "roic": -0.474,
+        "debt_to_equity": 0.052632,
+        "current_ratio": 5.666667,
+        "net_cash": 2800000000,
+        "revenue_growth_yoy": 0.428571,
+        "eps_growth_yoy": null,
+        "revenue_cagr_3y": 0.418983
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            350000000
+          ],
+          [
+            2023,
+            500000000
+          ],
+          [
+            2024,
+            700000000
+          ],
+          [
+            2025,
+            1000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            -550000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            -500000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            -3.1
+          ],
+          [
+            2025,
+            -2.75
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.7
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            -0.6
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            200000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            3000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "NEGQ",
+      "cik": 900005,
+      "name": "Golden Arch Diners Inc.",
+      "sector": "Consumer Discretionary",
+      "industry": "Restaurants",
+      "fiscal_year_end": "12-31",
+      "price": 150,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 100000000,
+        "dividends_paid": 1800000000,
+        "revenue": 12000000000,
+        "cost_of_revenue": 5000000000,
+        "operating_income": 5000000000,
+        "net_income": 3300000000,
+        "shares_diluted": 300000000,
+        "operating_cash_flow": 4000000000,
+        "capex": 1500000000,
+        "cash": 1000000000,
+        "total_assets": 30000000000,
+        "total_equity": -3000000000,
+        "total_debt": 20000000000,
+        "current_assets": 3000000000,
+        "current_liabilities": 3000000000,
+        "d_and_a": 800000000,
+        "income_tax": 1000000000,
+        "pretax_income": 4300000000,
+        "gross_profit": 7000000000,
+        "free_cash_flow": 2500000000,
+        "total_liabilities": 33000000000,
+        "eps_diluted": 11
+      },
+      "metrics": {
+        "market_cap": 45000000000,
+        "enterprise_value": 64000000000,
+        "pe": 13.636364,
+        "ps": 3.75,
+        "pb": null,
+        "ev_ebitda": 11.034483,
+        "fcf_yield": 0.055556,
+        "earnings_yield": 0.073333,
+        "dividend_yield": 0.04,
+        "gross_margin": 0.583333,
+        "operating_margin": 0.416667,
+        "net_margin": 0.275,
+        "fcf_margin": 0.208333,
+        "roe": -1.1,
+        "roa": 0.11,
+        "roic": 0.239826,
+        "debt_to_equity": -6.666667,
+        "current_ratio": 1,
+        "net_cash": -19000000000,
+        "revenue_growth_yoy": 0.034483,
+        "eps_growth_yoy": 0.047619,
+        "revenue_cagr_3y": 0.029428
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            11000000000
+          ],
+          [
+            2023,
+            11200000000
+          ],
+          [
+            2024,
+            11600000000
+          ],
+          [
+            2025,
+            12000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            3300000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            2500000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            10.5
+          ],
+          [
+            2025,
+            11
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.583333
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.416667
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            20000000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            1000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "NEWC",
+      "cik": 900006,
+      "name": "Newcomer Cloud Ltd.",
+      "sector": "Technology",
+      "industry": "Software",
+      "fiscal_year_end": "12-31",
+      "price": 30,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 0,
+        "dividends_paid": 0,
+        "revenue": 2000000000,
+        "cost_of_revenue": 600000000,
+        "operating_income": 500000000,
+        "net_income": 400000000,
+        "shares_diluted": 500000000,
+        "operating_cash_flow": 600000000,
+        "capex": 100000000,
+        "cash": 1500000000,
+        "total_assets": 4000000000,
+        "total_equity": 3000000000,
+        "total_debt": 300000000,
+        "current_assets": 2500000000,
+        "current_liabilities": 800000000,
+        "d_and_a": 50000000,
+        "income_tax": 100000000,
+        "pretax_income": 500000000,
+        "gross_profit": 1400000000,
+        "free_cash_flow": 500000000,
+        "total_liabilities": 1000000000,
+        "eps_diluted": 0.8
+      },
+      "metrics": {
+        "market_cap": 15000000000,
+        "enterprise_value": 13800000000,
+        "pe": 37.5,
+        "ps": 7.5,
+        "pb": 5,
+        "ev_ebitda": 25.090909,
+        "fcf_yield": 0.033333,
+        "earnings_yield": 0.026667,
+        "dividend_yield": 0,
+        "gross_margin": 0.7,
+        "operating_margin": 0.25,
+        "net_margin": 0.2,
+        "fcf_margin": 0.25,
+        "roe": 0.133333,
+        "roa": 0.1,
+        "roic": 0.222222,
+        "debt_to_equity": 0.1,
+        "current_ratio": 3.125,
+        "net_cash": 1200000000,
+        "revenue_growth_yoy": null,
+        "eps_growth_yoy": null,
+        "revenue_cagr_3y": null
+      },
+      "history": {
+        "revenue": [
+          [
+            2025,
+            2000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            400000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            500000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2025,
+            0.8
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.7
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.25
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            300000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            1500000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "BNKY",
+      "cik": 900007,
+      "name": "Bankwise Financial Corp.",
+      "sector": "Financials",
+      "industry": "Banks",
+      "fiscal_year_end": "12-31",
+      "price": 45,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": null,
+        "dividends_paid": 700000000,
+        "revenue": 6000000000,
+        "cost_of_revenue": null,
+        "gross_profit": null,
+        "operating_income": 2400000000,
+        "net_income": 1800000000,
+        "shares_diluted": 600000000,
+        "operating_cash_flow": 2500000000,
+        "capex": 200000000,
+        "cash": 10000000000,
+        "total_assets": 150000000000,
+        "total_equity": 15000000000,
+        "total_debt": 12000000000,
+        "current_assets": null,
+        "current_liabilities": null,
+        "d_and_a": 200000000,
+        "income_tax": 600000000,
+        "pretax_income": 2400000000,
+        "free_cash_flow": 2300000000,
+        "total_liabilities": 135000000000,
+        "eps_diluted": 3
+      },
+      "metrics": {
+        "market_cap": 27000000000,
+        "enterprise_value": 29000000000,
+        "pe": 15,
+        "ps": 4.5,
+        "pb": 1.8,
+        "ev_ebitda": 11.153846,
+        "fcf_yield": 0.085185,
+        "earnings_yield": 0.066667,
+        "dividend_yield": 0.025926,
+        "gross_margin": null,
+        "operating_margin": 0.4,
+        "net_margin": 0.3,
+        "fcf_margin": 0.383333,
+        "roe": 0.12,
+        "roa": 0.012,
+        "roic": 0.105882,
+        "debt_to_equity": 0.8,
+        "current_ratio": null,
+        "net_cash": -2000000000,
+        "revenue_growth_yoy": 0.052632,
+        "eps_growth_yoy": 0.111111,
+        "revenue_cagr_3y": 0.062659
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            5000000000
+          ],
+          [
+            2023,
+            5300000000
+          ],
+          [
+            2024,
+            5700000000
+          ],
+          [
+            2025,
+            6000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            1800000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            2300000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            2.7
+          ],
+          [
+            2025,
+            3
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            null
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.4
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            12000000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            10000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "TWN1",
+      "cik": 900008,
+      "name": "Twinline Semis A",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "fiscal_year_end": "12-31",
+      "price": 50,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 800000000,
+        "dividends_paid": 100000000,
+        "revenue": 5000000000,
+        "cost_of_revenue": 2000000000,
+        "operating_income": 1500000000,
+        "net_income": 1200000000,
+        "shares_diluted": 400000000,
+        "operating_cash_flow": 1800000000,
+        "capex": 600000000,
+        "cash": 2000000000,
+        "total_assets": 9000000000,
+        "total_equity": 6000000000,
+        "total_debt": 1000000000,
+        "current_assets": 4000000000,
+        "current_liabilities": 2000000000,
+        "d_and_a": 400000000,
+        "income_tax": 250000000,
+        "pretax_income": 1450000000,
+        "gross_profit": 3000000000,
+        "free_cash_flow": 1200000000,
+        "total_liabilities": 3000000000,
+        "eps_diluted": 3
+      },
+      "metrics": {
+        "market_cap": 20000000000,
+        "enterprise_value": 19000000000,
+        "pe": 16.666667,
+        "ps": 4,
+        "pb": 3.333333,
+        "ev_ebitda": 10,
+        "fcf_yield": 0.06,
+        "earnings_yield": 0.06,
+        "dividend_yield": 0.005,
+        "gross_margin": 0.6,
+        "operating_margin": 0.3,
+        "net_margin": 0.24,
+        "fcf_margin": 0.24,
+        "roe": 0.2,
+        "roa": 0.133333,
+        "roic": 0.248276,
+        "debt_to_equity": 0.166667,
+        "current_ratio": 2,
+        "net_cash": 1000000000,
+        "revenue_growth_yoy": 0.136364,
+        "eps_growth_yoy": 0.153846,
+        "revenue_cagr_3y": 0.126248
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            3500000000
+          ],
+          [
+            2023,
+            4000000000
+          ],
+          [
+            2024,
+            4400000000
+          ],
+          [
+            2025,
+            5000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            1200000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            1200000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            2.6
+          ],
+          [
+            2025,
+            3
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.6
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.3
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            1000000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            2000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "TWN2",
+      "cik": 900009,
+      "name": "Twinline Semis B",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "fiscal_year_end": "12-31",
+      "price": 50,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 800000000,
+        "dividends_paid": 100000000,
+        "revenue": 5000000000,
+        "cost_of_revenue": 2000000000,
+        "operating_income": 1500000000,
+        "net_income": 1200000000,
+        "shares_diluted": 400000000,
+        "operating_cash_flow": 1800000000,
+        "capex": 600000000,
+        "cash": 2000000000,
+        "total_assets": 9000000000,
+        "total_equity": 6000000000,
+        "total_debt": 1000000000,
+        "current_assets": 4000000000,
+        "current_liabilities": 2000000000,
+        "d_and_a": 400000000,
+        "income_tax": 250000000,
+        "pretax_income": 1450000000,
+        "gross_profit": 3000000000,
+        "free_cash_flow": 1200000000,
+        "total_liabilities": 3000000000,
+        "eps_diluted": 3
+      },
+      "metrics": {
+        "market_cap": 20000000000,
+        "enterprise_value": 19000000000,
+        "pe": 16.666667,
+        "ps": 4,
+        "pb": 3.333333,
+        "ev_ebitda": 10,
+        "fcf_yield": 0.06,
+        "earnings_yield": 0.06,
+        "dividend_yield": 0.005,
+        "gross_margin": 0.6,
+        "operating_margin": 0.3,
+        "net_margin": 0.24,
+        "fcf_margin": 0.24,
+        "roe": 0.2,
+        "roa": 0.133333,
+        "roic": 0.248276,
+        "debt_to_equity": 0.166667,
+        "current_ratio": 2,
+        "net_cash": 1000000000,
+        "revenue_growth_yoy": 0.136364,
+        "eps_growth_yoy": 0.153846,
+        "revenue_cagr_3y": 0.126248
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            3500000000
+          ],
+          [
+            2023,
+            4000000000
+          ],
+          [
+            2024,
+            4400000000
+          ],
+          [
+            2025,
+            5000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            1200000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            1200000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            2.6
+          ],
+          [
+            2025,
+            3
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.6
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.3
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            1000000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            2000000000
+          ]
+        ]
+      }
+    },
+    {
+      "ticker": "UTLY",
+      "cik": 900010,
+      "name": "Steadyvolt Utilities",
+      "sector": "Utilities",
+      "industry": "Electric Utilities",
+      "fiscal_year_end": "12-31",
+      "price": 70,
+      "price_date": "2026-09-08",
+      "price_is_sample": true,
+      "latest_fy": 2025,
+      "fundamentals": {
+        "inventory": 900000000,
+        "dividends_paid": 1500000000,
+        "revenue": 15000000000,
+        "cost_of_revenue": 9000000000,
+        "operating_income": 3500000000,
+        "net_income": 2000000000,
+        "shares_diluted": 500000000,
+        "operating_cash_flow": 5000000000,
+        "capex": 4500000000,
+        "cash": 500000000,
+        "total_assets": 80000000000,
+        "total_equity": 25000000000,
+        "total_debt": 35000000000,
+        "current_assets": 5000000000,
+        "current_liabilities": 6000000000,
+        "d_and_a": 2500000000,
+        "income_tax": 500000000,
+        "pretax_income": 2500000000,
+        "gross_profit": 6000000000,
+        "free_cash_flow": 500000000,
+        "total_liabilities": 55000000000,
+        "eps_diluted": 4
+      },
+      "metrics": {
+        "market_cap": 35000000000,
+        "enterprise_value": 69500000000,
+        "pe": 17.5,
+        "ps": 2.333333,
+        "pb": 1.4,
+        "ev_ebitda": 11.583333,
+        "fcf_yield": 0.014286,
+        "earnings_yield": 0.057143,
+        "dividend_yield": 0.042857,
+        "gross_margin": 0.4,
+        "operating_margin": 0.233333,
+        "net_margin": 0.133333,
+        "fcf_margin": 0.033333,
+        "roe": 0.08,
+        "roa": 0.025,
+        "roic": 0.047059,
+        "debt_to_equity": 1.4,
+        "current_ratio": 0.833333,
+        "net_cash": -34500000000,
+        "revenue_growth_yoy": 0.034483,
+        "eps_growth_yoy": 0.052632,
+        "revenue_cagr_3y": 0.035744
+      },
+      "history": {
+        "revenue": [
+          [
+            2022,
+            13500000000
+          ],
+          [
+            2023,
+            14000000000
+          ],
+          [
+            2024,
+            14500000000
+          ],
+          [
+            2025,
+            15000000000
+          ]
+        ],
+        "net_income": [
+          [
+            2025,
+            2000000000
+          ]
+        ],
+        "free_cash_flow": [
+          [
+            2025,
+            500000000
+          ]
+        ],
+        "eps_diluted": [
+          [
+            2024,
+            3.8
+          ],
+          [
+            2025,
+            4
+          ]
+        ],
+        "gross_margin": [
+          [
+            2025,
+            0.4
+          ]
+        ],
+        "operating_margin": [
+          [
+            2025,
+            0.233333
+          ]
+        ],
+        "total_debt": [
+          [
+            2025,
+            35000000000
+          ]
+        ],
+        "cash": [
+          [
+            2025,
+            500000000
+          ]
+        ]
+      }
+    }
+  ]
+}

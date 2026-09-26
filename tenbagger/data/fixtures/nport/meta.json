@@ -1,0 +1,38 @@
+{
+  "_note": "SAMPLE fixtures (approximate, from memory). Not real SEC filings. Replace with live N-PORT pulls.",
+  "aggregate_prefix": "SAMPLE AGGREGATE",
+  "funds": {
+    "VOO": {
+      "holdings_count": 505,
+      "class_id": "C000092055"
+    },
+    "VTI": {
+      "holdings_count": 3580,
+      "class_id": null
+    },
+    "QQQ": {
+      "holdings_count": 101,
+      "class_id": null
+    },
+    "SCHD": {
+      "holdings_count": 103,
+      "class_id": "C000102844"
+    },
+    "XLV": {
+      "holdings_count": 61,
+      "class_id": null
+    },
+    "XLE": {
+      "holdings_count": 23,
+      "class_id": null
+    },
+    "GLD": {
+      "holdings_count": 1,
+      "class_id": null
+    },
+    "HACK": {
+      "holdings_count": 60,
+      "class_id": null
+    }
+  }
+}

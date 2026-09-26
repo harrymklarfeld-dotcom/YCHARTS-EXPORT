@@ -1,0 +1,245 @@
+# =============================================================================
+# Tenbagger financial model: every driver in one editable file.
+#
+# How to edit
+#   * `drivers:` holds the BASE case. Each line is one driver:
+#       key: {v: <value>, unit: <unit>, label: "<what it is>", src: "<source / why>"}
+#     Units: count, usd, usd_c (cents-level $), pct (0.15 = 15%), x (multiplier),
+#            month (model month 1-36), toggle (1 = on, 0 = off).
+#   * `scenarios:` holds bear and bull OVERRIDES only. Anything not listed there
+#     uses the base value.
+#   * Re-run:  python tenbagger/finance/model.py
+#
+# Source tags: [S##] = id in tenbagger/docs/sources.json.
+#   [P] primary, [S] reputable secondary, [U] unverified / author estimate.
+#   BENCHMARKS = tenbagger/docs/BENCHMARKS.md, PS = PRODUCT_STRATEGY.md,
+#   MH = MONEY_HUB_RESEARCH.md, DS = DATA_STRATEGY.md.
+#
+# Model month 1 = public launch (PS §7 targets the Q4 earnings season, Jan 2027).
+# FY1 = months 1-12, FY2 = 13-24, FY3 = 25-36.
+# =============================================================================
+
+meta:
+  start_month: "2027-01"   # calendar month of model month 1 (labels only)
+  months: 36
+
+drivers:
+  # --- Switches ---------------------------------------------------------------
+  Switches:
+    ads_on:            {v: 1, unit: toggle, label: "In-app ads on the free tier", src: "Founder request. Never shown to Pro. [U]"}
+    affiliate_on:      {v: 1, unit: toggle, label: "Affiliate offers (education-adjacent only, no credit)", src: "Founder request. Brand guardrail PS §5: never reward trading. [U]"}
+    b2b_on:            {v: 0, unit: toggle, label: "B2B / Edu licences (Classroom Pro, campus)", src: "PS §4: 'Edu (later)'. Off by default."}
+    llm_on:            {v: 1, unit: toggle, label: "AI tutor enabled (v2)", src: "PS idea #21; v2 feature"}
+    plaid_on:          {v: 1, unit: toggle, label: "Bank / brokerage linking (Plaid) enabled", src: "MH §5 Option C: free = 1 bank, Pro = unlimited"}
+    founder_salary_on: {v: 0, unit: toggle, label: "Pay founder salary", src: "BENCHMARKS §C excludes founder pay; $5k/mo 'ramen' hurdle shown separately"}
+    soc2_on:           {v: 0, unit: toggle, label: "SOC 2 programme (needed only for B2B)", src: "[U] Off until a B2B buyer asks"}
+
+  # --- Acquisition: monthly installs by channel ------------------------------
+  Acquisition:
+    organic_installs_m1:      {v: 1050, unit: count, label: "Organic installs (SEO / ASO / social), month 1", src: "BENCHMARKS C1 base 1,500 total m1 x 70% non-paid share; [S54] Stock Analysis SEO; [S35] Finelo ~2.1k/day"}
+    organic_growth:           {v: 0.07, unit: pct, label: "Organic installs growth, month over month", src: "BENCHMARKS C1 (7% base; author judgment)"}
+    referral_installs_per_mau: {v: 0.015, unit: x, label: "Referral installs per prior-month MAU", src: "[U] author. Share cards (PS idea #2); Robinhood referral waitlist [S62]"}
+    creator_start_month:      {v: 4, unit: month, label: "Creator sponsorships start (month)", src: "[U] after onboarding is tuned (PS §7 gates)"}
+    creator_budget_m1:        {v: 500, unit: usd, label: "Creator spend in start month", src: "[U] author; Brilliant's main channel [S27]"}
+    creator_budget_growth:    {v: 0.05, unit: pct, label: "Creator spend growth, month over month", src: "[U] author"}
+    creator_cpi:              {v: 8.00, unit: usd_c, label: "Creator cost per install", src: "[S20][U] $40-80 CPM x ~0.5% view-to-install = ~$10 CPI; base assumes CPA-style deals"}
+    asa_start_month:          {v: 1, unit: month, label: "Apple Search Ads start (month)", src: "[U]"}
+    asa_budget_m1:            {v: 500, unit: usd, label: "Apple Search Ads spend in start month", src: "[U] test budget; PS §7 ads tests $300-500"}
+    asa_budget_growth:        {v: 0.03, unit: pct, label: "ASA spend growth, month over month", src: "[U] kept small: paid LTV/CAC < 1 in BENCHMARKS B4"}
+    asa_cpi:                  {v: 6.00, unit: usd_c, label: "Apple Search Ads cost per install", src: "[S17][S] Finance CPA $13.28, all-category $3.76; [S18][U] Education CPT ~$1.24. Base bids education keywords"}
+
+  # --- Engagement -------------------------------------------------------------
+  Engagement:
+    activation_rate:  {v: 0.65, unit: pct, label: "Installs that activate (finish first lesson)", src: "PS §7 W8 target 150 of 200 (75%) invited testers; public installs lower [U]"}
+    d30_retention:    {v: 0.12, unit: pct, label: "Free installs still active the following month (D30)", src: "[S85][U] finance D30 2-6%; PS §7 gate D30 >= 7%. Habit product assumed above median"}
+    retained_decay:   {v: 0.08, unit: pct, label: "Monthly decay of the retained free pool", src: "BENCHMARKS C1 uses 7%/mo decay"}
+
+  # --- Conversion (free -> trial -> paid) and plan mix -------------------------
+  Conversion:
+    trial_start_rate: {v: 0.10, unit: pct, label: "Trial / paywall starts as share of activated users", src: "PS §7 gate: trial starts >= 8% of activated"}
+    trial_to_paid:    {v: 0.38, unit: pct, label: "Trial-to-paid", src: "[S13][S] 37.4% for 5-9 day trials; PS gate >= 25%"}
+    mix_monthly:      {v: 0.35, unit: pct, label: "New payers choosing monthly plan", src: "BENCHMARKS B2: 60% annual among monthly+annual"}
+    mix_annual:       {v: 0.50, unit: pct, label: "New payers choosing annual plan (student = remainder)", src: "BENCHMARKS B2; annual plans retain best [S14]"}
+    pass_rate:        {v: 0.004, unit: pct, label: "Recruiting Pass purchases per activated user", src: "PS §7 gate: >= 5 purchases per ~100 student testers; students ~ a third of users [U]"}
+
+  # --- Prices and store economics ---------------------------------------------
+  Pricing:
+    price_monthly:  {v: 12.99, unit: usd_c, label: "Pro monthly price", src: "PS §4; BENCHMARKS C1 base; Monarch/Copilot $13-15 [S30][S31]"}
+    price_annual:   {v: 79.99, unit: usd_c, label: "Pro annual price", src: "PS §4; Stock Analysis $79 [S56]; Monarch $99.99 [S30]"}
+    price_student:  {v: 39.99, unit: usd_c, label: "Student annual price (.edu verified)", src: "PS §4 (~50% off, Spotify Student norm)"}
+    price_pass:     {v: 49.00, unit: usd_c, label: "Recruiting Pass, one-time (4 months)", src: "PS §4 (10% of WSP/BIWS [S69][S70])"}
+    store_fee:      {v: 0.15, unit: pct, label: "App store commission", src: "[S83][S] Apple Small Business Program < $1M proceeds; Google 15% on subscriptions"}
+    refund_rate:    {v: 0.02, unit: pct, label: "Refunds as share of gross in-app sales", src: "[U] author estimate; PS pricing rules (no weekly traps) limit refunds"}
+
+  # --- Churn by plan -----------------------------------------------------------
+  Retention:
+    ret12_monthly:  {v: 0.17, unit: pct, label: "Monthly plans still subscribed after 12 months", src: "[S14][S] RevenueCat 2025: 17.0%"}
+    renew_annual:   {v: 0.441, unit: pct, label: "Annual plan renewal rate", src: "[S14][S] RevenueCat 2025: 44.1%"}
+    renew_student:  {v: 0.35, unit: pct, label: "Student plan renewal rate", src: "[U] below annual: students graduate / leave"}
+
+  # --- Advertising (free tier only) -------------------------------------------
+  Ads:
+    ads_start_month:   {v: 4, unit: month, label: "Ads start (month)", src: "[U] after launch trust is built"}
+    ad_share_free_mau: {v: 0.70, unit: pct, label: "Share of free MAU who see ads", src: "[U] excludes under-18s, consent declines, ad-free trial periods"}
+    imps_article:      {v: 8, unit: x, label: "Impressions / ad-seeing free MAU / month: article & lesson end (banner/native)", src: "[U] author: ~2 per session x ~4 sessions"}
+    imps_screener:     {v: 4, unit: x, label: "Impressions / ad-seeing free MAU / month: screener native slot", src: "[U] author"}
+    imps_rewarded:     {v: 1.0, unit: x, label: "Impressions / ad-seeing free MAU / month: opt-in rewarded (e.g. unlock extra lesson)", src: "[U] author"}
+    ecpm_article:      {v: 2.50, unit: usd_c, label: "eCPM: article-end banner/native", src: "[U] typical US in-app banner $0.5-1.5, native $2-5; not in sources.json - verify with AdMob/AppLovin"}
+    ecpm_screener:     {v: 3.00, unit: usd_c, label: "eCPM: screener native", src: "[U] typical US in-app native $2-5; finance intent may price higher - verify"}
+    ecpm_rewarded:     {v: 12.00, unit: usd_c, label: "eCPM: opt-in rewarded video", src: "[U] typical US rewarded $8-20 - verify"}
+    ad_fill_rate:      {v: 0.85, unit: pct, label: "Ad fill rate", src: "[U] mediated fill, US"}
+
+  # --- Affiliate --------------------------------------------------------------
+  Affiliate:
+    affiliate_start_month: {v: 7, unit: month, label: "Affiliate offers start (month)", src: "[U] after counsel review (PS §6 #4)"}
+    aff_clicks_per_1k_mau: {v: 5, unit: x, label: "Affiliate clicks per 1,000 MAU per month", src: "[U] author; offers shown only in 'open a Roth / brokerage' lessons"}
+    aff_conversion:        {v: 0.04, unit: pct, label: "Clicks that become funded accounts", src: "[U] author"}
+    aff_payout:            {v: 50, unit: usd, label: "Payout per funded account", src: "[U] typical broker/Roth bounties $25-150; education offers only, never credit"}
+
+  # --- B2B / Edu (off by default) ---------------------------------------------
+  B2B:
+    b2b_start_month:          {v: 19, unit: month, label: "B2B / Edu sales start (month)", src: "PS §4 'later'; Zogo model year 2 (PS idea #20)"}
+    teachers_at_start:        {v: 5, unit: count, label: "Classroom Pro teachers at start", src: "[U]"}
+    teachers_added_per_month: {v: 3, unit: count, label: "Teachers added per month (net)", src: "[U]"}
+    teacher_price_annual:     {v: 149, unit: usd, label: "Classroom Pro price per teacher per year", src: "PS §4 (Kahoot anchor)"}
+    campus_at_start:          {v: 1, unit: count, label: "Campus / club licences at start", src: "[U]"}
+    campus_added_per_month:   {v: 0.25, unit: count, label: "Campus licences added per month (net)", src: "[U] one a quarter"}
+    campus_price_annual:      {v: 3000, unit: usd, label: "Campus / club licence per year", src: "PS §4 $1.5-5k/yr [assumption]"}
+    b2b_processing_rate:      {v: 0.03, unit: pct, label: "Card processing on B2B invoices", src: "[U] Stripe ~2.9% + 30c"}
+
+  # --- COGS -------------------------------------------------------------------
+  COGS:
+    data_beta_cost:          {v: 400, unit: usd, label: "Data licence, public-beta phase (EOD prices w/ redistribution)", src: "DS §6 $250-450 (Tiingo $250 / EODHD $399); BENCHMARKS C1 $400"}
+    data_scale_cost:         {v: 3000, unit: usd, label: "Data licence, scale phase (delayed quotes, ETFs)", src: "DS §6 $2-5k [U: enterprise quotes]"}
+    data_scale_mau:          {v: 100000, unit: count, label: "MAU that triggers the scale data phase", src: "[U] author; DS: scale = when product needs delayed quotes"}
+    plaid_start_month:       {v: 13, unit: month, label: "Linking launches (month)", src: "BENCHMARKS C1: linking starts month 13"}
+    plaid_free_link_share:   {v: 0.10, unit: pct, label: "Free MAU with a linked bank (capped at 1 Item)", src: "MH §3 lever 1-2: free = 1 Item, auto-unlink after 30 days idle [U]"}
+    plaid_free_item_cost:    {v: 0.45, unit: usd_c, label: "Plaid cost per free Item per month (Transactions only)", src: "MH §3 illustrative $0.30-0.60 [U]; [S89] rates not public"}
+    plaid_pro_link_share:    {v: 0.40, unit: pct, label: "Pro subscribers who link accounts", src: "BENCHMARKS C1 20/30/40%; raised for the Money Hub [U]"}
+    plaid_pro_items:         {v: 2.5, unit: x, label: "Average linked Items per linking Pro user", src: "MH §3: ~3 Items, often 2"}
+    plaid_pro_item_cost:     {v: 0.70, unit: usd_c, label: "Plaid cost per Pro Item per month (Tx + Liabilities + Investments mix)", src: "MH §3: $0.80-2.00 per fully linked user [U]; BENCHMARKS $1.25-2.50/user [S86]"}
+    plaid_platform_fee:      {v: 100, unit: usd, label: "Aggregator platform minimum per month", src: "[S86][P] SnapTrade $100/mo as proxy; Plaid minimum unknown"}
+    hosting_fixed:           {v: 50, unit: usd, label: "Hosting fixed (Supabase Pro, Expo)", src: "[S87] Supabase Pro $25; [S88] Expo $19; BENCHMARKS C1"}
+    hosting_per_mau:         {v: 0.01, unit: usd_c, label: "Hosting per MAU per month", src: "BENCHMARKS C1 ($0.01/MAU)"}
+    llm_start_month:         {v: 7, unit: month, label: "AI tutor launches (month)", src: "PS: tutor is v2 (months 4-9)"}
+    llm_cost_per_payer:      {v: 0.45, unit: usd_c, label: "LLM tokens per Pro user per month (capped)", src: "PS idea #21: $0.30-0.65 per Pro user at 40 answers/mo"}
+    llm_cost_per_free_mau:   {v: 0.01, unit: usd_c, label: "LLM tokens per free MAU per month (taster)", src: "PS idea #21: ~$0.008-0.016 per answer, ~1 free answer/mo [U]"}
+    rc_threshold:            {v: 2500, unit: usd, label: "RevenueCat free up to this monthly tracked revenue", src: "[S84][P]"}
+    rc_rate:                 {v: 0.01, unit: pct, label: "RevenueCat fee above threshold", src: "[S84][P]"}
+
+  # --- OpEx -------------------------------------------------------------------
+  OpEx:
+    founder_salary:        {v: 5000, unit: usd, label: "Founder salary per month (if switched on)", src: "BENCHMARKS §C $5k ramen hurdle"}
+    contractors_fy1:       {v: 500, unit: usd, label: "Contractors per month, FY1 (content QA, design)", src: "[U] author"}
+    contractors_fy2:       {v: 1500, unit: usd, label: "Contractors per month, FY2", src: "[U] author"}
+    contractors_fy3:       {v: 3000, unit: usd, label: "Contractors per month, FY3", src: "[U] author"}
+    mkt_other_monthly:     {v: 150, unit: usd, label: "Other marketing per month (newsletter, community, landing tests)", src: "PS §7 budget [U]"}
+    legal_llc:             {v: 500, unit: usd, label: "LLC + D-U-N-S (one-time, month 1)", src: "PS §7: $100-500"}
+    legal_counsel_review:  {v: 2000, unit: usd, label: "Securities counsel review (one-time, month 1)", src: "PS §6 #4: $1-2k [U]"}
+    legal_privacy:         {v: 500, unit: usd, label: "Privacy policy / ToS (one-time, month 1)", src: "[U] template + review"}
+    legal_trademark:       {v: 700, unit: usd, label: "Trademark filing, 2 classes (one-time, month 1)", src: "[U] USPTO ~$350/class; PS §3 classes 9 and 41"}
+    legal_monthly:         {v: 100, unit: usd, label: "Ongoing legal / compliance per month", src: "[U]"}
+    legal_annual_review:   {v: 1000, unit: usd, label: "Annual counsel refresh (months 13, 25)", src: "[U]"}
+    soc2_start_month:      {v: 25, unit: month, label: "SOC 2 starts (month, if switched on)", src: "[U]"}
+    soc2_monthly:          {v: 1500, unit: usd, label: "SOC 2 tooling + audit per month", src: "[U] Vanta/Drata + audit ~$15-25k/yr"}
+    tools_fy1:             {v: 150, unit: usd, label: "Software / tools per month, FY1", src: "BENCHMARKS C1 $160 other fixed; PS §7 free tiers"}
+    tools_fy2:             {v: 250, unit: usd, label: "Software / tools per month, FY2", src: "[U]"}
+    tools_fy3:             {v: 400, unit: usd, label: "Software / tools per month, FY3", src: "[U]"}
+    apple_dev_fee:         {v: 99, unit: usd, label: "Apple Developer Program (per year, months 1/13/25)", src: "PS §7 $99"}
+    google_dev_fee:        {v: 25, unit: usd, label: "Google Play registration (one-time, month 1)", src: "[U] Google list price"}
+    insurance_monthly:     {v: 100, unit: usd, label: "Insurance (cyber + E&O) per month", src: "[U] author"}
+
+# -----------------------------------------------------------------------------
+# Scenario overrides. Only list what differs from base.
+# -----------------------------------------------------------------------------
+scenarios:
+  bear:
+    organic_installs_m1: 560        # BENCHMARKS C1 bear 800 x 70%
+    organic_growth: 0.04            # BENCHMARKS C1 bear
+    referral_installs_per_mau: 0.008
+    creator_budget_m1: 300
+    creator_budget_growth: 0.03
+    creator_cpi: 12.00              # [S20] micro-channel CPMs at the top of the range
+    asa_budget_growth: 0.0
+    asa_cpi: 9.00                   # closer to finance CPA $13.28 [S17]
+    activation_rate: 0.55
+    d30_retention: 0.06             # top of finance 2-6% [S85]
+    retained_decay: 0.12
+    trial_start_rate: 0.08          # exactly the PS gate
+    trial_to_paid: 0.33             # -> install-to-paid ~1.45% (BENCHMARKS bear 1.5%)
+    mix_monthly: 0.40
+    mix_annual: 0.45
+    pass_rate: 0.002
+    price_monthly: 9.99             # BENCHMARKS C1 bear
+    price_annual: 59.99             # BENCHMARKS C1 bear
+    refund_rate: 0.03
+    ret12_monthly: 0.095            # RevenueCat 2026 [S15]
+    renew_annual: 0.307             # RevenueCat 2026 [S15]
+    renew_student: 0.25
+    ad_share_free_mau: 0.60
+    imps_article: 5
+    imps_screener: 2
+    imps_rewarded: 0.5
+    ecpm_article: 1.50
+    ecpm_screener: 2.00
+    ecpm_rewarded: 8.00
+    ad_fill_rate: 0.70
+    aff_clicks_per_1k_mau: 3
+    aff_conversion: 0.02
+    aff_payout: 30
+    data_beta_cost: 450             # BENCHMARKS C1 bear
+    data_scale_cost: 3500
+    plaid_free_link_share: 0.12
+    plaid_free_item_cost: 0.60
+    plaid_pro_link_share: 0.35
+    plaid_pro_item_cost: 0.90
+    llm_cost_per_payer: 0.65
+    contractors_fy1: 300
+    contractors_fy2: 800
+    contractors_fy3: 1500
+  bull:
+    organic_installs_m1: 2100       # BENCHMARKS C1 bull 3,000 x 70%
+    organic_growth: 0.09            # BENCHMARKS C1 bull
+    referral_installs_per_mau: 0.03
+    creator_budget_m1: 1000
+    creator_budget_growth: 0.07
+    creator_cpi: 5.00
+    asa_budget_m1: 1000
+    asa_budget_growth: 0.06
+    asa_cpi: 4.00                   # near all-category $3.76 [S17]
+    activation_rate: 0.75           # PS W8 target
+    d30_retention: 0.20
+    retained_decay: 0.06
+    trial_start_rate: 0.14
+    trial_to_paid: 0.40             # -> install-to-paid ~4.2% (BENCHMARKS bull 4.0%)
+    mix_monthly: 0.30
+    mix_annual: 0.55
+    pass_rate: 0.008
+    price_monthly: 14.99            # BENCHMARKS C1 bull
+    price_annual: 99.99             # BENCHMARKS C1 bull
+    refund_rate: 0.015
+    ret12_monthly: 0.25             # BENCHMARKS C1 bull
+    renew_annual: 0.54              # BENCHMARKS C1 bull [S14]
+    renew_student: 0.45
+    ad_share_free_mau: 0.80
+    imps_article: 12
+    imps_screener: 6
+    imps_rewarded: 2.0
+    ecpm_article: 4.00
+    ecpm_screener: 5.00
+    ecpm_rewarded: 18.00
+    ad_fill_rate: 0.95
+    aff_clicks_per_1k_mau: 10
+    aff_conversion: 0.06
+    aff_payout: 75
+    data_beta_cost: 350             # BENCHMARKS C1 bull
+    data_scale_cost: 2500
+    plaid_free_link_share: 0.08
+    plaid_free_item_cost: 0.30
+    plaid_pro_link_share: 0.50
+    plaid_pro_items: 3.0
+    plaid_pro_item_cost: 0.55
+    llm_cost_per_payer: 0.30
+    contractors_fy1: 1000
+    contractors_fy2: 3000
+    contractors_fy3: 6000
