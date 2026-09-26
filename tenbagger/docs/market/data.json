@@ -1,0 +1,1391 @@
+{
+  "generated": "2026-09-26",
+  "notes": "overlap_with_us = weighted share of Tenbagger's own feature set (weights in overlap_method) that the competitor also offers; 1=full, 0.5=partial. Positions: x 0=learn ... 10=manage money; y 0=general content ... 10=personal/your-own-data. Author judgment.",
+  "overlap_method": {
+    "weights": {
+      "lessons_real_financials": 20,
+      "gamified_habit": 8,
+      "personal_finance_lessons": 4,
+      "screener": 10,
+      "company_pages": 6,
+      "fund_xray": 8,
+      "holdings_tracking": 4,
+      "safe_to_spend": 8,
+      "card_coverage": 8,
+      "pending_pay_log": 4,
+      "personal_10k": 5,
+      "budgets_bills": 6,
+      "net_worth": 4,
+      "bank_linking": 3,
+      "student_pricing": 2
+    },
+    "competitor_feature_scores": {
+      "Rocket Money": {
+        "budgets_bills": 1,
+        "net_worth": 1,
+        "bank_linking": 1,
+        "safe_to_spend": 0.5,
+        "card_coverage": 0.5,
+        "holdings_tracking": 0.5
+      },
+      "Monarch": {
+        "budgets_bills": 1,
+        "net_worth": 1,
+        "bank_linking": 1,
+        "safe_to_spend": 0.5,
+        "card_coverage": 0.5,
+        "holdings_tracking": 1,
+        "student_pricing": 1
+      },
+      "Copilot Money": {
+        "budgets_bills": 1,
+        "net_worth": 1,
+        "bank_linking": 1,
+        "safe_to_spend": 0.5,
+        "holdings_tracking": 1
+      },
+      "YNAB": {
+        "budgets_bills": 1,
+        "bank_linking": 1,
+        "safe_to_spend": 1,
+        "card_coverage": 1,
+        "net_worth": 0.5,
+        "personal_finance_lessons": 1,
+        "student_pricing": 1
+      },
+      "PocketGuard": {
+        "budgets_bills": 1,
+        "bank_linking": 1,
+        "safe_to_spend": 1,
+        "card_coverage": 0.5,
+        "net_worth": 1
+      },
+      "Cleo": {
+        "budgets_bills": 1,
+        "bank_linking": 1,
+        "safe_to_spend": 0.5,
+        "gamified_habit": 0.5,
+        "personal_finance_lessons": 0.5
+      },
+      "Credit Karma": {
+        "net_worth": 1,
+        "bank_linking": 1,
+        "budgets_bills": 0.5
+      },
+      "Simply Wall St": {
+        "screener": 1,
+        "company_pages": 1,
+        "holdings_tracking": 1,
+        "fund_xray": 0.5,
+        "lessons_real_financials": 0.5
+      },
+      "Seeking Alpha": {
+        "screener": 1,
+        "company_pages": 1,
+        "holdings_tracking": 1,
+        "fund_xray": 0.5
+      },
+      "Koyfin": {
+        "screener": 1,
+        "company_pages": 1,
+        "holdings_tracking": 1,
+        "fund_xray": 1
+      },
+      "Stock Analysis": {
+        "screener": 1,
+        "company_pages": 1,
+        "fund_xray": 0.5
+      },
+      "Robinhood": {
+        "screener": 1,
+        "company_pages": 1,
+        "holdings_tracking": 1,
+        "fund_xray": 0.5,
+        "personal_finance_lessons": 0.5
+      },
+      "Public": {
+        "screener": 1,
+        "company_pages": 1,
+        "holdings_tracking": 1,
+        "personal_finance_lessons": 0.5
+      },
+      "Duolingo": {
+        "gamified_habit": 1
+      },
+      "Finelo": {
+        "lessons_real_financials": 0.5,
+        "gamified_habit": 1,
+        "personal_finance_lessons": 1
+      },
+      "Zogo": {
+        "gamified_habit": 1,
+        "personal_finance_lessons": 1
+      }
+    }
+  },
+  "competitors": [
+    {
+      "name": "Tenbagger (us)",
+      "segment": "Learn-to-invest + student money hub",
+      "price_monthly": "Free; Pro $12.99",
+      "price_annual": "Pro $79.99; Student $39.99",
+      "model": "Freemium subscription (planned)",
+      "users": "Pre-launch",
+      "revenue": "0",
+      "rating": "n/a",
+      "founded": "2026",
+      "funding": "Bootstrapped",
+      "overlap_with_us": 100,
+      "strengths": [
+        "Lessons on real SEC financials",
+        "Company metric -> your own finances bridge",
+        "Student irregular-income focus (pending pay, due-date check)"
+      ],
+      "weaknesses": [
+        "Unvalidated demand (0 interviews)",
+        "Three surfaces for one founder",
+        "Budgeting side competes with free/student-free incumbents"
+      ],
+      "source_ids": [],
+      "position": {
+        "x": 4,
+        "y": 7
+      }
+    },
+    {
+      "name": "Rocket Money",
+      "segment": "Budgeting/PFM + subscription & bill tools",
+      "price_monthly": "Free; Premium $7-14 (pay-what's-fair); Premium+ $15",
+      "price_annual": "Annual option exists; price not verified",
+      "model": "Freemium subscription + 35-60% success fee on bill negotiation",
+      "users": "10M+ members (company claim); 4.1M premium members end-2024",
+      "revenue": "$351M subscription revenue FY2025 (+31%); ~$390M total Rocket Money revenue FY2025",
+      "rating": "iOS 4.5 (285k); Android 4.6 (117k); Trustpilot 3.5",
+      "founded": "2015 (as Truebill); acquired by Rocket Companies Dec 2021 for $1.275B",
+      "funding": "Acquired ($1.275B)",
+      "strengths": [
+        "Automatic subscription detection + concierge cancellation",
+        "Bill negotiation that pays for itself",
+        "Scale: 4M+ payers and huge creator/podcast ad machine",
+        "Parent (Rocket) subsidizes CAC because members feed mortgage funnel"
+      ],
+      "weaknesses": [
+        "Negotiation fees surprise users; Trustpilot 3.5",
+        "Cancellation friction complaints",
+        "Backward-looking: no pending-pay, no due-date yes/no",
+        "Zero education; no investing research"
+      ],
+      "source_ids": [
+        "M1",
+        "M2",
+        "M3",
+        "M5",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M10"
+      ],
+      "overlap_with_us": 23,
+      "position": {
+        "x": 9.5,
+        "y": 9.5
+      }
+    },
+    {
+      "name": "Monarch",
+      "segment": "Budgeting/PFM",
+      "price_monthly": "$14.99",
+      "price_annual": "$99.99 (Plus $199)",
+      "model": "Hard paywall subscription (7-day trial)",
+      "users": "~1M users, 500k+ payers (unverified)",
+      "revenue": "Not disclosed (estimates conflict: $12.6M vs ~$50M implied)",
+      "rating": "iOS 4.9 (~70k)",
+      "founded": "2018",
+      "funding": "$75M Series B May 2025 at $850M post",
+      "strengths": [
+        "Best-in-class household/partner budgeting",
+        "Forecasting (Monarch Plus)",
+        "Caught Mint exodus",
+        "Student discount"
+      ],
+      "weaknesses": [
+        "$100/yr is steep for students",
+        "Built for salaried households",
+        "No learning, no research"
+      ],
+      "source_ids": [
+        "S28",
+        "S29",
+        "S30",
+        "M19",
+        "M45"
+      ],
+      "overlap_with_us": 27,
+      "position": {
+        "x": 9,
+        "y": 9.5
+      }
+    },
+    {
+      "name": "Copilot Money",
+      "segment": "Budgeting/PFM",
+      "price_monthly": "$13",
+      "price_annual": "$95",
+      "model": "Hard paywall subscription",
+      "users": "100k+ subscribers (unverified)",
+      "revenue": "Not disclosed ($2.9M estimate inconsistent)",
+      "rating": "iOS 4.8 (~30k)",
+      "founded": "~2019-2020",
+      "funding": "$6M Series A Mar 2024 (~$16.8M total, unverified)",
+      "strengths": [
+        "Beautiful, calm design (Apple Design Award finalist)",
+        "Daily-open habit among payers"
+      ],
+      "weaknesses": [
+        "Apple + web only, no Android",
+        "Cash-flow view is backward-looking",
+        "No education"
+      ],
+      "source_ids": [
+        "S31",
+        "S32",
+        "M20"
+      ],
+      "overlap_with_us": 21,
+      "position": {
+        "x": 9,
+        "y": 9.5
+      }
+    },
+    {
+      "name": "YNAB",
+      "segment": "Budgeting/PFM (method-driven)",
+      "price_monthly": "$14.99",
+      "price_annual": "$109 (12 months free for college students)",
+      "model": "Hard paywall subscription + free education (workshops)",
+      "users": "Not disclosed (millions claimed)",
+      "revenue": "~$49-100M est. (unverified)",
+      "rating": "iOS ~4.8 (unverified)",
+      "founded": "2004",
+      "funding": "Unfunded / bootstrapped",
+      "strengths": [
+        "Method + teaching: closest thing to 'learn money' in PFM",
+        "Handles irregular income and credit-card coverage by design",
+        "Free year for students"
+      ],
+      "weaknesses": [
+        "Steep learning curve; manual effort",
+        "Expensive after free year",
+        "No investing"
+      ],
+      "source_ids": [
+        "M17",
+        "M18",
+        "M46"
+      ],
+      "overlap_with_us": 33,
+      "position": {
+        "x": 7.5,
+        "y": 9
+      }
+    },
+    {
+      "name": "PocketGuard",
+      "segment": "Budgeting/PFM",
+      "price_monthly": "$12.99",
+      "price_annual": "$74.99",
+      "model": "Freemium (2-institution cap) + Plus",
+      "users": "Not disclosed",
+      "revenue": "Not disclosed",
+      "rating": "n/a",
+      "founded": "2015",
+      "funding": "n/a",
+      "strengths": [
+        "'In My Pocket' leftover number is the closest to safe-to-spend"
+      ],
+      "weaknesses": [
+        "Weak with lumpy income",
+        "No learning"
+      ],
+      "source_ids": [],
+      "overlap_with_us": 25,
+      "position": {
+        "x": 9,
+        "y": 9
+      }
+    },
+    {
+      "name": "Cleo",
+      "segment": "AI money coach + cash advance",
+      "price_monthly": "Free; Plus $5.99; Pro $8.99; Builder $14.99 (+ express fees)",
+      "price_annual": "n/a",
+      "model": "Subscription tiers gating cash advances and credit building",
+      "users": "~7M users, ~700k payers (late 2024, unverified); ~1M monthly check-ins",
+      "revenue": "ARR $280M (Jul 2025) up from $185M end-2024",
+      "rating": "iOS ~4.6-4.7; Android 4.3",
+      "founded": "2016 (London)",
+      "funding": "VC-backed (~$175M+ reported; unverified)",
+      "strengths": [
+        "Gen Z voice and humor ('roast mode')",
+        "Chat-first AI UX",
+        "Monetizes via concrete benefit (advances)"
+      ],
+      "weaknesses": [
+        "FTC $17M settlement (2025) over advances and cancellation",
+        "Advance amounts below advertised ('$250 promised, $20 paid')",
+        "Revenue depends on lending-adjacent product we must never build"
+      ],
+      "source_ids": [
+        "M13",
+        "M14",
+        "M15",
+        "M16",
+        "M43"
+      ],
+      "overlap_with_us": 19,
+      "position": {
+        "x": 8.5,
+        "y": 9
+      }
+    },
+    {
+      "name": "Credit Karma",
+      "segment": "Free PFM / lead-gen (absorbed Mint)",
+      "price_monthly": "Free",
+      "price_annual": "Free",
+      "model": "Ad and lead generation (card/loan referrals)",
+      "users": "Tens of millions (Intuit; not re-verified)",
+      "revenue": "Part of Intuit (not broken out here)",
+      "rating": "n/a",
+      "founded": "2007",
+      "funding": "Owned by Intuit",
+      "strengths": [
+        "Free credit score; brand trust"
+      ],
+      "weaknesses": [
+        "Paid by lenders, not users; basic budgeting"
+      ],
+      "source_ids": [
+        "S74"
+      ],
+      "overlap_with_us": 10,
+      "position": {
+        "x": 8.5,
+        "y": 8
+      }
+    },
+    {
+      "name": "Simply Wall St",
+      "segment": "Investing research",
+      "price_monthly": "$15.99 (Premium monthly)",
+      "price_annual": "$131.40 Premium; $258 Unlimited",
+      "model": "Freemium research subscription",
+      "users": "7M+ investors (undated claim)",
+      "revenue": "Not disclosed",
+      "rating": "App ~4.6; Trustpilot 4.2",
+      "founded": "2014",
+      "funding": "~$2.5M incl. $1.8M from customers",
+      "strengths": [
+        "Visual 'Snowflake' fundamentals non-experts understand",
+        "Portfolio sync",
+        "Programmatic content for SEO/syndication"
+      ],
+      "weaknesses": [
+        "No curriculum or progression",
+        "No personal money management"
+      ],
+      "source_ids": [
+        "S21",
+        "S22",
+        "S23",
+        "M44"
+      ],
+      "overlap_with_us": 34,
+      "position": {
+        "x": 5,
+        "y": 5
+      }
+    },
+    {
+      "name": "Seeking Alpha",
+      "segment": "Investing research",
+      "price_monthly": "n/a",
+      "price_annual": "$299 Premium",
+      "model": "Metered freemium research",
+      "users": "~17-42M visits/mo",
+      "revenue": "$25-50M est. (unverified)",
+      "rating": "n/a",
+      "founded": "2004",
+      "funding": "Private",
+      "strengths": [
+        "Opinions and quant ratings; SEO"
+      ],
+      "weaknesses": [
+        "Expensive for students; not beginner-friendly"
+      ],
+      "source_ids": [
+        "S45",
+        "S46"
+      ],
+      "overlap_with_us": 24,
+      "position": {
+        "x": 5.5,
+        "y": 3
+      }
+    },
+    {
+      "name": "Koyfin",
+      "segment": "Investing research",
+      "price_monthly": "Free; $39-79",
+      "price_annual": "n/a",
+      "model": "Freemium terminal-lite",
+      "users": "500k+ (2023, unverified)",
+      "revenue": "Not disclosed",
+      "rating": "n/a",
+      "founded": "2016",
+      "funding": "~$7M",
+      "strengths": [
+        "Pro-grade charts, ETF look-through"
+      ],
+      "weaknesses": [
+        "Built for pros; no teaching"
+      ],
+      "source_ids": [
+        "S48",
+        "S49"
+      ],
+      "overlap_with_us": 28,
+      "position": {
+        "x": 6,
+        "y": 4
+      }
+    },
+    {
+      "name": "Robinhood",
+      "segment": "Broker with learning",
+      "price_monthly": "Free; Gold $5",
+      "price_annual": "Gold $50",
+      "model": "Brokerage (payment for order flow, interest, Gold subscription)",
+      "users": "28.4M funded customers (Q2-26); Gold 4.8M",
+      "revenue": "$4.5B FY2025",
+      "rating": "n/a",
+      "founded": "2013",
+      "funding": "Public (HOOD)",
+      "strengths": [
+        "Owns holdings data; AI research (Cortex) bundled cheaply"
+      ],
+      "weaknesses": [
+        "Education is a retention feature, generic; trading-first incentives"
+      ],
+      "source_ids": [
+        "S60",
+        "S61",
+        "M21"
+      ],
+      "overlap_with_us": 26,
+      "position": {
+        "x": 8.5,
+        "y": 8
+      }
+    },
+    {
+      "name": "Finelo",
+      "segment": "Financial education / gamified",
+      "price_monthly": "$39.99 per 4 weeks after intro",
+      "price_annual": "n/a",
+      "model": "Web-funnel intro offer then subscription",
+      "users": "1.5M+ learners (claim)",
+      "revenue": "Not disclosed (claims profitable)",
+      "rating": "Trustpilot 4.6 (~17k)",
+      "founded": "2021 (Zimran)",
+      "funding": "Not disclosed",
+      "strengths": [
+        "Proven paid funnel for finance learning"
+      ],
+      "weaknesses": [
+        "Billing complaints; generic (not real filings)"
+      ],
+      "source_ids": [
+        "S33",
+        "S34",
+        "S36"
+      ],
+      "overlap_with_us": 22,
+      "position": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    {
+      "name": "Zogo",
+      "segment": "Financial education / gamified (B2B2C)",
+      "price_monthly": "Free to users",
+      "price_annual": "Licensed by banks/credit unions",
+      "model": "B2B2C licensing",
+      "users": "2M+ users",
+      "revenue": "Not disclosed",
+      "rating": "n/a",
+      "founded": "2018",
+      "funding": "Small seed",
+      "strengths": [
+        "Outsourced CAC through 250+ institutions",
+        "Rewards for learning"
+      ],
+      "weaknesses": [
+        "Basic literacy only; no personal data"
+      ],
+      "source_ids": [
+        "M27",
+        "S38",
+        "S39"
+      ],
+      "overlap_with_us": 12,
+      "position": {
+        "x": 1,
+        "y": 1.5
+      }
+    },
+    {
+      "name": "Duolingo",
+      "segment": "Engagement benchmark (not finance)",
+      "price_monthly": "Super ~$7-13 (unverified)",
+      "price_annual": "n/a",
+      "model": "Freemium subscription",
+      "users": "140.6M MAU / 58.7M DAU (Q2-26)",
+      "revenue": "$298.5M Q2-26; ~$1.03B FY2025",
+      "rating": "n/a",
+      "founded": "2011 (launched 2012)",
+      "funding": "Public (DUOL)",
+      "strengths": [
+        "Streaks, leagues, CURR-driven retention; 9.2% of MAU pay"
+      ],
+      "weaknesses": [
+        "No finance; math/music not monetizing near-term"
+      ],
+      "source_ids": [
+        "S1",
+        "S3",
+        "S4"
+      ],
+      "overlap_with_us": 8,
+      "position": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  ],
+  "segments": [
+    {
+      "name": "Budgeting / PFM (Rocket Money, Monarch, YNAB, Copilot, PocketGuard)",
+      "size_usd": "Syndicated reports: $0.25B (budget apps) to $1.35-1.92B (personal finance software, global, 2025). Bottom-up US paid PFM: roughly $0.6-0.8B (Rocket Money ~$390M alone + YNAB/Monarch/Copilot/others; our estimate)",
+      "growth": "Reports: 4.5-8.5% CAGR. Leaders: Rocket Money subscription revenue +31% in 2025",
+      "examples": [
+        "Rocket Money",
+        "Monarch",
+        "YNAB",
+        "Copilot Money",
+        "PocketGuard",
+        "EveryDollar",
+        "Credit Karma (free)"
+      ],
+      "source_ids": [
+        "M1",
+        "M22",
+        "M23",
+        "M24"
+      ]
+    },
+    {
+      "name": "Subscription & bill tools",
+      "size_usd": "Not a standalone market in any credible report; effectively Rocket Money's non-subscription revenue (~$39M FY2025 implied, our inference) plus features inside banks and PFM apps",
+      "growth": "Shrinking as standalone; absorbed into PFM and bank apps",
+      "examples": [
+        "Rocket Money (Truebill)",
+        "Trim (legacy)",
+        "Bank-app subscription controls"
+      ],
+      "source_ids": [
+        "M1",
+        "M7"
+      ]
+    },
+    {
+      "name": "AI money coaches & cash-advance apps",
+      "size_usd": "Bottom-up ~$1-1.5B US revenue: Dave ~$545M (FY2025 guidance), Cleo ~$280M ARR (Jul 2025), plus MoneyLion, Brigit, EarnIn (our estimate)",
+      "growth": "Fast (Cleo ~2x YoY; Dave +63% Q3-25) but under repeated FTC/state enforcement",
+      "examples": [
+        "Cleo",
+        "Dave",
+        "Brigit",
+        "EarnIn",
+        "MoneyLion",
+        "Albert"
+      ],
+      "source_ids": [
+        "M13",
+        "M16",
+        "M26"
+      ]
+    },
+    {
+      "name": "Investing research & tools (retail)",
+      "size_usd": "No credible report. Known players are each $10-100M-scale; segment roughly $0.5-1.5B US incl. Morningstar Investor, Motley Fool, Seeking Alpha (our estimate, low confidence)",
+      "growth": "Moderate; AI tools commoditizing 'explain this stock'",
+      "examples": [
+        "Simply Wall St",
+        "Seeking Alpha",
+        "Koyfin",
+        "Stock Analysis",
+        "Fiscal.ai",
+        "Morningstar Investor"
+      ],
+      "source_ids": [
+        "S45",
+        "S48",
+        "S57"
+      ]
+    },
+    {
+      "name": "Broker apps with built-in learning",
+      "size_usd": "Revenue pool is brokerage, not education: Robinhood alone $4.5B FY2025; education is a free retention feature",
+      "growth": "Robinhood revenue +52% in 2025; Gold +58%",
+      "examples": [
+        "Robinhood (Learn, Cortex)",
+        "Public (Alpha)",
+        "Webull",
+        "Fidelity/Schwab education"
+      ],
+      "source_ids": [
+        "M21",
+        "S61"
+      ]
+    },
+    {
+      "name": "Financial education / gamified learning",
+      "size_usd": "Syndicated: $5.0-12.8B global 2025 (mostly institutional/school programs). Consumer-paid app slice is small: likely low hundreds of $M globally (our estimate)",
+      "growth": "Reports: 6.8-12.6% CAGR; 39 US states now require HS personal finance",
+      "examples": [
+        "Finelo",
+        "Zogo",
+        "Duolingo (mechanics benchmark)",
+        "Brilliant",
+        "CFI/WSP (advanced)"
+      ],
+      "source_ids": [
+        "M25",
+        "M27",
+        "S34"
+      ]
+    }
+  ],
+  "positioning_axes": {
+    "x": "learn (0) <-> manage money (10)",
+    "y": "general (0) <-> personal / your own data (10)"
+  },
+  "consumer_findings": [
+    {
+      "finding": "Two-thirds of Gen Z college students want to learn more about personal finance",
+      "stat": "~67% (n=2,025, fall 2025)",
+      "source_id": "M28"
+    },
+    {
+      "finding": "Students see money as independence/security, but 2 in 5 call it a source of stress",
+      "stat": "61% independence; ~40% stress",
+      "source_id": "M28"
+    },
+    {
+      "finding": "Gen Z has the lowest financial literacy of any generation",
+      "stat": "38% correct vs 49% all adults (P-Fin 2025)",
+      "source_id": "M29"
+    },
+    {
+      "finding": "Young adults are the most financially fragile",
+      "stat": "63% of 18-29 'doing okay' vs 83% of 60+; 47% got outside help",
+      "source_id": "M30"
+    },
+    {
+      "finding": "Many Gen Z live paycheck to paycheck",
+      "stat": "42% (BofA 2026)",
+      "source_id": "M31"
+    },
+    {
+      "finding": "When stressed, Gen Z's first move is to check their balance",
+      "stat": "69% check balance; 64% make a budget; 33% avoid",
+      "source_id": "M32"
+    },
+    {
+      "finding": "Gen Z can't absorb shocks",
+      "stat": "46% couldn't cover an unexpected cost (vs 37% all)",
+      "source_id": "M39"
+    },
+    {
+      "finding": "Young investors get ideas from social media and finfluencers",
+      "stat": "60% of investors 18-34 use social media for ideas; 61% of under-35s act on finfluencer recs",
+      "source_id": "M33"
+    },
+    {
+      "finding": "Overconfidence gap among social-media investors",
+      "stat": "42% quiz score but 63% rate own knowledge high",
+      "source_id": "M33"
+    },
+    {
+      "finding": "Gen Z invests early, often via crypto",
+      "stat": "56% own investments (FINRA/CFA 2023); 45% of Gen Z own crypto (Plaid 2025)",
+      "source_id": "M34"
+    },
+    {
+      "finding": "Belief in stocks outruns action",
+      "stat": "63% see stocks as great wealth builder; 61% not saving monthly for retirement",
+      "source_id": "M35"
+    },
+    {
+      "finding": "YouTube beats TikTok for money content among Gen Z",
+      "stat": "YouTube 71%, Instagram 50%, TikTok 49% (survey roundup)",
+      "source_id": "M36"
+    },
+    {
+      "finding": "Gen Z prefers video as a learning mode",
+      "stat": "59% prefer YouTube for learning (2018, dated)",
+      "source_id": "M37"
+    },
+    {
+      "finding": "Fintech use is mainstream",
+      "stat": "78% of Americans use fintech; 84% comfortable opening a fintech account",
+      "source_id": "M38"
+    },
+    {
+      "finding": "Privacy worry is high and banks are trusted more than fintechs",
+      "stat": "~2/3 very/extremely concerned about financial-app data privacy; 50% trust banks vs 8% fintechs for fraud protection",
+      "source_id": "M40"
+    },
+    {
+      "finding": "Budgeting apps are abandoned fast; manual entry and broken sync are top reasons",
+      "stat": "60-70% quit within 30 days (vendor claim)",
+      "source_id": "M42"
+    },
+    {
+      "finding": "Freemium rarely converts; hard paywalls convert 5x better",
+      "stat": "2.1% vs 10.7% download-to-paid by day 35",
+      "source_id": "S13"
+    },
+    {
+      "finding": "People do pay for money apps at scale when the benefit is concrete",
+      "stat": "Rocket Money 4.1M payers at $7-14/mo; Cleo ~700k payers",
+      "source_id": "M2"
+    }
+  ],
+  "sources": [
+    {
+      "id": "M1",
+      "title": "Rocket Companies Form 10-K FY2025 (Rocket Money subscription revenue $351M/$267M/$179M for 2025/24/23)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1805284/000162828026013283/rkt-20251231.htm",
+      "date": "2026-02",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M2",
+      "title": "Rocket Companies Q4 & FY2024 results (Rocket Money 4.1M premium members, +1M YoY)",
+      "url": "https://ir.rocketcompanies.com/news-and-events/press-releases/press-release-details/2025/Rocket-Companies-Announces-Fourth-Quarter-and-Full-Year-2024-Results/default.aspx",
+      "date": "2025-02-27",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M3",
+      "title": "Rocket Companies Q2 2026 earnings release, 8-K Ex-99.1 (Rocket Money revenue +$20M YoY from paying-subscriber growth)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1805284/000180528426000082/rkt-063020268xkex991earnin.htm",
+      "date": "2026-08-06",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M4",
+      "title": "Rocket Companies Q2 2025 10-Q (Rocket Money revenue +$22.8M / +31% YoY)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1805284/000180528425000088/rkt-20250630.htm",
+      "date": "2025-08",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M5",
+      "title": "Rocket Companies to Acquire Truebill ($1.275B cash; 2.5M+ users; ~$100M ARR run-rate)",
+      "url": "https://ir.rocketcompanies.com/news-and-events/press-releases/press-release-details/2021/Rocket-Companies-to-Acquire-Truebill-Adding-Rapidly-Expanding-Financial-Empowerment-FinTech-to-the-Rocket-Platform/default.aspx",
+      "date": "2021-12-20",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M6",
+      "title": "Rocket Money: Pricing - Free vs Premium vs Premium+",
+      "url": "https://www.rocketmoney.com/learn/personal-finance/how-much-does-rocket-money-cost",
+      "date": "2026",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M7",
+      "title": "Rocket Money Help Center: Bill Negotiation charge explained (35-60% of first-year savings)",
+      "url": "https://help.rocketmoney.com/en/articles/9744474-bill-negotiation-charge-explained",
+      "date": "2026",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M8",
+      "title": "Rocket Money Help Center: Premium Membership features",
+      "url": "https://help.rocketmoney.com/en/articles/2677184-premium-membership-features",
+      "date": "2026",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M9",
+      "title": "Rocket Money Reviews and Ratings 2026 (App Store 4.5 / 285k; Google Play 4.6 / 117k; Trustpilot 3.5)",
+      "url": "https://usa.inquirer.net/166883/rocket-money-reviews-and-ratings",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M10",
+      "title": "Rocket Money Pricing 2026: Beware Hidden Fees (review of complaints)",
+      "url": "https://www.fincomparelab.com/guides/rocket-money-pricing/",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M11",
+      "title": "Rocket Money podcast sponsorships (9,813 episodes, 764 podcasts)",
+      "url": "https://sponsorable.com/sponsors/rocketmoney.com",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M12",
+      "title": "Rocket Money influencer marketing (1.4K creators, 4.1K posts, 1.3B views)",
+      "url": "https://creatordb.app/brands/rocketmoney.com",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M13",
+      "title": "Cleo CEO teases IPO after AI fintech doubles revenue (Sifted)",
+      "url": "https://sifted.eu/articles/cleo-ceo-teases-ipo",
+      "date": "2025",
+      "confidence": "S",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M14",
+      "title": "Cleo revenue, funding & growth (Sacra: ~7M users, ~700k payers late 2024)",
+      "url": "https://sacra.com/c/cleo/",
+      "date": "2025",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M15",
+      "title": "Cleo Pricing 2026: Free vs Plus vs Builder",
+      "url": "https://cleoapps.com/pricing.html",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M16",
+      "title": "FTC v. Cleo AI ($17M settlement, 2025-03-27)",
+      "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/cleo-ai-inc-ftc-v",
+      "date": "2025-03-27",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M17",
+      "title": "YNAB company profile (Tracxn: unfunded, founded 2004, ~196 staff)",
+      "url": "https://tracxn.com/d/companies/ynab/__uVszXfpE9sGObjInC6abT91YhAo8Of3j6PtRn1WbXtk",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M18",
+      "title": "YNAB pricing",
+      "url": "https://www.ynab.com/pricing",
+      "date": "2026",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M19",
+      "title": "Monarch App Store listing / ratings (4.9, ~70k ratings)",
+      "url": "https://apps.apple.com/us/app/monarch-budget-track-money/id1459319842",
+      "date": "2026-09",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M20",
+      "title": "Copilot Money Review 2026 (4.8 stars ~30k ratings; no Android)",
+      "url": "https://walletgrower.com/blog/copilot-money-review-2026",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M21",
+      "title": "Robinhood Q4 & FY2025 results (revenue $4.5B; Gold 4.2M)",
+      "url": "https://investors.robinhood.com/news-releases/news-release-details/robinhood-reports-fourth-quarter-and-full-year-2025-results",
+      "date": "2026-02-10",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M22",
+      "title": "IMARC: Personal Finance Software Market (~$1.35B 2025, 4.55% CAGR)",
+      "url": "https://www.imarcgroup.com/personal-finance-software-market",
+      "date": "2025",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M23",
+      "title": "Research and Markets: Personal Finance Software Market Report 2025 ($1.92B 2025, 8.5% CAGR)",
+      "url": "https://www.researchandmarkets.com/reports/5790834/personal-finance-software-market-report",
+      "date": "2025",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M24",
+      "title": "The Insight Partners: Budgeting Apps Market ($252.5M 2025, 5.3% CAGR)",
+      "url": "https://www.theinsightpartners.com/reports/budgeting-apps-market",
+      "date": "2025",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M25",
+      "title": "Financial literacy education market reports ($5.0-12.8B 2025, various)",
+      "url": "https://dataintelo.com/report/financial-literacy-education-market",
+      "date": "2025",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M26",
+      "title": "Dave Inc. Q3 2025 8-K (FY2025 revenue guidance $544-547M)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1841408/000119312525263535/d85365dex991.htm",
+      "date": "2025-11",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M27",
+      "title": "Zogo (2M+ users, 250+ financial institutions)",
+      "url": "https://zogo.com/",
+      "date": "2026",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M28",
+      "title": "CFP Board: Gen Z College Students Hungry for Financial Education (Dollars & Sense, n=2,025, Sep-Oct 2025)",
+      "url": "https://www.cfp.net/news/2026/02/gen-z-college-students-hungry-for-financial-education-new-cfp-board-study-finds",
+      "date": "2026-02-24",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M29",
+      "title": "TIAA Institute-GFLEC Personal Finance Index 2025 (adults 49%, Gen Z 38% correct)",
+      "url": "https://www.tiaa.org/public/institute/about/news/2025-tiaa-institute-gflec-personal-finance-index",
+      "date": "2025-06-09",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M30",
+      "title": "Federal Reserve SHED 2025: Overall Financial Well-Being (18-29: 63% doing okay; 47% got outside help)",
+      "url": "https://www.federalreserve.gov/publications/2026-economic-well-being-of-us-households-in-2025-Overall-Financial-Well-Being.htm",
+      "date": "2026-05",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M31",
+      "title": "BofA Better Money Habits 2026: 42% of Gen Z living paycheck to paycheck",
+      "url": "https://newsroom.bankofamerica.com/content/newsroom/press-releases/2026/05/bofa-study-finds-fewer-gen-z-rely-on-family-for-financial-assist.html",
+      "date": "2026-05",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M32",
+      "title": "BofA Better Money Habits 2025: 72% of young adults took action; stress responses",
+      "url": "https://newsroom.bankofamerica.com/content/newsroom/press-releases/2025/07/confronted-with-higher-living-costs--72--of-young-adults-take-ac.html",
+      "date": "2025-07",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M33",
+      "title": "FINRA Foundation: Finfluencer Followers and Social Media Scrollers (research brief)",
+      "url": "https://finrafoundation.org/sites/finrafoundation/files/2026-03/FINRA_Foundation_Research_Brief_Social_Media_Finfluencers.pdf",
+      "date": "2026-03",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M34",
+      "title": "FINRA Foundation / CFA Institute: Gen Z investors (56% own investments)",
+      "url": "https://www.finra.org/media-center/newsreleases/2023/finra-foundation-cfa-institute-research-focuses-gen-z-investors",
+      "date": "2023-05-24",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M35",
+      "title": "CNBC | Generation Lab Youth & Money poll (63% see stocks as great wealth builder; 61% not saving monthly for retirement)",
+      "url": "https://www.cnbc.com/2024/02/06/gen-z-millennials-are-grappling-with-high-cost-of-living.html",
+      "date": "2024-02-06",
+      "confidence": "S",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M36",
+      "title": "Benzinga: Gen Z swaps Wall Street for FinTok (surveys roundup; YouTube 71%, TikTok 49%)",
+      "url": "https://www.benzinga.com/general/social-media/25/05/45540111/gen-z-swaps-wall-street-for-fintok-70-now-take-money-advice-from-social-media-surveys-show",
+      "date": "2025-05",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M37",
+      "title": "Pearson / Harris Poll: YouTube, video drive Gen Z learning preference (59%)",
+      "url": "https://plc.pearson.com/en-GB/news-and-insights/news/new-research-finds-youtube-video-drives-generation-z-learning-preference",
+      "date": "2018-08",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M38",
+      "title": "Plaid: The Fintech Effect 2025 (78% use fintech; 84% comfortable opening a fintech account)",
+      "url": "https://plaid.com/blog/the-fintech-effect-report-highlights/",
+      "date": "2025",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M39",
+      "title": "Credit Karma: finances worsened in 2025 survey (46% of Gen Z couldn't cover an unexpected cost)",
+      "url": "https://www.creditkarma.com/about/commentary/nearly-half-of-americans-say-their-finances-worsened-in-2025-but-most-are-planning-a-reset-in-the-new-year",
+      "date": "2025-12",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M40",
+      "title": "The Financial Brand: consumers' data-privacy fears may hurt fintechs (two-thirds very/extremely concerned)",
+      "url": "https://thefinancialbrand.com/news/data-analytics-banking/fintech-mobile-banking-app-data-privacy-74854",
+      "date": "undated (c. 2018)",
+      "confidence": "S",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M41",
+      "title": "ABA / Morning Consult fall 2025: banks trusted most for fraud protection (50% vs 8% fintech)",
+      "url": "https://www.aba.com/about-us/press-room/press-releases/fall-2025-morning-consult-survey-results-consumer-satisfaction",
+      "date": "2025-10",
+      "confidence": "S",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M42",
+      "title": "Why people quit budgeting apps in 30 days (vendor blog; 60-70% abandon; manual entry and sync)",
+      "url": "https://www.strategia-x.com/blog/2026-04-12-why-budgeting-apps-fail-30-days-fintech-ux-data/",
+      "date": "2026-04",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M43",
+      "title": "Cleo Review 2026: '$250 promised, just $20 paid'",
+      "url": "https://www.fincomparelab.com/reviews/cleo-review/",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M44",
+      "title": "Simply Wall St Trustpilot (4.2/5)",
+      "url": "https://www.trustpilot.com/review/simplywall.st",
+      "date": "2026-09",
+      "confidence": "U",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M45",
+      "title": "Monarch Help: Forecasting / Monarch Plus",
+      "url": "https://www.monarch.com/blog/monarch-plus",
+      "date": "2026-04",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "M46",
+      "title": "YNAB: Irregular income guide / credit-card payment method",
+      "url": "https://www.ynab.com/guide/irregular-income",
+      "date": "2026",
+      "confidence": "P",
+      "accessed": "2026-09-26"
+    },
+    {
+      "id": "S1",
+      "title": "Duolingo Q2 2026 Shareholder Letter (Form 8-K exhibit)",
+      "url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026053299/q2fy26duolingo6-30x26share.htm",
+      "date": "2026-08",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S3",
+      "title": "Duolingo Form 10-K FY2025",
+      "url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026012494/duol-20251231.htm",
+      "date": "2026-02-27",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S4",
+      "title": "Duolingo Form S-1",
+      "url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828021013065/duolingos-1.htm",
+      "date": "2021-06-28",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S13",
+      "title": "The State of Subscription Apps in 10 minutes: benchmarks for 2026",
+      "url": "https://www.revenuecat.com/blog/growth/subscription-app-trends-benchmarks-2026",
+      "date": "2026-03",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S14",
+      "title": "State of Subscription Apps 2025",
+      "url": "https://www.revenuecat.com/state-of-subscription-apps-2025",
+      "date": "2025-03",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S17",
+      "title": "Finance Apps: Apple Ads & ASO Trends 2025",
+      "url": "https://splitmetrics.com/finance-apps-apple-search-ads-aso-trends-2025/",
+      "date": "2025",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S21",
+      "title": "About Simply Wall St",
+      "url": "https://simplywall.st/about",
+      "date": "undated (accessed 2026-09)",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S22",
+      "title": "Simply Wall St raises $1.8 million from its own customers",
+      "url": "https://techcrunch.com/2017/06/20/simply-wall-st-raises-1-8-million-from-its-own-customers-to-build-out-investment-advisory-services/",
+      "date": "2017-06-20",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S23",
+      "title": "Simply Wall St Review 2026: Features, Pricing",
+      "url": "https://stockunlock.com/simply-wall-st-review.html",
+      "date": "2026-09",
+      "confidence": "U",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S28",
+      "title": "Personal finance app Monarch raises $75 million despite 'nuclear winter'",
+      "url": "https://www.cnbc.com/2025/05/23/personal-finance-app-monarch-raises-75-million.html",
+      "date": "2025-05-23",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S29",
+      "title": "Monarch Money valuation, funding & news",
+      "url": "https://sacra.com/c/monarch-money/",
+      "date": "2025",
+      "confidence": "U",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S30",
+      "title": "Monarch Money Review 2026",
+      "url": "https://www.thepennyhoarder.com/budgeting/monarch-money-review/",
+      "date": "2026",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S31",
+      "title": "Copilot Money pricing / company profiles",
+      "url": "https://www.fincomparelab.com/guides/copilot-money-pricing/",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S32",
+      "title": "Budgeting app Copilot is booming now that Mint is dead, leading to $6M Series A",
+      "url": "https://techcrunch.com/2024/03/21/budgeting-app-copilot-mint-6m-series-a/",
+      "date": "2024-03-21",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S33",
+      "title": "Finelo Review 2026 (company structure, subscriber claims)",
+      "url": "https://plisio.net/profiles/finelo-review",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S34",
+      "title": "About Finelo",
+      "url": "https://finelo.com/about-us",
+      "date": "2026",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S36",
+      "title": "Is Finelo Legit? / Finelo pricing & refunds",
+      "url": "https://plainenglish.io/business/is-finelo-legit-what-17-000-reviews-actually-say",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S38",
+      "title": "Financial Literacy App Helps Credit Unions Connect With Gen Z",
+      "url": "https://nextcity.org/urbanist-news/financial-literacy-app-helps-credit-unions-connect-with-gen-z",
+      "date": "2023",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S39",
+      "title": "Gen Z-Targeted Zogo App Reaches Milestone Signing 200 Financial Institution Partners",
+      "url": "https://www.prnewswire.com/news-releases/gen-z-targeted-zogo-app-reaches-milestone-signing-200-financial-institution-partners-301571996.html",
+      "date": "2022",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S40",
+      "title": "Zogo - Credit Unions",
+      "url": "https://zogo.com/credit-unions",
+      "date": "2025-2026",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S45",
+      "title": "Seeking Alpha Premium Review 2026",
+      "url": "https://financer.com/invest/seeking-alpha-premium-review/",
+      "date": "2026",
+      "confidence": "U",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S46",
+      "title": "Premium Subscription Price Update",
+      "url": "https://about.seekingalpha.com/premium-subscription-price-update",
+      "date": "2025-2026",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S48",
+      "title": "Investment Memo: Koyfin",
+      "url": "https://ebentimko.substack.com/p/investment-memo-koyfin",
+      "date": "2023",
+      "confidence": "U",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S49",
+      "title": "Koyfin Pricing 2026",
+      "url": "https://www.g2.com/products/koyfin/pricing",
+      "date": "2026",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S60",
+      "title": "Introducing Robinhood Strategies, Robinhood Banking, and Robinhood Cortex",
+      "url": "https://robinhood.com/newsroom/introducing-strategies-banking-and-cortex",
+      "date": "2025-03-27",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S61",
+      "title": "Robinhood Reports Second Quarter 2026 Results",
+      "url": "https://investors.robinhood.com/news-releases/news-release-details/robinhood-reports-second-quarter-2026-results",
+      "date": "2026-07-29",
+      "confidence": "P",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    },
+    {
+      "id": "S74",
+      "title": "Budgeting app Mint is shutting down",
+      "url": "https://www.cnbc.com/2023/11/07/budgeting-app-mint-is-shutting-down-users-are-disappointed.html",
+      "date": "2023-11-07",
+      "confidence": "S",
+      "accessed": "2026-09-25",
+      "note": "from tenbagger/docs/sources.json"
+    }
+  ]
+}
