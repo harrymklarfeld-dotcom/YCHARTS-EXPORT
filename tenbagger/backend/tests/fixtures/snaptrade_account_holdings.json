@@ -1,0 +1,33 @@
+[
+  {
+    "account": { "id": "917c8734-8470-4a3e-a18f-57c3f2ee6631", "brokerage_authorization": "87b24961-b51e-4db8-9226-f198f6518a89", "name": "Robinhood Individual", "number": "Q6542138443", "institution_name": "Robinhood", "balance": { "total": { "amount": 2890.75, "currency": "USD" } }, "meta": { "type": "Margin" }, "raw_type": "Margin" },
+    "balances": [ { "currency": { "id": "57f81c53-bdda-45a7-a51f-032afd1ae41b", "code": "USD", "name": "US Dollar" }, "cash": 250.75, "buying_power": 250.75 } ],
+    "positions": [
+      { "symbol": { "id": "p1", "symbol": { "id": "us-mu-0001", "symbol": "MU", "raw_symbol": "MU", "description": "Micron Technology Inc", "currency": { "code": "USD" }, "type": { "code": "cs", "description": "Common Stock" }, "figi_code": "BBG000C5Z1S3" }, "description": "Micron Technology Inc" }, "units": 3, "price": 100, "open_pnl": 60, "average_purchase_price": 80, "fractional_units": 0, "currency": { "code": "USD" } },
+      { "symbol": { "id": "p2", "symbol": { "id": "us-ko-0001", "symbol": "KO", "raw_symbol": "KO", "description": "Coca-Cola Co", "currency": { "code": "USD" }, "type": { "code": "cs" } } }, "units": 20, "price": 70, "average_purchase_price": 60, "currency": { "code": "USD" } },
+      { "symbol": { "id": "p3", "symbol": { "id": "us-voo-0001", "symbol": "VOO", "raw_symbol": "VOO", "description": "Vanguard S&P 500 ETF", "currency": { "code": "USD" }, "type": { "code": "et" } } }, "units": 1.5, "price": 500, "average_purchase_price": null, "currency": { "code": "USD" } },
+      { "symbol": { "id": "p4", "symbol": { "id": "crypto-btc", "symbol": "BTC", "raw_symbol": "BTC", "description": "Bitcoin", "currency": { "code": "USD" }, "type": { "code": "crypto" } } }, "units": 0.005, "price": 60000, "average_purchase_price": 40000, "currency": { "code": "USD" } },
+      { "symbol": { "id": "p5", "symbol": { "id": "us-xyz-0001", "symbol": "XYZ", "description": "Block Inc", "currency": { "code": "USD" }, "type": { "code": "cs" } } }, "units": 0, "price": 70, "average_purchase_price": 65, "currency": { "code": "USD" } }
+    ],
+    "option_positions": [
+      { "symbol": { "id": "o1", "option_symbol": { "id": "opt-aapl-1", "ticker": "AAPL  270115C00300000", "option_type": "CALL", "strike_price": 300, "expiration_date": "2027-01-15", "is_mini_option": false, "underlying_symbol": { "symbol": "AAPL" } } }, "units": 1, "price": 3.2, "average_purchase_price": 250, "currency": { "code": "USD" } }
+    ]
+  },
+  {
+    "account": { "id": "0c5a2f36-4a0b-4c1d-9b8e-2b1e5d3f7a10", "brokerage_authorization": "87b24961-b51e-4db8-9226-f198f6518a89", "name": "Robinhood Roth IRA", "number": "R11122233", "institution_name": "Robinhood", "balance": { "total": { "amount": 1500, "currency": "USD" } }, "meta": { "type": "Roth IRA" } },
+    "balances": [ { "currency": { "code": "USD" }, "cash": 0 } ],
+    "positions": [
+      { "symbol": { "id": "p6", "symbol": { "id": "us-rivn-0001", "symbol": "RIVN", "description": "Rivian Automotive Inc", "currency": { "code": "USD" }, "type": { "code": "cs" } } }, "units": 50, "price": 12, "average_purchase_price": 20, "currency": { "code": "USD" } },
+      { "symbol": { "id": "p7", "symbol": { "id": "us-brkb-0001", "symbol": "BRK.B", "description": "Berkshire Hathaway Inc Class B", "currency": { "code": "USD" }, "type": { "code": "cs" } } }, "units": 2, "price": 450, "average_purchase_price": 400, "currency": { "code": "USD" } }
+    ],
+    "option_positions": []
+  },
+  {
+    "account": { "id": "5d1e9e2a-7b8c-4f3a-9d2e-6a7b8c9d0e1f", "brokerage_authorization": "c2e4f6a8-1b3d-4e5f-8a9b-0c1d2e3f4a5b", "name": "Wealthsimple TFSA", "number": "WS-0099-7788", "institution_name": "Wealthsimple Trade", "balance": { "total": { "amount": 1800, "currency": "CAD" } }, "meta": { "type": "TFSA" } },
+    "balances": [ { "currency": { "code": "CAD" }, "cash": 500 } ],
+    "positions": [
+      { "symbol": { "id": "p8", "symbol": { "id": "ca-vfv-0001", "symbol": "VFV.TO", "description": "Vanguard S&P 500 Index ETF", "currency": { "code": "CAD" }, "type": { "code": "et" } } }, "units": 10, "price": 130, "average_purchase_price": 100, "currency": { "code": "CAD" } }
+    ],
+    "option_positions": null
+  }
+]

@@ -1,0 +1,80 @@
+---
+import { persona } from '../data/persona.ts';
+import { renderCoverage } from '../lib/coverage-render.ts';
+const d = persona.defaults;
+const initial = renderCoverage(d);
+const money = (n: number) => '$' + n.toLocaleString('en-US');
+---
+<money-demo class="md">
+  <div class="md-persona">
+    <span class="md-avatar" aria-hidden="true">{persona.name[0]}</span>
+    <div>
+      <p class="md-name">{persona.name} <span class="badge">Sample persona</span></p>
+      <p class="small muted">{persona.blurb}</p>
+    </div>
+  </div>
+  <div class="md-grid">
+    <form class="md-controls" onsubmit="return false" aria-label="Try different numbers">
+      <label>
+        <span>Cash in checking + savings <output data-for="cash">{money(d.cash)}</output></span>
+        <input type="range" name="cash" min="0" max="1500" step="10" value={d.cash} />
+      </label>
+      <label>
+        <span>Card statement balance <output data-for="statement">{money(d.statement)}</output></span>
+        <input type="range" name="statement" min="50" max="1500" step="10" value={d.statement} />
+      </label>
+      <label>
+        <span>Everyday spending <output data-for="dailySpend">{money(d.dailySpend)}/day</output></span>
+        <input type="range" name="dailySpend" min="0" max="40" step="1" value={d.dailySpend} />
+      </label>
+      <label class="md-check">
+        <input type="checkbox" name="countPending" checked={d.countPending} />
+        <span>Count pay for {persona.pendingHours} logged hours that aren’t submitted yet</span>
+      </label>
+      <p class="small muted md-income">Income: café shifts at $16/hr (paid every other Friday) and chem tutoring at $35/session.</p>
+    </form>
+    <div class="md-out" data-out set:html={initial} />
+  </div>
+</money-demo>
+
+<script>
+  import '../scripts/money-demo.ts';
+</script>
+
+<style is:global>
+  .md { display: block; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 20px; }
+  .md-persona { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 16px; margin-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .md-persona p { margin: 0; }
+  .md-avatar { flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; }
+  .md-name { font-weight: 700; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .md-grid { display: grid; gap: 24px; }
+  @media (min-width: 860px) { .md-grid { grid-template-columns: 0.9fr 1.1fr; } }
+  .md-controls { display: grid; gap: 16px; align-content: start; }
+  .md-controls label { display: grid; gap: 6px; font-size: 0.93rem; }
+  .md-controls label > span { display: flex; justify-content: space-between; gap: 8px; }
+  .md-controls output { font-family: var(--font-mono); font-weight: 600; }
+  .md-check { grid-template-columns: auto 1fr !important; align-items: start; }
+  .md-check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--accent); }
+  .md-income { margin: 0; }
+  .md-status { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 8px; border: 1.5px solid; }
+  .md-status p { margin: 0; }
+  .md-ok { border-color: var(--positive); background: color-mix(in srgb, var(--positive) 12%, var(--surface)); }
+  .md-amber { border-color: var(--warn); background: var(--warn-soft); }
+  .md-red { border-color: var(--negative); background: color-mix(in srgb, var(--negative) 12%, var(--surface)); }
+  .md-icon { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.1rem; color: var(--surface); }
+  .md-ok .md-icon { background: var(--positive); }
+  .md-amber .md-icon { background: var(--warn); }
+  .md-red .md-icon { background: var(--negative); }
+  .md-title { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; line-height: 1.2; }
+  .md-sub { font-size: 0.88rem; color: var(--muted); }
+  .md-steps { list-style: none; padding: 0; margin: 16px 0 12px; font-size: 0.93rem; }
+  .md-steps li { display: grid; grid-template-columns: 18px 1fr auto; gap: 8px; align-items: baseline; padding: 8px 0; border-bottom: 1px dashed var(--rule); }
+  .md-op { font-family: var(--font-mono); color: var(--muted); }
+  .md-amt { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .md-total { border-bottom: 0 !important; border-top: 2px solid var(--ink); font-weight: 700; }
+  .md-chip { display: inline-block; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; padding: 1px 5px; border-radius: 3px; vertical-align: 2px; margin-left: 4px; border: 1px solid var(--rule); color: var(--muted); }
+  .md-pending { color: var(--warn); border-color: var(--warn); }
+  .md-projected { color: var(--accent); border-color: var(--accent); }
+  .md-nudge { font-size: 0.92rem; margin: 0 0 8px; }
+  .md-asof { color: var(--muted); margin: 8px 0 0; }
+</style>

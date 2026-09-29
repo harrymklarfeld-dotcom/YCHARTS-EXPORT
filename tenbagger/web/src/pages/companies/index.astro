@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import SampleBanner from '../../components/SampleBanner.astro';
+import { companies, shortName, tickerSlug } from '../../lib/data.ts';
+import { fmt, cents } from '../../lib/company.ts';
+const all = companies();
+const sectors = [...new Set(all.map((c) => c.sector))].sort();
+---
+<Base title="Companies explained in plain English" description={`Plain-English breakdowns of ${all.length} public companies from their SEC filings: margins, cash, debt and history.`}>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Companies</p>
+      <h1>Every company, explained in plain English.</h1>
+      <p class="lede">Margins, cash, debt and ten years of history from the annual report, with every term explained.</p>
+      <SampleBanner />
+    </header>
+    {all.length === 0 && <p class="muted">Company data isn’t built yet. Run the pipeline to create <code>data/companies.json</code>.</p>}
+    {sectors.map((s) => (
+      <section class="sector">
+        <h2>{s}</h2>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th scope="col">Company</th><th scope="col" class="n">Revenue</th><th scope="col" class="n">Net margin</th><th scope="col">In plain English</th></tr></thead>
+            <tbody>
+              {all.filter((c) => c.sector === s).map((c) => (
+                <tr>
+                  <td><a href={`/companies/${tickerSlug(c.ticker)}/`}><span class="ticker">{c.ticker}</span> {shortName(c.name)}</a></td>
+                  <td class="n">{fmt('revenue', c.fundamentals.revenue)}</td>
+                  <td class="n">{fmt('net_margin', c.metrics.net_margin)}</td>
+                  <td class="plain-cell">{typeof c.metrics.net_margin === 'number' ? `${c.metrics.net_margin >= 0 ? 'Keeps' : 'Loses'} ${cents(c.metrics.net_margin)} of profit per sales dollar` : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    ))}
+  </div>
+</Base>
+<style>
+  .sector { margin-bottom: 40px; }
+  .sector h2 { font-size: 1.5rem; }
+  .plain-cell { white-space: normal !important; color: var(--muted); min-width: 220px; }
+  .wrap { padding-bottom: 40px; }
+</style>

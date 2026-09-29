@@ -1,0 +1,6 @@
+# fixture: vendor-style price file (fake numbers for tests)
+ticker,price,price_date,is_sample
+MU,101.5,2026-09-24,false
+AAPL,250.25,2026-09-24,false
+BAD,notanumber,2026-09-24,false
+NEG,-3,2026-09-24,false

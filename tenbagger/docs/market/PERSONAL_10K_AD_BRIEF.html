@@ -1,0 +1,435 @@
+<title>Personal 10-K Market Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #F5F1E8;
+    --surface: #FFFDF8;
+    --surface2: #ECE6D8;
+    --ink: #15171A;
+    --muted: #5B5E63;
+    --rule: #D6CEBD;
+    --accent: #0E5A3A;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #DCEBDD;
+    --signal: #B8401A;
+    --positive: #11703F;
+    --negative: #B3261E;
+    --warn: #8A5A00;
+    --warn-soft: #F7E7C4;
+    --shadow: rgba(21,23,26,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1211;
+      --surface: #171B1A;
+      --surface2: #1F2523;
+      --ink: #ECE8DF;
+      --muted: #A3A7A2;
+      --rule: #2E3532;
+      --accent: #4CC38A;
+      --accent-ink: #0B120E;
+      --accent-soft: #16332A;
+      --signal: #E2703A;
+      --positive: #4CC38A;
+      --negative: #E5534B;
+      --warn: #D9A441;
+      --warn-soft: #3A2E12;
+      --shadow: rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1211;
+    --surface: #171B1A;
+    --surface2: #1F2523;
+    --ink: #ECE8DF;
+    --muted: #A3A7A2;
+    --rule: #2E3532;
+    --accent: #4CC38A;
+    --accent-ink: #0B120E;
+    --accent-soft: #16332A;
+    --signal: #E2703A;
+    --positive: #4CC38A;
+    --negative: #E5534B;
+    --warn: #D9A441;
+    --warn-soft: #3A2E12;
+    --shadow: rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 80px; }
+  h1, h2, h3, .display { font-family: 'Space Grotesk', 'Inter', sans-serif; letter-spacing: -0.01em; }
+  .mono { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.01em; }
+
+  /* ---------- top bar ---------- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .logo { width: 34px; height: 34px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Space Grotesk',sans-serif; font-size: 14px; flex: none; }
+  .brand-name { font-weight: 700; font-size: 15px; }
+  .brand-sub { color: var(--muted); font-size: 12px; }
+  .theme-toggle { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .theme-toggle:hover { border-color: var(--accent); }
+
+  .tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 30px 0 18px; border-bottom: 1px dashed var(--rule); margin-bottom: 26px; }
+  .hero h1 { font-size: clamp(28px, 6vw, 46px); line-height: 1.04; margin: 14px 0 12px; }
+  .hero h1 .hl { color: var(--signal); }
+  .hero .sub { font-size: clamp(15px, 2.4vw, 18px); color: var(--muted); max-width: 640px; line-height: 1.5; }
+
+  /* ---------- section headers ---------- */
+  .section { margin: 40px 0; }
+  .section-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .section-head .num { font-family: 'IBM Plex Mono', monospace; color: var(--signal); font-size: 13px; }
+  .section-head h2 { font-size: clamp(19px, 3vw, 24px); margin: 0; }
+  .section-head .desc { color: var(--muted); font-size: 13px; }
+
+  /* ---------- personas ---------- */
+  .personas { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+  .persona { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 18px; box-shadow: 0 2px 10px var(--shadow); }
+  .persona .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 10px; }
+  .persona h3 { font-size: 16px; margin: 0 0 4px; }
+  .persona .role { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  .persona .stat { font-size: 13px; margin: 6px 0; padding-left: 14px; border-left: 2px solid var(--accent); line-height: 1.4; }
+  .persona .stat b { color: var(--ink); }
+  .persona .stat sup { color: var(--muted); font-size: 10px; }
+
+  /* ---------- problem stats ---------- */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+  .stat-card .big { font-family: 'Space Grotesk', sans-serif; font-size: 30px; font-weight: 700; color: var(--signal); line-height: 1; }
+  .stat-card .lbl { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+  .stat-card sup { font-size: 10px; }
+
+  /* ---------- competitor strip ---------- */
+  .strip-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 6px 2px 16px; scrollbar-width: thin; }
+  .comp-card { flex: 0 0 168px; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 14px; }
+  .comp-card .name { font-weight: 700; font-size: 13px; margin-bottom: 8px; min-height: 34px; }
+  .meter { height: 8px; border-radius: 99px; background: var(--surface2); overflow: hidden; margin-bottom: 6px; }
+  .meter i { display: block; height: 100%; background: var(--muted); border-radius: 99px; }
+  .comp-card .score { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); }
+  .comp-card .score b { color: var(--ink); font-size: 15px; }
+  .comp-card.us { border: 2px solid var(--accent); background: var(--accent-soft); }
+  .comp-card.us .meter i { background: var(--accent); }
+  .comp-card.us .score b { color: var(--accent); }
+
+  /* ---------- what only we do ---------- */
+  .onlyus { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 14px; }
+  .onlyus .card { background: var(--ink); color: var(--bg); border-radius: 14px; padding: 18px; }
+  :root[data-theme="dark"] .onlyus .card, .onlyus .card { background: var(--accent); color: var(--accent-ink); }
+  .onlyus .card h3 { font-size: 15px; margin: 0 0 8px; }
+  .onlyus .card p { font-size: 13px; line-height: 1.5; margin: 0; opacity: 0.92; }
+
+  /* ---------- ad concepts ---------- */
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); padding: 8px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .tab-btn.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .beats { display: flex; flex-direction: column; gap: 10px; }
+  .beat { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; }
+  .beat .n { font-family: 'IBM Plex Mono', monospace; color: var(--signal); font-weight: 700; }
+  .beat .t { font-size: 13.5px; line-height: 1.5; }
+  .beat .t .v { color: var(--muted); font-size: 11.5px; display: block; margin-top: 2px; }
+
+  .headline-list { display: flex; flex-direction: column; gap: 10px; }
+  .headline-row { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 14px 16px; }
+  .headline-row .h { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; }
+  .headline-row .s { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+
+  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .screen { background: var(--surface); border: 1px solid var(--rule); border-radius: 16px; padding: 14px; text-align: center; }
+  .screen .phone { background: var(--surface2); border-radius: 10px; height: 90px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 10px; }
+  .screen .cap { font-size: 12.5px; font-weight: 600; line-height: 1.4; }
+
+  .compliance-note { background: var(--warn-soft); border: 1px solid var(--warn); color: var(--ink); border-radius: 10px; padding: 12px 14px; font-size: 12px; line-height: 1.5; margin-top: 14px; }
+
+  /* ---------- proof / footnotes ---------- */
+  .proof { font-size: 11.5px; color: var(--muted); line-height: 1.8; border-top: 1px solid var(--rule); padding-top: 18px; margin-top: 46px; }
+  .proof a { color: var(--accent); text-decoration: none; }
+  .proof a:hover { text-decoration: underline; }
+  .proof .n { font-family: 'IBM Plex Mono', monospace; color: var(--ink); margin-right: 4px; }
+
+  footer.foot { text-align: center; color: var(--muted); font-size: 11px; margin-top: 40px; }
+
+  @media (max-width: 480px) {
+    .wrap { padding: 20px 14px 60px; }
+    .comp-card { flex: 0 0 140px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">TB</div>
+      <div>
+        <div class="brand-name">Tenbagger — Personal 10-K</div>
+        <div class="brand-sub">Market brief · prepared 2026-09-27</div>
+      </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">Dark mode</button>
+  </div>
+
+  <div class="hero">
+    <span class="tag">Internal · founder brief</span>
+    <h1>Read your own money<br>like a <span class="hl">10-K</span>, not a lecture.</h1>
+    <p class="sub">Every finance app can show you a number. None of them taught you what the number means on a
+      real company first — then let you watch it show up on your own bank account. That's the gap. This page
+      is the whole competitive picture at a glance, plus three ad concepts to test it.</p>
+  </div>
+
+  <!-- ================= PERSONAS ================= -->
+  <div class="section">
+    <div class="section-head">
+      <span class="num">01</span>
+      <h2>Who this is for</h2>
+      <span class="desc">— three personas, each with a sourced stat</span>
+    </div>
+    <div class="personas">
+      <div class="persona">
+        <div class="avatar">🎓</div>
+        <h3>Sophomore Sam</h3>
+        <div class="role">Campus job + tutoring gigs, first credit card</div>
+        <div class="stat">About <b>70%</b> of college students work while enrolled<sup>1</sup></div>
+        <div class="stat"><b>57%</b> of college students carry a credit card, avg. balance <b>$1,423</b><sup>2</sup></div>
+      </div>
+      <div class="persona">
+        <div class="avatar">💼</div>
+        <h3>First-Job Emma</h3>
+        <div class="role">Recent grad, first Roth IRA, wants to feel "on track"</div>
+        <div class="stat">Gen Z IRA balances at Fidelity grew <b>+25% YoY</b> in Q4 2025<sup>3</sup></div>
+        <div class="stat"><b>56%</b> of Gen Z say they own investments<sup>4</sup></div>
+      </div>
+      <div class="persona">
+        <div class="avatar">😮‍💨</div>
+        <h3>Anxious Alex</h3>
+        <div class="role">Money-stressed, avoids looking at balances</div>
+        <div class="stat"><b>59%</b> of Gen Z feel stressed or anxious about money<sup>5</sup></div>
+        <div class="stat">Only <b>63%</b> of adults could cover a $400 expense in cash<sup>6</sup></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PROBLEM IN NUMBERS ================= -->
+  <div class="section">
+    <div class="section-head">
+      <span class="num">02</span>
+      <h2>The problem, in numbers</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="big">30%</div><div class="lbl">of US adults have income that varies month to month<sup>7</sup></div></div>
+      <div class="stat-card"><div class="big">45%</div><div class="lbl">of cardholders carried a balance in the past year<sup>8</sup></div></div>
+      <div class="stat-card"><div class="big">$95–199</div><div class="lbl">/yr is what the good forecasting apps (Monarch Plus, YNAB) cost<sup>9</sup></div></div>
+      <div class="stat-card"><div class="big">$0</div><div class="lbl">finance-education apps that connect a company lesson to your own numbers — found: none<sup>10</sup></div></div>
+      <div class="stat-card"><div class="big">500M</div><div class="lbl">shares of Spotify Wrapped on day one, 2025 — proof a personal annual recap goes viral<sup>11</sup></div></div>
+    </div>
+  </div>
+
+  <!-- ================= COMPETITOR LANDSCAPE ================= -->
+  <div class="section">
+    <div class="section-head">
+      <span class="num">03</span>
+      <h2>Competitor landscape</h2>
+      <span class="desc">— closeness to a full "Personal 10-K" (statements + grades + company analogies), 0–100. Scroll →</span>
+    </div>
+    <div class="strip-scroll" id="stripScroll">
+      <div class="comp-card us">
+        <div class="name">Tenbagger<br>Personal 10-K</div>
+        <div class="meter"><i style="width:100%"></i></div>
+        <div class="score"><b>100</b> target</div>
+      </div>
+      <div class="comp-card">
+        <div class="name">PersonalCFO.money</div>
+        <div class="meter"><i style="width:65%"></i></div>
+        <div class="score"><b>65</b> / 100<sup>12</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Empower Dashboard</div>
+        <div class="meter"><i style="width:45%"></i></div>
+        <div class="score"><b>45</b> / 100<sup>13</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Credit Karma<br>Report Card</div>
+        <div class="meter"><i style="width:40%"></i></div>
+        <div class="score"><b>40</b> / 100<sup>14</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">PocketSmith</div>
+        <div class="meter"><i style="width:40%"></i></div>
+        <div class="score"><b>40</b> / 100<sup>15</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Copilot<br>Year in Review</div>
+        <div class="meter"><i style="width:35%"></i></div>
+        <div class="score"><b>35</b> / 100<sup>16</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Kubera</div>
+        <div class="meter"><i style="width:35%"></i></div>
+        <div class="score"><b>35</b> / 100<sup>17</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Monzo<br>Year in Monzo</div>
+        <div class="meter"><i style="width:30%"></i></div>
+        <div class="score"><b>30</b> / 100<sup>18</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Monarch Plus</div>
+        <div class="meter"><i style="width:30%"></i></div>
+        <div class="score"><b>30</b> / 100<sup>19</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Tiller</div>
+        <div class="meter"><i style="width:30%"></i></div>
+        <div class="score"><b>30</b> / 100<sup>20</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Origin</div>
+        <div class="meter"><i style="width:20%"></i></div>
+        <div class="score"><b>20</b> / 100<sup>21</sup></div>
+      </div>
+      <div class="comp-card">
+        <div class="name">Cleo</div>
+        <div class="meter"><i style="width:20%"></i></div>
+        <div class="score"><b>20</b> / 100<sup>22</sup></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= WHAT ONLY WE DO ================= -->
+  <div class="section">
+    <div class="section-head">
+      <span class="num">04</span>
+      <h2>What only we do</h2>
+    </div>
+    <div class="onlyus">
+      <div class="card">
+        <h3>Teach it on a real company, then unlock it on you</h3>
+        <p>Learn Costco's current ratio from its actual 10-K. The lesson instantly unlocks the same ratio,
+          computed from your own numbers. No competitor found pairs company education with a personal metric.<sup>23</sup></p>
+      </div>
+      <div class="card">
+        <h3>All five report pieces, one artifact, every month</h3>
+        <p>Income statement + balance sheet + cash-flow summary + a 6-category letter-grade scorecard +
+          company-benchmark captions. Every competitor we found ships at most two of these.<sup>24</sup></p>
+      </div>
+      <div class="card">
+        <h3>A Wrapped-style share card that hides the numbers</h3>
+        <p>Monzo and Spotify's recaps share the actual figures. Ours shares ratios and grades only — never a
+          balance, never a return — by design, not by accident.<sup>25</sup></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= AD CONCEPTS ================= -->
+  <div class="section">
+    <div class="section-head">
+      <span class="num">05</span>
+      <h2>Three ad concepts</h2>
+      <span class="desc">— education, not advice. No shame. No return promises.</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('reels',this)">TikTok / Reels script</button>
+      <button class="tab-btn" onclick="showTab('static',this)">Static ad headlines</button>
+      <button class="tab-btn" onclick="showTab('store',this)">App Store captions</button>
+    </div>
+
+    <div class="tab-panel active" id="reels">
+      <div class="beats">
+        <div class="beat"><div class="n">1</div><div class="t">Open on a phone screen: a company's real 10-K, current ratio highlighted. "This is how Costco checks if it can pay its bills." <span class="v">Hook: real filing, not a stock tip.</span></div></div>
+        <div class="beat"><div class="n">2</div><div class="t">Cut to the same screen shape, but it's <i>your</i> numbers. "Same math. Your accounts." <span class="v">The reveal: the lesson becomes personal.</span></div></div>
+        <div class="beat"><div class="n">3</div><div class="t">"You're not bad with money. You just never got a report card for it." <span class="v">Shame-free reframe, not a judgment.</span></div></div>
+        <div class="beat"><div class="n">4</div><div class="t">Quick flash of the letter-grade scorecard — neutral tone, an arrow pointing to one thing to learn next, no red panic color. <span class="v">Shows the artifact, not a balance.</span></div></div>
+        <div class="beat"><div class="n">5</div><div class="t">End card: the redacted share card ("Liquidity: B+ · Learn what that means") with the line "Never shows your balance. Ever." <span class="v">CTA: "Get your Personal 10-K — free."</span></div></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="static">
+      <div class="headline-list">
+        <div class="headline-row"><div class="h">Your money has a 10-K. You just haven't read it.</div><div class="s">Learn the metric on a real company. See it on your own numbers, free.</div></div>
+        <div class="headline-row"><div class="h">A report card for your finances, not a lecture.</div><div class="s">Six categories, plain-English reasons, zero shame.</div></div>
+        <div class="headline-row"><div class="h">Same ratio Costco uses. Your accounts.</div><div class="s">Every lesson unlocks a number about you — not a stock pick, ever.</div></div>
+        <div class="headline-row"><div class="h">Share your grade. Never your balance.</div><div class="s">A Wrapped-style recap that keeps your numbers private, always.</div></div>
+        <div class="headline-row"><div class="h">Learn to read a filing. Then read yourself.</div><div class="s">Education first. No advice, no ratings, no "buy" buttons.</div></div>
+      </div>
+      <div class="compliance-note"><b>Compliance check:</b> every line above describes or teaches; none tells anyone what to buy, sell or hold, promises a return, or shames a low grade. Grades describe categories (liquidity, debt, spending), never "you should."</div>
+    </div>
+
+    <div class="tab-panel" id="store">
+      <div class="screens">
+        <div class="screen"><div class="phone">📊</div><div class="cap">"See your finances laid out like a 10-K — income, balance sheet, cash flow."</div></div>
+        <div class="screen"><div class="phone">🏷️</div><div class="cap">"A plain-English grade on 6 categories. No shame, just a reason for each one."</div></div>
+        <div class="screen"><div class="phone">🔗</div><div class="cap">"Learn a ratio on a real company. Watch it unlock on your own numbers."</div></div>
+        <div class="screen"><div class="phone">🎬</div><div class="cap">"A Wrapped-style recap of your semester — grades and ratios only, never a balance."</div></div>
+        <div class="screen"><div class="phone">📚</div><div class="cap">"Built on real SEC filings. Educational only — never a buy or sell signal."</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PROOF POINTS / SOURCES ================= -->
+  <div class="proof">
+    <div><span class="n">1</span>Georgetown CEW, <a href="https://cew.georgetown.edu/cew-reports/workinglearners/" target="_blank" rel="noopener">Learning While Earning</a> (2015) — [S], dated.</div>
+    <div><span class="n">2</span>Sallie Mae/Ipsos, <a href="https://files.eric.ed.gov/fulltext/ED594429.pdf" target="_blank" rel="noopener">Majoring in Money 2019</a> — [P], 2019 figures.</div>
+    <div><span class="n">3</span><a href="https://about.fidelity.com/data-and-insights/q4-2025-retirement-analysis" target="_blank" rel="noopener">Fidelity Q4 2025 Retirement Analysis</a> — [P].</div>
+    <div><span class="n">4</span>FINRA Foundation / CFA Institute, <a href="https://www.finra.org/media-center/newsreleases/2023/finra-foundation-cfa-institute-research-focuses-gen-z-investors" target="_blank" rel="noopener">Gen Z Investors, 2023-05-24</a> — [P].</div>
+    <div><span class="n">5</span><a href="https://finance.yahoo.com/news/5-reasons-gen-z-feels-220052912.html" target="_blank" rel="noopener">Yahoo Finance, "5 reasons Gen Z feels most financial stress," 2025</a> — [S].</div>
+    <div><span class="n">6</span>Federal Reserve, <a href="https://www.federalreserve.gov/newsevents/pressreleases/other20260513a.htm" target="_blank" rel="noopener">SHED 2025 press release, 2026-05-13</a> — [P].</div>
+    <div><span class="n">7</span>Federal Reserve, <a href="https://www.federalreserve.gov/publications/2026-economic-well-being-of-us-households-in-2025-income-and-expenses.htm" target="_blank" rel="noopener">SHED 2025, Income and Expenses</a> — [P].</div>
+    <div><span class="n">8</span>Motley Fool research, attributed to SHED 2025 — <a href="https://www.fool.com/money/research/credit-card-ownership-statistics/" target="_blank" rel="noopener">fool.com</a> — [S], verify against SHED "Banking and Credit."</div>
+    <div><span class="n">9</span>Monarch and YNAB pricing pages, per <code>MONEY_HUB_RESEARCH.md</code> §1 — [P].</div>
+    <div><span class="n">10</span>Search performed 2026-09-27 for finance-education apps pairing company metrics with personal numbers; no on-point result found — [U], absence of evidence.</div>
+    <div><span class="n">11</span>Cited via <code>DESIGN_PSYCHOLOGY.md</code>; musicbusinessworldwide.com, 2025-12 — [S].</div>
+    <div><span class="n">12</span><a href="https://personalcfo.money/" target="_blank" rel="noopener">personalcfo.money</a> — [U], description via search snippet, WebFetch blocked; no verified user numbers.</div>
+    <div><span class="n">13</span><a href="https://choosefi.com/review/empower-review-the-ultimate-net-worth-tracker" target="_blank" rel="noopener">ChooseFI review, 2026</a> — [U].</div>
+    <div><span class="n">14</span>Credit Karma Credit Factors Report Card, described via aggregated review snippets — [U]; Net Worth product per <a href="https://www.creditkarma.com/about/releases/credit-karma-aims-to-help-millions-of-americans-know-grow-and-protect-their-net-worth" target="_blank" rel="noopener">Credit Karma release, 2023-03-09</a> — [P].</div>
+    <div><span class="n">15</span><a href="https://thecfoclub.com/tools/pocketsmith-review/" target="_blank" rel="noopener">The CFO Club, PocketSmith review, 2026</a> — [U].</div>
+    <div><span class="n">16</span><a href="https://help.copilot.money/en/articles/10310024-month-and-year-in-review" target="_blank" rel="noopener">Copilot help center</a> — [U], WebFetch blocked, title/description via search snippet.</div>
+    <div><span class="n">17</span><a href="https://thecollegeinvestor.com/36895/kubera-review/" target="_blank" rel="noopener">The College Investor, Kubera review, 2026</a> — [U].</div>
+    <div><span class="n">18</span><a href="https://monzo.com/help/year-in-monzo-2025" target="_blank" rel="noopener">Monzo, Year in Monzo 2025</a> — [P].</div>
+    <div><span class="n">19</span><a href="https://www.monarch.com/blog/monarch-plus" target="_blank" rel="noopener">Monarch Plus blog</a>, per MONEY_HUB_RESEARCH — [P].</div>
+    <div><span class="n">20</span><a href="https://sheetlink.app/tiller-money-pricing-2026" target="_blank" rel="noopener">Tiller pricing, 2026</a> — [U].</div>
+    <div><span class="n">21</span><a href="https://www.businesswire.com/news/home/20250909759834/en/Origin-Unveils-First-AI-Financial-Advisor-Regulated-by-the-SEC-Outsmarts-Every-Leading-AI-Model-on-the-CFP-Exam" target="_blank" rel="noopener">BusinessWire, 2025-09-09</a> — [P].</div>
+    <div><span class="n">22</span><a href="https://www.ftc.gov/legal-library/browse/cases-proceedings/cleo-ai-inc-ftc-v" target="_blank" rel="noopener">FTC v. Cleo AI, case page</a> — [P], $17M settlement 2025-03-27.</div>
+    <div><span class="n">23</span>Search performed 2026-09-27; see full detail and scoring methodology in <code>PERSONAL_10K.md</code> in this folder.</div>
+    <div><span class="n">24</span>Comparison table, <code>PERSONAL_10K.md</code> §1, this folder.</div>
+    <div><span class="n">25</span>Design rationale, <code>DESIGN_PSYCHOLOGY.md</code> §2.1 and §8 (Wrapped-effect + shame-free rules).</div>
+  </div>
+
+  <footer class="foot">Tenbagger internal market brief · not for external distribution · educational product, not financial advice</footer>
+</div>
+
+<script>
+  function toggleTheme() {
+    var root = document.documentElement;
+    var btn = document.getElementById('themeBtn');
+    if (root.getAttribute('data-theme') === 'dark') {
+      root.setAttribute('data-theme', 'light');
+      btn.textContent = 'Dark mode';
+    } else {
+      root.setAttribute('data-theme', 'dark');
+      btn.textContent = 'Light mode';
+    }
+  }
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>

@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenbagger Ledger</title>
+<meta name="description" content="Direction A: an editorial, financial-paper prototype of the Tenbagger app and landing page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F2EA; --paper: #FFFDF8; --paper-alt: #ECE7DB; --ink: #14213D; --ink-soft: #5B6475; --rule: #DDD6C6; --rule-strong: #14213D;
+  --primary: #0B7A57; --primary-ink: #FFFFFF; --primary-soft: #D5EDE3; --accent: #A8690F; --accent-soft: #FBEBC8;
+  --danger: #B8372F; --danger-soft: #F8DAD6; --locked: #B4AC9C; --chart-fill: rgba(11,122,87,.10);
+  --serif: "Newsreader", Georgia, "Times New Roman", serif; --sans: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1522; --paper: #151E2F; --paper-alt: #1C2740; --ink: #ECEFF5; --ink-soft: #9AA5B9; --rule: #2A3650; --rule-strong: #C9D1DF;
+    --primary: #34C28E; --primary-ink: #06221A; --primary-soft: #133A2E; --accent: #E9B04B; --accent-soft: #3A2E12;
+    --danger: #FF7A70; --danger-soft: #3E1B1A; --locked: #4A5670; --chart-fill: rgba(52,194,142,.14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1522; --paper: #151E2F; --paper-alt: #1C2740; --ink: #ECEFF5; --ink-soft: #9AA5B9; --rule: #2A3650; --rule-strong: #C9D1DF;
+  --primary: #34C28E; --primary-ink: #06221A; --primary-soft: #133A2E; --accent: #E9B04B; --accent-soft: #3A2E12;
+  --danger: #FF7A70; --danger-soft: #3E1B1A; --locked: #4A5670; --chart-fill: rgba(52,194,142,.14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); font-feature-settings: "tnum" 1, "lnum" 1; }
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.kicker { font: 600 11px/1.2 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+
+/* Direction label */
+.dir { display: flex; gap: 16px; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--rule); background: var(--paper); }
+.dir b { font: 600 11px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--primary); }
+.dir p { margin: 2px 0 0; font-size: 13px; color: var(--ink-soft); max-width: 110ch; }
+.dir-tools { display: flex; gap: 8px; flex-shrink: 0; }
+.chipbtn { border: 1px solid var(--rule); background: transparent; border-radius: 999px; padding: 6px 12px; font-size: 13px; text-decoration: none; white-space: nowrap; }
+
+/* Stage */
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 56px; max-width: 1240px; margin: 0 auto; padding: 32px 24px 64px; align-items: start; }
+.device { position: sticky; top: 20px; }
+.phone { width: 390px; height: 760px; background: var(--bg); border: 1px solid var(--rule); border-radius: 36px; box-shadow: 0 0 0 8px var(--paper), 0 0 0 9px var(--rule), 0 30px 60px -30px rgba(20,33,61,.35); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+#screen { flex: 1; overflow-y: auto; overflow-x: hidden; }
+.device-cap { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 22px; }
+
+/* Tab bar */
+#tabbar { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule); background: var(--paper); }
+#tabbar button { border: 0; background: none; padding: 9px 0 11px; display: grid; justify-items: center; gap: 3px; font-size: 11px; font-weight: 600; color: var(--ink-soft); }
+#tabbar button[aria-current="true"] { color: var(--primary); }
+#tabbar button[aria-current="true"] span { border-bottom: 2px solid var(--primary); }
+#tabbar svg { width: 22px; height: 22px; }
+
+/* App screens */
+.pad { padding: 18px 20px 28px; }
+.mast { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 8px; border-bottom: 3px double var(--rule-strong); }
+.word { font: 600 26px/1 var(--serif); letter-spacing: -.01em; }
+.word i { font-style: italic; color: var(--primary); font-weight: 500; }
+.mast-meta { font-size: 12px; color: var(--ink-soft); display: flex; gap: 12px; }
+.mast-meta strong { color: var(--ink); }
+.dateline { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); padding: 6px 0; border-bottom: 1px solid var(--rule); }
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; margin: 0; }
+.lead { margin: 18px 0 8px; padding: 16px; background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-md); }
+.lead h2 { font-size: 24px; line-height: 1.15; margin: 6px 0 4px; }
+.lead p { margin: 0 0 12px; color: var(--ink-soft); font-size: 14px; }
+.meter { height: 6px; background: var(--paper-alt); border-radius: 3px; overflow: hidden; margin: 10px 0 12px; }
+.meter i { display: block; height: 100%; background: var(--primary); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: var(--r-md); padding: 12px 18px; font-weight: 700; background: var(--primary); color: var(--primary-ink); box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); text-decoration: none; }
+.btn.block { width: 100%; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); box-shadow: none; }
+.btn:disabled { background: var(--paper-alt); color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
+.toc { margin-top: 22px; }
+.unit { padding: 14px 0 6px; border-top: 1px solid var(--rule-strong); }
+.unit h3 { font-size: 21px; margin: 4px 0 2px; }
+.unit > p { margin: 0 0 8px; font: italic 14px/1.4 var(--serif); color: var(--ink-soft); }
+.les { display: flex; align-items: baseline; gap: 8px; width: 100%; padding: 8px 0; border: 0; background: none; text-align: left; border-bottom: 1px dotted var(--rule); }
+.les .n { font-size: 12px; color: var(--ink-soft); width: 28px; flex-shrink: 0; }
+.les .t { flex: 1 1 auto; font-weight: 500; }
+.les .s { font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.les.done .s { color: var(--primary); }
+.les.cur { background: var(--primary-soft); margin: 2px -8px; padding: 10px 8px; width: calc(100% + 16px); border-radius: var(--r-sm); border-bottom: 0; }
+.les.cur .s { color: var(--primary); }
+.les.lock { color: var(--locked); cursor: default; }
+.fine { font-size: 11px; color: var(--ink-soft); margin-top: 18px; }
+
+/* Lesson */
+.lbar { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--rule); position: sticky; top: 0; background: var(--bg); z-index: 2; }
+.x { border: 0; background: none; padding: 4px; color: var(--ink-soft); display: grid; }
+.segs { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.segs i { height: 4px; background: var(--paper-alt); border-radius: 2px; }
+.segs i.on { background: var(--primary); }
+.hearts { font-size: 13px; font-weight: 700; color: var(--danger); display: flex; align-items: center; gap: 4px; }
+.qwrap { padding: 20px 20px 12px; }
+.prompt { font: 500 22px/1.3 var(--serif); margin: 8px 0 18px; }
+.opts { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.opt { display: flex; gap: 14px; align-items: center; padding: 14px 6px; border: 0; border-bottom: 1px solid var(--rule); background: none; text-align: left; font-size: 16px; font-weight: 500; }
+.opt .k { width: 26px; height: 26px; border: 1px solid var(--rule); border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--ink-soft); flex-shrink: 0; }
+.opt[aria-pressed="true"] { background: var(--paper); }
+.opt[aria-pressed="true"] .k { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.opt.right { background: var(--primary-soft); }
+.opt.right .k { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+.opt.wrong { background: var(--danger-soft); }
+.opt.wrong .k { background: var(--danger); border-color: var(--danger); color: #fff; }
+.lfoot { position: sticky; bottom: 0; padding: 14px 20px 18px; background: var(--bg); border-top: 1px solid var(--rule); }
+.note { border-left: 3px solid var(--primary); padding: 2px 0 2px 12px; margin-bottom: 14px; }
+.note.bad { border-color: var(--danger); }
+.note h3 { font-size: 20px; color: var(--primary); }
+.note.bad h3 { color: var(--danger); }
+.note p { margin: 4px 0 8px; font-size: 14px; }
+.src { display: inline-flex; gap: 6px; align-items: center; border: 1px solid var(--rule); background: var(--paper); border-radius: 999px; padding: 4px 10px; font-size: 12px; color: var(--ink-soft); }
+.src b { color: var(--ink); font-weight: 700; }
+.intro h1 { font-size: 30px; line-height: 1.1; margin: 8px 0 12px; }
+.intro p { font: 17px/1.55 var(--serif); margin: 0 0 12px; }
+.intro p:first-of-type::first-letter { font-size: 3.1em; float: left; line-height: .85; padding: 4px 6px 0 0; font-weight: 600; color: var(--primary); }
+.done-card { text-align: center; padding: 40px 24px; }
+.done-card .big { font: 600 64px/1 var(--serif); color: var(--primary); }
+.unlock { margin: 20px 0; text-align: left; padding: 14px; border: 1px dashed var(--accent); border-radius: var(--r-md); background: var(--accent-soft); font-size: 14px; }
+
+/* Screener */
+.seg { display: flex; border: 1px solid var(--rule-strong); border-radius: var(--r-sm); overflow: hidden; margin: 14px 0 10px; }
+.seg button { flex: 1; border: 0; background: none; padding: 8px 4px; font-size: 13px; font-weight: 600; }
+.seg button + button { border-left: 1px solid var(--rule-strong); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.rule { font: italic 15px/1.4 var(--serif); margin: 0 0 4px; }
+.count { font-size: 12px; color: var(--ink-soft); margin-bottom: 10px; }
+table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: right; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; padding: 6px 4px; border-bottom: 2px solid var(--rule-strong); }
+.tbl th:first-child, .tbl td:first-child { text-align: left; }
+.tbl th button { border: 0; background: none; padding: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+.tbl td { padding: 10px 4px; border-bottom: 1px solid var(--rule); text-align: right; }
+.tbl tr[data-act] { cursor: pointer; }
+.tbl tr[data-act]:hover td { background: var(--paper); }
+.tbl .tk { font-weight: 700; }
+.tbl .nm { display: block; font-size: 11px; color: var(--ink-soft); max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Company */
+.chips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px; scrollbar-width: none; }
+.chips button { border: 1px solid var(--rule); background: var(--paper); border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 600; }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.co-head h1 { font-size: 28px; line-height: 1.1; }
+.co-sub { color: var(--ink-soft); font-size: 13px; margin: 2px 0 10px; }
+.px { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.px strong { font-size: 28px; font-weight: 700; }
+.tag { font-size: 11px; font-weight: 600; background: var(--accent-soft); color: var(--accent); padding: 3px 8px; border-radius: 999px; }
+.chart { margin: 16px 0 6px; padding: 12px; background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-md); }
+.chart .seg { margin: 0 0 10px; border-color: var(--rule); }
+.chart .seg button + button { border-left-color: var(--rule); }
+.chart .seg button { font-size: 11px; padding: 6px 2px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .ln { fill: none; stroke: var(--primary); stroke-width: 2; }
+.chart .ar { fill: var(--chart-fill); }
+.chart .zero { stroke: var(--rule-strong); stroke-width: 1; opacity: .5; }
+.chart .dot { fill: var(--paper); stroke: var(--primary); stroke-width: 2; }
+.chart text { font: 10px var(--sans); fill: var(--ink-soft); }
+.chart .val { font-weight: 700; fill: var(--ink); font-size: 11px; }
+.ledger h4 { font: 600 11px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); margin: 20px 0 4px; padding-bottom: 6px; border-bottom: 1px solid var(--rule-strong); }
+.lrow { display: flex; align-items: baseline; gap: 6px; padding: 7px 0; font-size: 14px; }
+.lrow .lbl { flex-shrink: 0; }
+.lrow .dots { flex: 1; border-bottom: 1px dotted var(--locked); transform: translateY(-4px); }
+.lrow .v { font-weight: 700; }
+
+/* Money */
+.verdict { margin: 16px 0; padding: 18px; border-radius: var(--r-md); background: var(--paper); border: 1px solid var(--rule); border-top: 4px solid var(--primary); }
+.verdict.warn { border-top-color: var(--accent); }
+.verdict h2 { font-size: 27px; line-height: 1.1; margin: 6px 0; }
+.verdict p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+.toggle { display: flex; align-items: center; gap: 10px; margin-top: 12px; border: 0; background: none; padding: 0; font-size: 13px; font-weight: 600; text-align: left; }
+.sw { width: 36px; height: 20px; border-radius: 999px; background: var(--locked); position: relative; flex-shrink: 0; transition: background .2s; }
+.sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.toggle[aria-pressed="true"] .sw { background: var(--primary); }
+.toggle[aria-pressed="true"] .sw::after { transform: translateX(16px); }
+.eq { font-size: 13px; }
+.eq .r { display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.eq .op { color: var(--ink-soft); font-weight: 700; }
+.eq .d { font-size: 11px; color: var(--ink-soft); display: block; }
+.eq .a { font-weight: 600; }
+.eq .tot { border-bottom: 3px double var(--rule-strong); border-top: 1px solid var(--rule-strong); font-weight: 700; font-size: 15px; }
+.basis { font-size: 9px; font-weight: 700; letter-spacing: .08em; padding: 1px 5px; border-radius: 3px; margin-left: 4px; vertical-align: 1px; background: var(--paper-alt); color: var(--ink-soft); }
+.basis.pending { background: var(--accent-soft); color: var(--accent); }
+.basis.estimate { border: 1px dashed var(--locked); background: none; }
+.bs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r-md); overflow: hidden; margin-top: 8px; }
+.bs div { background: var(--paper); padding: 10px; }
+.bs small { display: block; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+.bs strong { font-size: 17px; }
+.bs span { display: block; font-size: 11px; color: var(--ink-soft); }
+.nw { display: flex; justify-content: space-between; padding: 10px 2px; font-weight: 700; border-bottom: 3px double var(--rule-strong); }
+.grades { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.grade { padding: 12px; border: 1px solid var(--rule); border-radius: var(--r-md); background: var(--paper); }
+.grade .gh { display: flex; justify-content: space-between; align-items: baseline; }
+.grade .g { font: 600 28px/1 var(--serif); }
+.grade .g.A { color: var(--primary); } .grade .g.B { color: var(--primary); } .grade .g.C { color: var(--accent); } .grade .g.D, .grade .g.F { color: var(--danger); }
+.grade p { margin: 6px 0 4px; font-size: 12px; color: var(--ink-soft); line-height: 1.35; }
+.grade em { font-size: 11px; color: var(--accent); font-style: normal; font-weight: 600; }
+
+/* Landing */
+.landing { padding-top: 12px; }
+.l-mast { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 3px double var(--rule-strong); padding-bottom: 10px; }
+.l-mast .word { font-size: 34px; }
+.l-mast nav { display: flex; gap: 20px; font-size: 14px; color: var(--ink-soft); }
+.l-date { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.hero { display: grid; grid-template-columns: 1.35fr 1fr; gap: 36px; padding: 36px 0 32px; border-bottom: 1px solid var(--rule-strong); }
+.hero h1 { font-size: clamp(38px, 5vw, 60px); line-height: 1.02; font-weight: 500; letter-spacing: -.02em; margin: 12px 0 16px; }
+.hero h1 em { color: var(--primary); }
+.hero p.dek { font: 19px/1.5 var(--serif); color: var(--ink-soft); margin: 0 0 22px; max-width: 34ch; }
+.hero .ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+.pull { border-left: 1px solid var(--rule); padding-left: 28px; display: flex; flex-direction: column; justify-content: center; }
+.pull blockquote { margin: 0; font: italic 500 23px/1.3 var(--serif); }
+.pull blockquote b { font-style: normal; color: var(--primary); }
+.pull cite { display: block; margin-top: 12px; font: normal 12px var(--sans); color: var(--ink-soft); }
+.feats { display: grid; grid-template-columns: repeat(3, 1fr); }
+.feat { padding: 24px 22px 8px 0; }
+.feat + .feat { border-left: 1px solid var(--rule); padding-left: 22px; }
+.feat .roman { font: italic 500 20px/1 var(--serif); color: var(--accent); }
+.feat h3 { font-size: 22px; line-height: 1.15; margin: 8px 0 8px; }
+.feat p { margin: 0 0 12px; font-size: 14px; color: var(--ink-soft); }
+.feat .spec { font-size: 12px; border-top: 1px solid var(--rule); padding-top: 8px; color: var(--ink); }
+.foot { margin-top: 28px; padding-top: 12px; border-top: 3px double var(--rule-strong); font-size: 12px; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+@media (max-width: 1100px) {
+  .hero { grid-template-columns: 1fr; }
+  .pull { border-left: 0; border-top: 1px solid var(--rule); padding: 20px 0 0; }
+  .feats { grid-template-columns: 1fr; }
+  .feat + .feat { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); }
+}
+@media (max-width: 860px) {
+  .stage { grid-template-columns: minmax(0, 1fr); padding: 0 0 48px; gap: 24px; }
+  .device { position: static; order: -1; }
+  .phone { width: 100%; height: min(760px, calc(100svh - 64px)); border-radius: 0; border: 0; border-bottom: 1px solid var(--rule); box-shadow: none; }
+  .device-cap { display: none; }
+  .landing { padding: 0 16px; }
+  .l-mast nav { display: none; }
+  .dir { flex-wrap: wrap; gap: 6px 12px; padding: 8px 16px; }
+  .dir > div:first-child { display: contents; }
+  .dir b { order: 1; white-space: nowrap; }
+  .dir-tools { order: 2; margin-left: auto; }
+  .dir p { order: 3; flex-basis: 100%; font-size: 12px; line-height: 1.35; margin: 0; }
+  .chipbtn { padding: 4px 10px; font-size: 12px; }
+  .phone { height: min(760px, calc(100svh - var(--dir-h, 96px))); }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+.lwrap { min-height: 100%; display: flex; flex-direction: column; }
+.lwrap > .lfoot { margin-top: auto; }
+</style>
+</head>
+<body>
+<header class="dir">
+  <div>
+    <b>Direction A · Ledger</b>
+    <p>Evolves the current app into a calm financial paper: serif headlines, ruled tables, footnoted sources. Credibility first, so learners and parents trust the numbers before they trust the streak.</p>
+  </div>
+  <div class="dir-tools">
+    <button class="chipbtn" data-act="theme" aria-label="Cycle colour theme">Theme: <span data-theme-label>Auto</span></button>
+    <a class="chipbtn" href="index.html">All directions</a>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="landing" aria-label="Landing page">
+    <div class="l-mast"><span class="word">ten<i>bagger</i></span><nav><span>Lessons</span><span>Screener</span><span>Money</span><span>Pricing</span></nav></div>
+    <div class="l-date"><span>Friday, September 25, 2026</span><span>Built from SEC filings · Never stock tips</span></div>
+    <div class="hero">
+      <div>
+        <span class="kicker">Investing literacy, three minutes a day</span>
+        <h1>Read a 10-K the way you <em>read the news.</em></h1>
+        <p class="dek">Short lessons built from real SEC filings, from Costco to Micron. Then read your own finances with the same lens.</p>
+        <div class="ctas"><button class="btn" data-act="demo" data-v="lesson">Try today's lesson</button><button class="btn ghost" data-act="demo" data-v="screener">Open the screener</button></div>
+      </div>
+      <div class="pull">
+        <blockquote>Costco keeps <b>12.8¢</b> of every sales dollar after paying for what it sells. Microsoft keeps <b>68.8¢</b>.</blockquote>
+        <cite>Gross margin, FY2025 10-K filings · from Unit 2, Lesson 1</cite>
+      </div>
+    </div>
+    <div class="feats">
+      <article class="feat">
+        <span class="roman">i.</span>
+        <h3>Lessons cut from the filings</h3>
+        <p>Every question cites its ticker, fiscal year and line item, so the answer can be checked against the 10-K.</p>
+        <div class="spec num">32 lessons · 207 questions · 8 units, from revenue to a two-stage DCF</div>
+      </article>
+      <article class="feat">
+        <span class="roman">ii.</span>
+        <h3>A screener that explains itself</h3>
+        <p>Presets state their rule in plain English. Tap any company that passes to see why, on a one-page tearsheet.</p>
+        <div class="spec num">“ROIC above 20% and gross margin above 40%” → 5 of 12 companies</div>
+      </article>
+      <article class="feat">
+        <span class="roman">iii.</span>
+        <h3>Your money, as a statement</h3>
+        <p>Liquidity, investments and debt on one page, plus a daily answer to “can I cover the card by the due date?”</p>
+        <div class="spec num">Card due Oct 17: covered, $62 to spare, if 6 logged hours are submitted</div>
+      </article>
+    </div>
+    <div class="foot"><span>Educational content built from reported financials. Not investment advice.</span><span>Working name. Money hub uses a fictional persona.</span></div>
+  </section>
+
+  <section class="device" id="app" aria-label="App prototype">
+    <div class="phone">
+      <div id="screen"></div>
+      <nav id="tabbar" aria-label="App tabs">
+        <button data-act="tab" data-v="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5h6a2 2 0 0 1 2 2V19a2 2 0 0 0-2-2H4zM20 5.5h-6a2 2 0 0 0-2 2V19a2 2 0 0 1 2-2h6z"/></svg><span>Learn</span></button>
+        <button data-act="tab" data-v="screener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z"/></svg><span>Screener</span></button>
+        <button data-act="tab" data-v="company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V9l6-4v15M10 20V5l10 4v11M3 20h18M14 12h2M14 15h2"/></svg><span>Company</span></button>
+        <button data-act="tab" data-v="money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><span>Money</span></button>
+      </nav>
+    </div>
+    <p class="device-cap">Clickable prototype · real SEC figures · fictional money data</p>
+  </section>
+</main>
+
+<script>
+const D={"source":"fixture","generated_at":"2026-09-25T22:01:11Z","disclaimer":"Educational content built from reported financials. Not investment advice.","companies":[{"t":"MU","n":"Micron Technology, Inc.","s":"Technology","i":"Semiconductors","p":1000.26,"pd":"2026-09-08","fy":2025,"m":{"market_cap":1125542565000,"pe":131.786561,"ps":30.112434,"ev_ebitda":61.742635,"fcf_yield":0.001482,"dividend_yield":0.000464,"gross_margin":0.400583,"operating_margin":0.266734,"net_margin":0.22845,"roe":0.157648,"roic":0.147136,"debt_to_equity":0.28343,"current_ratio":2.517985,"net_cash":-5706000000,"revenue_growth_yoy":0.488511,"revenue_cagr_3y":0.067135},"f":{"revenue":37378000000,"gross_profit":14973000000,"operating_income":9970000000,"net_income":8539000000,"free_cash_flow":1668000000,"cash":9646000000,"total_debt":15352000000},"h":{"revenue":[[2016,12399000000],[2017,20322000000],[2018,30391000000],[2019,23406000000],[2020,21435000000],[2021,27705000000],[2022,30758000000],[2023,15540000000],[2024,25111000000],[2025,37378000000]],"net_income":[[2016,-276000000],[2017,5089000000],[2018,14135000000],[2019,6313000000],[2020,2687000000],[2021,5861000000],[2022,8687000000],[2023,-5833000000],[2024,778000000],[2025,8539000000]],"free_cash_flow":[[2016,-2649000000],[2017,3419000000],[2018,8521000000],[2019,3409000000],[2020,83000000],[2021,2438000000],[2022,3114000000],[2023,-6117000000],[2024,121000000],[2025,1668000000]],"gross_margin":[[2016,0.202032],[2017,0.415117],[2018,0.588694],[2019,0.457233],[2020,0.305668],[2021,0.375203],[2022,0.45185],[2023,-0.09112],[2024,0.223528],[2025,0.400583]]}},{"t":"AAPL","n":"Apple Inc.","s":"Technology","i":"Consumer Electronics","p":255.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3826275000000,"pe":34.182306,"ps":9.194218,"ev_ebitda":26.867369,"fcf_yield":0.025813,"dividend_yield":0.00403,"gross_margin":0.469052,"operating_margin":0.319708,"net_margin":0.269151,"roe":1.51913,"roic":0.822836,"debt_to_equity":1.33803,"current_ratio":0.893293,"net_cash":-62723000000,"revenue_growth_yoy":0.064255,"revenue_cagr_3y":0.018125},"f":{"revenue":416161000000,"gross_profit":195201000000,"operating_income":133050000000,"net_income":112010000000,"free_cash_flow":98767000000,"cash":35934000000,"total_debt":98657000000},"h":{"revenue":[[2020,274515000000],[2021,365817000000],[2022,394328000000],[2023,383285000000],[2024,391035000000],[2025,416161000000]],"net_income":[[2020,57411000000],[2021,94680000000],[2022,99803000000],[2023,96995000000],[2024,93736000000],[2025,112010000000]],"free_cash_flow":[[2020,73365000000],[2021,92953000000],[2022,111443000000],[2023,99584000000],[2024,108807000000],[2025,98767000000]],"gross_margin":[[2020,0.382332],[2021,0.417794],[2022,0.433096],[2023,0.441311],[2024,0.462063],[2025,0.469052]]}},{"t":"MSFT","n":"Microsoft Corporation","s":"Technology","i":"Software","p":515.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3844475000000,"pe":37.756598,"ps":13.646246,"ev_ebitda":23.711337,"fcf_yield":0.018627,"dividend_yield":0.006264,"gross_margin":0.688237,"operating_margin":0.45622,"net_margin":0.36146,"roe":0.296472,"roic":0.297068,"debt_to_equity":0.125629,"current_ratio":1.353446,"net_cash":-12909000000,"revenue_growth_yoy":0.149322,"revenue_cagr_3y":0.124231},"f":{"revenue":281724000000,"gross_profit":193893000000,"operating_income":128528000000,"net_income":101832000000,"free_cash_flow":71611000000,"cash":30242000000,"total_debt":43151000000},"h":{"revenue":[[2021,168088000000],[2022,198270000000],[2023,211915000000],[2024,245122000000],[2025,281724000000]],"net_income":[[2021,61271000000],[2022,72738000000],[2023,72361000000],[2024,88136000000],[2025,101832000000]],"free_cash_flow":[[2021,56118000000],[2022,65149000000],[2023,59475000000],[2024,74071000000],[2025,71611000000]],"gross_margin":[[2021,0.689258],[2022,0.684017],[2023,0.689201],[2024,0.697644],[2025,0.688237]]}},{"t":"COST","n":"Costco Wholesale Corporation","s":"Consumer Staples","i":"Discount Stores","p":925.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":411625000000,"pe":50.796266,"ps":1.49554,"ev_ebitda":31.476072,"fcf_yield":0.019039,"dividend_yield":0.005328,"gross_margin":0.128432,"operating_margin":0.037724,"net_margin":0.029426,"roe":0.277705,"roic":0.376242,"debt_to_equity":0.195892,"current_ratio":0.999479,"net_cash":8448000000,"revenue_growth_yoy":0.081673,"revenue_cagr_3y":0.066404},"f":{"revenue":275235000000,"gross_profit":35349000000,"operating_income":10383000000,"net_income":8099000000,"free_cash_flow":7837000000,"cash":14161000000,"total_debt":5713000000},"h":{"revenue":[[2021,195929000000],[2022,226954000000],[2023,242290000000],[2024,254453000000],[2025,275235000000]],"net_income":[[2021,5007000000],[2022,5844000000],[2023,6292000000],[2024,7367000000],[2025,8099000000]],"free_cash_flow":[[2021,5370000000],[2022,3501000000],[2023,6745000000],[2024,6629000000],[2025,7837000000]],"gross_margin":[[2021,0.128848],[2022,0.121487],[2023,0.122597],[2024,0.126133],[2025,0.128432]]}},{"t":"KO","n":"The Coca-Cola Company","s":"Consumer Staples","i":"Beverages","p":66.5,"pd":"2025-09-30","fy":2024,"m":{"market_cap":287280000000,"pe":27.03252,"ps":6.104418,"ev_ebitda":29.319508,"fcf_yield":0.016503,"dividend_yield":0.029097,"gross_margin":0.610633,"operating_margin":0.21232,"net_margin":0.225898,"roe":0.427704,"roic":0.131032,"debt_to_equity":1.93221,"current_ratio":1.029625,"net_cash":-37199000000,"revenue_growth_yoy":0.028566,"revenue_cagr_3y":0.067788},"f":{"revenue":47061000000,"gross_profit":28737000000,"operating_income":9992000000,"net_income":10631000000,"free_cash_flow":4741000000,"cash":10828000000,"total_debt":48027000000},"h":{"revenue":[[2020,33014000000],[2021,38655000000],[2022,43004000000],[2023,45754000000],[2024,47061000000]],"net_income":[[2020,7747000000],[2021,9771000000],[2022,9542000000],[2023,10714000000],[2024,10631000000]],"free_cash_flow":[[2020,8667000000],[2021,11258000000],[2022,9534000000],[2023,9747000000],[2024,4741000000]],"gross_margin":[[2020,0.593112],[2021,0.602716],[2022,0.581434],[2023,0.595227],[2024,0.610633]]}},{"t":"NVDA","n":"NVIDIA Corporation","s":"Technology","i":"Semiconductors","p":186.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":4613544000000,"pe":63.265306,"ps":35.35364,"ev_ebitda":55.371869,"fcf_yield":0.01319,"dividend_yield":0.000181,"gross_margin":0.749887,"operating_margin":0.624175,"net_margin":0.55848,"roe":0.918729,"roic":0.892013,"debt_to_equity":0.106685,"current_ratio":4.439851,"net_cash":126000000,"revenue_growth_yoy":1.142034,"revenue_cagr_3y":0.692547},"f":{"revenue":130497000000,"gross_profit":97858000000,"operating_income":81453000000,"net_income":72880000000,"free_cash_flow":60853000000,"cash":8589000000,"total_debt":8463000000},"h":{"revenue":[[2021,16675000000],[2022,26914000000],[2023,26974000000],[2024,60922000000],[2025,130497000000]],"net_income":[[2021,4332000000],[2022,9752000000],[2023,4368000000],[2024,29760000000],[2025,72880000000]],"free_cash_flow":[[2021,4694000000],[2022,8132000000],[2023,3808000000],[2024,27021000000],[2025,60853000000]],"gross_margin":[[2021,0.623448],[2022,0.64929],[2023,0.569289],[2024,0.727176],[2025,0.749887]]}},{"t":"JPM","n":"JPMorgan Chase & Co.","s":"Financials","i":"Banks","p":315.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":905940000000,"pe":15.949367,"ps":5.102278,"ev_ebitda":null,"fcf_yield":null,"dividend_yield":0.016579,"gross_margin":null,"operating_margin":null,"net_margin":0.32931,"roe":0.1696,"roic":null,"debt_to_equity":1.164347,"current_ratio":null,"net_cash":-378046000000,"revenue_growth_yoy":0.123033,"revenue_cagr_3y":0.134337},"f":{"revenue":177556000000,"gross_profit":null,"operating_income":null,"net_income":58471000000,"free_cash_flow":null,"cash":23372000000,"total_debt":401418000000},"h":{"revenue":[[2020,119543000000],[2021,121649000000],[2022,128695000000],[2023,158104000000],[2024,177556000000]],"net_income":[[2020,29131000000],[2021,48334000000],[2022,37676000000],[2023,49552000000],[2024,58471000000]],"free_cash_flow":[],"gross_margin":[]}},{"t":"XOM","n":"Exxon Mobil Corporation","s":"Energy","i":"Oil & Gas Integrated","p":113.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":485787000000,"pe":14.413265,"ps":1.389611,"ev_ebitda":null,"fcf_yield":0.063229,"dividend_yield":0.034385,"gross_margin":null,"operating_margin":null,"net_margin":0.096343,"roe":0.127718,"roic":null,"debt_to_equity":0.158169,"current_ratio":1.308405,"net_cash":-18681000000,"revenue_growth_yoy":0.014519,"revenue_cagr_3y":0.069657},"f":{"revenue":349585000000,"gross_profit":null,"operating_income":null,"net_income":33680000000,"free_cash_flow":30716000000,"cash":23029000000,"total_debt":41710000000},"h":{"revenue":[[2020,181502000000],[2021,285640000000],[2022,413680000000],[2023,344582000000],[2024,349585000000]],"net_income":[[2020,-22440000000],[2021,23040000000],[2022,55740000000],[2023,36010000000],[2024,33680000000]],"free_cash_flow":[[2020,-2614000000],[2021,36053000000],[2022,58390000000],[2023,33450000000],[2024,30716000000]],"gross_margin":[]}},{"t":"JNJ","n":"Johnson & Johnson","s":"Health Care","i":"Pharmaceuticals","p":185.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":449365000000,"pe":31.951641,"ps":5.05922,"ev_ebitda":null,"fcf_yield":0.044156,"dividend_yield":0.02631,"gross_margin":0.690715,"operating_margin":null,"net_margin":0.158363,"roe":0.196755,"roic":null,"debt_to_equity":0.512435,"current_ratio":1.110689,"net_cash":-12529000000,"revenue_growth_yoy":0.043002,"revenue_cagr_3y":0.040974},"f":{"revenue":88821000000,"gross_profit":61350000000,"operating_income":null,"net_income":14066000000,"free_cash_flow":19842000000,"cash":24105000000,"total_debt":36634000000},"h":{"revenue":[[2020,82584000000],[2021,78740000000],[2022,79990000000],[2023,85159000000],[2024,88821000000]],"net_income":[[2020,14714000000],[2021,20878000000],[2022,17941000000],[2023,35153000000],[2024,14066000000]],"free_cash_flow":[[2020,20189000000],[2021,19758000000],[2022,18185000000],[2023,18248000000],[2024,19842000000]],"gross_margin":[[2020,0.655781],[2021,0.702794],[2022,0.692512],[2023,0.688195],[2024,0.690715]]}},{"t":"TSLA","n":"Tesla, Inc.","s":"Consumer Discretionary","i":"Automobiles","p":445.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":1556610000000,"pe":218.137255,"ps":15.93418,"ev_ebitda":124.443185,"fcf_yield":0.002302,"dividend_yield":0.0,"gross_margin":0.178626,"operating_margin":0.072433,"net_margin":0.072587,"roe":0.097253,"roic":0.086803,"debt_to_equity":0.111091,"current_ratio":2.024912,"net_cash":8039000000,"revenue_growth_yoy":0.009476,"revenue_cagr_3y":0.219815},"f":{"revenue":97690000000,"gross_profit":17450000000,"operating_income":7076000000,"net_income":7091000000,"free_cash_flow":3584000000,"cash":16139000000,"total_debt":8100000000},"h":{"revenue":[[2020,31536000000],[2021,53823000000],[2022,81462000000],[2023,96773000000],[2024,97690000000]],"net_income":[[2020,721000000],[2021,5519000000],[2022,12556000000],[2023,14997000000],[2024,7091000000]],"free_cash_flow":[[2020,2786000000],[2021,5015000000],[2022,7566000000],[2023,4358000000],[2024,3584000000]],"gross_margin":[[2020,0.210236],[2021,0.252792],[2022,0.255984],[2023,0.182489],[2024,0.178626]]}},{"t":"AMZN","n":"Amazon.com, Inc.","s":"Consumer Discretionary","i":"Internet Retail","p":220.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":2358620000000,"pe":39.783002,"ps":3.697134,"ev_ebitda":19.256409,"fcf_yield":0.013937,"dividend_yield":0.0,"gross_margin":0.488544,"operating_margin":0.107519,"net_margin":0.092871,"roe":0.207183,"roic":0.224019,"debt_to_equity":0.201616,"current_ratio":1.063735,"net_cash":21123000000,"revenue_growth_yoy":0.109909,"revenue_cagr_3y":0.107354},"f":{"revenue":637959000000,"gross_profit":311671000000,"operating_income":68593000000,"net_income":59248000000,"free_cash_flow":32873000000,"cash":78779000000,"total_debt":57656000000},"h":{"revenue":[[2020,386064000000],[2021,469822000000],[2022,513983000000],[2023,574785000000],[2024,637959000000]],"net_income":[[2020,21331000000],[2021,33364000000],[2022,-2722000000],[2023,30425000000],[2024,59248000000]],"free_cash_flow":[[2020,25924000000],[2021,-14726000000],[2022,-16893000000],[2023,32217000000],[2024,32873000000]],"gross_margin":[[2020,0.395678],[2021,0.420325],[2022,0.438053],[2023,0.469821],[2024,0.488544]]}},{"t":"PG","n":"The Procter & Gamble Company","s":"Consumer Staples","i":"Household Products","p":154.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":380842000000,"pe":25.581395,"ps":4.531729,"ev_ebitda":18.83401,"fcf_yield":0.043388,"dividend_yield":0.024451,"gross_margin":0.51394,"operating_margin":0.220671,"net_margin":0.177049,"roe":0.29429,"roic":0.201778,"debt_to_equity":0.642022,"current_ratio":0.734796,"net_cash":-22978000000,"revenue_growth_yoy":0.024791,"revenue_cagr_3y":0.033549},"f":{"revenue":84039000000,"gross_profit":43191000000,"operating_income":18545000000,"net_income":14879000000,"free_cash_flow":16524000000,"cash":9482000000,"total_debt":32460000000},"h":{"revenue":[[2020,70950000000],[2021,76118000000],[2022,80187000000],[2023,82006000000],[2024,84039000000]],"net_income":[[2020,13027000000],[2021,14306000000],[2022,14742000000],[2023,14653000000],[2024,14879000000]],"free_cash_flow":[[2020,14330000000],[2021,15584000000],[2022,13567000000],[2023,13786000000],[2024,16524000000]],"gross_margin":[[2020,0.503171],[2021,0.512494],[2022,0.474266],[2023,0.478575],[2024,0.51394]]}}],"units":[{"id":"u1-revenue","title":"What a company sells","summary":"Revenue is where every analysis starts: how much a company sells and how fast that is growing.","lessons":[{"id":"u1-l1","title":"Revenue: the top line","xp":10,"n":7},{"id":"u1-l2","title":"Revenue growth","xp":10,"n":7},{"id":"u1-l3","title":"Compounding: 3-year CAGR","xp":10,"n":6}]},{"id":"u2-margins","title":"Margins","summary":"Margins show how many cents of each sales dollar a company keeps at each step of the income statement.","lessons":[{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"n":7},{"id":"u2-l2","title":"Operating margin","xp":10,"n":7},{"id":"u2-l3","title":"Net margin","xp":10,"n":6},{"id":"u2-l4","title":"The margin stack","xp":10,"n":7}]},{"id":"u3-profit","title":"Profit & EPS","summary":"From total profit to one share's slice of it, and what taxes take along the way.","lessons":[{"id":"u3-l1","title":"Net income","xp":10,"n":7},{"id":"u3-l2","title":"Earnings per share","xp":10,"n":6},{"id":"u3-l3","title":"EPS growth","xp":10,"n":6},{"id":"u3-l4","title":"Taxes: the effective rate","xp":10,"n":6}]},{"id":"u4-cashflow","title":"Cash flow & FCF","summary":"Profit is an opinion, cash is a fact: reading the cash-flow statement.","lessons":[{"id":"u4-l1","title":"Cash from operations vs. profit","xp":10,"n":7},{"id":"u4-l2","title":"Free cash flow","xp":10,"n":6},{"id":"u4-l3","title":"FCF margin","xp":10,"n":6},{"id":"u4-l4","title":"Capex intensity","xp":10,"n":6}]},{"id":"u5-balance","title":"Balance sheet & debt","summary":"What a company owns, what it owes, and whether it can pay its bills.","lessons":[{"id":"u5-l1","title":"Assets = liabilities + equity","xp":10,"n":6},{"id":"u5-l2","title":"Net cash vs. net debt","xp":10,"n":7},{"id":"u5-l3","title":"Debt-to-equity","xp":10,"n":6},{"id":"u5-l4","title":"Current ratio","xp":10,"n":6}]},{"id":"u6-returns","title":"Returns on capital","summary":"How much profit a business squeezes out of the money invested in it.","lessons":[{"id":"u6-l1","title":"Return on equity (ROE)","xp":10,"n":6},{"id":"u6-l2","title":"Return on assets (ROA)","xp":10,"n":6},{"id":"u6-l3","title":"Return on invested capital (ROIC)","xp":15,"n":7},{"id":"u6-l4","title":"Leverage and ROE","xp":15,"n":7}]},{"id":"u7-valuation","title":"Valuation multiples","summary":"Bringing in the share price: what the market is paying for each dollar of sales, profit and cash.","lessons":[{"id":"u7-l1","title":"Market cap & enterprise value","xp":10,"n":7},{"id":"u7-l2","title":"P/E & earnings yield","xp":15,"n":7},{"id":"u7-l3","title":"P/S & EV/EBITDA","xp":15,"n":7},{"id":"u7-l4","title":"FCF yield & dividend yield","xp":15,"n":6},{"id":"u7-l5","title":"What a P/E implies about growth","xp":20,"n":7}]},{"id":"u8-intrinsic","title":"Intrinsic value","summary":"Discounted cash flow basics: estimating what a business is worth, and why the estimate is fragile.","lessons":[{"id":"u8-l1","title":"A one-line DCF","xp":20,"n":6},{"id":"u8-l2","title":"A two-stage DCF","xp":20,"n":5},{"id":"u8-l3","title":"Price vs. estimate & sensitivity","xp":20,"n":6},{"id":"u8-l4","title":"Cycles: why one DCF can mislead","xp":20,"n":8}]}],"lesson":{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"intro":"**Gross profit** is revenue minus the **cost of revenue**: what it cost to make or purchase the things the company sold. **Gross margin** is gross profit \u00f7 revenue. A software company with a 70% gross margin keeps 70 cents of each sales dollar after delivering its product; a warehouse retailer might keep 12 cents. Neither is automatically better. Low-margin retailers can win on volume, while high gross margins leave room to spend on research and marketing. The classic mistake is using net income instead of gross profit.","questions":[{"id":"q-u2-l1-01","type":"multiple_choice","prompt":"In FY2024, Coca-Cola (KO) had revenue of $47.1B and cost of revenue of $18.3B. What was its gross profit?","choices":["$65.4B","$10.6B","$18.3B","$28.7B"],"answer":3,"explanation":"Gross profit = revenue \u2212 cost of revenue = $47.1B \u2212 $18.3B = $28.7B. Gross profit is what's left from sales after paying for the products or services themselves. Common slip: adding cost instead of subtracting it gives $65.4B.","source":{"ticker":"KO","fy":2024,"metrics":["gross_profit"],"formula":"revenue - cost_of_revenue","inputs":{"revenue":47061000000.0,"cost_of_revenue":18324000000.0}}},{"id":"q-u2-l1-04","type":"compare","prompt":"Which company had the higher gross margin in its latest fiscal year?","choices":["Costco Wholesale (COST)","Microsoft (MSFT)"],"answer":1,"explanation":"Gross margin = gross profit \u00f7 revenue. Costco Wholesale (COST), FY2025: $35.3B \u00f7 $275.2B = 12.8%. Microsoft (MSFT), FY2025: $193.9B \u00f7 $281.7B = 68.8%. So Microsoft (MSFT) is higher.","source":{"ticker":"MSFT","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":193893000000.0,"revenue":281724000000.0},"tickers":["COST","MSFT"],"fys":[2025,2025],"direction":"higher"}},{"id":"q-u2-l1-05","type":"true_false","prompt":"True or false? Apple (AAPL)'s gross margin in FY2025 was above 60.0%.","answer":false,"explanation":"False. Gross margin = gross profit \u00f7 revenue = $195.2B \u00f7 $416.2B = 46.9%, which is below 60.0%. Out of every $1 of sales, Apple kept about 47 cents after paying for what it sold.","source":{"ticker":"AAPL","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":195201000000.0,"revenue":416161000000.0},"threshold":0.6}}]}};
+/* ---- Shared prototype core: formatting, lesson engine, screener, money model, state + events ---- */
+const F = {
+  usd(n, d = 1) {
+    if (n == null || !isFinite(n)) return '—';
+    const a = Math.abs(n), s = n < 0 ? '−' : '';
+    if (a >= 1e12) return s + '$' + (a / 1e12).toFixed(d) + 'T';
+    if (a >= 1e9) return s + '$' + (a / 1e9).toFixed(d) + 'B';
+    if (a >= 1e6) return s + '$' + (a / 1e6).toFixed(d) + 'M';
+    return s + '$' + a.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  },
+  pct(r, d = 1) { return r == null || !isFinite(r) ? '—' : (r * 100).toFixed(d) + '%'; },
+  x(r, d = 1) { return r == null || !isFinite(r) ? '—' : r.toFixed(d) + '×'; },
+  cash(n, signed) {
+    const s = n < 0 ? '−' : signed ? '+' : '';
+    return s + '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+  },
+  price(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); },
+  md(s) { return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>'); },
+  esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]); },
+};
+
+const CO = Object.fromEntries(D.companies.map((c) => [c.t, c]));
+
+/* Metric catalogue: label, short label, formatter, "higher is better" for colouring. */
+const MET = {
+  market_cap: { l: 'Market cap', s: 'Mkt cap', f: (v) => F.usd(v) },
+  pe: { l: 'Price / earnings', s: 'P/E', f: (v) => F.x(v) },
+  ps: { l: 'Price / sales', s: 'P/S', f: (v) => F.x(v) },
+  ev_ebitda: { l: 'EV / EBITDA', s: 'EV/EBITDA', f: (v) => F.x(v) },
+  fcf_yield: { l: 'FCF yield', s: 'FCF yld', f: (v) => F.pct(v), up: 1 },
+  dividend_yield: { l: 'Dividend yield', s: 'Div yld', f: (v) => F.pct(v), up: 1 },
+  gross_margin: { l: 'Gross margin', s: 'Gross mgn', f: (v) => F.pct(v), up: 1 },
+  operating_margin: { l: 'Operating margin', s: 'Op mgn', f: (v) => F.pct(v), up: 1 },
+  net_margin: { l: 'Net margin', s: 'Net mgn', f: (v) => F.pct(v), up: 1 },
+  roe: { l: 'Return on equity', s: 'ROE', f: (v) => F.pct(v), up: 1 },
+  roic: { l: 'Return on invested capital', s: 'ROIC', f: (v) => F.pct(v), up: 1 },
+  debt_to_equity: { l: 'Debt / equity', s: 'D/E', f: (v) => F.x(v, 2) },
+  current_ratio: { l: 'Current ratio', s: 'Curr ratio', f: (v) => F.x(v, 2), up: 1 },
+  net_cash: { l: 'Net cash (debt)', s: 'Net cash', f: (v) => F.usd(v), up: 1 },
+  revenue_growth_yoy: { l: 'Revenue growth (YoY)', s: 'Rev gr.', f: (v) => F.pct(v), up: 1 },
+  revenue_cagr_3y: { l: 'Revenue CAGR (3y)', s: '3y CAGR', f: (v) => F.pct(v), up: 1 },
+};
+const fm = (c, k) => MET[k].f(c.m[k]);
+
+const PRESETS = [
+  { id: 'quality', name: 'Quality compounders', short: 'Quality', rule: 'ROIC > 20% and gross margin > 40%',
+    why: 'High returns on the money invested, plus pricing power.', test: (c) => c.m.roic > 0.2 && c.m.gross_margin > 0.4,
+    cols: ['roic', 'gross_margin', 'pe'], sort: 'roic' },
+  { id: 'netcash', name: 'Net-cash fortresses', short: 'Net cash', rule: 'Cash on hand exceeds total debt',
+    why: 'Could pay off every dollar of debt today from cash.', test: (c) => c.m.net_cash > 0,
+    cols: ['net_cash', 'current_ratio', 'revenue_growth_yoy'], sort: 'net_cash' },
+  { id: 'income', name: 'Dividend payers', short: 'Dividends', rule: 'Dividend yield of 2% or more',
+    why: 'Returns cash to owners every quarter.', test: (c) => c.m.dividend_yield >= 0.02,
+    cols: ['dividend_yield', 'fcf_yield', 'pe'], sort: 'dividend_yield' },
+];
+function runPreset(id, sortKey, dir) {
+  const p = PRESETS.find((x) => x.id === id) || PRESETS[0];
+  const k = sortKey || p.sort, d = dir || -1;
+  const rows = D.companies.filter(p.test).sort((a, b) => ((a.m[k] ?? -Infinity) - (b.m[k] ?? -Infinity)) * d);
+  return { p, rows, k, d };
+}
+
+const HIST = {
+  revenue: { l: 'Revenue', f: (v) => F.usd(v, 1) },
+  net_income: { l: 'Net income', f: (v) => F.usd(v, 1) },
+  free_cash_flow: { l: 'Free cash flow', f: (v) => F.usd(v, 1) },
+  gross_margin: { l: 'Gross margin', f: (v) => F.pct(v, 0) },
+};
+/* Scale a [[year, value], ...] series into an SVG box. Includes zero so negatives read honestly. */
+function scaleSeries(series, w, h, pad = { l: 8, r: 8, t: 10, b: 18 }) {
+  const s = series.filter((p) => p[1] != null);
+  const vals = s.map((p) => p[1]);
+  let min = Math.min(0, ...vals), max = Math.max(0, ...vals);
+  if (max === min) max = min + 1;
+  const iw = w - pad.l - pad.r, ih = h - pad.t - pad.b;
+  const X = (i) => pad.l + (s.length === 1 ? iw / 2 : (i * iw) / (s.length - 1));
+  const Y = (v) => pad.t + ih - ((v - min) / (max - min)) * ih;
+  const pts = s.map((p, i) => ({ x: X(i), y: Y(p[1]), v: p[1], yr: p[0] }));
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
+  const zeroY = Y(0);
+  const area = line + ` L${pts[pts.length - 1].x.toFixed(1)} ${zeroY.toFixed(1)} L${pts[0].x.toFixed(1)} ${zeroY.toFixed(1)} Z`;
+  const bw = (iw / s.length) * 0.62;
+  return { pts, line, area, zeroY, min, max, bw, pad, iw, ih, X, Y };
+}
+
+/* ---- Lesson engine (3 real questions from data/lessons.json, lesson u2-l1) ---- */
+const LQ = D.lesson.questions;
+const Q = {
+  choices: (q) => (q.type === 'true_false' ? ['True', 'False'] : q.choices),
+  correctIndex: (q) => (q.type === 'true_false' ? (q.answer ? 0 : 1) : q.answer),
+  isCorrect: (q, i) => i === Q.correctIndex(q),
+  kind: (q) => ({ multiple_choice: 'Pick one', compare: 'Compare', true_false: 'True or false' })[q.type] || q.type,
+  src: (q) => ({ t: q.source.ticker, fy: q.source.fy, what: q.source.metrics.join(' · ').replace(/_/g, ' '), formula: q.source.formula.replace(/_/g, ' ') }),
+};
+
+/* ---- Money hub: fictional persona "Alex, 20". Mirrors packages/money coverageCheck() shape. ---- */
+const M = {
+  who: 'Alex, 20', asOf: 'Sep 25', due: 'Oct 17', daysAway: 22, submitBy: 'Oct 9',
+  accounts: [
+    { id: 'checking', name: 'Checking', group: 'liq', amt: 840 },
+    { id: 'savings', name: 'Savings', group: 'liq', amt: 410 },
+    { id: 'brokerage', name: 'Brokerage', group: 'inv', amt: 2600 },
+    { id: 'roth', name: 'Roth IRA', group: 'inv', amt: 300 },
+    { id: 'card', name: 'Student card', group: 'debt', amt: 1120 },
+  ],
+  card: { statement: 1120, min: 25, apr: 0.2749 },
+  income: [
+    { when: 'Oct 2', label: 'Campus job · 16 h × $15.50', amt: 248, basis: 'projected' },
+    { when: 'Sep 29 – Oct 15', label: 'Tutoring · 6 sessions × $30', amt: 180, basis: 'projected' },
+    { when: 'Oct 16', label: 'Campus job · 12 h × $15.50', amt: 186, basis: 'projected' },
+    { when: 'Oct 16', label: '6 logged hours, not yet submitted', amt: 93, basis: 'pending' },
+  ],
+  bills: [
+    { when: 'Oct 1', label: 'Rent share', amt: 380, basis: 'manual' },
+    { when: 'Oct 5', label: 'Phone plan', amt: 45, basis: 'manual' },
+    { when: 'daily', label: 'Everyday spending · ~$16/day', amt: 350, basis: 'estimate' },
+  ],
+  scorecard: [
+    { id: 'liquidity', t: 'Liquidity', g: 'C', metric: '1.12×', why: 'Cash $1,250 ÷ card $1,120. Costco ran at 1.00× in FY2025.', lesson: 'Current ratio' },
+    { id: 'investing', t: 'Investing', g: 'A', metric: '70%', why: '$2,900 of the $4,150 you own is invested.', lesson: 'Market cap & EV' },
+    { id: 'debt', t: 'Debt', g: 'D', metric: '1.4 mo', why: 'Card balance ≈ 1.4 months of typical income (~$800/mo).', lesson: 'Debt-to-equity' },
+    { id: 'income', t: 'Income', g: 'C', metric: 'CV 0.34', why: 'Tutoring dips around exams; $93 still pending.', lesson: 'Revenue growth' },
+    { id: 'net_worth', t: 'Net worth', g: 'A', metric: '$3,030', why: 'Up 8% since your first snapshot in August.', lesson: 'Net cash vs. net debt' },
+    { id: 'spending', t: 'Spending', g: 'B', metric: '±3%', why: 'Card balance roughly flat across snapshots.', lesson: 'Free cash flow' },
+  ],
+  overall: { g: 'B', gpa: 2.67 },
+};
+M.sum = (g) => M.accounts.filter((a) => a.group === g).reduce((s, a) => s + a.amt, 0);
+M.liquid = M.sum('liq'); M.invested = M.sum('inv'); M.debt = M.sum('debt');
+M.netWorth = M.liquid + M.invested - M.debt;
+function coverage(includePending) {
+  const inc = M.income.filter((x) => includePending || x.basis !== 'pending');
+  const incT = inc.reduce((s, x) => s + x.amt, 0), billT = M.bills.reduce((s, x) => s + x.amt, 0);
+  const before = M.liquid + incT - billT;
+  const afterFull = before - M.card.statement, afterMin = before - M.card.min;
+  const verdict = afterFull >= 0 ? 'covered' : afterMin >= 0 ? 'minimum' : 'short';
+  const steps = [
+    { op: '', label: 'Cash now (checking + savings)', amt: M.liquid, basis: 'verified' },
+    ...inc.map((x) => ({ op: '+', label: x.label, when: x.when, amt: x.amt, basis: x.basis })),
+    ...M.bills.map((x) => ({ op: '−', label: x.label, when: x.when, amt: x.amt, basis: x.basis })),
+    { op: '−', label: 'Statement balance, due ' + M.due, amt: M.card.statement, basis: 'verified' },
+  ];
+  const headline = verdict === 'covered' ? `Covered, ${F.cash(afterFull)} to spare`
+    : verdict === 'minimum' ? `${F.cash(-afterFull)} short of the full balance` : `${F.cash(-afterMin)} short, even for the minimum`;
+  const sub = verdict === 'covered'
+    ? (includePending ? `Counts $93 of pending pay. Submit your 6 logged hours by ${M.submitBy}.` : 'Without counting any pending pay.')
+    : `The $${M.card.min} minimum is covered. The unpaid part would carry ${F.pct(M.card.apr, 2)} APR interest.`;
+  return { inc, incT, billT, before, afterFull, afterMin, verdict, steps, headline, sub };
+}
+const dayLabel = (d) => (d <= 5 ? 'Sep ' + (25 + d) : 'Oct ' + (d - 5));
+/* Day-by-day projected cash, pay-in-full scenario, Sep 25 → Oct 17 (22 days). */
+function runway(includePending) {
+  const ev = { 6: [-380], 7: [248], 10: [-45], 22: [-1120] }; // day 0 = Sep 25, day 6 = Oct 1, day 22 = Oct 17
+  const tut = [4, 6, 11, 13, 18, 20]; tut.forEach((d) => (ev[d] = (ev[d] || []).concat(30)));
+  ev[21] = [186].concat(includePending ? [93] : []);
+  // everyday spending ≈ $350 over 22 days
+  let cash = M.liquid; const out = [[0, cash]];
+  for (let d = 1; d <= 22; d++) { cash += (ev[d] || []).reduce((a, b) => a + b, 0) - 350 / 22; out.push([d, Math.round(cash)]); }
+  return out;
+}
+
+/* ---- State, rendering loop and delegated events ---- */
+const S = { tab: 'learn', view: null, q: 0, pick: null, checked: false, right: 0, hearts: 5, xp: 140, goal: 20, today: 6, completed: false, streak: 6,
+  preset: 'quality', sortK: null, sortD: -1, ticker: 'MSFT', hist: 'revenue', pending: true, done: false, intro: true };
+
+function themeCycle() {
+  const r = document.documentElement, cur = r.dataset.theme || 'system';
+  const next = { system: 'light', light: 'dark', dark: 'system' }[cur];
+  if (next === 'system') delete r.dataset.theme; else r.dataset.theme = next;
+  document.querySelectorAll('[data-theme-label]').forEach((el) => (el.textContent = next === 'system' ? 'Auto' : next === 'light' ? 'Light' : 'Dark'));
+}
+
+const ACT = {
+  tab(v) { S.tab = v; S.view = null; },
+  start() { Object.assign(S, { view: 'lesson', q: 0, pick: null, checked: false, right: 0, done: false, intro: true, hearts: 5 }); },
+  begin() { S.intro = false; },
+  pick(v) { if (!S.checked) S.pick = +v; },
+  check() {
+    if (S.pick == null || S.checked) return;
+    S.checked = true;
+    const ok = Q.isCorrect(LQ[S.q], S.pick);
+    if (ok) { S.right++; } else { S.hearts = Math.max(0, S.hearts - 1); }
+    S.lastOk = ok;
+  },
+  next() {
+    if (S.q < LQ.length - 1) { S.q++; S.pick = null; S.checked = false; }
+    else { S.done = true; S.completed = true; S.today = Math.min(S.goal, S.today + D.lesson.xp + S.right * 2); S.xp += D.lesson.xp + S.right * 2; }
+  },
+  exit() { S.view = null; S.tab = 'learn'; },
+  preset(v) { S.preset = v; S.sortK = null; S.sortD = -1; },
+  sort(v) { if (S.sortK === v) S.sortD *= -1; else { S.sortK = v; S.sortD = -1; } },
+  open(v) { S.ticker = v; S.tab = 'company'; S.view = null; S.hist = 'revenue'; },
+  hist(v) { S.hist = v; },
+  pending() { S.pending = !S.pending; },
+  theme() { themeCycle(); return 'noop'; },
+  demo(v) { /* landing-page CTAs drive the phone */ if (v === 'lesson') { ACT.start(); } else { ACT.tab(v); } document.getElementById('app').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); },
+};
+
+let lastKey = '';
+function render() {
+  const app = document.getElementById('screen');
+  const key = S.view ? 'lesson' + S.q + S.done + S.intro : S.tab + S.ticker;
+  app.innerHTML = R.render(S);
+  const tb = document.getElementById('tabbar');
+  if (tb) {
+    tb.style.display = S.view ? 'none' : '';
+    tb.querySelectorAll('[data-act="tab"]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.v === S.tab && !S.view)));
+  }
+  if (key !== lastKey) { app.scrollTop = 0; lastKey = key; }
+  if (R.after) R.after(S);
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const fn = ACT[b.dataset.act];
+  if (!fn) return;
+  e.preventDefault();
+  if (fn(b.dataset.v) !== 'noop') render();
+});
+document.addEventListener('keydown', (e) => {
+  if (!S.view || S.done || S.intro || e.target.matches('input,textarea')) return;
+  const n = parseInt(e.key, 10), q = LQ[S.q];
+  if (n >= 1 && n <= Q.choices(q).length && !S.checked) { ACT.pick(n - 1); render(); }
+  else if (e.key === 'Enter') { S.checked ? ACT.next() : ACT.check(); render(); }
+});
+function fitHeader() { const h = document.querySelector('.dir'); if (h) document.documentElement.style.setProperty('--dir-h', h.offsetHeight + 'px'); }
+window.addEventListener('resize', fitHeader);
+window.addEventListener('DOMContentLoaded', () => { fitHeader(); render(); });
+
+</script>
+<script>
+const X_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const R = {
+  render(S) { return S.view === 'lesson' ? `<div class="lwrap">${R.lesson(S)}</div>` : R[S.tab](S); },
+
+  learn(S) {
+    const units = D.units.slice(0, 4);
+    return `<div class="pad">
+      <div class="mast"><span class="word">ten<i>bagger</i></span>
+        <span class="mast-meta num"><span><strong>${S.streak}</strong>-day streak</span><span><strong>${S.xp}</strong> XP</span></span></div>
+      <div class="dateline"><span>Fri, Sep 25</span><span>Today's reading</span></div>
+      <div class="lead">
+        <span class="kicker">Unit 2 · Lesson 1</span>
+        <h2>${D.lesson.title}</h2>
+        <p>${D.units[1].summary}</p>
+        <div class="meter" aria-label="Daily goal"><i style="width:${(S.today / S.goal) * 100}%"></i></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span class="num" style="font-size:12px;color:var(--ink-soft)">${S.today} / ${S.goal} XP today</span>
+          <button class="btn" data-act="start">${S.today >= S.goal ? 'Read again' : 'Continue reading'}</button>
+        </div>
+      </div>
+      <div class="toc">${units.map((u, ui) => `
+        <section class="unit">
+          <span class="kicker">Unit ${ui + 1}</span><h3>${u.title}</h3><p>${u.summary}</p>
+          ${u.lessons.map((l, li) => {
+            const pos = ui * 10 + li, cur = S.completed ? 11 : 10;
+            const st = pos < cur ? 'done' : pos === cur ? 'cur' : 'lock';
+            const lab = st === 'done' ? 'Read ✓' : st === 'cur' ? 'Continue →' : 'Locked';
+            return `<button class="les ${st}" ${st !== 'lock' ? 'data-act="start"' : 'disabled'}><span class="n num">${ui + 1}.${li + 1}</span><span class="t">${l.title}</span><span class="s">${lab}</span></button>`;
+          }).join('')}
+        </section>`).join('')}
+      </div>
+      <p class="fine">${D.disclaimer}</p>
+    </div>`;
+  },
+
+  lesson(S) {
+    const bar = (n) => `<div class="lbar"><button class="x" data-act="exit" aria-label="Close lesson">${X_ICON}</button>
+      <div class="segs">${LQ.map((_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>
+      <span class="hearts num"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/></svg>${S.hearts}</span></div>`;
+    if (S.done) return `${bar(3)}<div class="done-card">
+      <span class="kicker">Lesson complete</span>
+      <div class="big num">${S.right}/${LQ.length}</div>
+      <h2 style="margin:8px 0 4px">${D.lesson.title}</h2>
+      <p style="color:var(--ink-soft);margin:0">+${D.lesson.xp + S.right * 2} XP · streak kept at ${S.streak} days</p>
+      <div class="unlock"><span class="kicker">Unlocked in Money</span><br>You just compared how much of each dollar companies keep. Your own version: how much of Alex's cash is left after the card is paid.</div>
+      <button class="btn block" data-act="exit">Back to contents</button>
+      <button class="btn ghost block" style="margin-top:8px" data-act="tab" data-v="money">See it on your money</button></div>`;
+    if (S.intro) return `${bar(0)}<div class="qwrap intro"><span class="kicker">Unit 2 · Lesson 1 · ${LQ.length} questions</span>
+      <h1>${D.lesson.title}</h1>${D.lesson.intro.split(/(?<=\.) (?=[A-Z])/).reduce((a, s, i) => { a[Math.min(1, Math.floor(i / 2))] = (a[Math.min(1, Math.floor(i / 2))] || '') + s + ' '; return a; }, []).map((p) => `<p>${F.md(p)}</p>`).join('')}</div>
+      <div class="lfoot"><button class="btn block" data-act="begin">Begin</button></div>`;
+    const q = LQ[S.q], ch = Q.choices(q), ci = Q.correctIndex(q), src = Q.src(q);
+    return `${bar(S.q + (S.checked ? 1 : 0))}<div class="qwrap">
+      <span class="kicker">${Q.kind(q)} · ${S.q + 1} of ${LQ.length}</span>
+      <p class="prompt">${F.esc(q.prompt)}</p>
+      <div class="opts" role="group" aria-label="Answers">${ch.map((c, i) => {
+        const cls = S.checked ? (i === ci ? 'right' : i === S.pick ? 'wrong' : '') : '';
+        return `<button class="opt ${cls}" data-act="pick" data-v="${i}" aria-pressed="${S.pick === i}" ${S.checked ? 'disabled' : ''}><span class="k">${'ABCD'[i]}</span><span class="num">${F.esc(c)}</span></button>`;
+      }).join('')}</div></div>
+      <div class="lfoot">${S.checked ? `<div class="note ${S.lastOk ? '' : 'bad'}" role="status"><h3>${S.lastOk ? 'Correct.' : 'Not quite.'}</h3><p>${F.esc(q.explanation)}</p>
+        <button class="src" data-act="open" data-v="${src.t}"><b>Source</b> ${src.t} 10-K · FY${src.fy} · ${src.what}</button></div>
+        <button class="btn block" data-act="next">${S.q < LQ.length - 1 ? 'Continue' : 'Finish lesson'}</button>`
+        : `<button class="btn block" data-act="check" ${S.pick == null ? 'disabled' : ''}>Check answer</button>`}</div>`;
+  },
+
+  screener(S) {
+    const { p, rows, k, d } = runPreset(S.preset, S.sortK, S.sortD);
+    const arrow = (c) => (c === k ? (d < 0 ? ' ↓' : ' ↑') : '');
+    return `<div class="pad">
+      <div class="mast"><h1 style="font-size:26px">Screener</h1><span class="mast-meta">12 companies</span></div>
+      <div class="seg" role="group" aria-label="Presets">${PRESETS.map((x) => `<button data-act="preset" data-v="${x.id}" aria-pressed="${x.id === p.id}">${x.short}</button>`).join('')}</div>
+      <p class="rule">“${p.rule}.”</p>
+      <div class="count num">${rows.length} of ${D.companies.length} pass · ${p.why}</div>
+      <table class="tbl num"><thead><tr><th>Company</th>${p.cols.map((c) => `<th><button data-act="sort" data-v="${c}">${MET[c].s}${arrow(c)}</button></th>`).join('')}</tr></thead>
+      <tbody>${rows.map((c) => `<tr data-act="open" data-v="${c.t}"><td><span class="tk">${c.t}</span><span class="nm">${c.n}</span></td>${p.cols.map((k2) => `<td>${fm(c, k2)}</td>`).join('')}</tr>`).join('')}</tbody></table>
+      <p class="fine">Latest fiscal year per company; years differ. Tap a row for the tearsheet.</p></div>`;
+  },
+
+  company(S) {
+    const c = CO[S.ticker], series = c.h[S.hist] || [];
+    const sec = (t, ks) => `<h4>${t}</h4>${ks.map((k) => `<div class="lrow"><span class="lbl">${MET[k].l}</span><span class="dots"></span><span class="v num">${fm(c, k)}</span></div>`).join('')}`;
+    return `<div class="pad">
+      <div class="chips" role="group" aria-label="Companies">${D.companies.map((x) => `<button data-act="open" data-v="${x.t}" aria-pressed="${x.t === c.t}">${x.t}</button>`).join('')}</div>
+      <div class="co-head"><span class="kicker">${c.t} · ${c.s}</span><h1>${c.n}</h1><div class="co-sub">${c.i} · Fundamentals FY${c.fy}</div></div>
+      <div class="px"><strong class="num">${F.price(c.p)}</strong><span class="tag">Sample price · ${c.pd}</span></div>
+      <div class="chart"><div class="seg" role="group" aria-label="History metric">${Object.keys(HIST).map((k) => `<button data-act="hist" data-v="${k}" aria-pressed="${k === S.hist}">${HIST[k].l}</button>`).join('')}</div>
+        ${R.chart(series, HIST[S.hist])}</div>
+      <div class="ledger">
+        ${sec('Valuation', ['market_cap', 'pe', 'ps', 'ev_ebitda', 'fcf_yield', 'dividend_yield'])}
+        ${sec('Profitability', ['gross_margin', 'operating_margin', 'net_margin', 'roic'])}
+        ${sec('Balance sheet', ['net_cash', 'debt_to_equity', 'current_ratio'])}
+        ${sec('Growth', ['revenue_growth_yoy', 'revenue_cagr_3y'])}
+      </div>
+      <button class="btn block" style="margin-top:20px" data-act="start">Practise with a lesson</button>
+      <p class="fine">Source: ${c.t} annual reports (10-K), FY${c.h.revenue[0][0]}–FY${c.fy}. Price is a sample for the prototype.</p></div>`;
+  },
+
+  chart(series, meta) {
+    const s = series.filter((p) => p[1] != null);
+    if (s.length < 2) return `<p style="font-size:13px;color:var(--ink-soft);margin:24px 0;text-align:center">Not reported for this company.<br>Banks and oil majors don't report a gross profit line.</p>`;
+    const W = 340, H = 150, g = scaleSeries(s, W, H, { l: 6, r: 6, t: 22, b: 18 }), last = g.pts[g.pts.length - 1];
+    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${meta.l} by fiscal year, latest ${meta.f(last.v)}">
+      <line class="zero" x1="${g.pad.l}" x2="${W - g.pad.r}" y1="${g.zeroY}" y2="${g.zeroY}"/>
+      <path class="ar" d="${g.area}"/><path class="ln" d="${g.line}"/>
+      ${g.pts.map((p) => `<circle class="dot" cx="${p.x}" cy="${p.y}" r="2.6"><title>FY${p.yr}: ${meta.f(p.v)}</title></circle>`).join('')}
+      <text class="val" x="${Math.min(last.x, W - 6)}" y="${Math.max(12, last.y - 9)}" text-anchor="end">${meta.f(last.v)}</text>
+      <text x="${g.pts[0].x}" y="${H - 4}">FY${g.pts[0].yr}</text><text x="${last.x}" y="${H - 4}" text-anchor="end">FY${last.yr}</text></svg>`;
+  },
+
+  money(S) {
+    const cv = coverage(S.pending);
+    const b = (x) => `<span class="basis ${x}">${x.toUpperCase()}</span>`;
+    const accts = (g) => M.accounts.filter((a) => a.group === g).map((a) => `${a.name} ${F.cash(a.amt)}`).join(' · ');
+    return `<div class="pad">
+      <div class="mast"><h1 style="font-size:26px">Money</h1><span class="mast-meta">${M.who} · fictional</span></div>
+      <div class="dateline"><span>As of ${M.asOf}</span><span>Read like a 10-K</span></div>
+      <div class="verdict ${cv.verdict === 'covered' ? '' : 'warn'}" role="status">
+        <span class="kicker">Card due ${M.due} · ${M.daysAway} days</span>
+        <h2 class="num">${cv.headline}</h2><p>${cv.sub}</p>
+        <button class="toggle" data-act="pending" aria-pressed="${S.pending}"><span class="sw"></span>Count pending pay ($93 from 6 unsubmitted hours)</button>
+      </div>
+      <span class="kicker">The equation</span>
+      <div class="eq num" style="margin-top:6px">
+        ${cv.steps.map((s) => `<div class="r"><span class="op">${s.op}</span><span>${s.label}${b(s.basis)}${s.when ? `<span class="d">${s.when === 'daily' ? 'through Oct 16' : s.when}</span>` : ''}</span><span class="a">${F.cash(s.amt)}</span></div>`).join('')}
+        <div class="r tot"><span class="op">=</span><span>Left after paying in full</span><span>${F.cash(cv.afterFull)}</span></div>
+      </div>
+      <p class="fine" style="margin-top:8px">Expected, not guaranteed. Investments are not counted as spendable cash.</p>
+      <span class="kicker" style="display:block;margin-top:22px">Balance sheet</span>
+      <div class="bs num">
+        <div><small>Liquidity</small><strong>${F.cash(M.liquid)}</strong><span>${accts('liq')}</span></div>
+        <div><small>Investments</small><strong>${F.cash(M.invested)}</strong><span>${accts('inv')}</span></div>
+        <div><small>Debt</small><strong>${F.cash(M.debt)}</strong><span>${accts('debt')}</span></div>
+      </div>
+      <div class="nw num"><span>Net worth</span><span>${F.cash(M.netWorth)}</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:22px"><span class="kicker">Scorecard</span><span class="num" style="font-size:13px">Overall <b style="font:600 20px var(--serif);color:var(--primary)">${M.overall.g}</b> · GPA ${M.overall.gpa}</span></div>
+      <div class="grades">${M.scorecard.map((g) => `<div class="grade"><div class="gh"><strong>${g.t}</strong><span class="g ${g.g}">${g.g}</span></div><p><b class="num" style="color:var(--ink)">${g.metric}</b> · ${g.why}</p><em>Learned in: ${g.lesson}</em></div>`).join('')}</div>
+      <p class="fine">Describes what the numbers show. Never tells anyone what to buy, sell or do.</p></div>`;
+  },
+};
+</script>
+</body>
+</html>

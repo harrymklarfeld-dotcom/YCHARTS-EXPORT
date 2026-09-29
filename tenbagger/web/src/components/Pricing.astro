@@ -1,0 +1,37 @@
+---
+import site from '../../site.config.ts';
+const tiers = site.pricing.tiers;
+---
+<div class="pricing">
+  {tiers.map((t) => (
+    <article class={`tier ${t.highlight ? 'tier-hi' : ''}`} aria-labelledby={`tier-${t.id}`}>
+      {t.highlight && <p class="tier-flag">Most complete</p>}
+      <h3 id={`tier-${t.id}`}>{t.name}</h3>
+      <p class="tier-blurb muted">{t.blurb}</p>
+      <p class="tier-price"><span class="tier-amt">{t.price}</span> <span class="muted">{t.period}</span></p>
+      {'altPrice' in t && t.altPrice && <p class="tier-alt small">{t.altPrice}</p>}
+      <ul>
+        {t.features.map((f) => <li>{f}</li>)}
+      </ul>
+      {site.features.showWaitlist && <a class={`btn ${t.highlight ? 'btn-primary' : ''}`} href="/#waitlist">{t.cta}</a>}
+    </article>
+  ))}
+</div>
+<p class="small muted pricing-note">{site.pricing.note}</p>
+
+<style is:global>
+  .pricing { display: grid; gap: 18px; }
+  @media (min-width: 880px) { .pricing { grid-template-columns: repeat(3, 1fr); align-items: stretch; } }
+  .tier { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 26px 24px; }
+  .tier-hi { border: 2px solid var(--accent); box-shadow: 0 20px 40px -28px rgb(0 0 0 / 0.35); }
+  .tier-flag { position: absolute; top: -12px; left: 22px; margin: 0; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; background: var(--accent); color: var(--accent-ink); padding: 3px 8px; border-radius: 3px; }
+  .tier h3 { font-size: 1.5rem; margin-bottom: 2px; }
+  .tier-blurb { margin-bottom: 14px; }
+  .tier-price { margin: 0; }
+  .tier-amt { font-family: var(--font-display); font-size: 2.6rem; font-weight: 600; letter-spacing: -0.02em; }
+  .tier-alt { color: var(--muted); margin: 2px 0 0; }
+  .tier ul { list-style: none; padding: 0; margin: 18px 0 22px; display: grid; gap: 8px; font-size: 0.95rem; flex: 1; }
+  .tier li { padding-left: 22px; position: relative; }
+  .tier li::before { content: ''; position: absolute; left: 2px; top: 0.55em; width: 10px; height: 6px; border-left: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(-45deg); }
+  .pricing-note { margin-top: 16px; }
+</style>

@@ -1,0 +1,2745 @@
+{
+  "schema_version": 1,
+  "sample": true,
+  "sampleLabel": "Sample data — link accounts later",
+  "persona": {
+    "name": "Alex",
+    "age": 20,
+    "year": "sophomore",
+    "blurb": "Fictional student with a campus job and tutoring. Every number here is made up."
+  },
+  "asOf": "2026-10-05",
+  "horizonDays": 30,
+  "streams": [
+    {
+      "id": "campus-job",
+      "name": "Campus library job",
+      "kind": "hourly",
+      "rate": 15.5,
+      "schedule": {
+        "unitsPerWeek": 10,
+        "weekdays": [
+          1,
+          3,
+          5
+        ]
+      },
+      "payFrequency": "biweekly",
+      "nextPayDate": "2026-10-09",
+      "withholdingRate": 0.05,
+      "condition": "hours submitted",
+      "pendingUnsubmitted": {
+        "units": 19.5,
+        "periodEnd": "2026-10-03"
+      }
+    },
+    {
+      "id": "tutoring",
+      "name": "Math tutoring",
+      "kind": "per_session",
+      "rate": 30,
+      "schedule": {
+        "unitsPerWeek": 2,
+        "weekdays": [
+          2,
+          4
+        ]
+      },
+      "payFrequency": "biweekly",
+      "nextPayDate": "2026-10-15",
+      "withholdingRate": 0,
+      "condition": "session reports filed"
+    }
+  ],
+  "deposits": [
+    {
+      "date": "2026-07-03",
+      "amount": 235.6,
+      "streamId": "campus-job",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-07-09",
+      "amount": 60,
+      "streamId": "tutoring",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-07-17",
+      "amount": 294.5,
+      "streamId": "campus-job",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-07-23",
+      "amount": 60,
+      "streamId": "tutoring",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-07-31",
+      "amount": 265.05,
+      "streamId": "campus-job",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-08-14",
+      "amount": 176.7,
+      "streamId": "campus-job",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-08-20",
+      "amount": 60,
+      "streamId": "tutoring",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-08-28",
+      "amount": 294.5,
+      "streamId": "campus-job",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-09-03",
+      "amount": 90,
+      "streamId": "tutoring",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-09-17",
+      "amount": 120,
+      "streamId": "tutoring",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-09-25",
+      "amount": 353.4,
+      "streamId": "campus-job",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-10-01",
+      "amount": 90,
+      "streamId": "tutoring",
+      "basis": "verified"
+    },
+    {
+      "date": "2026-10-02",
+      "amount": 250,
+      "streamId": "other",
+      "basis": "verified"
+    }
+  ],
+  "snapshots": [
+    {
+      "takenAt": "2026-08-14T20:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 620,
+          "asOf": "2026-08-14",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 380,
+          "asOf": "2026-08-14",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 980,
+          "asOf": "2026-08-14",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2350,
+          "asOf": "2026-08-14",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-08-14",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [
+        {
+          "accountId": "card",
+          "statementBalance": 980,
+          "minimumDue": 25,
+          "dueDate": "2026-08-17",
+          "apr": 0.2499,
+          "statementDate": "2026-07-25"
+        }
+      ],
+      "note": "Statement posted; due Aug 17."
+    },
+    {
+      "takenAt": "2026-08-18T20:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 390,
+          "asOf": "2026-08-18",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 380,
+          "asOf": "2026-08-18",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 250,
+          "asOf": "2026-08-18",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2380,
+          "asOf": "2026-08-18",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-08-18",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Paid $730 toward the card."
+    },
+    {
+      "takenAt": "2026-09-01T20:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 700,
+          "asOf": "2026-09-01",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 390,
+          "asOf": "2026-09-01",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 520,
+          "asOf": "2026-09-01",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2450,
+          "asOf": "2026-09-01",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-09-01",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Start of fall term."
+    },
+    {
+      "takenAt": "2026-09-16T20:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 820,
+          "asOf": "2026-09-16",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 400,
+          "asOf": "2026-09-16",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 1050,
+          "asOf": "2026-09-16",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2500,
+          "asOf": "2026-09-16",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-09-16",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [
+        {
+          "accountId": "card",
+          "statementBalance": 1050,
+          "minimumDue": 25,
+          "dueDate": "2026-09-17",
+          "apr": 0.2499,
+          "statementDate": "2026-08-25"
+        }
+      ],
+      "note": "Statement posted; due Sep 17."
+    },
+    {
+      "takenAt": "2026-09-18T20:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 190,
+          "asOf": "2026-09-18",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 400,
+          "asOf": "2026-09-18",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 300,
+          "asOf": "2026-09-18",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2520,
+          "asOf": "2026-09-18",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-09-18",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Paid $750 toward the card."
+    },
+    {
+      "takenAt": "2026-09-30T20:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 500,
+          "asOf": "2026-09-30",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 410,
+          "asOf": "2026-09-30",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 900,
+          "asOf": "2026-09-30",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2580,
+          "asOf": "2026-09-30",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-09-30",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Textbooks and groceries on the card."
+    },
+    {
+      "takenAt": "2026-10-05T20:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 840,
+          "asOf": "2026-10-05",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 410,
+          "asOf": "2026-10-05",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 1120,
+          "asOf": "2026-10-05",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2600,
+          "asOf": "2026-10-05",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-10-05",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [
+        {
+          "accountId": "card",
+          "statementBalance": 1120,
+          "minimumDue": 25,
+          "dueDate": "2026-10-17",
+          "apr": 0.2499,
+          "statementDate": "2026-09-24"
+        }
+      ],
+      "note": "Statement posted; due Oct 17. Library hours for the period ending Oct 3 not submitted yet."
+    }
+  ],
+  "monthEndSnapshots": [
+    {
+      "takenAt": "2026-04-30T21:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 410,
+          "asOf": "2026-04-30",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 300,
+          "asOf": "2026-04-30",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 640,
+          "asOf": "2026-04-30",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 1900,
+          "asOf": "2026-04-30",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 150,
+          "asOf": "2026-04-30",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Month-end check-in. Spring term."
+    },
+    {
+      "takenAt": "2026-05-31T21:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 980,
+          "asOf": "2026-05-31",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 320,
+          "asOf": "2026-05-31",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 380,
+          "asOf": "2026-05-31",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2020,
+          "asOf": "2026-05-31",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-05-31",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Month-end check-in. Added $150 to the Roth IRA."
+    },
+    {
+      "takenAt": "2026-06-30T21:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 760,
+          "asOf": "2026-06-30",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 350,
+          "asOf": "2026-06-30",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 520,
+          "asOf": "2026-06-30",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2150,
+          "asOf": "2026-06-30",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-06-30",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Month-end check-in. Summer hours at the library."
+    },
+    {
+      "takenAt": "2026-07-31T21:00",
+      "accounts": [
+        {
+          "id": "chk",
+          "name": "Checking",
+          "kind": "checking",
+          "balance": 540,
+          "asOf": "2026-07-31",
+          "basis": "verified"
+        },
+        {
+          "id": "sav",
+          "name": "Savings",
+          "kind": "savings",
+          "balance": 370,
+          "asOf": "2026-07-31",
+          "basis": "verified"
+        },
+        {
+          "id": "card",
+          "name": "Student credit card",
+          "kind": "credit_card",
+          "balance": 610,
+          "asOf": "2026-07-31",
+          "basis": "verified",
+          "creditLimit": 1500
+        },
+        {
+          "id": "brk",
+          "name": "Brokerage",
+          "kind": "brokerage",
+          "balance": 2240,
+          "asOf": "2026-07-31",
+          "basis": "verified"
+        },
+        {
+          "id": "roth",
+          "name": "Roth IRA",
+          "kind": "retirement",
+          "balance": 300,
+          "asOf": "2026-07-31",
+          "basis": "manual"
+        }
+      ],
+      "liabilities": [],
+      "note": "Month-end check-in."
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx-001",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -33.4,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-002",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -45.85,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-003",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -45.32,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-004",
+      "date": "2026-07-07",
+      "accountId": "card",
+      "amount": -42.26,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-005",
+      "date": "2026-07-08",
+      "accountId": "card",
+      "amount": -4.21,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-006",
+      "date": "2026-07-08",
+      "accountId": "chk",
+      "amount": -30,
+      "name": "PINEPHONE WIRELESS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-007",
+      "date": "2026-07-09",
+      "accountId": "card",
+      "amount": -5.59,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-008",
+      "date": "2026-07-09",
+      "accountId": "chk",
+      "amount": 60,
+      "name": "TUTORING SESSIONS P2P",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-009",
+      "date": "2026-07-10",
+      "accountId": "card",
+      "amount": -4.18,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-010",
+      "date": "2026-07-10",
+      "accountId": "chk",
+      "amount": -9.9,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-011",
+      "date": "2026-07-11",
+      "accountId": "card",
+      "amount": -37.78,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-012",
+      "date": "2026-07-11",
+      "accountId": "card",
+      "amount": -33.49,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-013",
+      "date": "2026-07-12",
+      "accountId": "card",
+      "amount": -13.68,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-014",
+      "date": "2026-07-12",
+      "accountId": "card",
+      "amount": -10.99,
+      "name": "STREAMTUNES MUSIC",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-015",
+      "date": "2026-07-13",
+      "accountId": "card",
+      "amount": -17.84,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-016",
+      "date": "2026-07-15",
+      "accountId": "card",
+      "amount": -3.94,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-017",
+      "date": "2026-07-15",
+      "accountId": "chk",
+      "amount": -10,
+      "name": "TRANSFER TO SAVINGS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-018",
+      "date": "2026-07-15",
+      "accountId": "sav",
+      "amount": 10,
+      "name": "TRANSFER FROM CHECKING",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-019",
+      "date": "2026-07-17",
+      "accountId": "card",
+      "amount": 480,
+      "name": "PAYMENT THANK YOU",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-020",
+      "date": "2026-07-17",
+      "accountId": "chk",
+      "amount": 294.5,
+      "name": "CAMPUS PAYROLL DIR DEP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-021",
+      "date": "2026-07-17",
+      "accountId": "chk",
+      "amount": -480,
+      "name": "STUDENT CARD PAYMENT",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-022",
+      "date": "2026-07-18",
+      "accountId": "card",
+      "amount": -23.52,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-023",
+      "date": "2026-07-19",
+      "accountId": "card",
+      "amount": -26.25,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-024",
+      "date": "2026-07-19",
+      "accountId": "card",
+      "amount": -14,
+      "name": "CINEMA 8 MOVIE TICKETS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-025",
+      "date": "2026-07-21",
+      "accountId": "card",
+      "amount": -15.49,
+      "name": "FLIXBOX VIDEO STREAMING",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-026",
+      "date": "2026-07-22",
+      "accountId": "card",
+      "amount": -4.87,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-027",
+      "date": "2026-07-23",
+      "accountId": "card",
+      "amount": -10.03,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-028",
+      "date": "2026-07-23",
+      "accountId": "chk",
+      "amount": 60,
+      "name": "TUTORING SESSIONS P2P",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-029",
+      "date": "2026-07-24",
+      "accountId": "card",
+      "amount": -6.05,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-030",
+      "date": "2026-07-24",
+      "accountId": "card",
+      "amount": -10.2,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-031",
+      "date": "2026-07-25",
+      "accountId": "card",
+      "amount": -25.11,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-032",
+      "date": "2026-07-27",
+      "accountId": "card",
+      "amount": -13.77,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-033",
+      "date": "2026-07-27",
+      "accountId": "card",
+      "amount": -12.18,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-034",
+      "date": "2026-07-28",
+      "accountId": "card",
+      "amount": -32.77,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-035",
+      "date": "2026-07-28",
+      "accountId": "card",
+      "amount": -16.7,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-036",
+      "date": "2026-07-29",
+      "accountId": "card",
+      "amount": -5.63,
+      "name": "BEANERY COFFEE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-037",
+      "date": "2026-07-29",
+      "accountId": "card",
+      "amount": -24.73,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-038",
+      "date": "2026-07-31",
+      "accountId": "card",
+      "amount": -30.17,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-039",
+      "date": "2026-07-31",
+      "accountId": "chk",
+      "amount": 265.05,
+      "name": "CAMPUS PAYROLL DIR DEP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-040",
+      "date": "2026-07-31",
+      "accountId": "chk",
+      "amount": -13.49,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-041",
+      "date": "2026-07-31",
+      "accountId": "sav",
+      "amount": 0.31,
+      "name": "INTEREST PAID",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-042",
+      "date": "2026-08-01",
+      "accountId": "card",
+      "amount": -36.61,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-043",
+      "date": "2026-08-01",
+      "accountId": "chk",
+      "amount": -75,
+      "name": "TRANSFER TO BROKERAGE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-044",
+      "date": "2026-08-03",
+      "accountId": "card",
+      "amount": -3.56,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-045",
+      "date": "2026-08-03",
+      "accountId": "card",
+      "amount": -2.99,
+      "name": "CLOUDBOX STORAGE 200GB",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-046",
+      "date": "2026-08-04",
+      "accountId": "card",
+      "amount": -43.12,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-047",
+      "date": "2026-08-04",
+      "accountId": "card",
+      "amount": -13.58,
+      "name": "NOODLE BAR",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-048",
+      "date": "2026-08-04",
+      "accountId": "card",
+      "amount": -10.96,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-049",
+      "date": "2026-08-05",
+      "accountId": "card",
+      "amount": -4.38,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-050",
+      "date": "2026-08-06",
+      "accountId": "card",
+      "amount": -4.06,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-051",
+      "date": "2026-08-06",
+      "accountId": "card",
+      "amount": -12.96,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-052",
+      "date": "2026-08-07",
+      "accountId": "card",
+      "amount": -5.93,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-053",
+      "date": "2026-08-07",
+      "accountId": "card",
+      "amount": -41.72,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-054",
+      "date": "2026-08-08",
+      "accountId": "card",
+      "amount": -26.74,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-055",
+      "date": "2026-08-08",
+      "accountId": "chk",
+      "amount": -30,
+      "name": "PINEPHONE WIRELESS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-056",
+      "date": "2026-08-10",
+      "accountId": "card",
+      "amount": -14.58,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-057",
+      "date": "2026-08-10",
+      "accountId": "card",
+      "amount": -36.5,
+      "name": "DORM SUPPLIES STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-058",
+      "date": "2026-08-12",
+      "accountId": "card",
+      "amount": -3.81,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-059",
+      "date": "2026-08-12",
+      "accountId": "card",
+      "amount": -32.36,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-060",
+      "date": "2026-08-12",
+      "accountId": "card",
+      "amount": -17.14,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-061",
+      "date": "2026-08-12",
+      "accountId": "card",
+      "amount": -10.99,
+      "name": "STREAMTUNES MUSIC",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-062",
+      "date": "2026-08-14",
+      "accountId": "card",
+      "amount": -5.3,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-063",
+      "date": "2026-08-14",
+      "accountId": "card",
+      "amount": -42.71,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-064",
+      "date": "2026-08-14",
+      "accountId": "chk",
+      "amount": 176.7,
+      "name": "CAMPUS PAYROLL DIR DEP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-065",
+      "date": "2026-08-15",
+      "accountId": "chk",
+      "amount": -39.73,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-066",
+      "date": "2026-08-15",
+      "accountId": "chk",
+      "amount": -10,
+      "name": "TRANSFER TO SAVINGS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-067",
+      "date": "2026-08-15",
+      "accountId": "sav",
+      "amount": 10,
+      "name": "TRANSFER FROM CHECKING",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-068",
+      "date": "2026-08-17",
+      "accountId": "chk",
+      "amount": -5.29,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-069",
+      "date": "2026-08-18",
+      "accountId": "card",
+      "amount": 730,
+      "name": "PAYMENT THANK YOU",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-070",
+      "date": "2026-08-18",
+      "accountId": "chk",
+      "amount": -4.75,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-071",
+      "date": "2026-08-18",
+      "accountId": "chk",
+      "amount": -730,
+      "name": "STUDENT CARD PAYMENT",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-072",
+      "date": "2026-08-20",
+      "accountId": "chk",
+      "amount": 60,
+      "name": "TUTORING SESSIONS P2P",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-073",
+      "date": "2026-08-21",
+      "accountId": "card",
+      "amount": -15.49,
+      "name": "FLIXBOX VIDEO STREAMING",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-074",
+      "date": "2026-08-22",
+      "accountId": "card",
+      "amount": -33.39,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-075",
+      "date": "2026-08-25",
+      "accountId": "card",
+      "amount": -4.66,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-076",
+      "date": "2026-08-25",
+      "accountId": "card",
+      "amount": -10.8,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-077",
+      "date": "2026-08-25",
+      "accountId": "chk",
+      "amount": -45,
+      "name": "CAMPUS TRANSIT PASS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-078",
+      "date": "2026-08-26",
+      "accountId": "card",
+      "amount": -6.43,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-079",
+      "date": "2026-08-26",
+      "accountId": "card",
+      "amount": -15.08,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-080",
+      "date": "2026-08-26",
+      "accountId": "card",
+      "amount": -9.3,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-081",
+      "date": "2026-08-27",
+      "accountId": "card",
+      "amount": -28.4,
+      "name": "CAMPUS BOOKSTORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-082",
+      "date": "2026-08-27",
+      "accountId": "card",
+      "amount": -5.39,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-083",
+      "date": "2026-08-27",
+      "accountId": "card",
+      "amount": -8.45,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-084",
+      "date": "2026-08-27",
+      "accountId": "card",
+      "amount": -10.05,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-085",
+      "date": "2026-08-28",
+      "accountId": "card",
+      "amount": -6.2,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-086",
+      "date": "2026-08-28",
+      "accountId": "card",
+      "amount": -23.95,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-087",
+      "date": "2026-08-28",
+      "accountId": "card",
+      "amount": -12.36,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-088",
+      "date": "2026-08-28",
+      "accountId": "chk",
+      "amount": 294.5,
+      "name": "CAMPUS PAYROLL DIR DEP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-089",
+      "date": "2026-08-29",
+      "accountId": "card",
+      "amount": -36.31,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-090",
+      "date": "2026-08-29",
+      "accountId": "card",
+      "amount": -14.1,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-091",
+      "date": "2026-08-30",
+      "accountId": "card",
+      "amount": -14.88,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-092",
+      "date": "2026-08-31",
+      "accountId": "card",
+      "amount": -6.37,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-093",
+      "date": "2026-08-31",
+      "accountId": "sav",
+      "amount": 0.3,
+      "name": "INTEREST PAID",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-094",
+      "date": "2026-09-01",
+      "accountId": "card",
+      "amount": -4.03,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-095",
+      "date": "2026-09-01",
+      "accountId": "card",
+      "amount": -4.36,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-096",
+      "date": "2026-09-01",
+      "accountId": "chk",
+      "amount": -17.62,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-097",
+      "date": "2026-09-01",
+      "accountId": "chk",
+      "amount": -75,
+      "name": "TRANSFER TO BROKERAGE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-098",
+      "date": "2026-09-02",
+      "accountId": "card",
+      "amount": -32.94,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-099",
+      "date": "2026-09-02",
+      "accountId": "card",
+      "amount": -38.61,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-100",
+      "date": "2026-09-02",
+      "accountId": "card",
+      "amount": -14.26,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-101",
+      "date": "2026-09-03",
+      "accountId": "card",
+      "amount": -2.99,
+      "name": "CLOUDBOX STORAGE 200GB",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-102",
+      "date": "2026-09-03",
+      "accountId": "card",
+      "amount": -5.09,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-103",
+      "date": "2026-09-03",
+      "accountId": "card",
+      "amount": -10.81,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-104",
+      "date": "2026-09-03",
+      "accountId": "chk",
+      "amount": 90,
+      "name": "TUTORING SESSIONS P2P",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-105",
+      "date": "2026-09-04",
+      "accountId": "card",
+      "amount": -5.99,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-106",
+      "date": "2026-09-04",
+      "accountId": "card",
+      "amount": -9.55,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-107",
+      "date": "2026-09-05",
+      "accountId": "card",
+      "amount": -30.1,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-108",
+      "date": "2026-09-05",
+      "accountId": "card",
+      "amount": -21.69,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-109",
+      "date": "2026-09-06",
+      "accountId": "card",
+      "amount": -34.2,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-110",
+      "date": "2026-09-06",
+      "accountId": "card",
+      "amount": -13.87,
+      "name": "NOODLE BAR",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-111",
+      "date": "2026-09-06",
+      "accountId": "card",
+      "amount": -4.99,
+      "name": "STUDYPAL APP TRIAL",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-112",
+      "date": "2026-09-07",
+      "accountId": "card",
+      "amount": -6.32,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-113",
+      "date": "2026-09-07",
+      "accountId": "card",
+      "amount": -14.27,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-114",
+      "date": "2026-09-07",
+      "accountId": "card",
+      "amount": -15.71,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-115",
+      "date": "2026-09-08",
+      "accountId": "card",
+      "amount": -38.19,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-116",
+      "date": "2026-09-08",
+      "accountId": "card",
+      "amount": -10.45,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-117",
+      "date": "2026-09-08",
+      "accountId": "chk",
+      "amount": -30,
+      "name": "PINEPHONE WIRELESS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-118",
+      "date": "2026-09-10",
+      "accountId": "card",
+      "amount": -24,
+      "name": "CINEMA 8 MOVIE TICKETS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-119",
+      "date": "2026-09-10",
+      "accountId": "card",
+      "amount": -18.29,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-120",
+      "date": "2026-09-11",
+      "accountId": "card",
+      "amount": -26.37,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-121",
+      "date": "2026-09-11",
+      "accountId": "card",
+      "amount": -4.08,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-122",
+      "date": "2026-09-12",
+      "accountId": "card",
+      "amount": -41.92,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-123",
+      "date": "2026-09-12",
+      "accountId": "card",
+      "amount": -10.25,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-124",
+      "date": "2026-09-12",
+      "accountId": "card",
+      "amount": -10.99,
+      "name": "STREAMTUNES MUSIC",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-125",
+      "date": "2026-09-14",
+      "accountId": "card",
+      "amount": -9.68,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-126",
+      "date": "2026-09-15",
+      "accountId": "chk",
+      "amount": -10,
+      "name": "TRANSFER TO SAVINGS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-127",
+      "date": "2026-09-15",
+      "accountId": "sav",
+      "amount": 10,
+      "name": "TRANSFER FROM CHECKING",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-128",
+      "date": "2026-09-16",
+      "accountId": "card",
+      "amount": -5.05,
+      "name": "BEANERY COFFEE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-129",
+      "date": "2026-09-16",
+      "accountId": "card",
+      "amount": -31.57,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-130",
+      "date": "2026-09-16",
+      "accountId": "card",
+      "amount": -26.69,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-131",
+      "date": "2026-09-16",
+      "accountId": "card",
+      "amount": -11.08,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-132",
+      "date": "2026-09-17",
+      "accountId": "chk",
+      "amount": -3.5,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-133",
+      "date": "2026-09-17",
+      "accountId": "chk",
+      "amount": 120,
+      "name": "TUTORING SESSIONS P2P",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-134",
+      "date": "2026-09-18",
+      "accountId": "card",
+      "amount": 750,
+      "name": "PAYMENT THANK YOU",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-135",
+      "date": "2026-09-18",
+      "accountId": "chk",
+      "amount": -15.12,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-136",
+      "date": "2026-09-18",
+      "accountId": "chk",
+      "amount": -750,
+      "name": "STUDENT CARD PAYMENT",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-137",
+      "date": "2026-09-19",
+      "accountId": "card",
+      "amount": -36,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-138",
+      "date": "2026-09-19",
+      "accountId": "card",
+      "amount": -22.33,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-139",
+      "date": "2026-09-19",
+      "accountId": "card",
+      "amount": -9.06,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-140",
+      "date": "2026-09-20",
+      "accountId": "card",
+      "amount": -186.4,
+      "name": "CAMPUS BOOKSTORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-141",
+      "date": "2026-09-21",
+      "accountId": "card",
+      "amount": -4.31,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-142",
+      "date": "2026-09-21",
+      "accountId": "card",
+      "amount": -10.08,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-143",
+      "date": "2026-09-21",
+      "accountId": "card",
+      "amount": -15.49,
+      "name": "FLIXBOX VIDEO STREAMING",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-144",
+      "date": "2026-09-21",
+      "accountId": "card",
+      "amount": -15.28,
+      "name": "TACO STAND",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-145",
+      "date": "2026-09-22",
+      "accountId": "card",
+      "amount": -64,
+      "name": "TEXTBOOK RENTAL ONLINE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-146",
+      "date": "2026-09-23",
+      "accountId": "card",
+      "amount": -12.93,
+      "name": "SLICE PIZZA",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-147",
+      "date": "2026-09-24",
+      "accountId": "card",
+      "amount": -42.75,
+      "name": "DORM SUPPLIES STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-148",
+      "date": "2026-09-25",
+      "accountId": "card",
+      "amount": -13.96,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-149",
+      "date": "2026-09-25",
+      "accountId": "chk",
+      "amount": 353.4,
+      "name": "CAMPUS PAYROLL DIR DEP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-150",
+      "date": "2026-09-26",
+      "accountId": "card",
+      "amount": -58,
+      "name": "ARENA CONCERT TICKETS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-151",
+      "date": "2026-09-26",
+      "accountId": "card",
+      "amount": -33.96,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-152",
+      "date": "2026-09-26",
+      "accountId": "card",
+      "amount": -18.4,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-153",
+      "date": "2026-09-27",
+      "accountId": "card",
+      "amount": -38.03,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-154",
+      "date": "2026-09-29",
+      "accountId": "card",
+      "amount": -4.62,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-155",
+      "date": "2026-09-29",
+      "accountId": "card",
+      "amount": -8.09,
+      "name": "RIDENOW TRIP",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-156",
+      "date": "2026-09-30",
+      "accountId": "card",
+      "amount": -6.31,
+      "name": "BEANERY COFFEE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-157",
+      "date": "2026-09-30",
+      "accountId": "sav",
+      "amount": 0.29,
+      "name": "INTEREST PAID",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-158",
+      "date": "2026-10-01",
+      "accountId": "card",
+      "amount": -4.41,
+      "name": "CORNER BAKERY CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-159",
+      "date": "2026-10-01",
+      "accountId": "card",
+      "amount": -41.32,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-160",
+      "date": "2026-10-01",
+      "accountId": "chk",
+      "amount": -75,
+      "name": "TRANSFER TO BROKERAGE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-161",
+      "date": "2026-10-01",
+      "accountId": "chk",
+      "amount": 90,
+      "name": "TUTORING SESSIONS P2P",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-162",
+      "date": "2026-10-02",
+      "accountId": "card",
+      "amount": -4.89,
+      "name": "CAMPUS CAFE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-163",
+      "date": "2026-10-02",
+      "accountId": "card",
+      "amount": -32.2,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-164",
+      "date": "2026-10-02",
+      "accountId": "chk",
+      "amount": 250,
+      "name": "GIFT FROM FAMILY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-165",
+      "date": "2026-10-03",
+      "accountId": "card",
+      "amount": -16.86,
+      "name": "CAMPUS STORE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-166",
+      "date": "2026-10-03",
+      "accountId": "card",
+      "amount": -19.5,
+      "name": "CINEMA 8 MOVIE TICKETS",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-167",
+      "date": "2026-10-03",
+      "accountId": "card",
+      "amount": -2.99,
+      "name": "CLOUDBOX STORAGE 200GB",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-168",
+      "date": "2026-10-03",
+      "accountId": "card",
+      "amount": -23.95,
+      "name": "CORNER GROCERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-169",
+      "date": "2026-10-03",
+      "accountId": "card",
+      "amount": -23.21,
+      "name": "DASHEATS DELIVERY",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-170",
+      "date": "2026-10-05",
+      "accountId": "card",
+      "amount": -3.6,
+      "name": "BEANERY COFFEE",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-171",
+      "date": "2026-10-05",
+      "accountId": "card",
+      "amount": -32.5,
+      "name": "CAMPUS MARKET",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    },
+    {
+      "id": "tx-172",
+      "date": "2026-10-05",
+      "accountId": "card",
+      "amount": -14.57,
+      "name": "GRILL BURGER",
+      "category": null,
+      "pending": false,
+      "basis": "verified"
+    }
+  ],
+  "holdings": [
+    {
+      "accountId": "brk",
+      "ticker": "VOO",
+      "name": "S&P 500 index ETF",
+      "kind": "etf",
+      "assetClass": "US stock index fund",
+      "shares": 1.6,
+      "price": 612.4,
+      "costBasis": 880,
+      "basis": "verified"
+    },
+    {
+      "accountId": "brk",
+      "ticker": "NVDA",
+      "name": "NVIDIA",
+      "kind": "stock",
+      "assetClass": "Single stock",
+      "shares": 3,
+      "price": 182.1,
+      "costBasis": 420,
+      "basis": "verified"
+    },
+    {
+      "accountId": "brk",
+      "ticker": "AAPL",
+      "name": "Apple",
+      "kind": "stock",
+      "assetClass": "Single stock",
+      "shares": 2,
+      "price": 241.55,
+      "costBasis": 430,
+      "basis": "verified"
+    },
+    {
+      "accountId": "brk",
+      "ticker": "MU",
+      "name": "Micron Technology",
+      "kind": "stock",
+      "assetClass": "Single stock",
+      "shares": 1.5,
+      "price": 128.4,
+      "costBasis": 150,
+      "basis": "verified"
+    },
+    {
+      "accountId": "brk",
+      "ticker": "XLV",
+      "name": "Health care sector ETF",
+      "kind": "etf",
+      "assetClass": "Sector fund",
+      "shares": 1,
+      "price": 146.2,
+      "costBasis": 142,
+      "basis": "verified"
+    },
+    {
+      "accountId": "brk",
+      "ticker": "GLD",
+      "name": "Gold ETF",
+      "kind": "etf",
+      "assetClass": "Gold",
+      "shares": 0.5,
+      "price": 318,
+      "costBasis": 150,
+      "basis": "verified"
+    },
+    {
+      "accountId": "brk",
+      "ticker": null,
+      "name": "Cash",
+      "kind": "cash",
+      "assetClass": "Cash",
+      "shares": 92.96,
+      "price": 1,
+      "costBasis": 92.96,
+      "basis": "verified"
+    },
+    {
+      "accountId": "roth",
+      "ticker": "VOO",
+      "name": "S&P 500 index ETF",
+      "kind": "etf",
+      "assetClass": "US stock index fund",
+      "shares": 0.45,
+      "price": 612.4,
+      "costBasis": 262,
+      "basis": "manual"
+    },
+    {
+      "accountId": "roth",
+      "ticker": null,
+      "name": "Cash",
+      "kind": "cash",
+      "assetClass": "Cash",
+      "shares": 24.42,
+      "price": 1,
+      "costBasis": 24.42,
+      "basis": "manual"
+    }
+  ],
+  "investmentContributions": [
+    {
+      "date": "2026-05-01",
+      "amount": 75,
+      "accountId": "brk"
+    },
+    {
+      "date": "2026-06-01",
+      "amount": 75,
+      "accountId": "brk"
+    },
+    {
+      "date": "2026-07-01",
+      "amount": 75,
+      "accountId": "brk"
+    },
+    {
+      "date": "2026-08-01",
+      "amount": 75,
+      "accountId": "brk"
+    },
+    {
+      "date": "2026-09-01",
+      "amount": 75,
+      "accountId": "brk"
+    },
+    {
+      "date": "2026-10-01",
+      "amount": 75,
+      "accountId": "brk"
+    },
+    {
+      "date": "2026-05-20",
+      "amount": 150,
+      "accountId": "roth"
+    }
+  ],
+  "benchmark": {
+    "ticker": "VOO",
+    "note": "Made-up sample prices for the benchmark comparison.",
+    "prices": [
+      {
+        "date": "2026-04-30",
+        "price": 560.2
+      },
+      {
+        "date": "2026-05-01",
+        "price": 561
+      },
+      {
+        "date": "2026-05-20",
+        "price": 571.3
+      },
+      {
+        "date": "2026-05-31",
+        "price": 575.8
+      },
+      {
+        "date": "2026-06-01",
+        "price": 576
+      },
+      {
+        "date": "2026-06-30",
+        "price": 588.1
+      },
+      {
+        "date": "2026-07-01",
+        "price": 588.4
+      },
+      {
+        "date": "2026-07-31",
+        "price": 594.6
+      },
+      {
+        "date": "2026-08-01",
+        "price": 593.9
+      },
+      {
+        "date": "2026-08-14",
+        "price": 598.2
+      },
+      {
+        "date": "2026-08-18",
+        "price": 597
+      },
+      {
+        "date": "2026-09-01",
+        "price": 601.3
+      },
+      {
+        "date": "2026-09-16",
+        "price": 605.9
+      },
+      {
+        "date": "2026-09-18",
+        "price": 606.4
+      },
+      {
+        "date": "2026-09-30",
+        "price": 609.8
+      },
+      {
+        "date": "2026-10-01",
+        "price": 610.5
+      },
+      {
+        "date": "2026-10-05",
+        "price": 612.4
+      }
+    ]
+  },
+  "dividends": [
+    {
+      "date": "2026-05-14",
+      "ticker": "AAPL",
+      "accountId": "brk",
+      "amount": 0.52
+    },
+    {
+      "date": "2026-06-26",
+      "ticker": "VOO",
+      "accountId": "brk",
+      "amount": 2.61
+    },
+    {
+      "date": "2026-06-26",
+      "ticker": "NVDA",
+      "accountId": "brk",
+      "amount": 0.03
+    },
+    {
+      "date": "2026-06-24",
+      "ticker": "XLV",
+      "accountId": "brk",
+      "amount": 0.62
+    },
+    {
+      "date": "2026-06-26",
+      "ticker": "VOO",
+      "accountId": "roth",
+      "amount": 0.66
+    },
+    {
+      "date": "2026-07-21",
+      "ticker": "MU",
+      "accountId": "brk",
+      "amount": 0.17
+    },
+    {
+      "date": "2026-08-13",
+      "ticker": "AAPL",
+      "accountId": "brk",
+      "amount": 0.52
+    },
+    {
+      "date": "2026-09-23",
+      "ticker": "XLV",
+      "accountId": "brk",
+      "amount": 0.64
+    },
+    {
+      "date": "2026-09-25",
+      "ticker": "VOO",
+      "accountId": "brk",
+      "amount": 2.7
+    },
+    {
+      "date": "2026-09-25",
+      "ticker": "NVDA",
+      "accountId": "brk",
+      "amount": 0.03
+    },
+    {
+      "date": "2026-09-25",
+      "ticker": "VOO",
+      "accountId": "roth",
+      "amount": 0.72
+    }
+  ],
+  "rothContributions": [
+    {
+      "date": "2026-01-15",
+      "amount": 150,
+      "taxYear": 2026,
+      "accountId": "roth"
+    },
+    {
+      "date": "2026-05-20",
+      "amount": 150,
+      "taxYear": 2026,
+      "accountId": "roth"
+    }
+  ],
+  "detectedStreams": [
+    {
+      "id": "det-payroll",
+      "name": "CAMPUS PAYROLL DIR DEP",
+      "category": "INCOME_WAGES",
+      "frequency": "BIWEEKLY",
+      "status": "MATURE",
+      "averageAmount": 269.96,
+      "lastAmount": 353.4,
+      "lastDate": "2026-09-25",
+      "predictedNextDate": "2026-10-09",
+      "basis": "verified",
+      "matchesStreamId": "campus-job",
+      "asIncomeStream": null
+    },
+    {
+      "id": "det-p2p",
+      "name": "TUTORING SESSIONS P2P",
+      "category": "TRANSFER_IN",
+      "frequency": "BIWEEKLY",
+      "status": "EARLY_DETECTION",
+      "averageAmount": 80,
+      "lastAmount": 90,
+      "lastDate": "2026-10-01",
+      "predictedNextDate": "2026-10-15",
+      "basis": "verified",
+      "matchesStreamId": "tutoring",
+      "asIncomeStream": null
+    }
+  ],
+  "goals": {
+    "emergencyFundWeeks": 8,
+    "cardPayoffBy": "2027-03-31",
+    "rothTarget": 1000,
+    "rothYear": 2026
+  }
+}

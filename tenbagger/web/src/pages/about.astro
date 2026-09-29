@@ -1,0 +1,30 @@
+---
+import site from '../../site.config.ts';
+import Base from '../layouts/Base.astro';
+import Waitlist from '../components/Waitlist.astro';
+---
+<Base title="About" description={`Why we built ${site.name}: financial literacy from real filings, never stock tips.`}>
+  <div class="wrap narrow">
+    <header class="page-head">
+      <p class="kicker">About</p>
+      <h1>We teach the skill, not the pick.</h1>
+    </header>
+    <div class="prose">
+      <p>Most investing apps want you to trade. Most finance courses cost hundreds of dollars and use made-up case studies. {site.name} does neither: it’s a daily practice app for reading financial statements, where every lesson is built from a real company’s SEC filings.</p>
+      <h2>What we believe</h2>
+      <ul>
+        <li><strong>Skills compound.</strong> Three minutes a day of reading real numbers beats one weekend of theory.</li>
+        <li><strong>Real data, shown in full.</strong> Every answer comes from a filing, and every explanation shows the formula and the inputs. No AI-invented numbers.</li>
+        <li><strong>Never stock tips.</strong> We don’t say buy, sell or hold. We don’t give price targets. Screens are for studying, not shopping.</li>
+        <li><strong>Your money, described, never sold to.</strong> The money hub reads your own finances in the same language as a 10-K. It will never offer loans, advances or products.</li>
+      </ul>
+      <h2>Who it’s for</h2>
+      <p>Curious beginners who want to understand the businesses they buy from, finance students who want practice on real companies, and anyone who has stared at an annual report and wished it came with subtitles.</p>
+      <h2>Where the data comes from</h2>
+      <p>Company figures are extracted from the structured (XBRL) data that public companies file with the U.S. Securities and Exchange Commission. We compute ratios with published, documented formulas. During the preview, some figures and all share prices are placeholders; pages say so where it applies.</p>
+      <h2>Contact</h2>
+      <p><a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a></p>
+    </div>
+    <div style="padding:40px 0 64px"><Waitlist source="about" compact /></div>
+  </div>
+</Base>

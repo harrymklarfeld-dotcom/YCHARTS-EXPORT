@@ -1,0 +1,8 @@
+---
+interface Props { message: string; raw?: string }
+const { message, raw } = Astro.props;
+---
+<div class="widget widget-error" role="note">
+  <p style="margin:0">Interactive figure unavailable: {message}</p>
+  {raw && <pre class="small">{raw}</pre>}
+</div>

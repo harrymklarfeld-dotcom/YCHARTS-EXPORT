@@ -1,0 +1,27 @@
+---
+import site from '../../../site.config.ts';
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Privacy policy (draft)" description={`How ${site.name} handles your information. Draft.`}>
+  <div class="wrap narrow">
+    <header class="page-head">
+      <p class="kicker">Legal</p>
+      <h1>Privacy policy</h1>
+      <p class="banner"><span class="banner-icon" aria-hidden="true">!</span><span><strong>DRAFT, not in effect.</strong> This is a working draft for the preview site and has not been reviewed by counsel. It will be replaced before launch.</span></p>
+    </header>
+    <div class="prose">
+      <h2>What this website collects</h2>
+      <ul>
+        <li><strong>Waitlist email.</strong> If you join the waitlist, we store your email address and the page you signed up from, only to tell you when the app opens.{site.waitlist.endpoint ? '' : ' During the preview, sign-ups are kept only in your own browser and are not sent to us.'}</li>
+        <li><strong>Preferences in your browser.</strong> Your light/dark theme choice is saved in your browser’s local storage.</li>
+        <li><strong>Fonts.</strong> Pages load fonts from Google Fonts, which receives your IP address as part of the request.</li>
+      </ul>
+      <p>The website does not use advertising trackers, and we do not sell personal information.</p>
+      <h2>The app and money hub (planned)</h2>
+      <p>If you choose to link bank or card accounts in the app, account data is used only to show you your own numbers. We will describe the aggregator we use, what data it returns, how long we keep it, and how to disconnect and delete it before that feature launches. Linked-account data is never sold or used for advertising, and never used to offer you credit.</p>
+      <h2>Your choices</h2>
+      <p>Email <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> to be removed from the waitlist or to ask what we hold about you.</p>
+    </div>
+    <div style="height:64px"></div>
+  </div>
+</Base>

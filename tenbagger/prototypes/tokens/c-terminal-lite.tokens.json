@@ -1,0 +1,203 @@
+{
+  "$schema": "tenbagger-design-tokens/v1",
+  "direction": "C",
+  "name": "Terminal Lite",
+  "prototype": "../c-terminal-lite.html",
+  "defaultScheme": "dark",
+  "color": {
+    "light": {
+      "bg": "#EEF1F0",
+      "surface": "#FFFFFF",
+      "surfaceAlt": "#F4F7F6",
+      "ink": "#0E1916",
+      "inkSoft": "#4F605B",
+      "line": "#D6DEDB",
+      "primary": "#0A8A52",
+      "primaryInk": "#FFFFFF",
+      "primarySoft": "rgba(10,138,82,0.10)",
+      "accent": "#9A6200",
+      "accentSoft": "rgba(154,98,0,0.10)",
+      "danger": "#CF3B2E",
+      "dangerSoft": "rgba(207,59,46,0.09)",
+      "locked": "#83928D",
+      "flame": "#9A6200",
+      "heart": "#CF3B2E",
+      "unitA": "#0A8A52",
+      "unitB": "#0A73AD"
+    },
+    "dark": {
+      "bg": "#0A0E0F",
+      "surface": "#111718",
+      "surfaceAlt": "#172022",
+      "ink": "#E3ECE8",
+      "inkSoft": "#8D9D98",
+      "line": "#222D30",
+      "primary": "#3DD68C",
+      "primaryInk": "#06140D",
+      "primarySoft": "rgba(61,214,140,0.13)",
+      "accent": "#F5B342",
+      "accentSoft": "rgba(245,179,66,0.14)",
+      "danger": "#FF6B5E",
+      "dangerSoft": "rgba(255,107,94,0.13)",
+      "locked": "#5B6A66",
+      "flame": "#F5B342",
+      "heart": "#FF6B5E",
+      "unitA": "#3DD68C",
+      "unitB": "#5CC8FF"
+    },
+    "extra": {
+      "light": {
+        "lineStrong": "#C3CECA",
+        "info": "#0A73AD",
+        "infoSoft": "rgba(10,115,173,0.09)",
+        "dim": "#83928D",
+        "up": "#0A8A52",
+        "down": "#CF3B2E"
+      },
+      "dark": {
+        "lineStrong": "#2E3C40",
+        "info": "#5CC8FF",
+        "infoSoft": "rgba(92,200,255,0.12)",
+        "dim": "#5B6A66",
+        "up": "#3DD68C",
+        "down": "#FF6B5E"
+      }
+    }
+  },
+  "font": {
+    "display": {
+      "family": "IBM Plex Sans Condensed",
+      "googleFonts": "IBM+Plex+Sans+Condensed:wght@500;600;700",
+      "expoPackage": "@expo-google-fonts/ibm-plex-sans-condensed",
+      "rnFamilies": {
+        "500": "IBMPlexSansCondensed_500Medium",
+        "600": "IBMPlexSansCondensed_600SemiBold",
+        "700": "IBMPlexSansCondensed_700Bold"
+      }
+    },
+    "body": {
+      "family": "IBM Plex Sans",
+      "googleFonts": "IBM+Plex+Sans:wght@400;500;600",
+      "expoPackage": "@expo-google-fonts/ibm-plex-sans",
+      "rnFamilies": {
+        "400": "IBMPlexSans_400Regular",
+        "500": "IBMPlexSans_500Medium",
+        "600": "IBMPlexSans_600SemiBold"
+      }
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "googleFonts": "JetBrains+Mono:wght@400;500;700",
+      "expoPackage": "@expo-google-fonts/jetbrains-mono",
+      "rnFamilies": {
+        "400": "JetBrainsMono_400Regular",
+        "500": "JetBrainsMono_500Medium",
+        "700": "JetBrainsMono_700Bold"
+      }
+    },
+    "numerals": "all figures in mono"
+  },
+  "type": {
+    "display": {
+      "fontSize": 40,
+      "lineHeight": 42,
+      "fontWeight": "600",
+      "font": "display",
+      "letterSpacing": -0.6
+    },
+    "h1": {
+      "fontSize": 22,
+      "lineHeight": 25,
+      "fontWeight": "600",
+      "font": "display"
+    },
+    "h2": {
+      "fontSize": 19,
+      "lineHeight": 22,
+      "fontWeight": "600",
+      "font": "display"
+    },
+    "h3": {
+      "fontSize": 16,
+      "lineHeight": 20,
+      "fontWeight": "600",
+      "font": "display"
+    },
+    "prompt": {
+      "fontSize": 18,
+      "lineHeight": 24,
+      "fontWeight": "500",
+      "font": "body"
+    },
+    "body": {
+      "fontSize": 14,
+      "lineHeight": 20,
+      "fontWeight": "400",
+      "font": "body"
+    },
+    "small": {
+      "fontSize": 12,
+      "lineHeight": 17,
+      "fontWeight": "400",
+      "font": "body"
+    },
+    "data": {
+      "fontSize": 12,
+      "lineHeight": 17,
+      "fontWeight": "400",
+      "font": "mono",
+      "fontVariant": [
+        "tabular-nums"
+      ]
+    },
+    "kpi": {
+      "fontSize": 18,
+      "lineHeight": 22,
+      "fontWeight": "700",
+      "font": "mono"
+    },
+    "label": {
+      "fontSize": 10,
+      "lineHeight": 12,
+      "fontWeight": "600",
+      "font": "mono",
+      "letterSpacing": 0.8,
+      "textTransform": "uppercase",
+      "color": "extra.dim"
+    },
+    "button": {
+      "fontSize": 12,
+      "lineHeight": 14,
+      "fontWeight": "700",
+      "font": "mono",
+      "letterSpacing": 0.5,
+      "textTransform": "uppercase"
+    }
+  },
+  "radius": {
+    "sm": 4,
+    "md": 8,
+    "lg": 12,
+    "pill": 999
+  },
+  "space": {
+    "unit": 4,
+    "screenX": 14,
+    "stackGap": 10,
+    "rowY": 7,
+    "cardPad": 10
+  },
+  "border": {
+    "hairline": 1,
+    "focus": "2px info"
+  },
+  "elevation": {
+    "card": "none: 1px line border on surface",
+    "phone": "none"
+  },
+  "motion": {
+    "tickerSeconds": 40,
+    "ledBlinkMs": 2400,
+    "reducedMotion": "Stop the ticker tape and status blink."
+  }
+}
