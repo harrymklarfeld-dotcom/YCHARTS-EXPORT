@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  buildLog, gradeDebt, gradeFromGpa, gradeIncome, gradeInvesting, gradeLiquidity, gradeNetWorth, RUBRIC, scorecard,
+  bufferWeeks, buildLog, dtiBand, gradeDebt, gradeFromGpa, gradeIncome, gradeInvesting, gradeLiquidity, gradeNetWorth, RUBRIC, scorecard,
 } from '../src/index.ts';
 import { acct, DEPOSITS, LOG, snap, STREAMS } from './helpers.ts';
 
@@ -20,10 +20,10 @@ describe('scorecard — sample persona', () => {
     const by = Object.fromEntries(sc.categories.map((c) => [c.id, c]));
     expect(by.net_worth!.reason).toBe('Net worth is $3,030, up $360 since Aug 14.');
     expect(by.investing!.reason).toBe('70% of what you own is in investment accounts ($2,900).');
-    expect(by.debt!.reason).toBe('You owe $1,120, about 1.7 months of your typical $670 monthly income.');
+    expect(by.debt!.reason).toBe('You owe $1,120, about 1.7 months of your typical $670 monthly income. Minimum payments are 4% of monthly income (within the common 36% / 43% lines).');
     expect(by.income!.reason).toMatch(/fairly steady: \$531 to \$915 over the last 3 months \(variation 0\.26\)\. Some pay is PENDING until hours submitted\./);
     expect(by.liquidity!.reason).toBe('Cash ($1,250) covers short-term debt ($1,120) 1.12×, a thin cushion.');
-    expect(by.spending!.reason).toBe('After the $750 payment on Sep 18, new charges brought the card back to $900 within 12 days: the paydown is being outrun.');
+    expect(by.spending!.reason).toBe('After the $750 payment on Sep 18, new charges brought the card back to $900 within 12 days: the paydown is being outrun. $1,120 of a $1,500 limit is 75% utilization (30% to 100%).');
     expect(sc.overall.reason).toMatch(/Strongest: Net worth, Investing\. Weakest: Debt, Spending\./);
   });
   it('labels every graded number honestly', () => {
@@ -45,7 +45,7 @@ describe('grade boundaries (deterministic rubric)', () => {
     expect(gradeNetWorth(100, 0)).toBe('A');
   });
   it('investing', () => {
-    expect([0.5, 0.4999, 0.25, 0.2499, 0.1, 0.0999, 0.0001, 0].map(gradeInvesting)).toEqual(['A', 'B', 'B', 'C', 'C', 'D', 'D', 'F']);
+    expect([0.5, 0.4999, 0.25, 0.2499, 0.1, 0.0999, 0.0001, 0].map((s) => gradeInvesting(s))).toEqual(['A', 'B', 'B', 'C', 'C', 'D', 'D', 'F']);
   });
   it('debt', () => {
     expect(gradeDebt(0, null)).toBe('A');
@@ -99,5 +99,53 @@ describe('scorecard — edge cases', () => {
     const none = scorecard(buildLog([snap('2026-01-01', [acct('chk', 'checking', 10)])]), [], []);
     expect(none.categories.find((c) => c.id === 'spending')!.reason).toBe('No credit card in your snapshots.');
     expect(none.categories.find((c) => c.id === 'liquidity')!.grade).toBe('A');
+  });
+});
+
+describe('evidence-based rules (SCORECARD_METRICS.md)', () => {
+  it('income is capped at B until 4 months of history', () => {
+    expect(gradeIncome(0.1, false, 2)).toBe('B');
+    expect(gradeIncome(0.1, false, 3)).toBe('B');
+    expect(gradeIncome(0.1, false, 4)).toBe('A');
+    expect(gradeIncome(0.6, false, 2)).toBe('D');
+  });
+  it('an open investment account with a tiny balance is a start, not an F', () => {
+    expect(gradeInvesting(0, true)).toBe('D');
+    expect(gradeInvesting(0, false)).toBe('F');
+  });
+  it('buffer weeks use JPMCI bands', () => {
+    expect(bufferWeeks(600, 100)).toEqual({ weeks: 6, band: 'strong' });
+    expect(bufferWeeks(300, 100)).toEqual({ weeks: 3, band: 'building' });
+    expect(bufferWeeks(299, 100).band).toBe('thin');
+    expect(bufferWeeks(500, 0)).toEqual({ weeks: null, band: null });
+  });
+  it('DTI uses the CFPB 36% / 43% lines', () => {
+    expect([0.36, 0.37, 0.43, 0.44].map(dtiBand)).toEqual(['healthy', 'caution', 'caution', 'high']);
+  });
+  it('deferred student loans are shown but not graded', () => {
+    const loan = { ...acct('sl', 'loan', 20000), deferred: true };
+    const log = buildLog([snap('2026-10-05', [acct('chk', 'checking', 900), acct('ira', 'retirement', 300), loan])]);
+    const sc = scorecard(log, [], []);
+    const by = Object.fromEntries(sc.categories.map((c) => [c.id, c]));
+    expect(by.net_worth!.grade).toBe('B'); // graded as positive net worth (1,200), not -18,800
+    expect(by.net_worth!.reason).toContain('Deferred student loans');
+    expect(by.debt!.grade).toBe('A'); // no counted debt
+  });
+  it('irregular family help is left out of income grades', () => {
+    const streams = [{ id: 'fam', name: 'Family help', kind: 'other', rate: 0, schedule: { unitsPerWeek: 0 }, payFrequency: 'monthly', nextPayDate: '2026-11-01', withholdingRate: 0, irregular: true }] as never;
+    const deposits = [
+      { date: '2026-06-10', amount: 1000, basis: 'verified' }, { date: '2026-07-10', amount: 1000, basis: 'verified' },
+      { date: '2026-08-10', amount: 1000, basis: 'verified' }, { date: '2026-09-10', amount: 1000, basis: 'verified' },
+      { date: '2026-07-20', amount: 900, streamId: 'fam', basis: 'verified' },
+    ] as const;
+    const log = buildLog([snap('2026-10-05', [acct('chk', 'checking', 900)])]);
+    const inc = scorecard(log, streams, deposits).categories.find((c) => c.id === 'income')!;
+    expect(inc.grade).toBe('A'); // steady 1,000/month once the one-off family help is excluded
+  });
+  it('spending shows utilization on the real limit when known', () => {
+    const card = (bal: number) => ({ ...acct('c', 'credit_card', bal), creditLimit: 1500 });
+    const log = buildLog([snap('2026-09-01', [acct('chk', 'checking', 900), card(600)]), snap('2026-10-01', [acct('chk', 'checking', 900), card(450)])]);
+    const sp = scorecard(log, [], []).categories.find((c) => c.id === 'spending')!;
+    expect(sp.reason).toContain('utilization');
   });
 });

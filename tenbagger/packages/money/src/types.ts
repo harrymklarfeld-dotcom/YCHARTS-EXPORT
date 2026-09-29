@@ -47,6 +47,11 @@ export type Account = {
   basis: AccountBasis;
   /** credit_card only: the credit limit (for utilization). */
   creditLimit?: number;
+  /**
+   * loan only: a student loan that is deferred / in school (no payments due yet). Shown in the balance sheet
+   * but not graded against net worth or debt (CFPB: investment debt vs consumer debt; see SCORECARD_METRICS.md).
+   */
+  deferred?: boolean;
 };
 
 /** Statement details for a debt account (credit card or loan). */
@@ -91,6 +96,8 @@ export type IncomeStream = {
   condition?: string;
   /** Work already done but not yet submitted/filed: it pays only if the condition is met. */
   pendingUnsubmitted?: { units: number; periodEnd: ISODate };
+  /** Unscheduled money (e.g. family help "now and then"): never counted in income-based grades. */
+  irregular?: boolean;
   /** semimonthly only: the two paydays (31 = last day of month). Default [15, 31]. */
   semimonthlyDays?: [number, number];
   /**

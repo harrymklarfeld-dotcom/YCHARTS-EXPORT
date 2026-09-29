@@ -45,3 +45,5 @@ Working name: Tenbagger (rename decision pending, see D-03).
 | D-07 | 2026-09-26 | Budget: 4-input quick setup is the default; full plan optional; no faked insights | Decided | CONTRARIAN.md (budgeting review) |
 | D-08 | 2026-09-26 | Real personal data never enters git (`private/`, `*.local.json` ignored) | Decided | privacy rule |
 | D-09 | 2026-09-26 | Max ~3 concurrent agents; standing reviewers on a smaller model | Decided | docs/BUILD_BUDGET.md |
+| D-10 | 2026-09-29 | Scorecard follows outside benchmarks: deferred student loans not graded, income capped at B under 4 months, open investment account = start not F, irregular family help excluded, DTI (CFPB 36/43%), buffer weeks (JPMCI 6 wks), utilization (FICO 10/30%) | Decided | docs/market/SCORECARD_METRICS.md |
+| D-11 | 2026-09-29 | Letter grades vs "Building / Steady / Strong" wording | **Open: A/B test** | SCORECARD_METRICS.md §3 |

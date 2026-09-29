@@ -60,12 +60,15 @@ export {
 export type { Breakdown, CardPayment, CardPoint, CardTrend, CardTrendOptions, LabeledRatio, MonthTotal, Volatility } from './networth.ts';
 
 export {
+  bufferWeeks,
+  dtiBand,
   gradeDebt,
   gradeFromGpa,
   gradeIncome,
   gradeInvesting,
   gradeLiquidity,
   gradeNetWorth,
+  INCOME_FULL_CONFIDENCE_MONTHS,
   RUBRIC,
   scorecard,
 } from './scorecard.ts';
