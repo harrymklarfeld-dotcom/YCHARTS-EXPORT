@@ -144,7 +144,37 @@ export interface MoneySummary {
     Snapshot & { id: string; basis: Record<string, unknown>; notes: Array<{ id: string; note: string; createdAt: string }> }
   >;
   sources: Array<{ itemId: string; institution: string | null; status: string; moneyHub: boolean; moneySyncedAt: string | null }>;
+  /** Every linked institution (Plaid + SnapTrade), oldest link first: feeds packages/money syncPlan / freshnessLine. */
+  connections: Connection[];
   warnings: string[];
+}
+
+/** packages/money `ConnectionStatus`. */
+export type ConnectionStatus = "ok" | "needs_relogin" | "pending_expiration" | "syncing" | "error";
+
+/** One linked institution as the app shows it. No tokens, no provider ids. */
+export interface Connection {
+  /** linked_items.id (pass to money-sync / plaid-link-token update mode). */
+  id: string;
+  institution: string;
+  status: ConnectionStatus;
+  /** ISO timestamp of the latest successful holdings or money sync; null = never. */
+  lastSyncedAt: string | null;
+  /** Cash + card/loan + investment accounts under this connection. */
+  accountCount: number;
+}
+
+/**
+ * linked_items.status (+ a running sync) -> app status. needs_reauth and revoked both mean the user
+ * has to sign in again (reconnect); a recent running sync shows as syncing; pending_expiration still
+ * syncs but asks for a sign-in soon.
+ */
+export function connectionStatus(itemStatus: string, syncing: boolean): ConnectionStatus {
+  if (itemStatus === "needs_reauth" || itemStatus === "revoked") return "needs_relogin";
+  if (syncing) return "syncing";
+  if (itemStatus === "pending_expiration") return "pending_expiration";
+  if (itemStatus === "error") return "error";
+  return "ok";
 }
 
 // ---- DB row shapes (Repo.getMoneyRows; numerics converted; dates as YYYY-MM-DD) ----------
@@ -226,6 +256,14 @@ export interface MoneySourceRow {
   money_hub: boolean;
   money_synced_at: string | null;
 }
+export interface ConnectionRow {
+  id: string;
+  institution_name: string | null;
+  status: string;
+  last_synced_at: string | null; // ISO timestamp
+  account_count: number;
+  syncing: boolean;
+}
 export interface MoneyRows {
   timezone: string;
   cash: CashAccountRow[];
@@ -235,6 +273,7 @@ export interface MoneyRows {
   deposits: Array<{ date: string; amount: number }>;
   snapshots: SnapshotRow[];
   sources: MoneySourceRow[];
+  connections: ConnectionRow[];
 }
 
 // ---- dates ------------------------------------------------------------------------------
@@ -547,6 +586,13 @@ export function buildMoneySummary(rows: MoneyRows, now: Date, horizonDays = MONE
       status: i.status,
       moneyHub: i.money_hub,
       moneySyncedAt: i.money_synced_at,
+    })),
+    connections: rows.connections.map((c) => ({
+      id: c.id,
+      institution: c.institution_name ?? "Linked account",
+      status: connectionStatus(c.status, c.syncing),
+      lastSyncedAt: c.last_synced_at,
+      accountCount: c.account_count,
     })),
     warnings,
   };

@@ -87,7 +87,7 @@ export function cachedJwkFetcher(fetcher: JwkFetcher, ttlMs = 60 * 60 * 1000): J
 }
 
 export type WebhookAction =
-  | { kind: "status"; status: "needs_reauth" | "revoked" | "active" | "error"; reason: string }
+  | { kind: "status"; status: "needs_reauth" | "pending_expiration" | "revoked" | "active" | "error"; reason: string }
   | { kind: "sync" }
   | { kind: "ignore" };
 
@@ -98,7 +98,16 @@ export interface PlaidWebhookBody {
   error?: { error_code?: string; error_message?: string } | null;
 }
 
-/** Map a Plaid webhook to what we should do with the linked item. */
+/**
+ * Map a Plaid webhook to what we should do with the linked item.
+ *   ITEM ERROR (ITEM_LOGIN_REQUIRED) / ITEM_LOGIN_REQUIRED -> needs_reauth (syncs stop; app shows "sign in again")
+ *   ITEM PENDING_EXPIRATION / PENDING_DISCONNECT          -> pending_expiration (still syncs; app shows "sign in again soon")
+ *   ITEM USER_PERMISSION_REVOKED / USER_ACCOUNT_REVOKED   -> revoked
+ *   ITEM LOGIN_REPAIRED                                   -> active
+ *   ITEM ERROR (other codes)                              -> error (cleared by the next successful sync)
+ *   HOLDINGS DEFAULT_UPDATE                               -> sync holdings
+ *   TRANSACTIONS SYNC_UPDATES_AVAILABLE                   -> handled by isMoneyHubWebhook (money sync for opted-in items)
+ */
 export function classifyPlaidWebhook(b: PlaidWebhookBody): WebhookAction {
   const type = b.webhook_type ?? "";
   const code = b.webhook_code ?? "";
@@ -107,7 +116,7 @@ export function classifyPlaidWebhook(b: PlaidWebhookBody): WebhookAction {
       return { kind: "status", status: "needs_reauth", reason: "ITEM_LOGIN_REQUIRED" };
     }
     if (code === "ITEM_LOGIN_REQUIRED") return { kind: "status", status: "needs_reauth", reason: "ITEM_LOGIN_REQUIRED" };
-    if (code === "PENDING_EXPIRATION" || code === "PENDING_DISCONNECT") return { kind: "status", status: "needs_reauth", reason: code };
+    if (code === "PENDING_EXPIRATION" || code === "PENDING_DISCONNECT") return { kind: "status", status: "pending_expiration", reason: code };
     if (code === "USER_PERMISSION_REVOKED" || code === "USER_ACCOUNT_REVOKED") return { kind: "status", status: "revoked", reason: code };
     if (code === "LOGIN_REPAIRED") return { kind: "status", status: "active", reason: code };
     if (code === "ERROR") return { kind: "status", status: "error", reason: b.error?.error_code ?? "ERROR" };

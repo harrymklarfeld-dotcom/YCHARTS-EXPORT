@@ -22,6 +22,7 @@ backend/
       20260925000400_money_hub.sql         cash_accounts, liabilities, transactions, income_streams,
                                            money_snapshots + money_snapshot_notes (append-only),
                                            replace_item_money(), purge_money_retention()
+      20261006000100_connection_status.sql linked_items.status gains 'pending_expiration'
     seed.sql                    5 SAMPLE companies (price_is_sample = true)
     functions/
       _shared/                  all logic (see below); each <fn>/index.ts is a 3-line shim
@@ -72,7 +73,7 @@ backend/
 | `plaid-link-token` | JWT, **aal2** | `{item_id?, money_hub?}` (update/re-auth mode; Money hub opt-in) | `{link_token, expiration, mode, money_hub}` |
 | `plaid-exchange` | JWT, **aal2** | `{public_token, money_hub?}` | `{item, sync, money?}` |
 | `plaid-sync-holdings` | JWT | `{item_id?, force?}` | `{results[]}` (60 s throttle unless forced) |
-| `plaid-webhook` | Plaid-Verification JWT | Plaid webhook | `ITEM_LOGIN_REQUIRED`/`PENDING_*` → `needs_reauth`; `USER_PERMISSION_REVOKED` → `revoked`; `LOGIN_REPAIRED` → `active`; `HOLDINGS:DEFAULT_UPDATE` → sync |
+| `plaid-webhook` | Plaid-Verification JWT | Plaid webhook | `ITEM_LOGIN_REQUIRED` → `needs_reauth`; `PENDING_EXPIRATION`/`PENDING_DISCONNECT` → `pending_expiration` (still syncs; never downgrades `needs_reauth`/`revoked`); `USER_PERMISSION_REVOKED` → `revoked`; `LOGIN_REPAIRED` → `active`; `HOLDINGS:DEFAULT_UPDATE` → sync |
 | `snaptrade-register` | JWT, **aal2** | `{broker?}` | `{redirect_url}` (read-only Connection Portal) |
 | `snaptrade-sync` | JWT | `{force?}` | `{items, results}`, with one linked item per brokerage authorization |
 | `unlink` | JWT | `{item_id}` or `{all:true}` | `{removed, provider_errors}` |
@@ -112,6 +113,7 @@ lives in `tenbagger/packages/money`; the backend is its data layer.
   | Field | Contents | Basis |
   |---|---|---|
   | `accounts[]` | checking/savings (`cash_accounts`), brokerage/retirement/crypto (`accounts`), credit_card/loan (`liabilities`, positive owed) | `verified` (provider), `manual` (manual portfolios) |
+  | `connections[]` | `{id, institution, status, lastSyncedAt, accountCount}` per linked institution (Plaid + SnapTrade). `status`: `ok` / `needs_relogin` (needs_reauth or revoked) / `pending_expiration` / `syncing` (a sync started < 10 min ago) / `error`. Feeds `packages/money` `syncPlan` / `freshnessLine`. No tokens or provider ids | `verified` |
   | `liabilities[]` | `{accountId, statementBalance, minimumDue, dueDate, apr (decimal)}` for debts with a due date | `verified` |
   | `incomeStreams[]` | the user's active manual streams (hourly / per_session / salary / other; rate, schedule, pay frequency, withholding, condition such as "hours submitted", unsubmitted units) | `manual` |
   | `detectedStreams[]` | Plaid recurring inflows (payroll etc.): average/last amount, cadence, status, and `asIncomeStream` for regular ones | `verified` history |

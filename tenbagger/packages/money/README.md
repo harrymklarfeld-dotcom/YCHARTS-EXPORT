@@ -55,6 +55,8 @@ directly (mobile imports `../../../packages/money/src/index`).
 | `annualizedIncome`, `pendingPayLedger`, `applyWorkLog`, goal helpers | Income extras and goals |
 | `personal10K(month, data)` | Monthly income statement, balance sheet, cash-flow summary, scorecard, company analogs, share text (no account names/numbers) |
 | `moneyAlerts(input)` | Ranked plain-English alerts |
+| `matchTransfers(txs, accounts, opts?)` | Pairs the two legs of a move between the user's own accounts (same amount to the cent, different account, ≤4 days apart, one-to-one, smallest gap first; checking → linked card = `card_payment`). Pass the result as `{ transfers }` to any spending/income function so both legs are skipped |
+| `syncPlan(connections, now, trigger, opts?)`, `freshnessLine`, `connectionStatusText`, `cooldownText` | Which linked connections to refresh (cost cap: app open > 6h old; pull-to-refresh 15-min cooldown; webhook always; never a needs-sign-in one) and shame-free freshness text |
 
 `BANNED_PHRASES` also rejects lending offers (cash advance, payday loan, pre-approved, apply now,
 limit increase, balance transfer, "open a card") and product picks ("best ETF", "top picks").

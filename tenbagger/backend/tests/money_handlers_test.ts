@@ -212,11 +212,22 @@ Deno.test("money-summary: normalized input for packages/money with basis labels"
   assertEquals(s0.accounts.map((a) => a.id).sort(), summary.accounts.filter((a) => a.basis === "verified").map((a) => a.id).sort()); // manual Roth added after
   assertEquals((s0.basis as { liabilities: Record<string, string> }).liabilities, { [card.id]: "verified" });
   assertEquals(summary.sources.map((x) => [x.itemId, x.moneyHub, x.status]), [[item, true, "active"]]);
+  // One connection per linked institution: 2 cash + 2 card/loan accounts. (synced_at is DB now().)
+  const synced = summary.connections[0]?.lastSyncedAt ?? "";
+  assert(!Number.isNaN(Date.parse(synced)), synced);
+  assertEquals(summary.connections, [{
+    id: item,
+    institution: "Northwind Credit Union (fictional)",
+    status: "ok",
+    lastSyncedAt: synced,
+    accountCount: 4,
+  }]);
   assert(summary.warnings.length === 0, JSON.stringify(summary.warnings));
 
   // Bob sees nothing of Alice's
   const bob: MoneySummary = await (await moneySummary(req(BOB, undefined, "GET"), deps)).json();
-  assertEquals([bob.accounts, bob.liabilities, bob.incomeStreams, bob.expectedDeposits, bob.snapshots, bob.sources], [
+  assertEquals([bob.accounts, bob.liabilities, bob.incomeStreams, bob.expectedDeposits, bob.snapshots, bob.sources, bob.connections], [
+    [],
     [],
     [],
     [],
@@ -320,6 +331,62 @@ Deno.test("money: no secret ever reaches logs, audit, sync_runs or snapshots", a
   assertFalse(/access-sandbox/.test(dump));
 });
 
+Deno.test("plaid ITEM webhooks drive connection status the app reads; tokens never exposed", async () => {
+  const pid = await providerItemId();
+  const hook = async (b: Record<string, unknown>) => await (await plaidWebhook(req(null, { item_id: pid, ...b }), deps)).json();
+  const conn = async () => {
+    const res = await moneySummary(req(ALICE, undefined, "GET"), deps);
+    const text = await res.text();
+    assertNoSecrets(text);
+    return (JSON.parse(text) as MoneySummary).connections[0];
+  };
+  const dbStatus = async () =>
+    (await db.query<{ status: string; status_reason: string | null }>(`select status, status_reason from linked_items where id = $1`, [item])).rows[0];
+
+  // PENDING_EXPIRATION: still syncing, but the app can show "sign in again soon".
+  assertEquals(await hook({ webhook_type: "ITEM", webhook_code: "PENDING_EXPIRATION" }), { received: true, item_status: "pending_expiration" });
+  assertEquals(await dbStatus(), { status: "pending_expiration", status_reason: "PENDING_EXPIRATION" });
+  assertEquals((await conn()).status, "pending_expiration");
+  const stillSyncs = await (await moneySync(req(ALICE, { item_id: item, force: true }), deps)).json();
+  assertEquals(stillSyncs.results[0].status, "succeeded");
+  assertEquals((await dbStatus()).status, "pending_expiration"); // a sync does not clear it; only a re-login does
+
+  // TRANSACTIONS SYNC_UPDATES_AVAILABLE syncs the money data for that Item.
+  assertEquals(await hook({ webhook_type: "TRANSACTIONS", webhook_code: "SYNC_UPDATES_AVAILABLE" }), { received: true, sync: "succeeded" });
+
+  // ITEM ERROR / ITEM_LOGIN_REQUIRED -> needs_relogin; syncs stop; PENDING_DISCONNECT cannot downgrade it.
+  assertEquals(
+    await hook({ webhook_type: "ITEM", webhook_code: "ERROR", error: { error_code: "ITEM_LOGIN_REQUIRED" } }),
+    { received: true, item_status: "needs_reauth" },
+  );
+  assertEquals((await conn()).status, "needs_relogin");
+  assertEquals(await hook({ webhook_type: "ITEM", webhook_code: "PENDING_DISCONNECT" }), { received: true, item_status: "needs_reauth" });
+  const skipped = await (await moneySync(req(ALICE, { item_id: item, force: true }), deps)).json();
+  assertEquals([skipped.results[0].status, skipped.results[0].error_code], ["skipped", "needs_reauth"]);
+  assertEquals(await hook({ webhook_type: "TRANSACTIONS", webhook_code: "SYNC_UPDATES_AVAILABLE" }), { received: true, sync: "skipped" });
+
+  // LOGIN_REPAIRED -> ok; USER_PERMISSION_REVOKED -> needs_relogin (reconnect); repaired again.
+  assertEquals(await hook({ webhook_type: "ITEM", webhook_code: "LOGIN_REPAIRED" }), { received: true, item_status: "active" });
+  assertEquals(await dbStatus(), { status: "active", status_reason: null });
+  assertEquals((await conn()).status, "ok");
+  assertEquals(await hook({ webhook_type: "ITEM", webhook_code: "USER_PERMISSION_REVOKED" }), { received: true, item_status: "revoked" });
+  assertEquals((await conn()).status, "needs_relogin");
+  await hook({ webhook_type: "ITEM", webhook_code: "LOGIN_REPAIRED" });
+
+  // A sync in flight shows as syncing; an abandoned one (> 10 min) does not.
+  await db.query(`insert into sync_runs (user_id, linked_item_id, provider, status, kind) values ($1, $2, 'plaid', 'running', 'money')`, [ALICE, item]);
+  assertEquals((await conn()).status, "syncing");
+  await db.query(`update sync_runs set started_at = now() - interval '11 minutes' where status = 'running' and linked_item_id = $1`, [item]);
+  const c = await conn();
+  assertEquals(c.status, "ok");
+  assertEquals(Object.keys(c).sort(), ["accountCount", "id", "institution", "lastSyncedAt", "status"]);
+
+  // The DB rejects unknown statuses.
+  let rejected = false;
+  await db.query(`update linked_items set status = 'paused' where id = $1`, [item]).catch(() => (rejected = true));
+  assert(rejected);
+});
+
 Deno.test({
   name: "money-summary output is accepted by packages/money (validateSnapshot + coverageCheck)",
   ignore: !(await Deno.stat(new URL("../../packages/money/src/index.ts", import.meta.url)).then(() => true).catch(() => false)),
@@ -342,5 +409,9 @@ Deno.test({
       689.4,
     ]]);
     assert(typeof report.headline === "string");
+    // connections feed syncPlan / freshnessLine as-is
+    const at = summary.connections[0].lastSyncedAt!;
+    assertEquals(m.syncPlan(summary.connections, at, "app_open")[0].reason, "fresh");
+    assertEquals(m.freshnessLine(summary.connections, at), "Updated just now · 4 accounts at 1 bank");
   },
 });

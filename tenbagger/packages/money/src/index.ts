@@ -133,3 +133,11 @@ export type { CompanyAnalog, Personal10K, Personal10KInput } from './report.ts';
 
 export { moneyAlerts } from './alerts.ts';
 export type { AlertInput, AlertSeverity, MoneyAlert } from './alerts.ts';
+
+export { isTransferHint, matchTransfers, TRANSFER_HINT_CATEGORIES } from './transfers.ts';
+export type { MatchTransfersOptions, TransferKind, TransferMatch, TransferPair } from './transfers.ts';
+
+export {
+  APP_OPEN_MAX_AGE_MIN, connectionStatusText, cooldownText, freshnessLine, MANUAL_COOLDOWN_MIN, syncPlan, timeAgo,
+} from './sync.ts';
+export type { Connection, ConnectionStatus, SyncDecision, SyncPlanOptions, SyncReason, SyncTrigger } from './sync.ts';

@@ -10,7 +10,7 @@ export interface SqlExecutor {
   query<T = Record<string, unknown>>(text: string, params?: unknown[]): Promise<T[]>;
 }
 
-export type ItemStatus = "active" | "needs_reauth" | "revoked" | "error";
+export type ItemStatus = "active" | "needs_reauth" | "pending_expiration" | "revoked" | "error";
 
 export interface LinkedItemRow {
   id: string;
@@ -358,6 +358,19 @@ export class Repo {
       `select id, institution_name, status, money_hub, money_synced_at from public.linked_items
         where user_id = $1 and provider = 'plaid' order by created_at`,
     );
+    // Every linked institution (both providers). A "running" sync older than 10 minutes is treated
+    // as abandoned (a crashed function), not as syncing.
+    const conns = await q(
+      `select i.id, i.institution_name, i.status, greatest(i.last_synced_at, i.money_synced_at) as last_synced_at,
+              (select count(*) from public.cash_accounts c where c.linked_item_id = i.id)
+            + (select count(*) from public.liabilities l where l.linked_item_id = i.id)
+            + (select count(*) from public.accounts a where a.linked_item_id = i.id
+                  and (i.provider = 'snaptrade' or coalesce(a.type, 'investment') in ('investment', 'brokerage'))) as account_count,
+              exists (select 1 from public.sync_runs r where r.linked_item_id = i.id and r.status = 'running'
+                         and r.started_at > now() - interval '10 minutes') as syncing
+         from public.linked_items i
+        where i.user_id = $1 order by i.created_at, i.id`,
+    );
     const nums = (v: unknown) => (Array.isArray(v) ? v.map(Number) : null);
     return {
       timezone: s(tz[0]?.timezone) ?? "UTC",
@@ -439,6 +452,14 @@ export class Repo {
         status: String(r.status),
         money_hub: Boolean(r.money_hub),
         money_synced_at: toIso(r.money_synced_at),
+      })),
+      connections: conns.map((r) => ({
+        id: String(r.id),
+        institution_name: s(r.institution_name),
+        status: String(r.status),
+        last_synced_at: toIso(r.last_synced_at),
+        account_count: Number(r.account_count ?? 0),
+        syncing: Boolean(r.syncing),
       })),
     };
   }

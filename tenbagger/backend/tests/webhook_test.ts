@@ -41,7 +41,8 @@ Deno.test("rejects: missing header, tampered body, stale iat, wrong alg, unknown
 
 Deno.test("classifyPlaidWebhook maps ITEM/HOLDINGS events", () => {
   assertEquals(classifyPlaidWebhook(JSON.parse(BODY)), { kind: "status", status: "needs_reauth", reason: "ITEM_LOGIN_REQUIRED" });
-  assertEquals(classifyPlaidWebhook({ webhook_type: "ITEM", webhook_code: "PENDING_EXPIRATION" }).kind, "status");
+  assertEquals(classifyPlaidWebhook({ webhook_type: "ITEM", webhook_code: "PENDING_EXPIRATION" }), { kind: "status", status: "pending_expiration", reason: "PENDING_EXPIRATION" });
+  assertEquals(classifyPlaidWebhook({ webhook_type: "ITEM", webhook_code: "PENDING_DISCONNECT" }), { kind: "status", status: "pending_expiration", reason: "PENDING_DISCONNECT" });
   assertEquals(classifyPlaidWebhook({ webhook_type: "ITEM", webhook_code: "USER_PERMISSION_REVOKED" }), { kind: "status", status: "revoked", reason: "USER_PERMISSION_REVOKED" });
   assertEquals(classifyPlaidWebhook({ webhook_type: "ITEM", webhook_code: "LOGIN_REPAIRED" }), { kind: "status", status: "active", reason: "LOGIN_REPAIRED" });
   assertEquals(classifyPlaidWebhook({ webhook_type: "ITEM", webhook_code: "ERROR", error: { error_code: "INSTITUTION_DOWN" } }), { kind: "status", status: "error", reason: "INSTITUTION_DOWN" });

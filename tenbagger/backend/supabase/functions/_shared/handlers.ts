@@ -296,6 +296,10 @@ export const plaidWebhook = route(["POST"], async (req, deps) => {
   if (!item || action.kind === "ignore") return json(200, { received: true });
   await deps.repo.audit(item.user_id, "plaid.webhook", { item_id: item.id, type: body.webhook_type, code: body.webhook_code });
   if (action.kind === "status") {
+    // "Sign in again soon" must not overwrite a stronger state the user still has to fix.
+    if (action.status === "pending_expiration" && (item.status === "needs_reauth" || item.status === "revoked")) {
+      return json(200, { received: true, item_status: item.status });
+    }
     await deps.repo.setItemStatus(item.id, action.status, action.status === "active" ? null : action.reason);
     return json(200, { received: true, item_status: action.status });
   }

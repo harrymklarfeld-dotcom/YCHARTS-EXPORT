@@ -7,6 +7,7 @@
  */
 import { addDays, daysInMonth, diffDays, monthKey, parts, toDayNumber } from './dates.ts';
 import { formatUSD, round2 } from './format.ts';
+import type { TransferMatch } from './transfers.ts';
 import type { ISODate, NumberLabel, Transaction } from './types.ts';
 
 // ---------------------------------------------------------------- categories
@@ -101,13 +102,21 @@ export type CategorizeOptions = {
   rules?: CategoryRules;
   /** User edits: merchantKey → category. Wins over everything. */
   overrides?: Readonly<Record<string, string>>;
+  /**
+   * Result of `matchTransfers(txs, accounts)`. Both legs of a matched move between the user's own
+   * accounts are categorized `card_payment` (paying a linked card) or `transfer`, so spending,
+   * income, leaks, subscriptions and pace skip them. Omit it and nothing changes.
+   */
+  transfers?: Pick<TransferMatch, 'matchedIds' | 'kindById'>;
 };
 
 /**
- * Category for one transaction: a user override for the merchant, then the provider's category,
- * then the first matching rule; otherwise `income` for money in and `other` for money out.
+ * Category for one transaction: a matched internal transfer leg (`opts.transfers`), then a user
+ * override for the merchant, then the provider's category, then the first matching rule;
+ * otherwise `income` for money in and `other` for money out.
  */
 export function categorize(tx: Transaction, opts: CategorizeOptions = {}): string {
+  if (opts.transfers?.matchedIds.has(tx.id)) return opts.transfers.kindById.get(tx.id) === 'card_payment' ? 'card_payment' : 'transfer';
   const key = merchantKey(tx.name);
   const o = opts.overrides?.[key];
   if (o) return o;

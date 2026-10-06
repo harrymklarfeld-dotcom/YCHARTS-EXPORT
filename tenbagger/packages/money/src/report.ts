@@ -79,6 +79,7 @@ export function personal10K(month: string, data: Personal10KInput): Personal10K 
   const opts: CategorizeOptions = {
     ...(data.rules ? { rules: data.rules } : {}),
     ...(data.overrides ? { overrides: data.overrides } : {}),
+    ...(data.transfers ? { transfers: data.transfers } : {}),
   };
   const monthName = `${shortDate(b.start).split(' ')[0]} ${month.slice(0, 4)}`;
 
