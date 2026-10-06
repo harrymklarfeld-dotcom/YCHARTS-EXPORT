@@ -5,6 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 REF="${1:?usage: bash tenbagger/backend/scripts/first-deploy.sh <supabase-project-ref>}"
+MONEY_FUNCTIONS="plaid-link-token plaid-exchange plaid-webhook plaid-sync-holdings money-sync money-summary portfolio-summary unlink"
 step() { printf '\n\033[1m[%s/5] %s\033[0m\n' "$1" "$2"; }
 
 command -v supabase >/dev/null || { echo "Supabase CLI missing: brew install supabase/tap/supabase"; exit 1; }
@@ -22,7 +23,9 @@ step 4 "Upload settings to Supabase"
 supabase secrets set --env-file supabase/functions/.env
 
 step 5 "Deploy the backend functions"
-supabase functions deploy --project-ref "$REF" --use-api
+# Money-hub functions only. screen-assist imports ../packages/screener (outside supabase/), which the
+# CLI cannot bundle; it is not needed for account linking.
+supabase functions deploy $MONEY_FUNCTIONS --project-ref "$REF" --use-api
 
 printf '\nChecking it is live... '
 code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "https://${REF}.supabase.co/functions/v1/plaid-link-token" || true)
