@@ -1,26 +1,27 @@
-/** Overview: liquidity / investments / debt, can-I-cover-the-card, net-worth history, next events, top alerts. */
+/** Home (Overview): budget answer first, every account in one list, can-I-cover-the-card, net-worth history, next events, top alerts. */
 import { Pressable, Text, View } from 'react-native';
+import { BudgetSummaryCard } from '../../budget';
 import { Icon } from '../../components/Icon';
 import { useTheme } from '../../theme';
 import { LineChart } from '../charts';
 import { LabelChip, Money } from '../components';
 import { formatUSD, shortDate, weekday, weekdayName } from '../engine';
 import { CoverCard } from '../sections';
+import { AccountsPanel } from './AccountsPanel';
 import type { TabProps } from './types';
-import { Grid, Measure, Panel, Stat } from './ui';
+import { Grid, Measure, Panel } from './ui';
 
-export default function OverviewTab({ dash, wide, goTab }: TabProps) {
+export default function OverviewTab({ dash, hub, wide, goTab }: TabProps) {
   const t = useTheme();
   const b = dash.breakdown;
   const s = dash.series;
   const sevColor = { high: t.c.danger, medium: t.c.accent, info: t.c.inkSoft } as const;
   return (
     <View style={{ gap: 14 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-        <Stat label="Liquidity" value={b.liquidity.value} basis={b.liquidity.label} tone={t.c.primary} sub={b.liquidityRatio.value !== null ? `Covers short-term debt ${b.liquidityRatio.value.toFixed(2)}×` : 'Checking + savings'} />
-        <Stat label="Investments" value={b.investments.value} basis={b.investments.label} tone={t.c.accent} sub="Not counted as spendable cash" />
-        <Stat label="Debt" value={b.debt.value} basis={b.debt.label} tone={t.c.danger} sub={dash.card.utilization?.ratio != null ? `Card ${Math.round(dash.card.utilization.ratio * 100)}% of limit` : undefined} />
-      </View>
+      <Grid wide={wide} min={340}>
+        <BudgetSummaryCard />
+        <AccountsPanel snapshot={hub.latest} goTab={goTab} sample={hub.data.sample} />
+      </Grid>
 
       <Grid wide={wide} min={340}>
         <View style={{ gap: 14 }}>

@@ -1,7 +1,7 @@
 // Packs the Expo web export (dist/) into ONE self-contained HTML file that can be
 // hosted anywhere, including under an unknown sub-path (e.g. a private preview link):
 //  - inlines the JS bundle and every /assets/* file referenced by it as data: URIs
-//  - resets the URL path to "/" before the app boots so expo-router starts on Learn
+//  - resets the URL path to "/" before the app boots so expo-router starts on Home
 // Usage: npx expo export --platform web && node scripts/build-artifact.mjs [dist] [out.html]
 import fs from 'node:fs';
 import path from 'node:path';

@@ -80,7 +80,7 @@ import type { MoneyData, MoneyGoals } from './hub';
 export const DASH_TABS = ['overview', 'investments', 'bank', 'credit', 'income', 'spending', 'goals', 'report'] as const;
 export type DashTab = (typeof DASH_TABS)[number];
 export const TAB_TITLES: Record<DashTab, string> = {
-  overview: 'Overview',
+  overview: 'Home',
   investments: 'Investments',
   bank: 'Bank',
   credit: 'Credit',

@@ -23,17 +23,17 @@ export default function TabsLayout() {
         sceneStyle: { backgroundColor: t.c.bg },
       }}
     >
-      <Tabs.Screen name="index" options={tab('Learn', 'path', 'Learn tab: lesson path')} />
-      <Tabs.Screen name="screener" options={tab('Screener', 'filter', 'Screener tab')} />
-      <Tabs.Screen name="companies" options={tab('Companies', 'building', 'Companies tab')} />
       <Tabs.Screen
-        name="money"
+        name="index"
         options={{
-          title: 'Money',
-          tabBarAccessibilityLabel: 'Money tab: your money hub',
+          title: 'Home',
+          tabBarAccessibilityLabel: 'Home tab: all your accounts in one place',
           tabBarIcon: ({ color }: { color: ColorValue }) => <MoneyIcon color={String(color)} size={24} />,
         }}
       />
+      <Tabs.Screen name="learn" options={tab('Learn', 'path', 'Learn tab: lesson path')} />
+      <Tabs.Screen name="screener" options={tab('Screener', 'filter', 'Screener tab')} />
+      <Tabs.Screen name="companies" options={tab('Companies', 'building', 'Companies tab')} />
       <Tabs.Screen name="profile" options={tab('Profile', 'user', 'Profile tab')} />
     </Tabs>
   );

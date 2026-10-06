@@ -9,7 +9,7 @@ import { useArticles } from './store';
 
 /**
  * Entry point to the articles library, designed for the Learn tab.
- * Usage (in src/app/(tabs)/index.tsx):  import { LibraryCard } from '../../articles';  …  <LibraryCard />
+ * Usage (in src/app/(tabs)/learn.tsx):  import { LibraryCard } from '../../articles';  …  <LibraryCard />
  * Shows read count, and "Continue" (last opened, unfinished) or "Start" (next unread) plus "Browse".
  */
 export function LibraryCard({ style }: { style?: StyleProp<ViewStyle> }) {

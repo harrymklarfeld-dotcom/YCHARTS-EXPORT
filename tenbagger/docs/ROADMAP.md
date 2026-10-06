@@ -9,7 +9,7 @@ Working name: Tenbagger (rename decision pending, see D-03).
 |---|---|---|---|
 | N1 | Customer interviews (15–20 students) using `discovery/INTERVIEW_GUIDE.md` | Founder | 15 logged in `discovery/tracker.csv` by Oct 12 |
 | N2 | Connect the waitlist form to a real endpoint and run the Learn vs Money headline test | Founder + build | Sign-ups captured; ≥150 visitors per headline |
-| N3 | Pick a design direction from the v2 prototypes | Founder | Direction chosen; design-lead applies tokens |
+| N3 | Pick a design direction from the v2 prototypes (paused for Learn per D-12) | Founder | Direction chosen; design-lead applies tokens |
 | N4 | Integrate finished modules into the app (Money dashboard tabs, budget, monetization gates, articles) | Build | `scripts/check-all.sh` green; one click-through test passes |
 | N5 | Publish the working web app + pitch page | Build | Links shared with founder |
 
@@ -39,7 +39,7 @@ Working name: Tenbagger (rename decision pending, see D-03).
 | D-01 | 2026-09-25 | Build lessons + screener on SEC data first; brokerage linking read-only and later | Decided | docs/PRODUCT_STRATEGY.md, MARKET_ENTRY.md |
 | D-02 | 2026-09-25 | Subscription is the core model; ads/affiliate are supplements; never cash advances or credit offers | Decided | BENCHMARKS.md, MONEY_HUB_RESEARCH.md |
 | D-03 | 2026-09-25 | Retire "Tenbagger" as public name? (existing Android app; promises 10x) | **Open: founder** | CONTRARIAN.md #2, PRODUCT_STRATEGY §3 |
-| D-04 | 2026-09-25 | Keep the money hub in v1, or ship it as an experiment | **Open: founder** | CONTRARIAN.md #3 |
+| D-04 | 2026-09-25 | Keep the money hub in v1, or ship it as an experiment | Decided 2026-10-06: keep it; it is now the home screen (D-12) | CONTRARIAN.md #3; founder |
 | D-05 | 2026-09-25 | Plaid in beta vs manual due-date check only | **Open: founder** | CONTRARIAN.md #4 |
 | D-06 | 2026-09-25 | Keep ads + hearts, or cut them and add a $49 Recruiting Pass | **Open: founder** | CONTRARIAN.md #5 |
 | D-07 | 2026-09-26 | Budget: 4-input quick setup is the default; full plan optional; no faked insights | Decided | CONTRARIAN.md (budgeting review) |
@@ -47,3 +47,4 @@ Working name: Tenbagger (rename decision pending, see D-03).
 | D-09 | 2026-09-26 | Max ~3 concurrent agents; standing reviewers on a smaller model | Decided | docs/BUILD_BUDGET.md |
 | D-10 | 2026-09-29 | Scorecard follows outside benchmarks: deferred student loans not graded, income capped at B under 4 months, open investment account = start not F, irregular family help excluded, DTI (CFPB 36/43%), buffer weeks (JPMCI 6 wks), utilization (FICO 10/30%) | Decided | docs/market/SCORECARD_METRICS.md |
 | D-11 | 2026-09-29 | Letter grades vs "Building / Steady / Strong" wording | **Open: A/B test** | SCORECARD_METRICS.md §3 |
+| D-12 | 2026-10-06 | Focus shifts to the money hub: the app opens on Home (all accounts in one place, safe-to-spend first); Learn moves to the 2nd tab and lesson polish pauses | Decided | Founder request |

@@ -107,7 +107,7 @@ export function LessonPlayer({ lesson, mode, initialPhase = 'intro' }: { lesson:
     if (!wasCorrect && useApp.getState().hearts.count <= 0) setPhase('no_hearts');
   };
 
-  const close = () => (router.canGoBack() ? router.back() : router.replace('/'));
+  const close = () => (router.canGoBack() ? router.back() : router.replace('/learn'));
 
   // ---------- chrome ----------
   const header = (
