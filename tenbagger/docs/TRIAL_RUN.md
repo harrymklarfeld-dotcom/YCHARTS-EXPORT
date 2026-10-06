@@ -55,8 +55,16 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=<anon key>
 - [ ] Sign in with your email, enter the code, set up two-step.
 - [ ] Link Plaid's test bank (username `user_good`, password `pass_good`). Check Home, pull to refresh, unlink.
 
-Before this phase the build still needs Plaid's native Link SDK added (`react-native-plaid-link-sdk`); that is
-the next code task after sign-in.
+Plaid's native Link SDK (`react-native-plaid-link-sdk`) is already in the app; it runs in this test build,
+not in Expo Go.
+
+OAuth banks (Chase) bounce you to the bank's own login page and back. Set this once:
+- Pick the app id, e.g. `com.harryklarfeld.tenbagger`, and set it as `BUNDLE_ID` in `mobile/eas.json`.
+- Android: backend `PLAID_ANDROID_PACKAGE_NAME=<that id>`; Plaid dashboard → Developers → API →
+  Allowed Android package names: add it.
+- iPhone: backend `PLAID_REDIRECT_URI=https://<your domain>/plaid-oauth` and the same URL in the Plaid
+  dashboard's Allowed redirect URIs; the domain must serve an `apple-app-site-association` file (we set this up
+  together when you have a domain). Non-OAuth banks work without it.
 
 ## Phase 4: your real accounts
 - [ ] When Plaid approves Trial: swap `PLAID_SECRET` to the production secret, `PLAID_ENV=production`,

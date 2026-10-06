@@ -52,6 +52,8 @@ export interface AggregatorProvider {
     appUserId: string;
     credential?: ProviderCredential;
     redirectUri?: string;
+    /** Plaid Android OAuth: the app's package name (sent instead of redirect_uri). */
+    androidPackageName?: string;
     webhookUrl?: string;
     broker?: string;
     /** Money hub opt-in: also request Transactions + Liabilities (Plaid). */

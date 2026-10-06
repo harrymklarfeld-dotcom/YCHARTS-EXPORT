@@ -16,6 +16,7 @@
  * from the caller's getAccessToken(). Tokens are never stored by this client. Linking and
  * money-sync enable require an MFA (aal2) session on the backend.
  */
+import { Platform } from 'react-native';
 import type { Account, IncomeDeposit, IncomeStream, Liability, Snapshot } from '../engine';
 import type { DetectedStream, MoneyData } from '../hub';
 import { MoneyClientError, type Connection, type ConnectionStatus, type LinkToken, type MoneyClient, type RefreshResult } from './types';
@@ -148,6 +149,8 @@ export class HttpMoneyClient implements MoneyClient {
   async createLinkToken(opts: { itemId?: string } = {}): Promise<LinkToken> {
     const r = await this.call<{ link_token: string; expiration: string | null; mode: 'create' | 'update' }>('plaid-link-token', {
       money_hub: true,
+      // Plaid OAuth (Chase): the backend sends redirect_uri for iOS/web, android_package_name for Android.
+      platform: Platform.OS === 'android' ? 'android' : Platform.OS === 'ios' ? 'ios' : 'web',
       ...(opts.itemId ? { item_id: opts.itemId } : {}),
     });
     return { linkToken: r.link_token, expiration: r.expiration ?? null, mode: r.mode };

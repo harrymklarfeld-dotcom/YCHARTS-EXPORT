@@ -155,6 +155,7 @@ export const useConnections = create<ConnectionsStore>()(
             const r = await openPlaidLink(token.linkToken);
             if (r.status === 'unavailable') return { ok: false, message: CONNECTIONS_COPY.linkUnavailable };
             if (r.status === 'exit') return { ok: false, message: CONNECTIONS_COPY.linkCancelled };
+            if (r.status === 'error') return { ok: false, message: CONNECTIONS_COPY.linkError };
             const c = await client.exchangePublicToken(r.publicToken);
             set((s) => ({ lastAttempt: { ...s.lastAttempt, [c.id]: Date.now() } }));
             await reload();
@@ -170,6 +171,7 @@ export const useConnections = create<ConnectionsStore>()(
             const r = await openPlaidLink(token.linkToken);
             if (r.status === 'unavailable') return { ok: false, message: CONNECTIONS_COPY.linkUnavailable };
             if (r.status === 'exit') return { ok: false, message: CONNECTIONS_COPY.linkCancelled };
+            if (r.status === 'error') return { ok: false, message: CONNECTIONS_COPY.linkError };
             // Update mode needs no exchange: the backend flips the item back to active (LOGIN_REPAIRED) and we sync.
             await runRefresh([id]);
             return { ok: true, message: 'Signed in again. Updating now.' };

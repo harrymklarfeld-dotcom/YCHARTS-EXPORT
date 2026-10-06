@@ -105,7 +105,7 @@ export class PlaidProvider implements AggregatorProvider {
   }
 
   async createLinkSession(
-    input: { appUserId: string; credential?: ProviderCredential; redirectUri?: string; webhookUrl?: string; moneyHub?: boolean },
+    input: { appUserId: string; credential?: ProviderCredential; redirectUri?: string; androidPackageName?: string; webhookUrl?: string; moneyHub?: boolean },
   ): Promise<LinkSession> {
     const body: Record<string, unknown> = {
       client_name: this.cfg.clientName ?? "Tenbagger",
@@ -128,6 +128,7 @@ export class PlaidProvider implements AggregatorProvider {
     }
     if (input.webhookUrl) body.webhook = input.webhookUrl;
     if (input.redirectUri) body.redirect_uri = input.redirectUri;
+    if (input.androidPackageName) body.android_package_name = input.androidPackageName;
     const r = await this.call<{ link_token: string; expiration: string }>("/link/token/create", body);
     return { linkToken: r.link_token, expiration: r.expiration };
   }

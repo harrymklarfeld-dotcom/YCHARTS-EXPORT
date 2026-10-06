@@ -36,6 +36,8 @@ export interface Deps {
     allowedOrigins: string[];
     plaidWebhookUrl?: string;
     plaidRedirectUri?: string;
+    /** Android app id for Plaid OAuth (e.g. Chase) on Android; Android never gets redirect_uri. */
+    plaidAndroidPackageName?: string;
     snaptradeRedirectUri?: string;
     minSyncIntervalSec: number;
   };
@@ -183,7 +185,7 @@ async function failSync(deps: Deps, item: LinkedItemRow, runId: string, e: unkno
 }
 
 // ---------------------------------------------------------------------------
-// plaid-link-token  POST {item_id?, money_hub?}  -> {link_token, expiration, mode, money_hub}
+// plaid-link-token  POST {item_id?, money_hub?, platform?: ios|android|web}  -> {link_token, expiration, mode, money_hub}
 //   money_hub:true (create) requests Transactions (+ optional Liabilities/Investments);
 //   with item_id it asks the user to consent to Transactions + Liabilities on that Item.
 // ---------------------------------------------------------------------------
@@ -191,8 +193,10 @@ export const plaidLinkToken = route(["POST"], async (req, deps) => {
   const ctx = await deps.authenticate(req);
   requireMfa(ctx, deps);
   const body = await readJsonObject(req);
-  onlyKeys(body, ["item_id", "money_hub"]);
+  onlyKeys(body, ["item_id", "money_hub", "platform"]);
   const itemId = optString(body, "item_id", UUID_RE);
+  // OAuth banks (Chase): iOS/web return via redirect_uri; Android via android_package_name, never both.
+  const platform = optString(body, "platform", /^(ios|android|web)$/) ?? "ios";
   const moneyHub = optBool(body, "money_hub") ?? false;
   let credential: ProviderCredential | undefined;
   if (itemId) {
@@ -204,7 +208,8 @@ export const plaidLinkToken = route(["POST"], async (req, deps) => {
     appUserId: ctx.userId,
     credential,
     webhookUrl: deps.config.plaidWebhookUrl,
-    redirectUri: deps.config.plaidRedirectUri,
+    redirectUri: platform === "android" ? undefined : deps.config.plaidRedirectUri,
+    androidPackageName: platform === "android" ? deps.config.plaidAndroidPackageName : undefined,
     moneyHub,
   });
   return json(200, { link_token: s.linkToken, expiration: s.expiration, mode: credential ? "update" : "create", money_hub: moneyHub });

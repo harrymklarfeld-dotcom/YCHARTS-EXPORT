@@ -67,6 +67,32 @@ if (APP_ENV === 'production' && BUNDLE_ID.includes('YOURCOMPANY')) {
   console.warn('[app.config] BUNDLE_ID is still the placeholder com.YOURCOMPANY.tenbagger.');
 }
 
+// ─── Plaid Link ──────────────────────────────────────────────────────────────────────────────
+/**
+ * react-native-plaid-link-sdk v13 is an Expo module: it autolinks and ships NO config plugin, so
+ * there is no plugins[] entry. It needs a dev/preview build (not Expo Go); see src/money/live/plaidLink.ts.
+ *
+ * OAuth banks on iOS return to the app through the link token's `redirect_uri` (backend env
+ * PLAID_REDIRECT_URI). Set EXPO_PUBLIC_PLAID_REDIRECT_URI to the same https URL and this adds the
+ * matching Associated Domains entitlement (`applinks:<host>`); the host must serve an
+ * apple-app-site-association file for BUNDLE_ID. Register the URI under "Allowed redirect URIs"
+ * in the Plaid dashboard. Android OAuth uses the package name (BUNDLE_ID) registered in the
+ * dashboard instead of a redirect URI.
+ */
+const PLAID_REDIRECT_URI = process.env.EXPO_PUBLIC_PLAID_REDIRECT_URI;
+const plaidRedirectHost = (() => {
+  if (!PLAID_REDIRECT_URI) return null;
+  try {
+    const u = new URL(PLAID_REDIRECT_URI);
+    return u.protocol === 'https:' ? u.host : null;
+  } catch {
+    return null;
+  }
+})();
+if (PLAID_REDIRECT_URI && !plaidRedirectHost) {
+  console.warn('[app.config] EXPO_PUBLIC_PLAID_REDIRECT_URI must be an https URL (iOS universal link); ignoring it.');
+}
+
 const TRACKING_USAGE =
   'Allow tracking to see ads that are more relevant to you. Tenbagger never shows ads during lessons or next to your own finances, and Pro is ad-free.';
 
@@ -196,6 +222,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       usesNonExemptEncryption: false,
     },
     privacyManifests,
+    ...(plaidRedirectHost ? { associatedDomains: [`applinks:${plaidRedirectHost}`] } : {}),
   },
   android: {
     package: BUNDLE_ID,

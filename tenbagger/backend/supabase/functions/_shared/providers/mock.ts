@@ -64,7 +64,10 @@ export class MockProvider implements AggregatorProvider {
     return Promise.resolve({ providerUserId, secret: `mock-secret-${providerUserId}` });
   }
 
-  createLinkSession(input: { appUserId: string; credential?: ProviderCredential; moneyHub?: boolean }): Promise<LinkSession> {
+  /** Last link-session input (tests check OAuth routing: redirect_uri vs android_package_name). */
+  lastLinkInput: { redirectUri?: string; androidPackageName?: string } | null = null;
+  createLinkSession(input: { appUserId: string; credential?: ProviderCredential; moneyHub?: boolean; redirectUri?: string; androidPackageName?: string }): Promise<LinkSession> {
+    this.lastLinkInput = { redirectUri: input.redirectUri, androidPackageName: input.androidPackageName };
     this.calls.push({ method: "createLinkSession", args: [input.appUserId, !!input.credential, input.moneyHub === true] });
     return Promise.resolve(
       this.name === "plaid"

@@ -221,3 +221,13 @@ Deno.test("unlink: provider removal + local deletion; all:true deletes SnapTrade
   assert(audit.includes("unlink.provider_remove_failed") && audit.includes("unlink.item_deleted"));
   assertEquals((await unlink(req(ALICE, {}), deps)).status, 400);
 });
+
+Deno.test("plaid-link-token routes OAuth by platform: redirect_uri for iOS/web, package name for Android", async () => {
+  const plaid = deps.plaid as MockProvider;
+  const cfg = { ...deps, config: { ...deps.config, plaidRedirectUri: "https://tenbagger.app/plaid-oauth", plaidAndroidPackageName: "com.tenbagger.app" } };
+  assertEquals((await plaidLinkToken(req(ALICE, { platform: "android" }), cfg)).status, 200);
+  assertEquals(plaid.lastLinkInput, { redirectUri: undefined, androidPackageName: "com.tenbagger.app" });
+  assertEquals((await plaidLinkToken(req(ALICE, { platform: "ios" }), cfg)).status, 200);
+  assertEquals(plaid.lastLinkInput, { redirectUri: "https://tenbagger.app/plaid-oauth", androidPackageName: undefined });
+  assertEquals((await plaidLinkToken(req(ALICE, { platform: "windows" }), cfg)).status, 400);
+});

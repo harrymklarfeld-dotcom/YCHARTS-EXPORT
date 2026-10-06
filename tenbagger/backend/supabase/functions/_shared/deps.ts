@@ -6,7 +6,7 @@
 //   PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV (sandbox|development|production)
 //   SNAPTRADE_CLIENT_ID, SNAPTRADE_CONSUMER_KEY
 // Optional: PROVIDER_MODE=mock, REQUIRE_MFA_FOR_LINKING=false (dev only), ALLOWED_ORIGINS,
-//   PLAID_WEBHOOK_URL, PLAID_REDIRECT_URI, SNAPTRADE_REDIRECT_URI, MIN_SYNC_INTERVAL_SEC,
+//   PLAID_WEBHOOK_URL, PLAID_REDIRECT_URI, PLAID_ANDROID_PACKAGE_NAME, SNAPTRADE_REDIRECT_URI, MIN_SYNC_INTERVAL_SEC,
 //   PLAID_REALTIME_BALANCES=true (Money hub: /accounts/balance/get, billed per call),
 //   PLAID_TRANSACTIONS_DAYS_REQUESTED (Money hub link-time history, default 180)
 // Provided by Supabase automatically: SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_DB_URL
@@ -82,6 +82,7 @@ async function build(): Promise<Deps> {
       allowedOrigins: (env("ALLOWED_ORIGINS") ?? "").split(",").map((s) => s.trim()).filter(Boolean),
       plaidWebhookUrl: env("PLAID_WEBHOOK_URL"),
       plaidRedirectUri: env("PLAID_REDIRECT_URI"),
+      plaidAndroidPackageName: env("PLAID_ANDROID_PACKAGE_NAME"),
       snaptradeRedirectUri: env("SNAPTRADE_REDIRECT_URI"),
       minSyncIntervalSec: Number(env("MIN_SYNC_INTERVAL_SEC") ?? "60"),
     },

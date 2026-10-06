@@ -210,7 +210,7 @@ describe('HTTP client + config', () => {
     expect((await c.refresh(['i1']))[0]).toMatchObject({ ok: true, status: 'active' });
     expect(calls[0].url).toBe('https://x.supabase.co/functions/v1/plaid-link-token');
     expect(calls[0].init!.headers).toMatchObject({ apikey: 'anon', authorization: 'Bearer jwt' });
-    expect(JSON.parse(calls[0].init!.body!)).toEqual({ money_hub: true });
+    expect(JSON.parse(calls[0].init!.body!)).toEqual({ money_hub: true, platform: 'ios' });
     expect(JSON.parse(calls[1].init!.body!)).toEqual({ item_id: 'i1' });
 
     const signedOut = new HttpMoneyClient({ baseUrl: 'https://x', anonKey: 'a', getAccessToken: async () => null, fetch });
