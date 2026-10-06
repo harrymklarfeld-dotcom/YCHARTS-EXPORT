@@ -8,6 +8,7 @@
     "expo-constants": "~57.0.19",
     "expo-linking": "~57.0.11",
     "expo-router": "~57.0.23",
+    "expo-secure-store": "~57.0.4",
     "expo-status-bar": "~57.0.1",
     "expo-tracking-transparency": "~57.0.2",
     "react": "19.2.3",
