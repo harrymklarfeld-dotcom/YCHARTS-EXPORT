@@ -4,11 +4,14 @@
  * wide screens (≥ 900px). Every tab shares one header (net worth, freshness, sample banner).
  *
  * Read-only and educational. Nothing here awards XP (XP only comes from lessons; see src/game/xp.ts).
+ * Data: live linked accounts (src/money/live) when at least one connection exists, else the sample.
+ * Pull to refresh asks each connection for fresh data (15-minute cooldown); coming back to the app
+ * refreshes connections older than 6 hours.
  * The selected tab lives in the URL (`/money?tab=credit`), so tabs are linkable.
  */
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useRef, useState, type ComponentType } from 'react';
-import { Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Disclaimer, Eyebrow } from '../components/ui';
 import { useTheme } from '../theme';
@@ -23,7 +26,8 @@ import OverviewTab from './dashboard/OverviewTab';
 import ReportTab from './dashboard/ReportTab';
 import SpendingTab from './dashboard/SpendingTab';
 import type { TabProps } from './dashboard/types';
-import { getSampleHub } from './hub';
+import { useHomeHub, useMoneyAutoRefresh } from './live/hooks';
+import { useConnections } from './live/store';
 import { useLocalMoney } from './store';
 
 export const WIDE_RAIL = 900;
@@ -44,7 +48,20 @@ export default function MoneyScreen({ initialTab, embedded }: { initialTab?: Das
   const params = useLocalSearchParams<{ tab?: string }>();
   const fromUrl = isDashTab(params.tab) ? params.tab : undefined;
   const [tab, setTabState] = useState<DashTab>(initialTab ?? fromUrl ?? 'overview');
-  const hub = useMemo(() => getSampleHub(), []);
+  // Live linked accounts when any are connected; otherwise the fictional sample (banner says so).
+  const { hub } = useHomeHub();
+  useMoneyAutoRefresh();
+  const refreshConnections = useConnections((s) => s.refresh);
+  const [pulling, setPulling] = useState(false);
+  const onPull = async () => {
+    setPulling(true);
+    try {
+      await refreshConnections(); // 15-minute per-connection cooldown lives in the store
+    } finally {
+      setPulling(false);
+    }
+  };
+  const refreshControl = <RefreshControl refreshing={pulling} onRefresh={() => void onPull()} tintColor={t.c.primary} colors={[t.c.primary]} />;
   const local = useLocalMoney();
   const dash = useMemo(() => buildDashboard(hub.data, local), [hub.data, local]);
   const { width } = useWindowDimensions();
@@ -87,7 +104,7 @@ export default function MoneyScreen({ initialTab, embedded }: { initialTab?: Das
             <RailItem key={id} id={id} active={id === tab} onPress={() => goTab(id)} />
           ))}
         </View>
-        <ScrollView ref={scroll} style={{ flex: 1 }} contentContainerStyle={{ padding: 20, gap: 16, paddingBottom: 48, maxWidth: 1160, width: '100%', alignSelf: 'center' }}>
+        <ScrollView ref={scroll} refreshControl={refreshControl} style={{ flex: 1 }} contentContainerStyle={{ padding: 20, gap: 16, paddingBottom: 48, maxWidth: 1160, width: '100%', alignSelf: 'center' }}>
           <DashboardHeader dash={dash} hub={hub} />
           <Text accessibilityRole="header" style={{ fontFamily: t.fonts.display, fontSize: 24, fontWeight: '700', color: t.c.ink }}>
             {TAB_TITLES[tab]}
@@ -100,7 +117,7 @@ export default function MoneyScreen({ initialTab, embedded }: { initialTab?: Das
 
   return (
     <SafeAreaView edges={embedded ? [] : ['top']} style={{ flex: 1, backgroundColor: t.c.bg }}>
-      <ScrollView ref={scroll} stickyHeaderIndices={[1]} contentContainerStyle={{ paddingBottom: 40 }}>
+      <ScrollView ref={scroll} refreshControl={refreshControl} stickyHeaderIndices={[1]} contentContainerStyle={{ paddingBottom: 40 }}>
         <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
           <DashboardHeader dash={dash} hub={hub} compact />
         </View>

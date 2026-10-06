@@ -25,6 +25,7 @@ import {
   holdingsSummary,
   incomeVolatility,
   interestAvoided,
+  matchTransfers,
   monthKey,
   moneyAlerts,
   netWorth,
@@ -184,18 +185,20 @@ export function buildDashboard(data: MoneyData, local: LocalMoneyState = EMPTY_L
   const apr = liability?.apr ?? null;
   const overrides = local.categoryOverrides;
   const txRaw = data.transactions ?? [];
+  // Money moved between the user's own linked accounts (Chase -> Ally, checking -> card) is not spending or income.
+  const transfers = matchTransfers(txRaw, latest.accounts);
   const rebounds = cardAcct ? paymentRebounds(txRaw, cardAcct.id, { overrides }) : [];
 
   // Spending
-  const tx = categorizeAll(txRaw, { overrides }).sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
-  const dailySpend = averageDailySpend(txRaw, asOf, 30, { overrides });
+  const tx = categorizeAll(txRaw, { overrides, transfers }).sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  const dailySpend = averageDailySpend(txRaw, asOf, 30, { overrides, transfers });
   const runwayDays = cashRunwayDays(breakdown.liquidity.value, dailySpend.value);
-  const subscriptions = detectSubscriptions(txRaw, { overrides });
+  const subscriptions = detectSubscriptions(txRaw, { overrides, transfers });
   const months = completeMonths(txRaw, asOf);
   const spendMonth = months[0] ?? monthKey(asOf);
   const monthEnd = addDays(`${monthKey(addDays(`${monthKey(asOf)}-01`, 31))}-01`, -1);
   const projectedRest = projectIncome(streams, addDays(asOf, 1), monthEnd).reduce((s, d) => s + d.amount, 0);
-  const pace = spendingPace(txRaw, asOf, { overrides, expectedIncomeRest: projectedRest });
+  const pace = spendingPace(txRaw, asOf, { overrides, transfers, expectedIncomeRest: projectedRest });
 
   // Investments
   const holdings = data.holdings?.length ? holdingsSummary(data.holdings) : null;
@@ -217,7 +220,7 @@ export function buildDashboard(data: MoneyData, local: LocalMoneyState = EMPTY_L
   ];
 
   const util = cardAcct ? utilization(cardBal, cardAcct.creditLimit) : null;
-  const leaks = spendingLeaks(txRaw, spendMonth, { overrides });
+  const leaks = spendingLeaks(txRaw, spendMonth, { overrides, transfers });
 
   // Timeline: next pay, dues, statement closings and recurring charges after asOf.
   const events: TimelineEvent[] = [];
@@ -255,7 +258,7 @@ export function buildDashboard(data: MoneyData, local: LocalMoneyState = EMPTY_L
     runwayDays,
     subscriptions,
     spendMonth,
-    spend: spendingByCategory(txRaw, spendMonth, { overrides }),
+    spend: spendingByCategory(txRaw, spendMonth, { overrides, transfers }),
     compare: compareCategories(txRaw, spendMonth, { overrides }),
     leaks,
     pace,
@@ -290,6 +293,7 @@ export function reportFor(data: MoneyData, month: string, local: LocalMoneyState
     deposits: data.deposits,
     streams: data.streams,
     overrides: local.categoryOverrides,
+    transfers: matchTransfers(data.transactions ?? [], data.snapshots[data.snapshots.length - 1]?.accounts ?? []),
     name: data.persona.name,
     sample: data.sample,
   });
