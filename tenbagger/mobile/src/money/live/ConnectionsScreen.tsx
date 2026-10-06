@@ -3,8 +3,10 @@
  * Read-only: nothing here can move money. No XP or rewards for linking or refreshing.
  * Copy lives in ./copy.ts (scanned for banned phrases in __tests__/live.test.ts).
  */
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { gateRoute, linkGate, selectLinkGate, useAuth } from '../../auth';
 import { Icon } from '../../components/Icon';
 import { Sheet } from '../../components/Sheet';
 import { Button, Card } from '../../components/ui';
@@ -44,10 +46,41 @@ export default function ConnectionsScreen() {
     if (r.message) setMessage(r.message);
   };
 
-  const onLink = () => {
+  // Linking needs a signed-in, 18+, two-step (aal2) session. Sign-in first, then linking resumes here.
+  const gate = useAuth(selectLinkGate);
+  const authEmail = useAuth((s) => s.email);
+  const ensureLinkReady = (resume: boolean): boolean => {
+    const g = linkGate(useAuth.getState());
+    const route = gateRoute(g);
+    if (!route) return true;
+    useAuth.getState().setPendingAfterAuth(resume ? 'link' : null);
+    router.push(route);
+    return false;
+  };
+  const startLink = () => {
     if (mode === 'mock') setPicker(true);
     else void run(() => link());
   };
+  const onLink = () => {
+    if (ensureLinkReady(true)) startLink();
+  };
+  const startLinkRef = useRef(startLink);
+  startLinkRef.current = startLink;
+  useFocusEffect(
+    useCallback(() => {
+      const a = useAuth.getState();
+      if (a.pendingAfterAuth !== 'link') return;
+      a.setPendingAfterAuth(null); // backing out of sign-in also clears it
+      if (gate === 'ok') startLinkRef.current();
+    }, [gate]),
+  );
+  // Signed in or out (real mode): reload connections for the new session.
+  const lastEmail = useRef(authEmail);
+  useEffect(() => {
+    if (lastEmail.current === authEmail) return;
+    lastEmail.current = authEmail;
+    if (initialized && authEmail) void useConnections.getState().reload();
+  }, [authEmail, initialized]);
   const linkedIds = new Set(connections.map((c) => c.institutionId));
   const anySample = mode === 'mock' || connections.some((c) => c.sample);
 
@@ -81,7 +114,9 @@ export default function ConnectionsScreen() {
           cooling={cooldownRemaining(lastAttempt[c.id], now) > 0}
           disabled={busy}
           onRefresh={() => void run(() => refresh([c.id]))}
-          onSignIn={() => void run(() => signInAgain(c.id))}
+          onSignIn={() => {
+            if (ensureLinkReady(false)) void run(() => signInAgain(c.id));
+          }}
           onUnlink={() => setConfirm(c)}
         />
       ))}

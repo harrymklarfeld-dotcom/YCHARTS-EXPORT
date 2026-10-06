@@ -10,6 +10,15 @@ sql_paths = ["./seed.sql"]
 
 [auth]
 enabled = true
+# Hosted projects: set Site URL in the dashboard (Authentication → URL Configuration).
+site_url = "http://localhost:8081"
+
+[auth.email]
+# The app signs in with a 6-digit email code (POST /auth/v1/otp → /auth/v1/verify), not magic links.
+# The "Magic Link" and "Confirm signup" templates must show {{ .Token }}.
+enable_signup = true
+otp_length = 6
+otp_expiry = 600
 
 [auth.mfa]
 # Brokerage linking requires an aal2 session (FTC Safeguards Rule: MFA for access to customer info).

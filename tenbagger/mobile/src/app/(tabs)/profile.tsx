@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AUTH_COPY, useAuth } from '../../auth';
 import { Icon } from '../../components/Icon';
 import { Body, Card, Chip, Disclaimer, Eyebrow, ProgressBar, Title } from '../../components/ui';
 import { dataInfo } from '../../data';
@@ -42,6 +43,43 @@ function Row({ icon, label, detail, onPress, disabled, badge }: { icon: Paramete
         </View>
       ) : null}
     </Pressable>
+  );
+}
+
+/** Account: signed-in email, two-step status, sign out. Signing in is only needed to link accounts. */
+function AccountSection() {
+  const t = useTheme();
+  const status = useAuth((a) => a.status);
+  const email = useAuth((a) => a.email);
+  const aal = useAuth((a) => a.aal);
+  const sandbox = useAuth((a) => a.sandbox);
+  const busy = useAuth((a) => a.busy);
+  const signOut = useAuth((a) => a.signOut);
+  const signedIn = status === 'signed_in' || status === 'mfa_required';
+  const twoStep = aal === 'aal2' ? AUTH_COPY.twoStepOn : status === 'mfa_required' ? AUTH_COPY.twoStepNeedsCode : AUTH_COPY.twoStepOff;
+  return (
+    <View style={{ gap: 10 }}>
+      <Eyebrow>{sandbox ? `${AUTH_COPY.profileTitle} · ${AUTH_COPY.sandboxLabel}` : AUTH_COPY.profileTitle}</Eyebrow>
+      <Card style={{ paddingVertical: 4 }}>
+        {signedIn ? (
+          <>
+            <Row icon="user" label={email ?? AUTH_COPY.profileTitle} detail={sandbox ? AUTH_COPY.sandboxNote : undefined} disabled />
+            <View style={{ height: 1, backgroundColor: t.c.line }} />
+            <Row
+              icon="lock"
+              label={twoStep}
+              detail={aal === 'aal2' ? undefined : AUTH_COPY.twoStepDetailOff}
+              disabled={aal === 'aal2'}
+              onPress={() => router.push('/auth/mfa')}
+            />
+            <View style={{ height: 1, backgroundColor: t.c.line }} />
+            <Row icon="close" label={AUTH_COPY.signOut} detail={AUTH_COPY.signOutDetail} disabled={busy} onPress={() => void signOut()} />
+          </>
+        ) : (
+          <Row icon="user" label={AUTH_COPY.profileSignIn} detail={AUTH_COPY.profileSignedOutDetail} onPress={() => router.push('/auth')} />
+        )}
+      </Card>
+    </View>
   );
 }
 
@@ -107,6 +145,8 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        <AccountSection />
+
         <Card style={{ paddingVertical: 4 }}>
           <Row
             icon="star"
@@ -127,7 +167,7 @@ export default function ProfileScreen() {
             }}
           />
           <View style={{ height: 1, backgroundColor: t.c.line }} />
-          <Row icon="link" label="Link brokerage" detail="See your own holdings next to lessons" disabled badge="Coming soon" />
+          <Row icon="link" label="Linked accounts" detail="Banks, cards and brokerages (read-only)" onPress={() => router.push('/money/connections')} />
           <View style={{ height: 1, backgroundColor: t.c.line }} />
           <Row icon="book" label="Data source" detail={`${dataInfo.companiesSource}${dataInfo.isSample ? ' (sample numbers)' : ''} · SEC EDGAR filings`} disabled />
           <View style={{ height: 1, backgroundColor: t.c.line }} />

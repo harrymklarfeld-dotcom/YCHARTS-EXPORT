@@ -2,6 +2,7 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useAuth } from '../auth';
 import { MonetizationProvider } from '../monetization';
 import { useApp } from '../state/store';
 import { useTheme } from '../theme';
@@ -13,6 +14,15 @@ function HeartsTicker() {
     const id = setInterval(() => tick(), 30_000);
     return () => clearInterval(id);
   }, [tick]);
+  return null;
+}
+
+/** Restores a saved sign-in (secure store on iOS/Android; nothing on web or in the sandbox). */
+function AuthBoot() {
+  const init = useAuth((s) => s.init);
+  useEffect(() => {
+    void init();
+  }, [init]);
   return null;
 }
 
@@ -29,6 +39,7 @@ export default function RootLayout() {
       <ThemeProvider value={navTheme}>
         <StatusBar style={t.dark ? 'light' : 'dark'} />
         <HeartsTicker />
+        <AuthBoot />
         <Stack
           screenOptions={{
             headerStyle: { backgroundColor: t.c.bg },

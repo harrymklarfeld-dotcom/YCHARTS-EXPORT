@@ -5,8 +5,8 @@
  *   EXPO_PUBLIC_SUPABASE_ANON_KEY=<anon key>          (public by design; RLS protects rows)
  *   EXPO_PUBLIC_MONEY_MODE=mock|http                  (optional override; http needs the two above)
  *
- * The user JWT is supplied by the app's auth layer via setMoneyAccessTokenProvider() (there is no
- * auth screen yet, so http mode reports "signed_out" until one exists). Never put a service-role
+ * The user JWT is supplied by src/auth (email code + TOTP sign-in) via setMoneyAccessTokenProvider();
+ * the same two vars switch src/auth from "Sandbox sign-in" to real Supabase Auth. Never put a service-role
  * key or Plaid secret in EXPO_PUBLIC_* vars: they ship inside the app bundle.
  */
 import { HttpMoneyClient } from './HttpMoneyClient';

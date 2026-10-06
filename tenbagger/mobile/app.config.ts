@@ -162,6 +162,9 @@ const plugins: ExpoConfig['plugins'] = [
         ],
       ]
     : []),
+  // Keychain / Keystore storage for the sign-in session (src/auth/storage.ts). Default options
+  // exclude its entries from Android auto-backup, so a restored phone signs in again.
+  ...(has('expo-secure-store') ? ['expo-secure-store'] : []),
   // Lines to add when the packages land (run `npx expo install <pkg>` first):
   //   'expo-dev-client'  → no plugin entry needed; required for the `development` EAS profile.
   //   'expo-updates'     → no plugin entry needed; `updates.url` below activates it.
