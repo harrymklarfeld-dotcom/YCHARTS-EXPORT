@@ -15,6 +15,7 @@ import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import { b64urlDecode, TokenCipher } from "./crypto.ts";
 import type { AuthContext, Deps } from "./handlers.ts";
 import { HttpError } from "./http.ts";
+import { notConfiguredProvider } from "./providers/disabled.ts";
 import { MockProvider } from "./providers/mock.ts";
 import { type PlaidEnv, PlaidProvider } from "./providers/plaid.ts";
 import { SnapTradeProvider } from "./providers/snaptrade.ts";
@@ -53,9 +54,12 @@ async function build(): Promise<Deps> {
       realtimeBalances: env("PLAID_REALTIME_BALANCES") === "true",
       transactionsDaysRequested: Number(env("PLAID_TRANSACTIONS_DAYS_REQUESTED") ?? "180"),
     });
+  // SnapTrade is optional: without its keys, its endpoints answer 503 and everything else still runs.
   const snaptrade = mock
     ? new MockProvider("snaptrade", { snaptrade: [] })
-    : new SnapTradeProvider({ clientId: must("SNAPTRADE_CLIENT_ID"), consumerKey: must("SNAPTRADE_CONSUMER_KEY") });
+    : env("SNAPTRADE_CLIENT_ID") && env("SNAPTRADE_CONSUMER_KEY")
+    ? new SnapTradeProvider({ clientId: must("SNAPTRADE_CLIENT_ID"), consumerKey: must("SNAPTRADE_CONSUMER_KEY") })
+    : notConfiguredProvider("snaptrade");
 
   const jwk = cachedJwkFetcher((kid) => (plaid instanceof PlaidProvider ? plaid.getWebhookVerificationKey(kid) : Promise.resolve(null)));
 
