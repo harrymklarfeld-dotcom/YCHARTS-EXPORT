@@ -3,9 +3,9 @@
  *
  *  - iOS / Android (real mode): expo-secure-store → Keychain / Keystore-backed storage, readable
  *    only after first unlock and never synced to other devices (…_THIS_DEVICE_ONLY).
- *  - Web: MEMORY ONLY. Browsers have no keychain, and localStorage / AsyncStorage are readable by
- *    any script on the page, so the session is deliberately lost on reload and the user signs in
- *    again. Never put tokens in AsyncStorage or localStorage.
+ *  - Web: sessionStorage. It survives a reload but is cleared when the tab closes, and is never
+ *    shared with other tabs. Browsers have no keychain; localStorage would keep the refresh token
+ *    for weeks, so it is never used. Falls back to memory if sessionStorage is unavailable.
  *  - Sandbox (mock mode): memory only on every platform, so nothing from a sandbox sign-in is
  *    ever written to the device.
  *
@@ -16,7 +16,7 @@ import * as SecureStore from 'expo-secure-store';
 import type { StoredSession } from './types';
 
 export interface SessionStorage {
-  readonly kind: 'secure' | 'memory';
+  readonly kind: 'secure' | 'memory' | 'tab';
   load(): Promise<StoredSession | null>;
   save(s: StoredSession): Promise<void>;
   clear(): Promise<void>;
@@ -73,9 +73,47 @@ export class SecureSessionStorage implements SessionStorage {
   }
 }
 
+/** Subset of the Web Storage API (injectable for tests). */
+export type WebStorageLike = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+
+/** Web: one tab's sessionStorage (cleared when the tab closes). */
+export class TabSessionStorage implements SessionStorage {
+  readonly kind = 'tab' as const;
+  constructor(private readonly store: WebStorageLike) {}
+  async load(): Promise<StoredSession | null> {
+    try {
+      const raw = this.store.getItem(KEY_REST);
+      if (!raw) return null;
+      const s = JSON.parse(raw) as StoredSession;
+      return typeof s.accessToken === 'string' && typeof s.refreshToken === 'string' && typeof s.userId === 'string' ? s : null;
+    } catch {
+      return null;
+    }
+  }
+  async save(s: StoredSession) {
+    this.store.setItem(KEY_REST, JSON.stringify(s));
+  }
+  async clear() {
+    this.store.removeItem(KEY_REST);
+  }
+}
+
+function browserSessionStorage(): WebStorageLike | null {
+  try {
+    const s = (globalThis as { sessionStorage?: WebStorageLike }).sessionStorage;
+    if (!s) return null;
+    s.setItem('tenbagger.probe', '1');
+    s.removeItem('tenbagger.probe');
+    return s;
+  } catch {
+    return null; // blocked (privacy mode, sandboxed iframe)
+  }
+}
+
 /** Picks storage by platform and mode (see the header comment). */
-export function pickSessionStorage(opts: { os: string; mode: 'mock' | 'http'; secureStore?: SecureStoreLike }): SessionStorage {
+export function pickSessionStorage(opts: { os: string; mode: 'mock' | 'http'; secureStore?: SecureStoreLike; webStorage?: WebStorageLike | null }): SessionStorage {
   if (opts.mode === 'mock') return new MemorySessionStorage();
   if (opts.os === 'ios' || opts.os === 'android') return new SecureSessionStorage(opts.secureStore);
-  return new MemorySessionStorage(); // web and anything else: memory only, lost on reload
+  const web = opts.webStorage === undefined ? browserSessionStorage() : opts.webStorage;
+  return web ? new TabSessionStorage(web) : new MemorySessionStorage();
 }

@@ -48,3 +48,4 @@ Working name: Tenbagger (rename decision pending, see D-03).
 | D-10 | 2026-09-29 | Scorecard follows outside benchmarks: deferred student loans not graded, income capped at B under 4 months, open investment account = start not F, irregular family help excluded, DTI (CFPB 36/43%), buffer weeks (JPMCI 6 wks), utilization (FICO 10/30%) | Decided | docs/market/SCORECARD_METRICS.md |
 | D-11 | 2026-09-29 | Letter grades vs "Building / Steady / Strong" wording | **Open: A/B test** | SCORECARD_METRICS.md §3 |
 | D-12 | 2026-10-06 | Focus shifts to the money hub: the app opens on Home (all accounts in one place, safe-to-spend first); Learn moves to the 2nd tab and lesson polish pauses | Decided | Founder request |
+| D-13 | 2026-10-07 | Website first for the founder trial (Vercel + Supabase + Plaid Link web); iPhone build waits until the web trial passes | Decided | Founder request; avoids $99 Apple account and device setup for now |

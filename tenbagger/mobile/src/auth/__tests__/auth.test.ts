@@ -19,6 +19,7 @@ import {
   makeUnsignedJwt,
   MemorySessionStorage,
   pickSessionStorage,
+  TabSessionStorage,
   resetAuthForTests,
   SecureSessionStorage,
   useAuth,
@@ -244,7 +245,10 @@ describe('session storage', () => {
   it('secure store on iOS/Android, memory on web and in the sandbox', () => {
     expect(pickSessionStorage({ os: 'ios', mode: 'http' }).kind).toBe('secure');
     expect(pickSessionStorage({ os: 'android', mode: 'http' }).kind).toBe('secure');
-    expect(pickSessionStorage({ os: 'web', mode: 'http' }).kind).toBe('memory');
+    expect(pickSessionStorage({ os: 'web', mode: 'http', webStorage: null }).kind).toBe('memory');
+    const mem = new Map<string, string>();
+    const fake = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) };
+    expect(pickSessionStorage({ os: 'web', mode: 'http', webStorage: fake }).kind).toBe('tab');
     expect(pickSessionStorage({ os: 'ios', mode: 'mock' }).kind).toBe('memory');
     expect(createAuthClient({ mode: 'mock', supabaseUrl: null, anonKey: null }, 'ios').storageKind).toBe('memory');
     expect(createAuthClient({ mode: 'http', supabaseUrl: BASE, anonKey: ANON }, 'web').storageKind).toBe('memory');
@@ -360,5 +364,19 @@ describe('copy', () => {
     for (const s of strings) expect({ s, banned: findBannedPhrases(s) }).toEqual({ s, banned: [] });
     expect(AUTH_COPY.mfaWhy).toContain('Banks require two-step sign-in before we can read your accounts');
     expect(AUTH_COPY.sandboxLabel).toBe('Sandbox sign-in');
+  });
+});
+
+describe('web tab storage', () => {
+  it('round-trips a session, rejects junk and clears', async () => {
+    const mem = new Map<string, string>();
+    const st = new TabSessionStorage({ getItem: (k) => mem.get(k) ?? null, setItem: (k, v) => void mem.set(k, v), removeItem: (k) => void mem.delete(k) });
+    const sess = { accessToken: 'a', refreshToken: 'r', userId: 'u', expiresAt: 1 } as never;
+    await st.save(sess);
+    expect(await st.load()).toEqual(sess);
+    mem.set([...mem.keys()][0], '{bad');
+    expect(await st.load()).toBeNull();
+    await st.clear();
+    expect(mem.size).toBe(0);
   });
 });

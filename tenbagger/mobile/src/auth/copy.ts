@@ -20,7 +20,7 @@ export const AUTH_COPY = {
   useDifferentEmail: 'Use a different email',
   signedInAs: (email: string) => `Signed in as ${email}`,
   continue: 'Continue',
-  webNote: 'On the web you stay signed in only until this tab is reloaded.',
+  webNote: 'On the web you stay signed in until you close this tab.',
 
   mfaTitle: 'Two-step sign-in',
   mfaWhy: 'Banks require two-step sign-in before we can read your accounts. It means a code from your phone is needed as well as your email.',
