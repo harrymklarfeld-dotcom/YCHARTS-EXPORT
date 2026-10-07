@@ -7,7 +7,7 @@
     "base": {
       "node": "22.22.2",
       "env": {
-        "BUNDLE_ID": "com.YOURCOMPANY.tenbagger",
+        "BUNDLE_ID": "com.harryklarfeld.tenbagger",
         "ADS_MODE": "npa"
       }
     },
