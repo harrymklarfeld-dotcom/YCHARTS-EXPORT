@@ -1,0 +1,26 @@
+---
+/** widget:history — annual bars from companies.json history. */
+import HistoryChart from '../HistoryChart.astro';
+import { companyByTicker, shortName } from '../../lib/data.ts';
+import { wmetric, historySeries } from '../../lib/widgets.ts';
+import { wfmt } from '../../lib/wformat.ts';
+import SampleTags from './SampleTags.astro';
+import WidgetError from './WidgetError.astro';
+interface Props { ticker?: string; metric?: string; average?: boolean; caption?: string }
+const { ticker = '', metric = '', average = false, caption } = Astro.props;
+const c = companyByTicker(String(ticker));
+const m = wmetric(String(metric));
+const series = c ? historySeries(c, String(metric)) : [];
+const format = m?.format ?? 'usd';
+---
+{!c || !m ? (
+  <WidgetError message={`unknown ${!c ? `ticker “${ticker}”` : `metric “${metric}”`}.`} />
+) : (
+  <div class="widget w-history">
+    <div class="w-head">
+      <p class="widget-kicker"><span class="ticker">{c.ticker}</span> {shortName(c.name)} · annual</p>
+      <SampleTags companies={[c]} />
+    </div>
+    <HistoryChart series={series} title={m.label} average={average === true || String(average) === 'true'} format={(v: number) => wfmt(format, v)} caption={caption} />
+  </div>
+)}

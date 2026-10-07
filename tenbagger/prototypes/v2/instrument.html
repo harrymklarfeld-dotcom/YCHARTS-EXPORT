@@ -1,0 +1,858 @@
+<title>Tenbagger Instrument</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Instrument+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#D3D4CE; --bg-2:#C7C8C1; --panel:#E6E7E1; --panel-2:#F1F1EC; --hl:rgba(255,255,255,.75);
+  --ink:#151613; --ink-2:#51534C; --ink-3:#83857D; --line:#AFB1A9; --groove:#9FA198;
+  --signal:#FF5314; --signal-ink:#B83A08; --on-signal:#1A0800;
+  --knob-hi:#FBFBF8; --knob-lo:#B9BAB3; --knurl:#8D8F87; --screw:#9A9C94;
+  --case-hi:#2A2B29; --case-lo:#121311;
+  --lcd:#1B1D19; --lcd-ink:#FF7C42; --lcd-dim:#8A8E84; --lcd-text:#E4E7DE;
+  --shadow:rgba(28,30,24,.32); --band:#C3C4BD; --lit-bg:#FFE2D4;
+  --ok:#2D7A4C;
+  --f-disp:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --f-mono:"Martian Mono","SFMono-Regular",Menlo,Consolas,monospace;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#131415; --bg-2:#0D0E0F; --panel:#1C1D1F; --panel-2:#242528; --hl:rgba(255,255,255,.06);
+    --ink:#ECECE7; --ink-2:#A6A7A0; --ink-3:#6E6F6A; --line:#36383B; --groove:#0B0C0D;
+    --signal:#FF6526; --signal-ink:#FF8A57; --on-signal:#1A0800;
+    --knob-hi:#4A4C50; --knob-lo:#18191B; --knurl:#0E0F10; --screw:#3E4044;
+    --case-hi:#3A3B3E; --case-lo:#0A0A0B;
+    --lcd:#0A0B0A; --shadow:rgba(0,0,0,.6); --band:#34363A; --lit-bg:#3A1C0E; --ok:#5FC08A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#131415; --bg-2:#0D0E0F; --panel:#1C1D1F; --panel-2:#242528; --hl:rgba(255,255,255,.06);
+  --ink:#ECECE7; --ink-2:#A6A7A0; --ink-3:#6E6F6A; --line:#36383B; --groove:#0B0C0D;
+  --signal:#FF6526; --signal-ink:#FF8A57; --on-signal:#1A0800;
+  --knob-hi:#4A4C50; --knob-lo:#18191B; --knurl:#0E0F10; --screw:#3E4044;
+  --case-hi:#3A3B3E; --case-lo:#0A0A0B;
+  --lcd:#0A0B0A; --shadow:rgba(0,0,0,.6); --band:#34363A; --lit-bg:#3A1C0E; --ok:#5FC08A;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+.mono{font-family:var(--f-mono)}
+.tab-nums,.lcd,.mono{font-variant-numeric:tabular-nums}
+
+/* ---------- page ---------- */
+.page{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:18px 40px;overflow-x:clip}
+@media (min-width:900px){.page{padding-inline:40px}}
+.dirbar{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:flex-start;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.dirlabel{display:inline-flex;align-items:center;gap:8px;font:600 11px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);white-space:nowrap}
+.dirlabel i{width:7px;height:7px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 2px color-mix(in srgb,var(--signal) 25%,transparent)}
+.rationale{margin:0;font-size:13px;line-height:1.5;color:var(--ink-2);max-width:78ch;flex:1 1 320px}
+.rationale b{color:var(--ink);font-weight:600}
+.stage{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;margin-top:28px}
+@media (min-width:980px){.stage{grid-template-columns:minmax(0,1fr) 410px;gap:64px;align-items:start;margin-top:44px}}
+
+.hero{max-width:600px;padding-top:8px}
+.eyebrow{font:500 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.hero h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(34px,5.2vw,64px);line-height:1.02;letter-spacing:-.025em;margin:14px 0 18px;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--signal-ink)}
+.hero p.lede{font-size:17px;line-height:1.55;color:var(--ink-2);max-width:54ch;margin:0 0 26px}
+.spec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:1px solid var(--line);margin:0 0 22px}
+.spec div{padding:12px 12px 12px 0;border-bottom:1px solid var(--line)}
+.spec div:nth-child(odd){padding-right:16px;border-right:1px solid var(--line)}
+.spec div:nth-child(even){padding-left:16px}
+.spec dt{font:500 10px/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.spec dd{margin:0;font-size:14px;line-height:1.4}
+@media (max-width:460px){.spec{grid-template-columns:1fr}.spec div:nth-child(odd){border-right:0;padding-right:0}.spec div:nth-child(even){padding-left:0}}
+.tryit{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2);margin-bottom:18px;flex-wrap:wrap}
+.kbd{font:500 11px/1 var(--f-mono);padding:5px 7px;border-radius:5px;background:var(--panel-2);border:1px solid var(--line);box-shadow:0 2px 0 var(--line)}
+.disclaim{display:inline-flex;gap:8px;align-items:center;font:500 11px/1.4 var(--f-mono);letter-spacing:.04em;color:var(--ink-2);border:1px dashed var(--line);border-radius:6px;padding:8px 10px}
+.disclaim::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink-3);flex:none}
+
+/* ---------- device ---------- */
+.device{width:100%;max-width:410px;margin-inline:auto;padding:10px;border-radius:48px;background:linear-gradient(160deg,var(--case-hi),var(--case-lo));box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 30px 60px -30px var(--shadow),0 12px 24px -12px var(--shadow)}
+.app{height:800px;border-radius:38px;overflow:hidden;background:var(--panel);display:flex;flex-direction:column;position:relative;isolation:isolate}
+@media (max-width:480px){.device{padding:6px;border-radius:36px}.app{height:780px;border-radius:31px}}
+.status{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+.wordmark{font:700 13px/1 var(--f-disp);letter-spacing:.02em}
+.wordmark span{color:var(--signal-ink)}
+.xp{font:500 11px/1 var(--f-mono);background:var(--lcd);color:var(--lcd-ink);padding:6px 8px;border-radius:5px;letter-spacing:.06em;box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+.xp small{color:var(--lcd-dim);font-size:9px;margin-right:6px}
+.xp.bump{animation:bump .5s var(--spring)}
+@keyframes bump{40%{transform:scale(1.18)}}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 14px 22px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.appfine{font:500 9.5px/1.2 var(--f-mono);letter-spacing:.06em;text-align:center;color:var(--ink-3);padding:6px 8px;border-top:1px solid var(--line);background:var(--panel)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel-2);border-top:1px solid var(--line);padding:6px 6px 14px}
+.tab{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 2px 4px;border-radius:10px;cursor:pointer;color:var(--ink-3);font:500 9.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;position:relative}
+.tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6}
+.tab::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--band);position:absolute;top:2px;transition:background .2s,box-shadow .2s}
+.tab[aria-selected="true"]{color:var(--ink)}
+.tab[aria-selected="true"]::before{background:var(--signal);box-shadow:0 0 8px var(--signal)}
+
+/* ---------- modules ---------- */
+.mod{position:relative;background:var(--panel-2);border-radius:18px;padding:16px 16px 16px;
+  background-image:radial-gradient(circle at 9px 9px,var(--screw) 1.6px,transparent 2.2px),radial-gradient(circle at calc(100% - 9px) 9px,var(--screw) 1.6px,transparent 2.2px),radial-gradient(circle at 9px calc(100% - 9px),var(--screw) 1.6px,transparent 2.2px),radial-gradient(circle at calc(100% - 9px) calc(100% - 9px),var(--screw) 1.6px,transparent 2.2px);
+  box-shadow:inset 0 1px 0 var(--hl),0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent),0 8px 16px -12px var(--shadow)}
+.modhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:12px}
+.modhead b{font:600 10px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase}
+.modhead span{font:500 9.5px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.cap{font-size:12.5px;line-height:1.5;color:var(--ink-2);margin:12px 0 0}
+.cap.fine{font-size:11px;color:var(--ink-3)}
+h2{font-family:var(--f-disp);font-weight:500;font-size:19px;line-height:1.15;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.lcd{background:var(--lcd);color:var(--lcd-text);font-family:var(--f-mono);border-radius:9px;padding:10px 12px;box-shadow:inset 0 2px 7px rgba(0,0,0,.65),0 1px 0 var(--hl)}
+.lcd .k{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--lcd-dim)}
+.lcd .v{font-size:22px;font-weight:500;color:var(--lcd-ink);line-height:1.15;letter-spacing:-.02em}
+.lcd .s{font-size:10.5px;color:var(--lcd-text);line-height:1.45}
+.lcd .row{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+
+/* keys */
+.key{appearance:none;border:0;cursor:pointer;border-radius:11px;padding:12px 16px;font:600 14px/1.1 var(--f-body);letter-spacing:.01em;
+  background:linear-gradient(180deg,var(--knob-hi),color-mix(in srgb,var(--knob-lo) 55%,var(--knob-hi)));color:var(--ink);
+  box-shadow:0 3px 0 color-mix(in srgb,var(--knob-lo) 80%,var(--ink) 20%),0 6px 10px -6px var(--shadow),inset 0 1px 0 var(--hl);
+  transition:transform .12s var(--spring),box-shadow .12s}
+.key:active,.key.down{transform:translateY(3px);box-shadow:0 0 0 color-mix(in srgb,var(--knob-lo) 80%,var(--ink) 20%),0 2px 4px -2px var(--shadow),inset 0 1px 0 var(--hl)}
+.key.primary{background:linear-gradient(180deg,color-mix(in srgb,var(--signal) 85%,#fff),var(--signal));color:var(--on-signal);box-shadow:0 3px 0 color-mix(in srgb,var(--signal) 60%,#000),0 8px 14px -8px var(--signal),inset 0 1px 0 rgba(255,255,255,.4)}
+.key.primary:active,.key.primary.down{box-shadow:0 0 0 color-mix(in srgb,var(--signal) 60%,#000),inset 0 1px 0 rgba(255,255,255,.4)}
+.key[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.key.small{white-space:nowrap;padding:8px 11px;font-size:12px;border-radius:8px}
+.key.wide{width:100%}
+
+/* knob */
+.knob{width:var(--ks,128px);aspect-ratio:1;max-width:100%;border-radius:50%;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none;flex:none}
+.knob svg{display:block;width:100%;height:100%;overflow:visible}
+.knob.dragging{cursor:grabbing}
+.tick{stroke:var(--ink-3);stroke-width:1.3;stroke-linecap:round;transition:stroke .15s}
+.tick.mj{stroke-width:2}
+.tick.on{stroke:var(--signal)}
+.k-sh{fill:var(--shadow);filter:url(#fSoft)}
+.k-body{fill:url(#gKnob)}
+.k-knurl{fill:none;stroke:var(--knurl);stroke-width:2.4;stroke-dasharray:1.1 2.2;opacity:.8}
+.k-face{fill:url(#gFace)}
+.k-ptr{stroke:var(--signal);stroke-width:3.2;stroke-linecap:round}
+.k-mark{fill:var(--ink)}
+.k-rot{transform-origin:60px 60px;transition:transform .34s var(--spring)}
+.knob.dragging .k-rot{transition:transform .06s linear}
+.knob.clk svg{animation:clk .14s ease-out}
+@keyframes clk{45%{transform:scale(.972)}}
+.knob:focus-visible{outline-offset:5px}
+
+/* fader */
+.fader{position:relative;touch-action:none;cursor:pointer;-webkit-user-select:none;user-select:none;border-radius:8px}
+.fader .rail{position:absolute;background:var(--groove);border-radius:3px;box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
+.fader .fill{position:absolute;background:var(--signal);border-radius:3px;opacity:.9}
+.fader .ft{position:absolute;background:var(--ink-3)}
+.fader .capx{position:absolute;border-radius:5px;background:linear-gradient(180deg,var(--knob-hi),var(--knob-lo));box-shadow:0 3px 5px -1px var(--shadow),inset 0 1px 0 var(--hl),0 0 0 1px color-mix(in srgb,var(--knob-lo) 70%,var(--ink) 30%)}
+.fader .capx::after{content:"";position:absolute;background:var(--signal)}
+.fader.v{height:132px;width:100%}
+.fader.v .rail{left:50%;width:5px;margin-left:-2.5px;top:11px;bottom:11px}
+.fader.v .fill{left:50%;width:5px;margin-left:-2.5px;bottom:11px;height:calc(var(--f) * (100% - 22px))}
+.fader.v .ft{left:calc(50% + 9px);width:6px;height:1px;top:calc(11px + (1 - var(--p)) * (100% - 22px))}
+.fader.v .capx{left:50%;width:34px;margin-left:-17px;height:20px;top:calc((1 - var(--f)) * (100% - 20px));transition:top .3s var(--spring)}
+.fader.v .capx::after{left:5px;right:5px;top:9px;height:2px}
+.fader.h{height:40px;width:100%}
+.fader.h .rail{top:50%;height:5px;margin-top:-2.5px;left:14px;right:14px}
+.fader.h .fill{top:50%;height:5px;margin-top:-2.5px;left:14px;width:calc(var(--f) * (100% - 28px))}
+.fader.h .ft{top:calc(50% + 10px);height:6px;width:1px;left:calc(14px + var(--p) * (100% - 28px))}
+.fader.h .capx{top:50%;height:30px;margin-top:-15px;width:28px;left:calc(var(--f) * (100% - 28px));transition:left .3s var(--spring)}
+.fader.h .capx::after{top:6px;bottom:6px;left:13px;width:2px}
+.fader.dragging .capx{transition:none}
+.fader.clk .capx{animation:fclk .16s ease-out}
+@keyframes fclk{50%{filter:brightness(1.08)}}
+
+/* gauge */
+.gauge{width:100%;max-width:250px;display:block;margin-inline:auto}
+.g-face{fill:var(--panel)}
+.g-bezel{fill:url(#gFace)}
+.g-tick{stroke:var(--ink-3);stroke-width:1}
+.g-tick.mj{stroke:var(--ink);stroke-width:1.7}
+.g-lab{fill:var(--ink-2);font:500 8px var(--f-mono);text-anchor:middle;dominant-baseline:middle}
+.g-band{fill:none;stroke:var(--band);stroke-width:5}
+.g-ref{stroke:var(--signal-ink);stroke-width:2.2}
+.g-reflab{fill:var(--signal-ink);font:600 7.5px var(--f-mono);text-anchor:middle;dominant-baseline:middle;letter-spacing:.04em}
+.g-title{fill:var(--ink-3);font:500 7px var(--f-mono);text-anchor:middle;letter-spacing:.14em}
+.needle-main path{fill:var(--signal)}
+.needle-pend path{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-dasharray:2.5 1.8}
+.g-hub{fill:var(--ink)}
+.g-hub2{fill:var(--signal)}
+
+/* learn */
+.hello{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.next .title{font:600 20px/1.2 var(--f-body);margin:4px 0 6px;letter-spacing:-.01em}
+.next .meta{font-size:12.5px;color:var(--ink-2);margin-bottom:14px}
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font:500 9.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:5px 7px;border-radius:4px;background:var(--panel);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line)}
+.pill.sig{color:var(--signal-ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--signal) 50%,transparent)}
+.track{display:flex;flex-direction:column}
+.unit{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.unit:last-child{border-bottom:0}
+.unit .u{font:600 10px/1 var(--f-mono);color:var(--ink-3);letter-spacing:.06em}
+.unit .nm{font-size:13.5px;font-weight:500;line-height:1.25}
+.unit .nm small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;margin-top:2px}
+.leds{display:flex;gap:4px}
+.ledd{width:9px;height:9px;border-radius:50%;background:var(--band);box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.ledd.on{background:var(--signal);box-shadow:0 0 6px color-mix(in srgb,var(--signal) 70%,transparent),inset 0 -1px 1px rgba(0,0,0,.2)}
+.ledd.next{background:transparent;box-shadow:inset 0 0 0 1.6px var(--signal);animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+
+/* lab */
+.tickers{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;margin:0 -2px;scrollbar-width:thin}
+.tk{flex:none;border:0;cursor:pointer;font:600 11px/1 var(--f-mono);letter-spacing:.04em;padding:9px 10px;border-radius:7px;background:linear-gradient(180deg,var(--knob-hi),color-mix(in srgb,var(--knob-lo) 45%,var(--knob-hi)));box-shadow:0 2px 0 color-mix(in srgb,var(--knob-lo) 80%,var(--ink) 20%),inset 0 1px 0 var(--hl);transition:transform .1s}
+.tk[aria-pressed="true"]{transform:translateY(2px);box-shadow:0 0 0 transparent,inset 0 1px 3px rgba(0,0,0,.25);background:var(--panel)}
+.tk[aria-pressed="true"]::after{content:"";display:block;margin:5px auto 0;width:4px;height:4px;border-radius:50%;background:var(--signal);box-shadow:0 0 5px var(--signal)}
+.cohead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.cohead .meta{font-size:12px;color:var(--ink-2);margin-top:4px}
+.price{text-align:right;font-family:var(--f-mono);flex:none}
+.price span{display:block;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.price b{display:block;font-size:15px;font-weight:500}
+.price small{font-size:9px;color:var(--ink-3)}
+.pe-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center}
+.ladder{display:flex;flex-direction:column;gap:3px}
+.rung{display:grid;grid-template-columns:88px minmax(0,1fr) 44px;gap:8px;align-items:center;transition:opacity .25s}
+.rung .lb{font-size:11.5px;line-height:1.15}
+.rung .bar{height:18px;border-radius:4px;background:var(--groove);opacity:.35;position:relative;overflow:hidden}
+.rung .bar i{position:absolute;inset:0 auto 0 0;background:var(--ink);border-radius:4px;width:0;transition:width .45s var(--spring)}
+.rung.cur .bar i{background:var(--signal)}
+.rung .val{font:500 12px/1 var(--f-mono);text-align:right}
+.rung.off{opacity:.3}
+.rung.na .bar{background:repeating-linear-gradient(135deg,var(--band) 0 4px,transparent 4px 8px);opacity:1}
+.bite{font:500 9.5px/1.2 var(--f-mono);color:var(--ink-3);padding-left:96px;letter-spacing:.02em}
+.stoplabs{display:grid;grid-template-columns:repeat(4,1fr);font:500 8.5px/1.2 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:center;margin-top:2px}
+.stoplabs span:first-child{text-align:left}.stoplabs span:last-child{text-align:right}
+.knobs3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;justify-items:center;text-align:center}
+.knobs3 .kl{font:500 9px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-top:6px}
+.knobs3 .kv{font:600 13px/1.2 var(--f-mono);color:var(--ink)}
+.meter{position:relative;height:10px;border-radius:3px;background:#2A2D27;margin:8px 0 4px;overflow:hidden}
+.meter i{position:absolute;inset:0 auto 0 0;background:var(--lcd-ink);transition:width .4s var(--spring)}
+.meter b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--lcd-text)}
+.locked-tag{display:none}
+.mod.lockedin .locked-tag{display:inline-flex}
+.mod.flash{animation:modflash 1.2s ease-out}
+@keyframes modflash{0%,30%{box-shadow:0 0 0 2px var(--signal),0 8px 16px -12px var(--shadow)}}
+
+/* screener */
+.matrix{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.led{border:0;cursor:pointer;border-radius:8px;padding:9px 4px 8px;background:var(--panel);box-shadow:inset 0 1px 3px rgba(0,0,0,.18),0 1px 0 var(--hl);font:600 11px/1 var(--f-mono);color:var(--ink-3);display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .25s,color .25s}
+.led::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--band);transition:background .2s,box-shadow .2s}
+.led small{font-size:8.5px;font-weight:400;color:inherit;opacity:.85}
+.led.lit{background:var(--lit-bg);color:var(--ink)}
+.led.lit::before{background:var(--signal);box-shadow:0 0 8px var(--signal),0 0 2px var(--signal)}
+.led.ignite::before{animation:ignite .5s ease-out}
+@keyframes ignite{0%{transform:scale(2.2)}}
+.mixer{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.strip{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 2px 10px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent);min-width:0}
+.strip.offch .fader,.strip.offch .sv{opacity:.4}
+.jack{width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;background:radial-gradient(circle,var(--groove) 0 5px,var(--knob-lo) 5.5px 9px,var(--knob-hi) 10px);box-shadow:0 1px 2px var(--shadow),inset 0 1px 0 var(--hl);position:relative}
+.jack[aria-pressed="true"]{background:radial-gradient(circle,color-mix(in srgb,var(--signal) 80%,#000) 0 4px,var(--signal) 4.5px 9px,var(--knob-hi) 10px)}
+.jack[aria-pressed="true"]::after{content:"";position:absolute;left:50%;top:-10px;width:4px;height:12px;margin-left:-2px;border-radius:2px;background:var(--signal)}
+.strip .sl{font:600 9px/1.15 var(--f-mono);letter-spacing:.04em;text-align:center;text-transform:uppercase}
+.strip .sv{font:500 10.5px/1 var(--f-mono);color:var(--signal-ink)}
+.strip .sn{font:400 9px/1.1 var(--f-mono);color:var(--ink-3)}
+
+/* money */
+.coverage .lcd .v{font-size:20px}
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.tgl{display:flex;align-items:center;gap:9px;border:0;cursor:pointer;background:var(--panel);border-radius:10px;padding:9px 10px;text-align:left;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent);font-size:12px;line-height:1.2}
+.tgl .sw{flex:none;width:34px;height:20px;border-radius:10px;background:var(--groove);position:relative;box-shadow:inset 0 1px 3px rgba(0,0,0,.4);transition:background .2s}
+.tgl .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:linear-gradient(180deg,var(--knob-hi),var(--knob-lo));box-shadow:0 1px 3px var(--shadow);transition:transform .3s var(--spring)}
+.tgl[aria-pressed="true"] .sw{background:var(--signal)}
+.tgl[aria-pressed="true"] .sw::after{transform:translateX(14px)}
+.tgl small{display:block;color:var(--ink-3);font-size:10.5px;margin-top:2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font:500 9.5px/1.2 var(--f-mono);color:var(--ink-2);letter-spacing:.04em;margin-top:8px;justify-content:center}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:4px;border-radius:2px;background:var(--signal)}
+.legend i.p{background:none;border:1.2px dashed var(--ink);height:6px}
+.acct{display:grid;grid-template-columns:78px minmax(0,1fr) 58px;gap:8px;align-items:center;padding:7px 0}
+.acct .an{font-size:12px;line-height:1.2}
+.acct .an small{display:block;font-size:9.5px;color:var(--ink-3)}
+.acct .am{font:500 11.5px/1 var(--f-mono);text-align:right}
+.vu{height:12px;display:grid;grid-template-columns:repeat(30,1fr);gap:2px}
+.vu i{border-radius:1px;background:var(--band)}
+.vu i.on{background:var(--ink)}
+.vu.owed i.on{background:repeating-linear-gradient(135deg,var(--ink-2) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--ink-2)}
+.due{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.calm{font-size:12.5px;line-height:1.5;color:var(--ink-2);margin:0}
+
+/* lesson */
+.lesson{position:absolute;inset:0;z-index:5;background:var(--panel);display:flex;flex-direction:column}
+.lhead{display:flex;align-items:center;gap:12px;padding:18px 16px 12px;border-bottom:1px solid var(--line)}
+.xbtn{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;flex:none}
+.xbtn svg{width:14px;height:14px;stroke:var(--ink);stroke-width:2}
+.prog{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.prog i{height:8px;border-radius:2px;background:var(--groove);opacity:.5;box-shadow:inset 0 1px 2px rgba(0,0,0,.35);transition:background .3s,opacity .3s}
+.prog i.on{background:var(--signal);opacity:1;box-shadow:0 0 6px color-mix(in srgb,var(--signal) 60%,transparent)}
+.prog i.cur{opacity:1;background:repeating-linear-gradient(90deg,var(--signal) 0 3px,transparent 3px 6px)}
+.pcount{font:500 10px/1 var(--f-mono);color:var(--ink-3);letter-spacing:.06em;flex:none}
+.lbody{flex:1;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.lfoot{padding:12px 16px 20px;border-top:1px solid var(--line);background:var(--panel-2)}
+.intro{font-size:14.5px;line-height:1.6;color:var(--ink-2)}
+.intro strong{color:var(--ink);font-weight:600}
+.qtype{font:500 10px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--signal-ink)}
+.prompt{font:600 17px/1.4 var(--f-body);margin:0;letter-spacing:-.005em}
+.choices{display:grid;gap:8px}
+.choices.two{grid-template-columns:1fr 1fr}
+.choice{border:0;cursor:pointer;text-align:left;border-radius:11px;padding:13px 14px;font:500 14.5px/1.3 var(--f-body);display:flex;align-items:center;gap:10px;
+  background:linear-gradient(180deg,var(--knob-hi),color-mix(in srgb,var(--knob-lo) 40%,var(--knob-hi)));box-shadow:0 3px 0 color-mix(in srgb,var(--knob-lo) 80%,var(--ink) 20%),inset 0 1px 0 var(--hl);transition:transform .12s var(--spring),box-shadow .12s}
+.choice .dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--band);box-shadow:inset 0 1px 2px rgba(0,0,0,.3)}
+.choice[aria-checked="true"]{transform:translateY(3px);box-shadow:0 0 0 transparent,inset 0 0 0 2px var(--ink)}
+.choice[aria-checked="true"] .dot{background:var(--signal);box-shadow:0 0 6px var(--signal)}
+.choice.right{box-shadow:inset 0 0 0 2px var(--ok);transform:none}
+.choice.right .dot{background:var(--ok);box-shadow:none}
+.choice.miss{opacity:.55;text-decoration:line-through;text-decoration-thickness:1px}
+.choice[disabled]{cursor:default}
+.fb{border-radius:12px;padding:14px;background:var(--panel-2);box-shadow:inset 0 0 0 1px var(--line);animation:rise .4s var(--spring)}
+@keyframes rise{from{transform:translateY(14px);opacity:0}}
+.fb h3{margin:0 0 6px;font:600 15px/1.2 var(--f-body);display:flex;gap:8px;align-items:center}
+.fb h3 i{width:9px;height:9px;border-radius:50%;background:var(--ok)}
+.fb.miss h3 i{background:var(--ink-3)}
+.fb p{margin:0 0 10px;font-size:13px;line-height:1.55;color:var(--ink-2)}
+.src .s{display:flex;justify-content:space-between;gap:8px}
+.lockin{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding-top:6px}
+.lockin svg{width:200px;max-width:70%}
+.lk-seg{fill:none;stroke:var(--groove);stroke-width:9;opacity:.45}
+.lk-seg.on{stroke:var(--signal);opacity:1;transition:stroke .2s,opacity .2s}
+.lk-body{fill:var(--ink)}
+.lk-shackle{fill:none;stroke:var(--ink);stroke-width:7;stroke-linecap:round;transition:transform .45s var(--spring)}
+.lk-shackle.open{transform:translateY(-12px)}
+.lk-key{fill:var(--signal)}
+.lk-ring{fill:none;stroke:var(--signal);stroke-width:2;opacity:0}
+.lk-ring.go{animation:ring .9s ease-out}
+@keyframes ring{0%{opacity:.9;transform:scale(.8)}100%{opacity:0;transform:scale(1.25)}}
+.lk-ring{transform-origin:100px 100px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+.stats div{background:var(--panel-2);border-radius:10px;padding:10px 4px;box-shadow:inset 0 0 0 1px var(--line)}
+.stats b{display:block;font:600 17px/1.1 var(--f-mono)}
+.stats span{font:500 8.5px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.row2{display:grid;gap:8px;width:100%}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="gKnob" cx="38%" cy="28%" r="85%"><stop offset="0" style="stop-color:var(--knob-hi)"/><stop offset="1" style="stop-color:var(--knob-lo)"/></radialGradient>
+    <linearGradient id="gFace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--knob-lo)"/><stop offset="1" style="stop-color:var(--knob-hi)"/></linearGradient>
+    <filter id="fSoft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.2"/></filter>
+  </defs>
+</svg>
+
+<div class="page">
+  <header class="dirbar">
+    <div class="dirlabel"><i></i>Direction: Instrument</div>
+    <p class="rationale"><b>Direct manipulation gives a sense of control</b>, which lowers money anxiety, and tinkering with your own model builds ownership (IKEA effect).<br><b>Machined detail signals trust</b>, detented dials reward mastery (SDT), and every lesson ends on a peak as the instrument locks in.</p>
+  </header>
+
+  <main class="stage">
+    <section class="hero" aria-labelledby="heroH">
+      <div class="eyebrow">Tenbagger · investing, read from real 10-Ks</div>
+      <h1 id="heroH">Every number is an <em>instrument</em>. Learn to read it.</h1>
+      <p class="lede">Turn a P/E dial and watch the growth it implies. Step down the margin ladder from a dollar of sales to profit. Tune a cash-flow model by hand. Each short lesson ends when your reading locks in.</p>
+      <dl class="spec">
+        <div><dt>Data</dt><dd>SEC 10-K financials for 12 companies, prices marked as samples</dd></div>
+        <div><dt>Lessons</dt><dd>8 units, from revenue to intrinsic value</dd></div>
+        <div><dt>Controls</dt><dd>Drag any dial or fader, or focus it and use arrow keys</dd></div>
+        <div><dt>Rewards</dt><dd>XP for finishing lessons. Nothing for trading.</dd></div>
+      </dl>
+      <div class="tryit">Try it: open <b>Lab</b>, focus the P/E dial, press <span class="kbd">←</span><span class="kbd">→</span> or <span class="kbd">PgUp</span></div>
+      <div class="disclaim">Educational only. Not investment advice.</div>
+    </section>
+
+    <div class="device">
+      <div class="app" id="app">
+        <div class="status">
+          <div class="wordmark">TEN<span>/</span>BAGGER</div>
+          <div class="xp" id="xp" aria-live="polite"><small>XP</small><span id="xpv">030</span></div>
+        </div>
+        <div class="screen" id="screen" role="tabpanel"></div>
+        <div class="appfine">Educational only. Not investment advice.</div>
+        <nav class="tabs" role="tablist" aria-label="Sections">
+          <button class="tab" role="tab" data-tab="learn" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M4 18h4v-4h4v-4h4V6h4"/><circle cx="4" cy="18" r="1.5"/></svg>Learn</button>
+          <button class="tab" role="tab" data-tab="lab" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-4"/><path d="M5 5l1.5 1.5M19 5l-1.5 1.5M12 3v2"/></svg>Lab</button>
+          <button class="tab" role="tab" data-tab="screen" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M6 3v18M12 3v18M18 3v18"/><rect x="3.5" y="13" width="5" height="3" rx="1"/><rect x="9.5" y="6" width="5" height="3" rx="1"/><rect x="15.5" y="10" width="5" height="3" rx="1"/></svg>Screen</button>
+          <button class="tab" role="tab" data-tab="money" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/><path d="M3 20h18"/></svg>Money</button>
+        </nav>
+        <div class="lesson" id="lesson" hidden role="dialog" aria-modal="true" aria-label="Lesson: Gross profit and gross margin"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const D={"source":"fixture","generated_at":"2026-09-25T22:01:11Z","disclaimer":"Educational content built from reported financials. Not investment advice.","companies":[{"t":"MU","n":"Micron Technology, Inc.","s":"Technology","i":"Semiconductors","p":1000.26,"pd":"2026-09-08","fy":2025,"m":{"market_cap":1125542565000,"pe":131.786561,"ps":30.112434,"ev_ebitda":61.742635,"fcf_yield":0.001482,"dividend_yield":0.000464,"gross_margin":0.400583,"operating_margin":0.266734,"net_margin":0.22845,"roe":0.157648,"roic":0.147136,"debt_to_equity":0.28343,"current_ratio":2.517985,"net_cash":-5706000000,"revenue_growth_yoy":0.488511,"revenue_cagr_3y":0.067135},"f":{"revenue":37378000000,"gross_profit":14973000000,"operating_income":9970000000,"net_income":8539000000,"free_cash_flow":1668000000,"cash":9646000000,"total_debt":15352000000},"h":{"revenue":[[2016,12399000000],[2017,20322000000],[2018,30391000000],[2019,23406000000],[2020,21435000000],[2021,27705000000],[2022,30758000000],[2023,15540000000],[2024,25111000000],[2025,37378000000]],"net_income":[[2016,-276000000],[2017,5089000000],[2018,14135000000],[2019,6313000000],[2020,2687000000],[2021,5861000000],[2022,8687000000],[2023,-5833000000],[2024,778000000],[2025,8539000000]],"free_cash_flow":[[2016,-2649000000],[2017,3419000000],[2018,8521000000],[2019,3409000000],[2020,83000000],[2021,2438000000],[2022,3114000000],[2023,-6117000000],[2024,121000000],[2025,1668000000]],"gross_margin":[[2016,0.202032],[2017,0.415117],[2018,0.588694],[2019,0.457233],[2020,0.305668],[2021,0.375203],[2022,0.45185],[2023,-0.09112],[2024,0.223528],[2025,0.400583]]}},{"t":"AAPL","n":"Apple Inc.","s":"Technology","i":"Consumer Electronics","p":255.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3826275000000,"pe":34.182306,"ps":9.194218,"ev_ebitda":26.867369,"fcf_yield":0.025813,"dividend_yield":0.00403,"gross_margin":0.469052,"operating_margin":0.319708,"net_margin":0.269151,"roe":1.51913,"roic":0.822836,"debt_to_equity":1.33803,"current_ratio":0.893293,"net_cash":-62723000000,"revenue_growth_yoy":0.064255,"revenue_cagr_3y":0.018125},"f":{"revenue":416161000000,"gross_profit":195201000000,"operating_income":133050000000,"net_income":112010000000,"free_cash_flow":98767000000,"cash":35934000000,"total_debt":98657000000},"h":{"revenue":[[2020,274515000000],[2021,365817000000],[2022,394328000000],[2023,383285000000],[2024,391035000000],[2025,416161000000]],"net_income":[[2020,57411000000],[2021,94680000000],[2022,99803000000],[2023,96995000000],[2024,93736000000],[2025,112010000000]],"free_cash_flow":[[2020,73365000000],[2021,92953000000],[2022,111443000000],[2023,99584000000],[2024,108807000000],[2025,98767000000]],"gross_margin":[[2020,0.382332],[2021,0.417794],[2022,0.433096],[2023,0.441311],[2024,0.462063],[2025,0.469052]]}},{"t":"MSFT","n":"Microsoft Corporation","s":"Technology","i":"Software","p":515.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3844475000000,"pe":37.756598,"ps":13.646246,"ev_ebitda":23.711337,"fcf_yield":0.018627,"dividend_yield":0.006264,"gross_margin":0.688237,"operating_margin":0.45622,"net_margin":0.36146,"roe":0.296472,"roic":0.297068,"debt_to_equity":0.125629,"current_ratio":1.353446,"net_cash":-12909000000,"revenue_growth_yoy":0.149322,"revenue_cagr_3y":0.124231},"f":{"revenue":281724000000,"gross_profit":193893000000,"operating_income":128528000000,"net_income":101832000000,"free_cash_flow":71611000000,"cash":30242000000,"total_debt":43151000000},"h":{"revenue":[[2021,168088000000],[2022,198270000000],[2023,211915000000],[2024,245122000000],[2025,281724000000]],"net_income":[[2021,61271000000],[2022,72738000000],[2023,72361000000],[2024,88136000000],[2025,101832000000]],"free_cash_flow":[[2021,56118000000],[2022,65149000000],[2023,59475000000],[2024,74071000000],[2025,71611000000]],"gross_margin":[[2021,0.689258],[2022,0.684017],[2023,0.689201],[2024,0.697644],[2025,0.688237]]}},{"t":"COST","n":"Costco Wholesale Corporation","s":"Consumer Staples","i":"Discount Stores","p":925.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":411625000000,"pe":50.796266,"ps":1.49554,"ev_ebitda":31.476072,"fcf_yield":0.019039,"dividend_yield":0.005328,"gross_margin":0.128432,"operating_margin":0.037724,"net_margin":0.029426,"roe":0.277705,"roic":0.376242,"debt_to_equity":0.195892,"current_ratio":0.999479,"net_cash":8448000000,"revenue_growth_yoy":0.081673,"revenue_cagr_3y":0.066404},"f":{"revenue":275235000000,"gross_profit":35349000000,"operating_income":10383000000,"net_income":8099000000,"free_cash_flow":7837000000,"cash":14161000000,"total_debt":5713000000},"h":{"revenue":[[2021,195929000000],[2022,226954000000],[2023,242290000000],[2024,254453000000],[2025,275235000000]],"net_income":[[2021,5007000000],[2022,5844000000],[2023,6292000000],[2024,7367000000],[2025,8099000000]],"free_cash_flow":[[2021,5370000000],[2022,3501000000],[2023,6745000000],[2024,6629000000],[2025,7837000000]],"gross_margin":[[2021,0.128848],[2022,0.121487],[2023,0.122597],[2024,0.126133],[2025,0.128432]]}},{"t":"KO","n":"The Coca-Cola Company","s":"Consumer Staples","i":"Beverages","p":66.5,"pd":"2025-09-30","fy":2024,"m":{"market_cap":287280000000,"pe":27.03252,"ps":6.104418,"ev_ebitda":29.319508,"fcf_yield":0.016503,"dividend_yield":0.029097,"gross_margin":0.610633,"operating_margin":0.21232,"net_margin":0.225898,"roe":0.427704,"roic":0.131032,"debt_to_equity":1.93221,"current_ratio":1.029625,"net_cash":-37199000000,"revenue_growth_yoy":0.028566,"revenue_cagr_3y":0.067788},"f":{"revenue":47061000000,"gross_profit":28737000000,"operating_income":9992000000,"net_income":10631000000,"free_cash_flow":4741000000,"cash":10828000000,"total_debt":48027000000},"h":{"revenue":[[2020,33014000000],[2021,38655000000],[2022,43004000000],[2023,45754000000],[2024,47061000000]],"net_income":[[2020,7747000000],[2021,9771000000],[2022,9542000000],[2023,10714000000],[2024,10631000000]],"free_cash_flow":[[2020,8667000000],[2021,11258000000],[2022,9534000000],[2023,9747000000],[2024,4741000000]],"gross_margin":[[2020,0.593112],[2021,0.602716],[2022,0.581434],[2023,0.595227],[2024,0.610633]]}},{"t":"NVDA","n":"NVIDIA Corporation","s":"Technology","i":"Semiconductors","p":186.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":4613544000000,"pe":63.265306,"ps":35.35364,"ev_ebitda":55.371869,"fcf_yield":0.01319,"dividend_yield":0.000181,"gross_margin":0.749887,"operating_margin":0.624175,"net_margin":0.55848,"roe":0.918729,"roic":0.892013,"debt_to_equity":0.106685,"current_ratio":4.439851,"net_cash":126000000,"revenue_growth_yoy":1.142034,"revenue_cagr_3y":0.692547},"f":{"revenue":130497000000,"gross_profit":97858000000,"operating_income":81453000000,"net_income":72880000000,"free_cash_flow":60853000000,"cash":8589000000,"total_debt":8463000000},"h":{"revenue":[[2021,16675000000],[2022,26914000000],[2023,26974000000],[2024,60922000000],[2025,130497000000]],"net_income":[[2021,4332000000],[2022,9752000000],[2023,4368000000],[2024,29760000000],[2025,72880000000]],"free_cash_flow":[[2021,4694000000],[2022,8132000000],[2023,3808000000],[2024,27021000000],[2025,60853000000]],"gross_margin":[[2021,0.623448],[2022,0.64929],[2023,0.569289],[2024,0.727176],[2025,0.749887]]}},{"t":"JPM","n":"JPMorgan Chase & Co.","s":"Financials","i":"Banks","p":315.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":905940000000,"pe":15.949367,"ps":5.102278,"ev_ebitda":null,"fcf_yield":null,"dividend_yield":0.016579,"gross_margin":null,"operating_margin":null,"net_margin":0.32931,"roe":0.1696,"roic":null,"debt_to_equity":1.164347,"current_ratio":null,"net_cash":-378046000000,"revenue_growth_yoy":0.123033,"revenue_cagr_3y":0.134337},"f":{"revenue":177556000000,"gross_profit":null,"operating_income":null,"net_income":58471000000,"free_cash_flow":null,"cash":23372000000,"total_debt":401418000000},"h":{"revenue":[[2020,119543000000],[2021,121649000000],[2022,128695000000],[2023,158104000000],[2024,177556000000]],"net_income":[[2020,29131000000],[2021,48334000000],[2022,37676000000],[2023,49552000000],[2024,58471000000]],"free_cash_flow":[],"gross_margin":[]}},{"t":"XOM","n":"Exxon Mobil Corporation","s":"Energy","i":"Oil & Gas Integrated","p":113.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":485787000000,"pe":14.413265,"ps":1.389611,"ev_ebitda":null,"fcf_yield":0.063229,"dividend_yield":0.034385,"gross_margin":null,"operating_margin":null,"net_margin":0.096343,"roe":0.127718,"roic":null,"debt_to_equity":0.158169,"current_ratio":1.308405,"net_cash":-18681000000,"revenue_growth_yoy":0.014519,"revenue_cagr_3y":0.069657},"f":{"revenue":349585000000,"gross_profit":null,"operating_income":null,"net_income":33680000000,"free_cash_flow":30716000000,"cash":23029000000,"total_debt":41710000000},"h":{"revenue":[[2020,181502000000],[2021,285640000000],[2022,413680000000],[2023,344582000000],[2024,349585000000]],"net_income":[[2020,-22440000000],[2021,23040000000],[2022,55740000000],[2023,36010000000],[2024,33680000000]],"free_cash_flow":[[2020,-2614000000],[2021,36053000000],[2022,58390000000],[2023,33450000000],[2024,30716000000]],"gross_margin":[]}},{"t":"JNJ","n":"Johnson & Johnson","s":"Health Care","i":"Pharmaceuticals","p":185.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":449365000000,"pe":31.951641,"ps":5.05922,"ev_ebitda":null,"fcf_yield":0.044156,"dividend_yield":0.02631,"gross_margin":0.690715,"operating_margin":null,"net_margin":0.158363,"roe":0.196755,"roic":null,"debt_to_equity":0.512435,"current_ratio":1.110689,"net_cash":-12529000000,"revenue_growth_yoy":0.043002,"revenue_cagr_3y":0.040974},"f":{"revenue":88821000000,"gross_profit":61350000000,"operating_income":null,"net_income":14066000000,"free_cash_flow":19842000000,"cash":24105000000,"total_debt":36634000000},"h":{"revenue":[[2020,82584000000],[2021,78740000000],[2022,79990000000],[2023,85159000000],[2024,88821000000]],"net_income":[[2020,14714000000],[2021,20878000000],[2022,17941000000],[2023,35153000000],[2024,14066000000]],"free_cash_flow":[[2020,20189000000],[2021,19758000000],[2022,18185000000],[2023,18248000000],[2024,19842000000]],"gross_margin":[[2020,0.655781],[2021,0.702794],[2022,0.692512],[2023,0.688195],[2024,0.690715]]}},{"t":"TSLA","n":"Tesla, Inc.","s":"Consumer Discretionary","i":"Automobiles","p":445.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":1556610000000,"pe":218.137255,"ps":15.93418,"ev_ebitda":124.443185,"fcf_yield":0.002302,"dividend_yield":0.0,"gross_margin":0.178626,"operating_margin":0.072433,"net_margin":0.072587,"roe":0.097253,"roic":0.086803,"debt_to_equity":0.111091,"current_ratio":2.024912,"net_cash":8039000000,"revenue_growth_yoy":0.009476,"revenue_cagr_3y":0.219815},"f":{"revenue":97690000000,"gross_profit":17450000000,"operating_income":7076000000,"net_income":7091000000,"free_cash_flow":3584000000,"cash":16139000000,"total_debt":8100000000},"h":{"revenue":[[2020,31536000000],[2021,53823000000],[2022,81462000000],[2023,96773000000],[2024,97690000000]],"net_income":[[2020,721000000],[2021,5519000000],[2022,12556000000],[2023,14997000000],[2024,7091000000]],"free_cash_flow":[[2020,2786000000],[2021,5015000000],[2022,7566000000],[2023,4358000000],[2024,3584000000]],"gross_margin":[[2020,0.210236],[2021,0.252792],[2022,0.255984],[2023,0.182489],[2024,0.178626]]}},{"t":"AMZN","n":"Amazon.com, Inc.","s":"Consumer Discretionary","i":"Internet Retail","p":220.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":2358620000000,"pe":39.783002,"ps":3.697134,"ev_ebitda":19.256409,"fcf_yield":0.013937,"dividend_yield":0.0,"gross_margin":0.488544,"operating_margin":0.107519,"net_margin":0.092871,"roe":0.207183,"roic":0.224019,"debt_to_equity":0.201616,"current_ratio":1.063735,"net_cash":21123000000,"revenue_growth_yoy":0.109909,"revenue_cagr_3y":0.107354},"f":{"revenue":637959000000,"gross_profit":311671000000,"operating_income":68593000000,"net_income":59248000000,"free_cash_flow":32873000000,"cash":78779000000,"total_debt":57656000000},"h":{"revenue":[[2020,386064000000],[2021,469822000000],[2022,513983000000],[2023,574785000000],[2024,637959000000]],"net_income":[[2020,21331000000],[2021,33364000000],[2022,-2722000000],[2023,30425000000],[2024,59248000000]],"free_cash_flow":[[2020,25924000000],[2021,-14726000000],[2022,-16893000000],[2023,32217000000],[2024,32873000000]],"gross_margin":[[2020,0.395678],[2021,0.420325],[2022,0.438053],[2023,0.469821],[2024,0.488544]]}},{"t":"PG","n":"The Procter & Gamble Company","s":"Consumer Staples","i":"Household Products","p":154.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":380842000000,"pe":25.581395,"ps":4.531729,"ev_ebitda":18.83401,"fcf_yield":0.043388,"dividend_yield":0.024451,"gross_margin":0.51394,"operating_margin":0.220671,"net_margin":0.177049,"roe":0.29429,"roic":0.201778,"debt_to_equity":0.642022,"current_ratio":0.734796,"net_cash":-22978000000,"revenue_growth_yoy":0.024791,"revenue_cagr_3y":0.033549},"f":{"revenue":84039000000,"gross_profit":43191000000,"operating_income":18545000000,"net_income":14879000000,"free_cash_flow":16524000000,"cash":9482000000,"total_debt":32460000000},"h":{"revenue":[[2020,70950000000],[2021,76118000000],[2022,80187000000],[2023,82006000000],[2024,84039000000]],"net_income":[[2020,13027000000],[2021,14306000000],[2022,14742000000],[2023,14653000000],[2024,14879000000]],"free_cash_flow":[[2020,14330000000],[2021,15584000000],[2022,13567000000],[2023,13786000000],[2024,16524000000]],"gross_margin":[[2020,0.503171],[2021,0.512494],[2022,0.474266],[2023,0.478575],[2024,0.51394]]}}],"units":[{"id":"u1-revenue","title":"What a company sells","summary":"Revenue is where every analysis starts: how much a company sells and how fast that is growing.","lessons":[{"id":"u1-l1","title":"Revenue: the top line","xp":10,"n":7},{"id":"u1-l2","title":"Revenue growth","xp":10,"n":7},{"id":"u1-l3","title":"Compounding: 3-year CAGR","xp":10,"n":6}]},{"id":"u2-margins","title":"Margins","summary":"Margins show how many cents of each sales dollar a company keeps at each step of the income statement.","lessons":[{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"n":7},{"id":"u2-l2","title":"Operating margin","xp":10,"n":7},{"id":"u2-l3","title":"Net margin","xp":10,"n":6},{"id":"u2-l4","title":"The margin stack","xp":10,"n":7}]},{"id":"u3-profit","title":"Profit & EPS","summary":"From total profit to one share's slice of it, and what taxes take along the way.","lessons":[{"id":"u3-l1","title":"Net income","xp":10,"n":7},{"id":"u3-l2","title":"Earnings per share","xp":10,"n":6},{"id":"u3-l3","title":"EPS growth","xp":10,"n":6},{"id":"u3-l4","title":"Taxes: the effective rate","xp":10,"n":6}]},{"id":"u4-cashflow","title":"Cash flow & FCF","summary":"Profit is an opinion, cash is a fact: reading the cash-flow statement.","lessons":[{"id":"u4-l1","title":"Cash from operations vs. profit","xp":10,"n":7},{"id":"u4-l2","title":"Free cash flow","xp":10,"n":6},{"id":"u4-l3","title":"FCF margin","xp":10,"n":6},{"id":"u4-l4","title":"Capex intensity","xp":10,"n":6}]},{"id":"u5-balance","title":"Balance sheet & debt","summary":"What a company owns, what it owes, and whether it can pay its bills.","lessons":[{"id":"u5-l1","title":"Assets = liabilities + equity","xp":10,"n":6},{"id":"u5-l2","title":"Net cash vs. net debt","xp":10,"n":7},{"id":"u5-l3","title":"Debt-to-equity","xp":10,"n":6},{"id":"u5-l4","title":"Current ratio","xp":10,"n":6}]},{"id":"u6-returns","title":"Returns on capital","summary":"How much profit a business squeezes out of the money invested in it.","lessons":[{"id":"u6-l1","title":"Return on equity (ROE)","xp":10,"n":6},{"id":"u6-l2","title":"Return on assets (ROA)","xp":10,"n":6},{"id":"u6-l3","title":"Return on invested capital (ROIC)","xp":15,"n":7},{"id":"u6-l4","title":"Leverage and ROE","xp":15,"n":7}]},{"id":"u7-valuation","title":"Valuation multiples","summary":"Bringing in the share price: what the market is paying for each dollar of sales, profit and cash.","lessons":[{"id":"u7-l1","title":"Market cap & enterprise value","xp":10,"n":7},{"id":"u7-l2","title":"P/E & earnings yield","xp":15,"n":7},{"id":"u7-l3","title":"P/S & EV/EBITDA","xp":15,"n":7},{"id":"u7-l4","title":"FCF yield & dividend yield","xp":15,"n":6},{"id":"u7-l5","title":"What a P/E implies about growth","xp":20,"n":7}]},{"id":"u8-intrinsic","title":"Intrinsic value","summary":"Discounted cash flow basics: estimating what a business is worth, and why the estimate is fragile.","lessons":[{"id":"u8-l1","title":"A one-line DCF","xp":20,"n":6},{"id":"u8-l2","title":"A two-stage DCF","xp":20,"n":5},{"id":"u8-l3","title":"Price vs. estimate & sensitivity","xp":20,"n":6},{"id":"u8-l4","title":"Cycles: why one DCF can mislead","xp":20,"n":8}]}],"lesson":{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"intro":"**Gross profit** is revenue minus the **cost of revenue**: what it cost to make or purchase the things the company sold. **Gross margin** is gross profit \u00f7 revenue. A software company with a 70% gross margin keeps 70 cents of each sales dollar after delivering its product; a warehouse retailer might keep 12 cents. Neither is automatically better. Low-margin retailers can win on volume, while high gross margins leave room to spend on research and marketing. The classic mistake is using net income instead of gross profit.","questions":[{"id":"q-u2-l1-01","type":"multiple_choice","prompt":"In FY2024, Coca-Cola (KO) had revenue of $47.1B and cost of revenue of $18.3B. What was its gross profit?","choices":["$65.4B","$10.6B","$18.3B","$28.7B"],"answer":3,"explanation":"Gross profit = revenue \u2212 cost of revenue = $47.1B \u2212 $18.3B = $28.7B. Gross profit is what's left from sales after paying for the products or services themselves. Common slip: adding cost instead of subtracting it gives $65.4B.","source":{"ticker":"KO","fy":2024,"metrics":["gross_profit"],"formula":"revenue - cost_of_revenue","inputs":{"revenue":47061000000.0,"cost_of_revenue":18324000000.0}}},{"id":"q-u2-l1-04","type":"compare","prompt":"Which company had the higher gross margin in its latest fiscal year?","choices":["Costco Wholesale (COST)","Microsoft (MSFT)"],"answer":1,"explanation":"Gross margin = gross profit \u00f7 revenue. Costco Wholesale (COST), FY2025: $35.3B \u00f7 $275.2B = 12.8%. Microsoft (MSFT), FY2025: $193.9B \u00f7 $281.7B = 68.8%. So Microsoft (MSFT) is higher.","source":{"ticker":"MSFT","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":193893000000.0,"revenue":281724000000.0},"tickers":["COST","MSFT"],"fys":[2025,2025],"direction":"higher"}},{"id":"q-u2-l1-05","type":"true_false","prompt":"True or false? Apple (AAPL)'s gross margin in FY2025 was above 60.0%.","answer":false,"explanation":"False. Gross margin = gross profit \u00f7 revenue = $195.2B \u00f7 $416.2B = 46.9%, which is below 60.0%. Out of every $1 of sales, Apple kept about 47 cents after paying for what it sold.","source":{"ticker":"AAPL","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":195201000000.0,"revenue":416161000000.0},"threshold":0.6}}]}};
+(function(){
+const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const C = {}; D.companies.forEach(c => C[c.t] = c);
+const S = {tab:'learn', co:'AAPL', xp:30, done:false, savings:false, submitted:false, lastCh:'pe'};
+const $ = (s, r=document) => r.querySelector(s);
+const clamp = (x,a,b) => Math.max(a, Math.min(b, x));
+const fB = v => { if (v==null) return 'n/a'; const a=Math.abs(v), s=v<0?'−':''; if (a>=1e12) return s+'$'+(a/1e12).toFixed(2)+'T'; if (a>=1e9) return s+'$'+(a/1e9).toFixed(1)+'B'; return s+'$'+(a/1e6).toFixed(0)+'M'; };
+const fP = (v,d=1) => v==null ? 'n/a' : (v*100).toFixed(d)+'%';
+const usd = v => '$'+Math.round(v).toLocaleString('en-US');
+const cents = v => '$'+v.toFixed(2);
+const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const pol = (a, r, cx=60, cy=60) => { const t=a*Math.PI/180; return [cx+Math.sin(t)*r, cy-Math.cos(t)*r]; };
+function pulse(el, cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+
+/* ---------- spring for needles ---------- */
+function spring(apply, init){
+  let x=init, vel=0, target=init, raf=0, last=0;
+  function step(t){
+    const dt=Math.min(.032, Math.max(.001,(t-last)/1000)); last=t;
+    const acc = -190*(x-target) - 13*vel; vel += acc*dt; x += vel*dt; apply(x);
+    if (Math.abs(vel)<.02 && Math.abs(x-target)<.02){ x=target; apply(x); raf=0; return; }
+    raf = requestAnimationFrame(step);
+  }
+  apply(x);
+  return { to(t){ target=t; if (REDUCED){ x=t; vel=0; apply(x); return; } if(!raf){ last=performance.now(); raf=requestAnimationFrame(step);} } };
+}
+
+/* ---------- knob: rotary control with detents ---------- */
+function Knob(host, o){
+  const step=o.step, N=o.ticks||27, major=o.major||5;
+  let v=o.value;
+  const w=document.createElement('div');
+  w.className='knob'; w.tabIndex=0; w.setAttribute('role','slider');
+  w.setAttribute('aria-label',o.label); w.setAttribute('aria-valuemin',o.min); w.setAttribute('aria-valuemax',o.max);
+  if (o.size) w.style.setProperty('--ks', o.size+'px');
+  let t='';
+  for (let i=0;i<=N;i++){
+    const a=-135+270*i/N, mj=i%major===0, [x1,y1]=pol(a, mj?49.5:52), [x2,y2]=pol(a,57);
+    t+=`<line class="tick${mj?' mj':''}" data-f="${(i/N).toFixed(4)}" x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}"/>`;
+  }
+  w.innerHTML=`<svg viewBox="0 0 120 120" aria-hidden="true">${t}<g class="k-mark"></g><circle class="k-sh" cx="60" cy="64" r="39"/><g class="k-rot"><circle class="k-body" cx="60" cy="60" r="41"/><circle class="k-knurl" cx="60" cy="60" r="39.5"/><circle class="k-face" cx="60" cy="60" r="29"/><line class="k-ptr" x1="60" y1="23" x2="60" y2="36"/></g></svg>`;
+  host.appendChild(w);
+  const rot=w.querySelector('.k-rot'), ticks=[...w.querySelectorAll('.tick')], mark=w.querySelector('.k-mark');
+  const frac = x => (x-o.min)/(o.max-o.min);
+  function render(){
+    const f=frac(v); rot.style.transform=`rotate(${(-135+270*f).toFixed(2)}deg)`;
+    ticks.forEach(tk => tk.classList.toggle('on', +tk.dataset.f <= f+1e-6));
+    w.setAttribute('aria-valuenow', v); w.setAttribute('aria-valuetext', o.fmt ? o.fmt(v) : v);
+  }
+  function snap(nv){ return +(o.min + Math.round((clamp(nv,o.min,o.max)-o.min)/step)*step).toFixed(5); }
+  function set(nv, quiet){
+    nv=snap(nv); if (nv===v) return; v=nv; render();
+    if (!quiet) pulse(w,'clk');
+    o.onChange && o.onChange(v);
+  }
+  let st=null;
+  w.addEventListener('pointerdown', e => { st={x:e.clientX,y:e.clientY,v}; w.setPointerCapture(e.pointerId); w.classList.add('dragging'); w.focus({preventScroll:true}); e.preventDefault(); });
+  w.addEventListener('pointermove', e => { if(!st) return; set(st.v + ((e.clientX-st.x)-(e.clientY-st.y))/170*(o.max-o.min)); });
+  const end = () => { st=null; w.classList.remove('dragging'); };
+  w.addEventListener('pointerup', end); w.addEventListener('pointercancel', end);
+  w.addEventListener('keydown', e => {
+    const k=e.key, big=step*(o.big||10); let nv=null;
+    if (k==='ArrowUp'||k==='ArrowRight') nv=v+step; else if (k==='ArrowDown'||k==='ArrowLeft') nv=v-step;
+    else if (k==='PageUp') nv=v+big; else if (k==='PageDown') nv=v-big; else if (k==='Home') nv=o.min; else if (k==='End') nv=o.max;
+    if (nv!==null){ e.preventDefault(); set(nv); }
+  });
+  if (o.mark!=null){ const f=clamp(frac(o.mark),0,1), [mx,my]=pol(-135+270*f,61.5); mark.innerHTML=`<circle cx="${mx.toFixed(2)}" cy="${my.toFixed(2)}" r="2.3"/>`; }
+  render();
+  return { set, get:()=>v, el:w };
+}
+
+/* ---------- fader: linear control with detents ---------- */
+function Fader(host, o){
+  const step=o.step; let v=o.value;
+  const w=document.createElement('div');
+  w.className='fader '+(o.dir||'v'); w.tabIndex=0; w.setAttribute('role','slider');
+  w.setAttribute('aria-label',o.label); w.setAttribute('aria-valuemin',o.min); w.setAttribute('aria-valuemax',o.max);
+  w.setAttribute('aria-orientation', o.dir==='h'?'horizontal':'vertical');
+  const n=Math.round((o.max-o.min)/step); let ft='';
+  const every = n>12 ? Math.ceil(n/10) : 1;
+  for (let i=0;i<=n;i+=every) ft+=`<i class="ft" style="--p:${(i/n).toFixed(4)}"></i>`;
+  w.innerHTML=`<div class="rail"></div><div class="fill"></div>${ft}<div class="capx"></div>`;
+  host.appendChild(w);
+  const frac = x => (x-o.min)/(o.max-o.min);
+  function render(){ w.style.setProperty('--f', frac(v).toFixed(4)); w.setAttribute('aria-valuenow',v); w.setAttribute('aria-valuetext', o.fmt?o.fmt(v):v); }
+  function snap(nv){ return +(o.min + Math.round((clamp(nv,o.min,o.max)-o.min)/step)*step).toFixed(5); }
+  function set(nv, quiet){ nv=snap(nv); if(nv===v) return; v=nv; render(); if(!quiet) pulse(w,'clk'); o.onChange && o.onChange(v); }
+  function fromPt(e){
+    const r=w.getBoundingClientRect();
+    const f = o.dir==='h' ? (e.clientX-r.left-14)/(r.width-28) : 1-(e.clientY-r.top-10)/(r.height-20);
+    set(o.min + clamp(f,0,1)*(o.max-o.min));
+  }
+  let drag=false;
+  w.addEventListener('pointerdown', e => { drag=true; w.setPointerCapture(e.pointerId); w.classList.add('dragging'); w.focus({preventScroll:true}); fromPt(e); e.preventDefault(); });
+  w.addEventListener('pointermove', e => { if(drag) fromPt(e); });
+  const end=()=>{ drag=false; w.classList.remove('dragging'); };
+  w.addEventListener('pointerup', end); w.addEventListener('pointercancel', end);
+  w.addEventListener('keydown', e => {
+    const k=e.key; let nv=null;
+    if (k==='ArrowUp'||k==='ArrowRight') nv=v+step; else if (k==='ArrowDown'||k==='ArrowLeft') nv=v-step;
+    else if (k==='PageUp') nv=v+step*3; else if (k==='PageDown') nv=v-step*3; else if (k==='Home') nv=o.min; else if (k==='End') nv=o.max;
+    if (nv!==null){ e.preventDefault(); set(nv); }
+  });
+  render();
+  return { set, get:()=>v, el:w };
+}
+
+/* ---------- gauge: 240 degree pressure dial ---------- */
+function Gauge(host, o){
+  const cx=100, cy=100, R=78, span=o.max-o.min, ang = x => -120 + 240*clamp((x-o.min)/span,0,1);
+  const p = (a,r) => pol(a,r,cx,cy);
+  let s='';
+  const [bx1,by1]=p(-120,R+4), [bx2,by2]=p(120,R+4);
+  s+=`<circle class="g-bezel" cx="${cx}" cy="${cy}" r="${R+14}"/><circle class="g-face" cx="${cx}" cy="${cy}" r="${R+9}"/>`;
+  s+=`<path class="g-band" d="M${bx1.toFixed(2)} ${by1.toFixed(2)} A${R+4} ${R+4} 0 1 1 ${bx2.toFixed(2)} ${by2.toFixed(2)}"/>`;
+  for (let i=0;i<=o.minor;i++){
+    const x=o.min+span*i/o.minor, a=ang(x), mj=i%(o.minor/o.majors)===0;
+    const [x1,y1]=p(a, mj?R-8:R-4), [x2,y2]=p(a,R);
+    s+=`<line class="g-tick${mj?' mj':''}" x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}"/>`;
+    if (mj){ const [lx,ly]=p(a,R-18); s+=`<text class="g-lab" x="${lx.toFixed(2)}" y="${ly.toFixed(2)}">${o.lab(x)}</text>`; }
+  }
+  (o.refs||[]).forEach(rf => {
+    const a=ang(rf.v), [x1,y1]=p(a,R-2), [x2,y2]=p(a,R+9), [lx,ly]=p(a, rf.r||R-30);
+    s+=`<line class="g-ref" x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}"/><text class="g-reflab" x="${lx.toFixed(2)}" y="${ly.toFixed(2)}">${rf.label}</text>`;
+  });
+  s+=`<text class="g-title" x="${cx}" y="${cy+30}">${o.title}</text>`;
+  s+=`<g class="needles"></g><circle class="g-hub" cx="${cx}" cy="${cy}" r="7"/><circle class="g-hub2" cx="${cx}" cy="${cy}" r="2.4"/>`;
+  host.innerHTML=`<svg class="gauge" viewBox="0 0 200 196" role="img" aria-label="${esc(o.aria)}">${s}</svg>`;
+  const ng=host.querySelector('.needles');
+  return {
+    needle(cls, init){
+      const g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('class',cls);
+      g.innerHTML=`<path d="M${cx-3.2} ${cy+12} L${cx-1} ${cy-R+6} L${cx+1} ${cy-R+6} L${cx+3.2} ${cy+12} Z"/>`;
+      ng.appendChild(g);
+      const sp=spring(a => g.setAttribute('transform',`rotate(${a.toFixed(2)} ${cx} ${cy})`), -120);
+      const api={ to:x => sp.to(ang(x)) }; if (init!=null) api.to(init); return api;
+    },
+    svg: host.querySelector('svg')
+  };
+}
+
+/* ================= VIEWS ================= */
+const screen=$('#screen');
+const views={};
+
+/* ---------- Learn ---------- */
+views.learn = function(){
+  const units=D.units, L=D.lesson;
+  const rows=units.map((u,ui)=>{
+    const leds=u.lessons.map((l,li)=>{
+      let c=''; if (ui===0) c='on'; else if (l.id===L.id) c = S.done ? 'on' : 'next';
+      return `<i class="ledd ${c}" title="${esc(l.title)}"></i>`;
+    }).join('');
+    const doneN = ui===0 ? u.lessons.length : (ui===1 && S.done ? 1 : 0);
+    return `<div class="unit"><span class="u">U${ui+1}</span><span class="nm">${esc(u.title)}<small>${doneN}/${u.lessons.length} calibrated</small></span><span class="leds">${leds}</span></div>`;
+  }).join('');
+  const next2 = units[1].lessons[1];
+  screen.innerHTML = `
+  <div class="hello"><div><div class="eyebrow">Calibration track</div><h2 style="margin-top:6px">Hi Alex. One reading today?</h2></div></div>
+  <section class="mod next">
+    <div class="modhead"><b>${S.done?'Calibrated':'Next calibration'}</b><span>Unit 2 · Margins</span></div>
+    <div class="title">${esc(L.title)}</div>
+    <div class="meta">${S.done ? 'Locked in. Next up: '+esc(next2.title)+'.' : L.questions.length+' readings from real 10-Ks: Coca-Cola, Costco, Microsoft, Apple'}</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="key ${S.done?'':'primary'}" id="startL">${S.done?'Run it again':'Start calibration'}</button>
+      <span class="pill ${S.done?'':'sig'}">${S.done?'XP earned':'+'+L.xp+' XP on finish'}</span>
+    </div>
+  </section>
+  <section class="mod">
+    <div class="modhead"><b>Your track</b><span>8 units</span></div>
+    <div class="track">${rows}</div>
+  </section>
+  <p class="cap fine" style="margin:0 4px">XP counts lessons you finish. It never counts trades, balances or picks.</p>`;
+  $('#startL').addEventListener('click', openLesson);
+};
+
+/* ---------- Lab ---------- */
+let labBuilt=false;
+views.lab = function(){
+  const order=['AAPL','MSFT','NVDA','COST','KO','PG','AMZN','MU','TSLA','JNJ','JPM','XOM'];
+  screen.innerHTML = `<div class="tickers" role="group" aria-label="Choose a company">${order.map(t=>`<button class="tk" data-t="${t}" aria-pressed="${t===S.co}">${t}</button>`).join('')}</div><div id="labBody" style="display:flex;flex-direction:column;gap:14px"></div>`;
+  screen.querySelectorAll('.tk').forEach(b => b.addEventListener('click', () => {
+    S.co=b.dataset.t; screen.querySelectorAll('.tk').forEach(x=>x.setAttribute('aria-pressed', x===b)); buildLab();
+  }));
+  buildLab();
+  const cur=screen.querySelector('.tk[aria-pressed="true"]'); if (cur) cur.scrollIntoView({block:'nearest',inline:'nearest'});
+};
+function impliedPEGrowth(pe){ return 1.08*Math.pow(pe/15, 1/10) - 1; }
+function dcf(fcf,g,r,M,nc){ let s=0,x=fcf; for(let t=1;t<=5;t++){ x*=1+g; s+=x/Math.pow(1+r,t); } return s + x*M/Math.pow(1+r,5) + nc; }
+
+function buildLab(){
+  const c=C[S.co], m=c.m, f=c.f, body=$('#labBody');
+  const mcap=m.market_cap;
+  body.innerHTML = `
+  <div class="cohead"><div><h2>${esc(c.n)}</h2><div class="meta">${esc(c.i)} · FY${c.fy} 10-K</div></div>
+    <div class="price"><span>sample price</span><b>$${c.p.toFixed(2)}</b><small>as of ${c.pd}</small></div></div>
+
+  <section class="mod" id="m-pe">
+    <div class="modhead"><b>P/E dial</b><span>turn to read</span></div>
+    <div class="pe-row"><div id="peKnob"></div>
+      <div class="lcd" aria-live="polite">
+        <div class="k">Price / earnings</div><div class="v" id="peV"></div>
+        <div class="k" style="margin-top:8px">EPS growth it implies</div><div class="v" id="peG"></div>
+        <div class="s" id="peY"></div>
+      </div></div>
+    <p class="cap">The dot marks ${c.t}'s actual P/E at the sample price (${m.pe.toFixed(1)}x). Turn up and the market is counting on faster earnings growth.</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px">
+      <span class="cap fine" style="margin:0">Growth for 10 yrs so an 8%/yr return holds if P/E settles at 15x. A teaching simplification.</span>
+      <button class="key small" id="peReset">Back to ${m.pe.toFixed(0)}x</button></div>
+  </section>
+
+  <section class="mod ${S.done?'lockedin':''}" id="m-ladder">
+    <div class="modhead"><b>Margin ladder</b><span class="pill sig locked-tag">Locked in</span><span>slide down</span></div>
+    <div class="ladder" id="ladder"></div>
+    <div id="ladderF" style="margin-top:10px"></div>
+    <div class="stoplabs"><span>Sales</span><span>Gross</span><span>Operating</span><span>Net</span></div>
+    <div class="lcd" style="margin-top:10px"><div class="s" id="ladRead" aria-live="polite"></div></div>
+  </section>
+
+  <section class="mod" id="m-roic">
+    <div class="modhead"><b>ROIC pressure</b><span>return on invested capital</span></div>
+    <div id="roicG"></div>
+    <div class="lcd"><div class="row"><span class="k">ROIC FY${c.fy}</span><span class="v">${fP(m.roic)}</span></div>
+      <div class="s">${m.roic==null ? 'Not available for '+c.t+' in this dataset, so the needle rests at zero.' : (m.roic>1 ? 'Off the scale: ' : '') + 'Each $1 of capital invested (debt plus equity) produced about '+cents(m.roic)+' of after-tax operating profit.'}</div></div>
+    <p class="cap fine">The 10% mark is a rough, common reference for the cost of capital. Returns above it mean the business creates more than its capital costs.</p>
+  </section>
+
+  <section class="mod" id="m-dcf">
+    <div class="modhead"><b>Cash-flow model</b><span>three knobs</span></div>
+    <div id="dcfWrap"></div>
+  </section>`;
+
+  /* P/E */
+  const peK=Knob($('#peKnob'),{min:5,max:250,step:1,ticks:49,major:5,big:10,value:Math.round(m.pe),mark:m.pe,size:124,label:'P/E ratio',fmt:v=>v+' times earnings',onChange:rp});
+  function rp(v){ $('#peV').textContent=v+'x'; const g=impliedPEGrowth(v); $('#peG').textContent=fP(g)+'/yr'; $('#peY').textContent='Earnings yield '+fP(1/v)+' · you pay $'+v+' per $1 of profit'; }
+  rp(peK.get());
+  $('#peReset').addEventListener('click', () => peK.set(Math.round(m.pe)));
+
+  /* ladder */
+  const rungs=[['Revenue',1,f.revenue,'Sales'],['Gross profit',m.gross_margin,f.gross_profit],['Operating income',m.operating_margin,f.operating_income],['Net income',m.net_margin,f.net_income]];
+  const bites=['cost of revenue','running the business','interest, taxes & other'];
+  let lh='';
+  rungs.forEach((r,i)=>{
+    if (i>0){ const a=rungs[i-1][1], b=r[1]; lh+=`<div class="bite">${a!=null&&b!=null ? '−'+cents(a-b)+' '+bites[i-1] : '&nbsp;'}</div>`; }
+    lh+=`<div class="rung ${r[1]==null?'na':''}" data-i="${i}"><span class="lb">${r[0]}</span><span class="bar"><i style="width:0"></i></span><span class="val">${r[1]==null?'n/a':cents(r[1])}</span></div>`;
+  });
+  $('#ladder').innerHTML=lh;
+  const rungEls=[...body.querySelectorAll('.rung')];
+  function rl(ix){
+    rungEls.forEach((el,i)=>{ el.classList.toggle('off', i>ix); el.classList.toggle('cur', i===ix); const val=rungs[i][1]; el.querySelector('i').style.width = (i<=ix && val!=null ? clamp(val,0,1)*100 : 0)+'%'; });
+    const r=rungs[ix]; let t;
+    if (ix===0) t=`Start with $1.00 of sales. ${c.t} sold ${fB(f.revenue)} in FY${c.fy}.`;
+    else if (r[1]==null) t=`${r[0]} margin is not reported for ${c.t} in this dataset. Banks and some conglomerates present their income statement differently.`;
+    else t=[,`After paying for what it sold, ${c.t} keeps ${cents(r[1])} of each $1 (${fB(r[2])} gross profit).`,`After R&D, marketing and admin, ${cents(r[1])} of each $1 is left (${fB(r[2])}).`,`After interest and taxes, ${cents(r[1])} of each $1 is profit (${fB(r[2])} net income).`][ix];
+    $('#ladRead').textContent=t;
+  }
+  Fader($('#ladderF'),{dir:'h',min:0,max:3,step:1,value:0,label:'Margin ladder rung',fmt:v=>rungs[v][0],onChange:rl});
+  requestAnimationFrame(()=>rl(0));
+
+  /* ROIC */
+  const g=Gauge($('#roicG'),{min:0,max:1,minor:20,majors:5,lab:x=>Math.round(x*100)+'',title:'ROIC %',refs:[{v:.1,label:'10%',r:52}],aria:'ROIC gauge reading '+fP(m.roic)});
+  const nd=g.needle('needle-main'); setTimeout(()=>nd.to(m.roic==null?0:Math.min(m.roic,1.03)), 120);
+
+  /* DCF */
+  const wrap=$('#dcfWrap'), fcf=f.free_cash_flow, nc=m.net_cash||0;
+  if (fcf==null || fcf<=0){
+    wrap.innerHTML=`<div class="lcd"><div class="s">${c.t}'s free cash flow ${fcf==null?'is not reported in this dataset':'was negative in FY'+c.fy}, so a simple cash-flow model has nothing to grow. Try MSFT or KO.</div></div>`;
+    return;
+  }
+  wrap.innerHTML=`<div class="knobs3">
+      <div><div id="kG"></div><div class="kl">Growth / yr</div><div class="kv" id="kGv"></div></div>
+      <div><div id="kR"></div><div class="kl">Discount</div><div class="kv" id="kRv"></div></div>
+      <div><div id="kM"></div><div class="kl">Exit multiple</div><div class="kv" id="kMv"></div></div></div>
+    <div class="lcd" style="margin-top:12px" aria-live="polite">
+      <div class="row"><span class="k">Your model value</span><span class="v" id="dV"></span></div>
+      <div class="row"><span class="k">Market cap (sample price)</span><span class="s">${fB(mcap)}</span></div>
+      <div class="meter" aria-hidden="true"><i id="dM"></i><b style="left:50%"></b></div>
+      <div class="s" id="dT"></div>
+    </div>
+    <p class="cap fine">Starts from FY${c.fy} free cash flow of ${fB(fcf)}, grows it 5 years, values year 5 at the exit multiple, discounts it all back, then adds net cash (${fB(nc)}).</p>`;
+  const st={g:.10,r:.09,M:18};
+  const upd=()=>{
+    $('#kGv').textContent=fP(st.g,0); $('#kRv').textContent=fP(st.r,1); $('#kMv').textContent=st.M+'x';
+    const val=dcf(fcf,st.g,st.r,st.M,nc), ratio=val/mcap;
+    $('#dV').textContent=fB(val);
+    $('#dM').style.width=clamp(ratio/2,0,1)*100+'%';
+    let lo=-.5, hi=2, ig=null;
+    if (dcf(fcf,hi,st.r,st.M,nc)>=mcap && dcf(fcf,lo,st.r,st.M,nc)<=mcap){ for(let i=0;i<50;i++){ const mid=(lo+hi)/2; if(dcf(fcf,mid,st.r,st.M,nc)<mcap) lo=mid; else hi=mid; } ig=(lo+hi)/2; }
+    $('#dT').textContent=`Your assumptions add up to ${Math.round(ratio*100)}% of the market cap. With the other two knobs where they are, the sample price lines up with about ${ig==null?'more than 200%':fP(ig,1)} growth a year.`;
+  };
+  Knob($('#kG'),{min:0,max:.4,step:.01,ticks:40,major:10,big:5,value:st.g,size:88,label:'Free cash flow growth per year',fmt:v=>fP(v,0),onChange:v=>{st.g=v;upd();}});
+  Knob($('#kR'),{min:.06,max:.15,step:.005,ticks:18,major:2,big:4,value:st.r,size:88,label:'Discount rate',fmt:v=>fP(v,1),onChange:v=>{st.r=v;upd();}});
+  Knob($('#kM'),{min:8,max:40,step:1,ticks:32,major:4,big:4,value:st.M,size:88,label:'Exit multiple of free cash flow',fmt:v=>v+'x',onChange:v=>{st.M=v;upd();}});
+  upd();
+}
+
+/* ---------- Screener ---------- */
+const CH=[
+  {k:'pe',lab:'P/E',op:'≤',min:5,max:150,step:5,val:40,on:true,fmt:v=>v+'x',show:v=>v==null?'n/a':v.toFixed(0)+'x'},
+  {k:'gross_margin',lab:'Gross m.',op:'≥',min:0,max:.8,step:.05,val:.4,on:true,fmt:v=>fP(v,0),show:v=>fP(v,0)},
+  {k:'roic',lab:'ROIC',op:'≥',min:0,max:.6,step:.05,val:.15,on:true,fmt:v=>fP(v,0),show:v=>fP(v,0)},
+  {k:'revenue_growth_yoy',lab:'Rev. grow',op:'≥',min:0,max:.6,step:.05,val:.05,on:false,fmt:v=>fP(v,0),show:v=>fP(v,0)},
+  {k:'debt_to_equity',lab:'Debt/Eq',op:'≤',min:0,max:2,step:.1,val:1,on:false,fmt:v=>v.toFixed(1)+'x',show:v=>v==null?'n/a':v.toFixed(1)+'x'}
+];
+const passCh=(c,ch)=>{ const x=c.m[ch.k]; if (x==null) return false; return ch.op==='≤' ? x<=ch.val+1e-9 : x>=ch.val-1e-9; };
+views.screen = function(){
+  const order=['AAPL','MSFT','NVDA','AMZN','COST','KO','PG','JNJ','MU','TSLA','JPM','XOM'];
+  screen.innerHTML=`
+  <div><div class="eyebrow">Patch bay</div><h2 style="margin-top:6px">Patch a filter in. Watch who lights up.</h2></div>
+  <section class="mod">
+    <div class="modhead"><b>Matches</b><span id="scCount"></span></div>
+    <div class="matrix" id="matrix">${order.map(t=>`<button class="led" data-t="${t}"><span>${t}</span><small></small></button>`).join('')}</div>
+    <p class="cap fine">Tap a lit company to open its instruments. A match means it fits your filters, nothing more.</p>
+  </section>
+  <section class="mod">
+    <div class="modhead"><b>Mixer</b><span>jack = patch in</span></div>
+    <div class="mixer">${CH.map((ch,i)=>`<div class="strip ${ch.on?'':'offch'}" data-i="${i}"><button class="jack" aria-pressed="${ch.on}" aria-label="Patch ${ch.lab} filter"></button><span class="sl">${ch.lab}<br>${ch.op}</span><span class="sv"></span><div class="fh" style="width:100%"></div><span class="sn">${ch.fmt(ch.min)}</span></div>`).join('')}</div>
+  </section>`;
+  const leds=[...screen.querySelectorAll('.led')], strips=[...screen.querySelectorAll('.strip')];
+  const prev={};
+  function evalAll(){
+    const act=CH.filter(ch=>ch.on); let n=0; const shown=CH.find(ch=>ch.k===S.lastCh)||CH[0];
+    leds.forEach(el=>{
+      const c=C[el.dataset.t], lit=act.length>0 && act.every(ch=>passCh(c,ch));
+      if (lit && !prev[c.t]) pulse(el,'ignite');
+      prev[c.t]=lit; el.classList.toggle('lit',lit); if(lit) n++;
+      el.querySelector('small').textContent = shown.show(c.m[shown.k]);
+      el.setAttribute('aria-label', `${c.n}: ${lit?'matches':'no match'}. ${shown.lab} ${shown.show(c.m[shown.k])}`);
+    });
+    $('#scCount').textContent = `${n} of 12 lit · ${act.length} patched`;
+    strips.forEach((s,i)=>{ const ch=CH[i]; s.querySelector('.sv').textContent=ch.fmt(ch.val); });
+  }
+  strips.forEach((s,i)=>{
+    const ch=CH[i];
+    Fader(s.querySelector('.fh'),{dir:'v',min:ch.min,max:ch.max,step:ch.step,value:ch.val,label:ch.lab+' '+ch.op,fmt:ch.fmt,onChange:v=>{ch.val=v; S.lastCh=ch.k; evalAll();}});
+    s.querySelector('.jack').addEventListener('click', e=>{ ch.on=!ch.on; e.currentTarget.setAttribute('aria-pressed',ch.on); s.classList.toggle('offch',!ch.on); S.lastCh=ch.k; evalAll(); });
+  });
+  leds.forEach(el=>el.addEventListener('click',()=>{ if(!el.classList.contains('lit')) return; S.co=el.dataset.t; go('lab'); }));
+  evalAll();
+};
+
+/* ---------- Money ---------- */
+const A={checking:840,savings:410,card:1120,due:'Oct 17',min:25,brokerage:2600,roth:300,pending:93};
+views.money = function(){
+  const today=new Date(2026,8,25), dueD=new Date(2026,9,17), days=Math.round((dueD-today)/864e5);
+  screen.innerHTML=`
+  <div><div class="eyebrow">Money hub · fictional example</div><h2 style="margin-top:6px">Alex, 20. Here's where things stand.</h2></div>
+  <section class="mod coverage">
+    <div class="due"><b style="font:600 10px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase">Coverage</b><span class="pill sig">Due ${A.due} · ${days} days</span></div>
+    <div id="covG"></div>
+    <div class="legend"><span><i></i>Cash now</span><span><i class="p"></i>With pending pay</span><span>Orange ticks: $25 min, full bill</span></div>
+    <div class="lcd" style="margin-top:10px" aria-live="polite">
+      <div class="row"><span class="k" id="covK"></span><span class="v" id="covV"></span></div>
+      <div class="s" id="covT"></div>
+    </div>
+    <div class="toggles">
+      <button class="tgl" id="tSav" aria-pressed="${S.savings}"><span class="sw"></span><span>Count savings<small>+${usd(A.savings)}</small></span></button>
+      <button class="tgl" id="tSub" aria-pressed="${S.submitted}"><span class="sw"></span><span>Hours submitted<small>${usd(A.pending)} pay</small></span></button>
+    </div>
+  </section>
+  <section class="mod">
+    <div class="modhead"><b>Accounts</b><span>scale $0–3,000</span></div>
+    ${acct('Checking','spending',A.checking)}${acct('Savings','cushion',A.savings)}${acct('Credit card','statement',A.card,true)}${acct('Brokerage','taxable',A.brokerage)}${acct('Roth IRA','retirement',A.roth)}
+  </section>
+  <section class="mod">
+    <div class="modhead"><b>How the statement works</b><span>no rush</span></div>
+    <p class="calm">Paying the full ${usd(A.card)} by ${A.due} means no interest. The ${usd(A.min)} minimum keeps the account in good standing. Any amount in between is a normal choice, and the gauge above is just there to show what your cash can cover.</p>
+  </section>`;
+  const g=Gauge($('#covG'),{min:0,max:1680,minor:24,majors:6,lab:x=>Math.round(x/1120*100)+'',title:'% OF STATEMENT',refs:[{v:1120,label:'BILL',r:44},{v:A.min,label:'',r:56}],aria:'Coverage gauge: cash versus the $1,120 statement'});
+  const pend=g.needle('needle-pend'), main=g.needle('needle-main');
+  function upd(){
+    const cash=A.checking+(S.savings?A.savings:0)+(S.submitted?A.pending:0);
+    const withP=cash+(S.submitted?0:A.pending);
+    main.to(Math.min(cash,1720)); pend.to(Math.min(withP,1720));
+    const pct=Math.round(cash/A.card*100), pctP=Math.round(withP/A.card*100);
+    $('#covK').textContent=(S.savings?'Checking + savings':'Checking')+(S.submitted?' + pay':'');
+    $('#covV').textContent=usd(cash)+' · '+pct+'%';
+    let t;
+    if (cash>=A.card) t=`That covers the full ${usd(A.card)} statement, with ${usd(cash-A.card)} left over.`;
+    else t=`That covers ${pct}% of the ${usd(A.card)} statement and the ${usd(A.min)} minimum many times over.`;
+    if (!S.submitted) t+=` Submitting your hours adds ${usd(A.pending)}, expected before ${A.due} (${pctP}%).`;
+    else t+=` Your ${usd(A.pending)} of hours is counted as pay arriving before ${A.due}.`;
+    $('#covT').textContent=t;
+  }
+  $('#tSav').addEventListener('click',e=>{S.savings=!S.savings;e.currentTarget.setAttribute('aria-pressed',S.savings);upd();});
+  $('#tSub').addEventListener('click',e=>{S.submitted=!S.submitted;e.currentTarget.setAttribute('aria-pressed',S.submitted);upd();});
+  setTimeout(upd,80);
+};
+function acct(n,sub,v,owed){
+  const on=Math.round(v/3000*30);
+  return `<div class="acct"><span class="an">${n}<small>${sub}</small></span><span class="vu ${owed?'owed':''}" aria-hidden="true">${Array.from({length:30},(_,i)=>`<i class="${i<on?'on':''}"></i>`).join('')}</span><span class="am">${owed?'owe ':''}${usd(v)}</span></div>`;
+}
+
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll('.tab')];
+function go(t){
+  S.tab=t; tabs.forEach(b=>b.setAttribute('aria-selected', b.dataset.tab===t));
+  screen.scrollTop=0; views[t]();
+}
+tabs.forEach((b,i)=>{
+  b.addEventListener('click',()=>go(b.dataset.tab));
+  b.addEventListener('keydown',e=>{ if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ e.preventDefault(); const n=tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length]; n.focus(); go(n.dataset.tab);} });
+});
+
+/* ================= LESSON ================= */
+const LS={i:-1,pick:null,locked:false,first:0};
+const lessonEl=$('#lesson');
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+function openLesson(){ Object.assign(LS,{i:-1,pick:null,locked:false,first:0}); lessonEl.hidden=false; renderLesson(); }
+function closeLesson(){ lessonEl.hidden=true; if (S.tab==='learn') views.learn(); }
+function choicesOf(q){ return q.type==='true_false' ? ['True','False'] : q.choices; }
+function answerOf(q){ return q.type==='true_false' ? (q.answer?0:1) : q.answer; }
+const TYPE={multiple_choice:'Multiple choice',compare:'Compare two',true_false:'True or false'};
+function fmtInput(k,v){ if (k==='threshold') return fP(v,0); return Math.abs(v)>=1e6 ? fB(v) : String(v); }
+function renderLesson(){
+  const L=D.lesson, Q=L.questions, n=Q.length;
+  const prog = Q.map((_,i)=>`<i class="${i<LS.i || (i===LS.i&&LS.locked) || LS.i>=n ?'on':(i===LS.i?'cur':'')}"></i>`).join('');
+  let head=`<div class="lhead"><button class="xbtn" id="lx" aria-label="Exit lesson"><svg viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12"/></svg></button><div class="prog" aria-hidden="true">${prog}</div><span class="pcount">${LS.i<0?'SET UP':LS.i>=n?'LOCKED':(LS.i+1)+'/'+n}</span></div>`;
+  let body='', foot='';
+  if (LS.i<0){
+    body=`<div class="qtype">Unit 2 · Margins</div><h2 style="font-size:22px">${esc(L.title)}</h2><div class="intro">${md(L.intro)}</div>`;
+    foot=`<button class="key primary wide" id="lgo">Begin calibration</button>`;
+  } else if (LS.i<n){
+    const q=Q[LS.i], ch=choicesOf(q), ans=answerOf(q);
+    body=`<div class="qtype">${TYPE[q.type]||'Question'} · ${q.source.ticker} FY${q.source.fy}</div><p class="prompt">${esc(q.prompt)}</p>
+      <div class="choices ${ch.length===2?'two':''}" role="radiogroup" aria-label="Answer choices">${ch.map((c,i)=>{
+        let cls=''; if(LS.locked){ if(i===ans) cls='right'; else if(i===LS.pick) cls='miss'; }
+        return `<button class="choice ${cls}" role="radio" aria-checked="${LS.pick===i}" data-i="${i}" ${LS.locked?'disabled':''}><span class="dot"></span>${esc(c)}</button>`; }).join('')}</div>`;
+    if (LS.locked){
+      const ok=LS.pick===ans, s=q.source, ins=Object.entries(s.inputs||{}).map(([k,v])=>`<div class="s"><span>${esc(k.replace(/_/g,' '))}</span><span>${fmtInput(k,v)}</span></div>`).join('');
+      body+=`<div class="fb ${ok?'':'miss'}" aria-live="polite"><h3><i></i>${ok?'In tune.':'Close. Here is the reading.'}</h3><p>${esc(q.explanation)}</p>
+        <div class="lcd src"><div class="k" style="margin-bottom:4px">${s.ticker} · FY${s.fy} 10-K · ${esc(s.formula.replace(/_/g,' '))}</div>${ins}</div></div>`;
+      foot=`<button class="key primary wide" id="lnext">${LS.i===n-1?'Finish calibration':'Next reading'}</button>`;
+    } else foot=`<button class="key primary wide" id="llock" ${LS.pick==null?'disabled':''}>Lock reading</button>`;
+  } else {
+    body=`<div class="lockin">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        ${[0,1,2].map(i=>{ const a1=-150+i*100+4, a2=a1+92, [x1,y1]=pol(a1,84,100,100), [x2,y2]=pol(a2,84,100,100); return `<path class="lk-seg" data-s="${i}" d="M${x1.toFixed(1)} ${y1.toFixed(1)} A84 84 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}"/>`; }).join('')}
+        <circle class="lk-ring" cx="100" cy="100" r="84"/>
+        <path class="lk-shackle open" d="M78 98 V78 a22 22 0 0 1 44 0 V98"/>
+        <rect class="lk-body" x="66" y="94" width="68" height="54" rx="10"/>
+        <circle class="lk-key" cx="100" cy="116" r="6"/><rect class="lk-key" x="97.5" y="118" width="5" height="14" rx="2"/>
+      </svg>
+      <div class="qtype">Instrument locked in</div>
+      <h2 style="font-size:22px">Gross margin, calibrated.</h2>
+      <p class="intro" style="margin:0">You read gross margin straight off three real 10-Ks: Coca-Cola, Costco against Microsoft, and Apple.</p>
+      <div class="stats"><div><b>+${L.xp}</b><span>XP earned</span></div><div><b>${n}</b><span>Readings</span></div><div><b>${LS.first}/${n}</b><span>First try</span></div></div>
+      <div class="lcd" style="width:100%;text-align:left"><div class="k">New on your rack</div><div class="s">Margin ladder. Slide from $1 of sales down to profit for any of the 12 companies.</div></div>
+    </div>`;
+    foot=`<div class="row2"><button class="key primary wide" id="ltry">Try the margin ladder</button><button class="key wide" id="ldone">Back to track</button></div>`;
+  }
+  lessonEl.innerHTML=head+`<div class="lbody">${body}</div><div class="lfoot">${foot}</div>`;
+  $('#lx').addEventListener('click',closeLesson);
+  const on=(id,fn)=>{ const el=$('#'+id); if(el) el.addEventListener('click',fn); };
+  on('lgo',()=>{ LS.i=0; renderLesson(); });
+  lessonEl.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{ if(LS.locked) return; LS.pick=+b.dataset.i; renderLesson(); const f=lessonEl.querySelector(`.choice[data-i="${LS.pick}"]`); f&&f.focus(); }));
+  on('llock',()=>{ LS.locked=true; if(LS.pick===answerOf(D.lesson.questions[LS.i])) LS.first++; renderLesson(); const nx=$('#lnext'); nx&&nx.focus({preventScroll:true}); });
+  on('lnext',()=>{ LS.i++; LS.pick=null; LS.locked=false; renderLesson(); if(LS.i>=D.lesson.questions.length) lockIn(); });
+  on('ldone',closeLesson);
+  on('ltry',()=>{ lessonEl.hidden=true; if(!['AAPL','MSFT','COST','KO'].includes(S.co)) S.co='COST'; go('lab'); const m=$('#m-ladder'); if(m){ m.scrollIntoView({block:'start'}); pulse(m,'flash'); } });
+}
+function lockIn(){
+  const segs=[...lessonEl.querySelectorAll('.lk-seg')], sh=lessonEl.querySelector('.lk-shackle'), ring=lessonEl.querySelector('.lk-ring');
+  const award=()=>{ if(!S.done){ S.done=true; S.xp+=D.lesson.xp; const xv=$('#xpv'); xv.textContent=String(S.xp).padStart(3,'0'); pulse($('#xp'),'bump'); } };
+  if (REDUCED){ segs.forEach(s=>s.classList.add('on')); sh.classList.remove('open'); award(); return; }
+  segs.forEach((s,i)=>setTimeout(()=>s.classList.add('on'), 180+i*200));
+  setTimeout(()=>{ sh.classList.remove('open'); pulse(ring,'go'); award(); }, 180+3*200+120);
+}
+
+function boot(){ go('learn'); }
+if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>

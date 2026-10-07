@@ -1,0 +1,66 @@
+[
+  {
+    "_comment": "FICTIONAL /transactions/sync page 1 of 2 (initial pull, cursor omitted).",
+    "added": [
+      {
+        "transaction_id": "tx_pay_0918", "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "amount": -386.1,
+        "iso_currency_code": "USD", "unofficial_currency_code": null, "date": "2026-09-18", "authorized_date": "2026-09-18",
+        "name": "QUILL UNIV PAYROLL DIR DEP", "merchant_name": null, "pending": false, "pending_transaction_id": null,
+        "payment_channel": "other", "location": { "address": null, "city": null, "region": null, "postal_code": null, "lat": null, "lon": null },
+        "personal_finance_category": { "primary": "INCOME", "detailed": "INCOME_WAGES", "confidence_level": "VERY_HIGH" },
+        "category": ["Transfer", "Payroll"]
+      },
+      {
+        "transaction_id": "tx_coffee_0920_pending", "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "amount": 4.75,
+        "iso_currency_code": "USD", "unofficial_currency_code": null, "date": "2026-09-20", "authorized_date": "2026-09-20",
+        "name": "BEAN THERE CAFE #12", "merchant_name": "Bean There Cafe", "pending": true, "pending_transaction_id": null,
+        "payment_channel": "in store", "location": { "address": "12 Fictional Ave", "city": "Faketown", "region": "ZZ", "postal_code": "00000", "lat": 1.23, "lon": 4.56 },
+        "personal_finance_category": { "primary": "FOOD_AND_DRINK", "detailed": "FOOD_AND_DRINK_COFFEE", "confidence_level": "HIGH" }
+      },
+      {
+        "transaction_id": "tx_tutor_0922", "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "amount": -60,
+        "iso_currency_code": "USD", "unofficial_currency_code": null, "date": "2026-09-22",
+        "name": "TUTORLY PAYOUT 0922", "merchant_name": "Tutorly", "pending": false,
+        "personal_finance_category": { "primary": "INCOME", "detailed": "INCOME_OTHER_INCOME", "confidence_level": "HIGH" }
+      }
+    ],
+    "modified": [],
+    "removed": [],
+    "next_cursor": "cur-fictional-page-1",
+    "has_more": true
+  },
+  {
+    "_comment": "FICTIONAL /transactions/sync page 2 of 2: pending coffee posts, tutoring amount corrected, one row older than 24 months.",
+    "added": [
+      {
+        "transaction_id": "tx_book_0923", "account_id": "mhCrd3Xz8uZdN2rBt3cAvP5mYu1fGg6hIj7lM", "amount": 89.99,
+        "iso_currency_code": "USD", "unofficial_currency_code": null, "date": "2026-09-23",
+        "name": "CAMPUS BOOKSTORE", "merchant_name": "Campus Bookstore", "pending": false,
+        "personal_finance_category": { "primary": "GENERAL_MERCHANDISE", "detailed": "GENERAL_MERCHANDISE_BOOKSTORES_AND_NEWSSTANDS", "confidence_level": "HIGH" }
+      },
+      {
+        "transaction_id": "tx_coffee_0920", "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "amount": 4.75,
+        "iso_currency_code": "USD", "unofficial_currency_code": null, "date": "2026-09-21",
+        "name": "BEAN THERE CAFE #12", "merchant_name": "Bean There Cafe", "pending": false, "pending_transaction_id": "tx_coffee_0920_pending",
+        "personal_finance_category": { "primary": "FOOD_AND_DRINK", "detailed": "FOOD_AND_DRINK_COFFEE", "confidence_level": "HIGH" }
+      },
+      {
+        "transaction_id": "tx_old_2023", "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "amount": 12,
+        "iso_currency_code": "USD", "unofficial_currency_code": null, "date": "2023-01-15",
+        "name": "OLD PURCHASE", "merchant_name": null, "pending": false,
+        "personal_finance_category": { "primary": "GENERAL_MERCHANDISE", "detailed": "GENERAL_MERCHANDISE_OTHER_GENERAL_MERCHANDISE", "confidence_level": "LOW" }
+      }
+    ],
+    "modified": [
+      {
+        "transaction_id": "tx_tutor_0922", "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK", "amount": -65,
+        "iso_currency_code": "USD", "unofficial_currency_code": null, "date": "2026-09-22",
+        "name": "TUTORLY PAYOUT 0922", "merchant_name": "Tutorly", "pending": false,
+        "personal_finance_category": { "primary": "INCOME", "detailed": "INCOME_OTHER_INCOME", "confidence_level": "HIGH" }
+      }
+    ],
+    "removed": [ { "transaction_id": "tx_coffee_0920_pending", "account_id": "mhChk7Qm2vXbL0pZr1aYtN3kWs9dEe4fGh5jK" } ],
+    "next_cursor": "cur-fictional-page-2",
+    "has_more": false
+  }
+]

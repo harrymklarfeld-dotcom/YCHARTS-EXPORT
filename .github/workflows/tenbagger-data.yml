@@ -1,0 +1,283 @@
+# Tenbagger nightly data build: SEC EDGAR fundamentals (+ optional licensed prices)
+# -> tenbagger/data/companies.json -> validate -> licence gate -> publish.
+#
+# Secrets (Settings > Secrets and variables > Actions > Secrets):
+#   SEC_USER_AGENT               required, "Tenbagger ops@yourdomain.com" (SEC fair-access policy)
+#   ALPACA_API_KEY_ID / ALPACA_API_SECRET_KEY, EODHD_API_TOKEN, INTRINIO_API_KEY, FMP_API_KEY
+#                                optional; only the one named by price_source is used
+#   SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY
+#                                optional; when both exist the build is upserted via load_companies()
+# Variables (same page > Variables):
+#   TENBAGGER_PRICE_SOURCE       default price source for scheduled runs (none|alpaca|eodhd|intrinio|fmp)
+#   TENBAGGER_<VENDOR>_DISPLAY_LICENSE
+#                                contract reference for a signed display/redistribution licence,
+#                                e.g. "EODHD B2B order 1234 (2026-10-01)". Without it the gate
+#                                refuses to publish that vendor's prices (artifact only).
+#   TENBAGGER_PUBLISH            default publish target for scheduled runs (artifact|data-branch)
+name: tenbagger-data
+
+on:
+  schedule:
+    - cron: "17 7 * * 2-6" # 07:17 UTC Tue-Sat = after each US trading day's close
+  workflow_dispatch:
+    inputs:
+      universe:
+        description: "datasources universe (sp500) or pipeline bundle (sp500-sample)"
+        default: sp500
+        type: string
+      tickers:
+        description: "extra comma-separated tickers (optional)"
+        default: ""
+        type: string
+      price_source:
+        description: "price vendor (none = pipeline sample prices, flagged price_is_sample)"
+        default: none
+        type: choice
+        options: [none, alpaca, eodhd, intrinio, fmp]
+      fundamentals_mode:
+        description: "api = per-company companyfacts; bulk = SEC Financial Statement Data Sets zips"
+        default: api
+        type: choice
+        options: [api, bulk]
+      min_count:
+        description: "fail if fewer companies than this are built"
+        default: "400"
+        type: string
+      publish:
+        description: "artifact only, or also commit to the data branch"
+        default: artifact
+        type: choice
+        options: [artifact, data-branch]
+      offline:
+        description: "smoke test on bundled fixtures (never published)"
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tenbagger-data
+  cancel-in-progress: false
+
+env:
+  UNIVERSE: ${{ inputs.universe || 'sp500' }}
+  EXTRA_TICKERS: ${{ inputs.tickers || '' }}
+  PRICE_SOURCE: ${{ inputs.price_source || vars.TENBAGGER_PRICE_SOURCE || 'none' }}
+  FUNDAMENTALS_MODE: ${{ inputs.fundamentals_mode || 'api' }}
+  MIN_COUNT: ${{ inputs.min_count || '400' }}
+  PUBLISH: ${{ inputs.publish || vars.TENBAGGER_PUBLISH || 'artifact' }}
+  OFFLINE: ${{ inputs.offline && 'true' || 'false' }}
+  OUT_DIR: ${{ github.workspace }}/out
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    outputs:
+      publishable: ${{ steps.gate.outputs.publishable }}
+      count: ${{ steps.validate.outputs.count }}
+    defaults:
+      run:
+        shell: bash # -eo pipefail
+        working-directory: tenbagger
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test deps
+        run: python -m pip install --quiet "pytest>=8"
+
+      - name: Unit tests (offline)
+        run: python -m pytest -q datasources/tests pipeline/tests
+
+      - name: Check SEC User-Agent
+        if: env.OFFLINE != 'true'
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          if [[ "$SEC_USER_AGENT" != *@* ]]; then
+            echo "::error::Secret SEC_USER_AGENT must be set to 'Name contact@email' (SEC fair-access policy)"
+            exit 1
+          fi
+
+      - name: Resolve universe
+        id: universe
+        run: |
+          mkdir -p "$OUT_DIR"
+          if [[ "$OFFLINE" == "true" ]]; then
+            echo "args=--universe sp500-sample" >> "$GITHUB_OUTPUT"
+          elif [[ "$UNIVERSE" == "sp500-sample" ]]; then
+            echo "args=--universe sp500-sample${EXTRA_TICKERS:+ --tickers $EXTRA_TICKERS}" >> "$GITHUB_OUTPUT"
+          else
+            t="$(python -m datasources universe --name "$UNIVERSE")"
+            [[ -n "$EXTRA_TICKERS" ]] && t="$t,$EXTRA_TICKERS"
+            echo "$t" > "$OUT_DIR/tickers.txt"
+            echo "args=--tickers $t" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch prices
+        if: env.PRICE_SOURCE != 'none' && env.OFFLINE != 'true'
+        env:
+          ALPACA_API_KEY_ID: ${{ secrets.ALPACA_API_KEY_ID }}
+          ALPACA_API_SECRET_KEY: ${{ secrets.ALPACA_API_SECRET_KEY }}
+          EODHD_API_TOKEN: ${{ secrets.EODHD_API_TOKEN }}
+          INTRINIO_API_KEY: ${{ secrets.INTRINIO_API_KEY }}
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          TENBAGGER_ALPACA_DISPLAY_LICENSE: ${{ vars.TENBAGGER_ALPACA_DISPLAY_LICENSE }}
+          TENBAGGER_EODHD_DISPLAY_LICENSE: ${{ vars.TENBAGGER_EODHD_DISPLAY_LICENSE }}
+          TENBAGGER_INTRINIO_DISPLAY_LICENSE: ${{ vars.TENBAGGER_INTRINIO_DISPLAY_LICENSE }}
+          TENBAGGER_FMP_DISPLAY_LICENSE: ${{ vars.TENBAGGER_FMP_DISPLAY_LICENSE }}
+        run: |
+          src=(--universe "$UNIVERSE")
+          [[ "$UNIVERSE" == "sp500-sample" ]] && src=(--tickers "$(python -c 'from pipeline.universe import SP500_SAMPLE as u; print(",".join(u))')")
+          [[ -n "$EXTRA_TICKERS" && "$UNIVERSE" != "sp500-sample" ]] && src+=(--tickers "$EXTRA_TICKERS")
+          python -m datasources prices --source "$PRICE_SOURCE" "${src[@]}" \
+            --out "$OUT_DIR/prices.csv" --manifest "$OUT_DIR/prices.manifest.json" --min-coverage 0.8
+
+      - name: Bulk fundamentals (SEC Financial Statement Data Sets)
+        if: env.FUNDAMENTALS_MODE == 'bulk' && env.OFFLINE != 'true'
+        env:
+          TENBAGGER_SEC_UA: ${{ secrets.SEC_USER_AGENT }}
+        run: |
+          python -m datasources edgar-bulk --download 16 --dest "$RUNNER_TEMP/fsds" \
+            --universe "${UNIVERSE/sp500-sample/sp500}" --cache-dir "$RUNNER_TEMP/secache"
+          echo "TENBAGGER_CACHE_DIR=$RUNNER_TEMP/secache" >> "$GITHUB_ENV"
+          echo "TENBAGGER_CACHE_TTL_HOURS=48" >> "$GITHUB_ENV"
+
+      - name: Build companies.json (pipeline)
+        env:
+          TENBAGGER_SEC_UA: ${{ secrets.SEC_USER_AGENT }}
+          UNIVERSE_ARGS: ${{ steps.universe.outputs.args }}
+        run: |
+          args=(build --out "$OUT_DIR/companies.json")
+          [[ "$OFFLINE" == "true" ]] && args+=(--offline)
+          [[ -f "$OUT_DIR/prices.csv" ]] && args+=(--prices "$OUT_DIR/prices.csv")
+          # UNIVERSE_ARGS is "--universe X" or "--tickers A,B,..." (no spaces inside values)
+          # shellcheck disable=SC2206
+          uargs=($UNIVERSE_ARGS)
+          python -m pipeline "${args[@]}" "${uargs[@]}" 2> >(tee "$OUT_DIR/pipeline-warnings.log" >&2) | tail -n 60
+          if [[ -f "${TENBAGGER_CACHE_DIR:-/nonexistent}/sic.json" ]]; then
+            python -m datasources enrich --companies "$OUT_DIR/companies.json" --sic-json "$TENBAGGER_CACHE_DIR/sic.json"
+          fi
+
+      - name: Validate (schema + sanity)
+        id: validate
+        run: |
+          min="$MIN_COUNT"
+          if [[ "$OFFLINE" == "true" ]]; then min=5; fi  # fixtures cover ~12 companies
+          python -m datasources validate --companies "$OUT_DIR/companies.json" \
+            --min-count "$min" --max-age-hours 6
+          echo "count=$(python -c "import json,sys; print(len(json.load(open(sys.argv[1]))['companies']))" "$OUT_DIR/companies.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Licence gate
+        id: gate
+        run: |
+          man=()
+          [[ -f "$OUT_DIR/prices.manifest.json" ]] && man=(--manifest "$OUT_DIR/prices.manifest.json")
+          if python -m datasources gate --companies "$OUT_DIR/companies.json" "${man[@]}"; then
+            ok=true
+          else
+            ok=false
+            echo "::warning::Licence gate blocked publishing (artifact still uploaded for internal review)"
+          fi
+          [[ "$OFFLINE" == "true" ]] && ok=false
+          echo "publishable=$ok" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Tenbagger data build"
+            echo "- companies: ${{ steps.validate.outputs.count }} (min $MIN_COUNT)"
+            echo "- universe: $UNIVERSE, fundamentals: $FUNDAMENTALS_MODE, prices: $PRICE_SOURCE, offline: $OFFLINE"
+            echo "- publishable: $ok"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: companies-${{ github.run_id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 14
+
+  publish-data-branch:
+    needs: build
+    if: needs.build.outputs.publishable == 'true' && (inputs.publish || vars.TENBAGGER_PUBLISH || 'artifact') == 'data-branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # only this job can push, and only to the `data` branch
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: companies-${{ github.run_id }}
+          path: ${{ runner.temp }}/out
+      - name: Commit to data branch
+        env:
+          COUNT: ${{ needs.build.outputs.count }}
+          SRC: ${{ runner.temp }}/out
+        run: |
+          git config user.name "tenbagger-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          wt="$RUNNER_TEMP/data-wt"
+          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+            git fetch --depth=1 origin data
+            git worktree add -B data "$wt" FETCH_HEAD
+          else
+            git worktree add --detach "$wt"
+            git -C "$wt" checkout --orphan data
+            git -C "$wt" rm -rfq .
+          fi
+          mkdir -p "$wt/tenbagger/data"
+          cp "$SRC/companies.json" "$wt/tenbagger/data/companies.json"
+          [[ -f "$SRC/prices.manifest.json" ]] && cp "$SRC/prices.manifest.json" "$wt/tenbagger/data/prices.manifest.json"
+          cd "$wt"
+          git add tenbagger/data
+          if git diff --cached --quiet; then
+            echo "companies.json unchanged"
+            exit 0
+          fi
+          git commit -qm "data: companies.json $(date -u +%F) (${COUNT} companies, run ${GITHUB_RUN_ID})"
+          git push origin data
+
+  supabase-upsert:
+    needs: build
+    if: needs.build.outputs.publishable == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Skip when Supabase secrets are absent
+        if: env.SUPABASE_URL == '' || env.SUPABASE_SERVICE_ROLE_KEY == ''
+        run: echo "SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not set; skipping upsert"
+      - uses: actions/checkout@v4
+        if: env.SUPABASE_URL != '' && env.SUPABASE_SERVICE_ROLE_KEY != ''
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        if: env.SUPABASE_URL != '' && env.SUPABASE_SERVICE_ROLE_KEY != ''
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        if: env.SUPABASE_URL != '' && env.SUPABASE_SERVICE_ROLE_KEY != ''
+        with:
+          name: companies-${{ github.run_id }}
+          path: ${{ runner.temp }}/out
+      - name: Upsert via load_companies()
+        if: env.SUPABASE_URL != '' && env.SUPABASE_SERVICE_ROLE_KEY != ''
+        working-directory: tenbagger
+        run: python -m datasources supabase-upsert --companies "$RUNNER_TEMP/out/companies.json"

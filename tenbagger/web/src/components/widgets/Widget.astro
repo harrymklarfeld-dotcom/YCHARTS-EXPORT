@@ -1,0 +1,25 @@
+---
+/**
+ * Dispatcher: turns a ```widget:<type>``` block from an article into a component.
+ * Add a new widget type here (see content/WIDGETS.md for the spec).
+ */
+import MetricWidget from './MetricWidget.astro';
+import CompareWidget from './CompareWidget.astro';
+import HistoryWidget from './HistoryWidget.astro';
+import QuizWidget from './QuizWidget.astro';
+import CalculatorWidget from './CalculatorWidget.astro';
+import WidgetError from './WidgetError.astro';
+interface Props { type: string; props: Record<string, unknown>; raw?: string; error?: string }
+const { type, props, raw, error } = Astro.props;
+// Accept shorthand types like ```widget:pe``` / ```widget:dcf``` / ```widget:liquidity```.
+const calcAlias = ['pe', 'dcf', 'liquidity'].includes(type) ? type : null;
+const p = props as any;
+---
+{error ? <WidgetError message={error} raw={raw} />
+  : type === 'metric' ? <MetricWidget {...p} />
+  : type === 'compare' ? <CompareWidget {...p} />
+  : type === 'history' ? <HistoryWidget {...p} />
+  : type === 'quiz' ? <QuizWidget {...p} />
+  : type === 'calculator' ? <CalculatorWidget {...p} />
+  : calcAlias ? <CalculatorWidget {...p} kind={calcAlias} />
+  : <WidgetError message={`unknown widget type “${type}”.`} />}

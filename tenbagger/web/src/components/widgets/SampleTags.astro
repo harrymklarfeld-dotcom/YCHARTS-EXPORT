@@ -1,0 +1,14 @@
+---
+import type { Company } from '../../lib/data.ts';
+import { isSampleFundamentals } from '../../lib/widgets.ts';
+interface Props { companies: Company[]; usesPrice?: boolean }
+const { companies, usesPrice = false } = Astro.props;
+const sampleData = companies.filter((c) => isSampleFundamentals(c)).map((c) => c.ticker);
+const samplePrice = usesPrice && companies.some((c) => c.price_is_sample);
+---
+{(sampleData.length > 0 || samplePrice) && (
+  <span class="wtags">
+    {sampleData.length > 0 && <span class="wtag" title={`Sample data: ${sampleData.join(', ')}`}>Sample data{companies.length > 1 ? `: ${sampleData.join(', ')}` : ''}</span>}
+    {samplePrice && <span class="wtag">Sample price</span>}
+  </span>
+)}

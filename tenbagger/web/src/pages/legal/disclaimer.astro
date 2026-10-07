@@ -1,0 +1,27 @@
+---
+import site from '../../../site.config.ts';
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Disclaimer" description={`${site.name} is educational content, not investment advice.`}>
+  <div class="wrap narrow">
+    <header class="page-head">
+      <p class="kicker">Legal</p>
+      <h1>Disclaimer</h1>
+      <p class="banner"><span class="banner-icon" aria-hidden="true">!</span><span><strong>Draft.</strong> This page has not yet been reviewed by a lawyer.</span></p>
+    </header>
+    <div class="prose">
+      <p><strong>{site.disclaimer}</strong></p>
+      <h2>Education, not advice</h2>
+      <p>{site.name} publishes general, impersonal educational material about how to read company financial statements. It is not personalized to your circumstances. We are not a registered investment adviser, broker-dealer or financial planner, and nothing on this site or in the app is an offer or solicitation to buy or sell any security.</p>
+      <h2>Screens and rankings</h2>
+      <p>Preset screens, rankings and comparisons are study tools that show how a metric sorts companies. Appearing in a screen or ranking is not a recommendation, and leaving one is not a warning.</p>
+      <h2>Data accuracy</h2>
+      <p>Figures are derived from companies’ filings with the U.S. Securities and Exchange Commission and computed with the formulas shown on each page. Extraction or calculation errors are possible, filings can be restated, and some preview data and all prices marked “sample” are placeholders. Always check the original filing before relying on a number.</p>
+      <h2>Money hub</h2>
+      <p>Coverage checks such as “can I cover the card?” are estimates based on the information you provide or link. Expected pay is not guaranteed, and a “covered” status is not a promise that a payment will clear or that you will avoid fees or interest. {site.name} does not lend money or offer cash advances.</p>
+      <h2>No warranty</h2>
+      <p>The content is provided “as is” without warranties of any kind. Investing involves risk, including loss of principal. Past results do not predict future results.</p>
+    </div>
+    <div style="height:64px"></div>
+  </div>
+</Base>

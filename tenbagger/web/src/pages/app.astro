@@ -1,0 +1,48 @@
+---
+/**
+ * /app — the web build of the Expo app. Set `appUrl` in site.config.ts to embed it;
+ * until then this page explains where it will live.
+ */
+import site from '../../site.config.ts';
+import Base from '../layouts/Base.astro';
+import Waitlist from '../components/Waitlist.astro';
+---
+<Base title="Open the app" description={`The ${site.name} app on the web.`} noindex>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">The app</p>
+      <h1>{site.appUrl ? `${site.name} on the web` : 'The app is almost here.'}</h1>
+      {!site.appUrl && <p class="lede">Lessons, streaks, the full screener and the money hub live in the {site.name} app. The web version is served from the mobile app’s web export and will open right here.</p>}
+    </header>
+    {site.appUrl ? (
+      <div class="app-frame">
+        <iframe src={site.appUrl} title={`${site.name} app`} loading="lazy" allow="clipboard-write"></iframe>
+        <p class="small muted">Trouble loading? <a href={site.appUrl}>Open the app in its own tab</a>.</p>
+      </div>
+    ) : (
+      <div class="grid-2 app-grid">
+        <div class="card">
+          <h2>Meanwhile</h2>
+          <ul>
+            <li><a href="/#try">Play a real 3-question lesson</a></li>
+            <li><a href="/learn/">Read the explainers</a></li>
+            <li><a href="/screener/">Try the screener</a></li>
+          </ul>
+        </div>
+        <Waitlist source="app" compact />
+      </div>
+    )}
+    <p class="small muted dev-note">For developers: build the Expo web export (<code>npx expo export -p web</code> in <code>tenbagger/mobile</code>), host it (for example under <code>/app-web/</code> in this site’s <code>public/</code> folder), then set <code>appUrl</code> in <code>site.config.ts</code>. Lesson links pass <code>?lesson=&lt;id&gt;</code>.</p>
+  </div>
+</Base>
+<script>
+  // Forward ?lesson=… to the embedded app.
+  const f = document.querySelector<HTMLIFrameElement>('.app-frame iframe');
+  const lesson = new URLSearchParams(location.search).get('lesson');
+  if (f && lesson) { const u = new URL(f.src, location.href); u.searchParams.set('lesson', lesson); f.src = u.toString(); }
+</script>
+<style>
+  .app-frame iframe { width: 100%; height: min(880px, 85vh); border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+  .app-grid { align-items: start; margin-bottom: 32px; }
+  .dev-note { padding-bottom: 64px; max-width: 60em; }
+</style>

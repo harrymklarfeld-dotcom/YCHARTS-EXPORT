@@ -1,0 +1,112 @@
+---
+/**
+ * Screener island. Server-renders the first preset's results (works without JS
+ * and is crawlable); the browser version adds presets, typed queries and sector filter.
+ */
+import { PRESET_SCREENS, runScreen, getMetricInfo, explainMatch } from '../../../packages/screener/src/index.ts';
+import { companies, screenerPayload, tickerSlug } from '../lib/data.ts';
+
+interface Props { mini?: boolean; presetIds?: string[] }
+const { mini = false, presetIds } = Astro.props;
+const all = companies();
+const presets = presetIds ? PRESET_SCREENS.filter((p) => presetIds.includes(p.id)) : PRESET_SCREENS;
+const first = presets[0];
+const out = first ? runScreen(all, first) : null;
+const keys: string[] = [];
+if (first) {
+  for (const f of first.filters) if (!keys.includes(f.metric)) keys.push(f.metric);
+  if (first.sort && !keys.includes(first.sort.metric)) keys.push(first.sort.metric);
+}
+const sectors = [...new Set(all.map((c) => c.sector))].sort();
+const shown = out ? (mini ? out.results.slice(0, 5) : out.results) : [];
+---
+<screener-app class={`sc ${mini ? 'sc-mini' : ''}`} mini={mini ? '' : undefined}>
+  <script type="application/json" set:html={JSON.stringify(screenerPayload()).replace(/</g, '\\u003c')}></script>
+  {all.length === 0 ? (
+    <p class="muted">Company data is not available yet.</p>
+  ) : (
+    <>
+      <div class="sc-presets" role="group" aria-label="Preset screens">
+        {presets.map((p, i) => (
+          <button type="button" class="sc-chip" data-preset={p.id} aria-pressed={i === 0 ? 'true' : 'false'}>{p.name}</button>
+        ))}
+      </div>
+      {!mini && (
+        <form class="sc-query" data-query-form>
+          <label for="sc-q" class="small">Or type your own screen</label>
+          <div class="sc-query-row">
+            <input id="sc-q" type="search" data-query placeholder="e.g. roic > 15% and pe < 25" autocomplete="off" spellcheck="false" />
+            <select data-sector aria-label="Sector">
+              <option value="">All sectors</option>
+              {sectors.map((s) => <option value={s}>{s}</option>)}
+            </select>
+            <button class="btn btn-primary" type="submit">Run</button>
+          </div>
+          <p class="sc-msg small muted" data-query-msg aria-live="polite">Try: <code>gross margin over 50%</code>, <code>debt/equity under 0.5</code>, <code>fcf yield at least 3%</code>.</p>
+        </form>
+      )}
+      <div class="sc-desc" data-desc>
+        {first && <p><strong>{first.name}.</strong> {first.description}</p>}
+        {first && <p class="small muted"><strong>What it can miss:</strong> {first.caveat}</p>}
+      </div>
+      <div data-results aria-live="polite">
+        {out && (
+          <>
+            <p class="sc-count small"><strong>{out.results.length}</strong> of {all.length} companies match</p>
+            <div class="table-wrap">
+              <table class="data">
+                <thead>
+                  <tr>
+                    <th scope="col">Company</th>
+                    {!mini && <th scope="col">Sector</th>}
+                    {keys.map((k) => <th scope="col" class="n">{getMetricInfo(k)?.shortLabel ?? k}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {shown.map((r) => (
+                    <tr>
+                      <td>
+                        <a href={`/companies/${tickerSlug(r.company.ticker)}/`}><span class="ticker">{r.company.ticker}</span> {r.company.name}</a>
+                        {!mini && <div class="sc-why small muted">{explainMatch(r.company, first!).join(' · ')}</div>}
+                      </td>
+                      {!mini && <td class="sc-sector">{r.company.sector}</td>}
+                      {keys.map((k) => <td class="n">{getMetricInfo(k)?.format((r.values as Record<string, number | null>)[k] ?? null)}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
+      <p class="small muted sc-note">Screens are study tools, not recommendations. Prices behind valuation metrics may be sample values.</p>
+    </>
+  )}
+</screener-app>
+
+<script>
+  import '../scripts/screener.ts';
+</script>
+
+<style is:global>
+  .sc { display: block; }
+  .sc-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .sc-mini .sc-presets { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+  .sc-chip { font: inherit; font-size: 0.9rem; font-weight: 500; white-space: nowrap; color: var(--ink); background: var(--surface); border: 1.5px solid var(--rule); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+  .sc-chip:hover { border-color: var(--muted); }
+  .sc-chip[aria-pressed='true'] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .sc-query { display: grid; gap: 6px; margin-bottom: 16px; }
+  .sc-query-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sc-query-row input { flex: 1 1 260px; font-family: var(--font-mono); font-size: 0.95rem; }
+  .sc-query-row select { flex: 0 1 180px; }
+  .sc-msg code { font-size: 0.85em; background: var(--surface2); padding: 1px 5px; border-radius: 3px; }
+  .sc-err { color: var(--negative); }
+  .sc-desc { max-width: 60em; font-size: 0.97rem; }
+  .sc-desc p { margin-bottom: 0.5em; }
+  .sc-count { margin: 12px 0 8px; color: var(--muted); }
+  .sc-count strong { color: var(--ink); font-family: var(--font-mono); }
+  .sc-why { white-space: normal; margin-top: 2px; }
+  .sc-sector { color: var(--muted); }
+  .sc-note { margin-top: 10px; }
+  .sc-none { padding: 18px; border: 1px dashed var(--rule); border-radius: 8px; }
+</style>

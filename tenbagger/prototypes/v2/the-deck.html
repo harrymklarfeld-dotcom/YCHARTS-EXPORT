@@ -1,0 +1,1056 @@
+<title>Tenbagger: The Deck</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Direction: The Deck. Every company is a collectible card you level up by learning to read its 10-K stats.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Martian+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#D9DCD3; --grid:rgba(14,16,13,.05);
+  --app:#EEF0E9; --surface:#FAFBF6; --surface-2:#E3E6DD; --ink:#0E100D; --muted:#555B52; --line:#C4C9BD;
+  --accent:#FF4F1A; --on-accent:#0E100D; --acid:#C8F03C; --ok:#127A45; --ok-soft:#D6EFD9; --miss:#B4441F; --miss-soft:#F8DFD3;
+  --shadow:0 1px 0 rgba(255,255,255,.7) inset,0 18px 40px -18px rgba(14,16,13,.35);
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --sans:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,Consolas,monospace;
+  --spring:cubic-bezier(.22,1.45,.36,1);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#070807; --grid:rgba(238,241,232,.035);
+    --app:#0C0D0B; --surface:#171914; --surface-2:#20231C; --ink:#EEF1E8; --muted:#9BA293; --line:#2D3128;
+    --accent:#FF6A3D; --on-accent:#0E100D; --acid:#D4FF4A; --ok:#5CD68E; --ok-soft:#15301F; --miss:#FF9A70; --miss-soft:#3A1E14;
+    --shadow:0 18px 40px -18px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#070807; --grid:rgba(238,241,232,.035);
+  --app:#0C0D0B; --surface:#171914; --surface-2:#20231C; --ink:#EEF1E8; --muted:#9BA293; --line:#2D3128;
+  --accent:#FF6A3D; --on-accent:#0E100D; --acid:#D4FF4A; --ok:#5CD68E; --ok-soft:#15301F; --miss:#FF9A70; --miss-soft:#3A1E14;
+  --shadow:0 18px 40px -18px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{margin:0;background:var(--page);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font:15px/1.5 var(--sans);overflow-x:clip}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- page chrome ---------- */
+.page{max-width:1240px;margin:0 auto;padding:18px 16px 36px}
+.dirbar{display:flex;gap:14px 20px;align-items:flex-start;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.dirlabel{display:flex;gap:14px;align-items:flex-start;min-width:0}
+.tag{flex:none;font:700 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--page);padding:7px 9px 6px;transform:rotate(-2deg)}
+.rationale{margin:0;font-size:13px;line-height:1.5;color:var(--muted);max-width:900px}
+.rationale b{color:var(--ink);font-weight:700}
+.themebtn{flex:none;border:2px solid var(--ink);background:transparent;border-radius:0;padding:6px 10px;font:700 11px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.themebtn:hover{background:var(--ink);color:var(--page)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 412px;gap:56px;align-items:start;margin-top:22px}
+.hero{min-width:0;padding-top:8px}
+.hero h1{font:900 clamp(56px,7.4vw,104px)/.86 var(--display);text-transform:uppercase;letter-spacing:-.01em;margin:0 0 18px}
+.hero h1 em{font-style:normal;color:var(--accent);-webkit-text-stroke:0}
+.hero h1 .outline{color:transparent;-webkit-text-stroke:2px var(--ink)}
+.hero .lede{font-size:18px;line-height:1.45;max-width:520px;margin:0 0 26px}
+.ladder{display:flex;flex-wrap:wrap;gap:0;margin:0 0 28px;border:2px solid var(--ink);width:max-content;max-width:100%}
+.ladder div{padding:9px 12px 8px;border-right:2px solid var(--ink);min-width:0}
+.ladder div:last-child{border-right:0}
+.ladder b{display:block;font:800 20px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.ladder span{font:500 9.5px/1.3 var(--mono);color:var(--muted);text-transform:uppercase}
+.ladder .l4 b{background:linear-gradient(90deg,#FF4F1A,#E8B400,#5BBF2A,#12A89A,#3B6BFF,#E0428C);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fan{position:relative;height:300px;margin:6px 0 30px;max-width:520px}
+.fan .card{position:absolute;width:190px;top:0}
+.fan .card:nth-child(1){left:0;transform:rotate(-9deg) translateY(22px)}
+.fan .card:nth-child(2){left:150px;transform:rotate(-1deg);z-index:2}
+.fan .card:nth-child(3){left:300px;transform:rotate(8deg) translateY(26px)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:2px solid var(--ink);max-width:620px}
+.rules div{padding:12px 14px 4px 0}
+.rules h3{margin:0 0 4px;font:800 18px/1 var(--display);text-transform:uppercase}
+.rules p{margin:0;font-size:13px;color:var(--muted)}
+.psy{margin-top:26px;max-width:620px}
+.psy summary{cursor:pointer;font:700 11px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:10px 0;list-style:none}
+.psy summary::before{content:"+ "}
+.psy[open] summary::before{content:"\2013 "}
+.psy dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 16px;margin:4px 0 0;font-size:13px}
+.psy dt{font:600 10.5px/1.7 var(--mono);text-transform:uppercase;color:var(--accent)}
+.psy dd{margin:0;color:var(--muted)}
+.foot{margin-top:40px;padding-top:12px;border-top:2px solid var(--ink);font:500 11px/1.6 var(--mono);color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 24px}
+.foot b{color:var(--ink)}
+
+/* ---------- phone ---------- */
+.phone{width:100%;max-width:412px;margin:0 auto;padding:11px;border-radius:52px;background:#0A0B09;box-shadow:0 0 0 2px #2B2E27,0 40px 80px -30px rgba(0,0,0,.55),0 12px 24px -12px rgba(0,0,0,.4);position:sticky;top:16px}
+.screen{position:relative;height:800px;max-height:calc(100vh - 128px);min-height:620px;border-radius:42px;overflow:hidden;background:var(--app);display:flex;flex-direction:column;isolation:isolate}
+.notch{position:absolute;top:10px;left:50%;width:108px;height:30px;margin-left:-54px;background:#0A0B09;border-radius:20px;z-index:40}
+.app-head{flex:none;padding:46px 18px 8px;display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--app)}
+.wordmark{font:900 26px/1 var(--display);text-transform:uppercase;letter-spacing:.01em;display:flex;align-items:center;gap:7px}
+.wordmark i{display:inline-block;width:15px;height:21px;border:2.5px solid var(--ink);border-radius:3px;transform:rotate(-8deg);position:relative;background:var(--acid)}
+.wordmark i::after{content:"";position:absolute;inset:-2.5px;border:2.5px solid var(--ink);border-radius:3px;transform:translate(5px,-2px) rotate(14deg);background:var(--accent);z-index:-1}
+.xp{font:700 11px/1 var(--mono);border:2px solid var(--ink);padding:5px 7px 4px;border-radius:3px}
+.disc{flex:none;margin:0 18px;padding:5px 0 7px;border-bottom:1px dashed var(--line);font:500 9.5px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.views{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin}
+.view{padding:14px 18px 28px;animation:viewin .45s var(--spring)}
+@keyframes viewin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);border-top:2px solid var(--ink);background:var(--surface);padding:6px 6px 18px}
+.tabbar button{border:0;background:none;padding:6px 2px 2px;display:flex;flex-direction:column;align-items:center;gap:3px;font:700 10px/1 var(--mono);text-transform:uppercase;letter-spacing:.03em;color:var(--muted);position:relative}
+.tabbar svg{width:24px;height:24px;transition:transform .35s var(--spring)}
+.tabbar button[aria-current="page"]{color:var(--ink)}
+.tabbar button[aria-current="page"] svg{transform:translateY(-2px) rotate(-6deg)}
+.tabbar button[aria-current="page"]::before{content:"";position:absolute;top:-8px;left:22%;right:22%;height:4px;background:var(--accent)}
+
+/* ---------- shared bits ---------- */
+.kick{font:700 10px/1.2 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.h2{font:900 38px/.9 var(--display);text-transform:uppercase;margin:4px 0 6px}
+.h3{font:800 22px/1 var(--display);text-transform:uppercase;margin:0 0 6px}
+.btn{border:2px solid var(--ink);background:var(--surface);border-radius:4px;padding:11px 14px 10px;font:800 17px/1 var(--display);text-transform:uppercase;letter-spacing:.04em;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .25s var(--spring),box-shadow .25s var(--spring);box-shadow:3px 3px 0 var(--ink)}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--ink)}
+.btn.ghost{box-shadow:none;background:transparent}
+.btn svg{width:16px;height:16px}
+.panel{background:var(--surface);border:2px solid var(--ink);border-radius:6px;padding:14px}
+.segbar{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin:8px 0 6px}
+.segbar i{height:12px;background:transparent;border:1.5px solid var(--line);border-radius:2px;transition:background .5s,border-color .5s}
+.segbar i.on{border-color:var(--ink)}
+.segbar i.t1{background:#8E948A}.segbar i.t2{background:#23B06A}.segbar i.t3{background:#2F5BFF}
+.segbar i.t4{background:linear-gradient(90deg,#FF4F1A,#E8B400,#5BBF2A,#12A89A,#3B6BFF,#E0428C)}
+.chip{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:6px 11px 5px;font:600 12px/1 var(--sans);white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--app)}
+.tierpill{display:inline-block;font:700 9.5px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:4px 6px 3px;border-radius:3px;border:1.5px solid currentColor}
+
+/* ---------- THE CARD ---------- */
+.card{--sec:#C8F03C;--frame-bg:#8E948A;--foil-o:0;--mx:50;--my:50;--rx:0deg;--ry:0deg;container-type:inline-size;aspect-ratio:5/7;perspective:1100px;position:relative;width:100%;-webkit-tap-highlight-color:transparent;touch-action:pan-y}
+.card.t2{--frame-bg:linear-gradient(160deg,#5BE39A,#1D8E53 55%,#0E5A33);--foil-o:.12}
+.card.t3{--frame-bg:linear-gradient(160deg,#8FA8FF,#2F5BFF 50%,#10248F);--foil-o:.32}
+.card.t4{--frame-bg:conic-gradient(from calc(var(--mx) * 3.6deg),#FF4F1A,#E8B400,#8BD42A,#12C2A8,#3B6BFF,#E0428C,#FF4F1A);--foil-o:.75}
+.card.t1{--frame-bg:linear-gradient(160deg,#C5C9C0,#7E847A 55%,#555A50)}
+.card .tilt{width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .7s var(--spring)}
+.card.tracking .tilt{transition:transform .07s linear}
+.card .flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s var(--spring)}
+.card.flipped .flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:5cqw;padding:2.6cqw;background:var(--frame-bg);box-shadow:0 1.5cqw 5cqw -1cqw rgba(0,0,0,.45),0 0 0 .5cqw rgba(0,0,0,.55)}
+.face.back{transform:rotateY(180deg)}
+.plate{position:relative;height:100%;border-radius:3cqw;overflow:hidden;background:#131511;color:#EDF0E6;display:flex;flex-direction:column;font-family:var(--sans)}
+.foil,.glare{position:absolute;inset:0;pointer-events:none;border-radius:inherit}
+.card,.mini{--foil-grad:repeating-linear-gradient(115deg,rgba(255,79,26,0) 0%,rgba(255,79,26,.5) 3%,rgba(232,180,0,.5) 6%,rgba(139,212,42,.5) 9%,rgba(18,194,168,.5) 12%,rgba(59,107,255,.5) 15%,rgba(224,66,140,.5) 18%,rgba(255,79,26,0) 21%)}
+.foil{opacity:calc(var(--foil-o) * .38);mix-blend-mode:color-dodge;background:var(--foil-grad),repeating-linear-gradient(35deg,rgba(255,255,255,.07) 0 1px,transparent 1px 7px);
+  background-size:320% 320%,100% 100%;background-position:calc(var(--mx) * 1%) calc(var(--my) * 1%),0 0;transition:opacity .4s}
+.c-art::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:color-dodge;opacity:var(--foil-o);background:var(--foil-grad);background-size:260% 260%;background-position:calc(100% - var(--mx) * 1%) calc(var(--my) * 1%)}
+.card.t4:not(.tracking) .c-art::after{animation:foildrift2 6s ease-in-out infinite alternate}
+@keyframes foildrift2{from{background-position:90% 10%}to{background-position:10% 90%}}
+.glare{background:radial-gradient(circle at calc(var(--mx) * 1%) calc(var(--my) * 1%),rgba(255,255,255,.42),rgba(255,255,255,0) 48%);mix-blend-mode:overlay;opacity:0;transition:opacity .35s}
+.card.tracking .glare{opacity:1}
+.card.t4:not(.tracking) .front .foil{animation:foildrift 7s ease-in-out infinite alternate}
+@keyframes foildrift{from{background-position:10% 20%,0 0}to{background-position:90% 80%,0 0}}
+.c-tk{z-index:1}
+.c-top{display:flex;justify-content:space-between;align-items:center;padding:3cqw 3.6cqw 0;font:500 3cqw/1 var(--mono);letter-spacing:.04em;color:#9FA697}
+.c-tier{font:700 2.9cqw/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:1.2cqw 1.8cqw 1cqw;border-radius:1cqw;background:#EDF0E6;color:#131511}
+.t2 .c-tier{background:#23B06A;color:#04160C}.t3 .c-tier{background:#2F5BFF;color:#fff}
+.t4 .c-tier{background:linear-gradient(90deg,#FF4F1A,#E8B400,#8BD42A,#12C2A8,#3B6BFF,#E0428C);color:#0E100D}
+.c-art{position:relative;margin:2.4cqw 3.6cqw 0;height:37cqw;border-radius:2cqw;overflow:hidden;background:
+  repeating-linear-gradient(-45deg,color-mix(in srgb,var(--sec) 22%,transparent) 0 1.2cqw,transparent 1.2cqw 3.6cqw),
+  radial-gradient(circle at 80% 20%,color-mix(in srgb,var(--sec) 45%,transparent),transparent 60%),#1B1E18;border:.5cqw solid color-mix(in srgb,var(--sec) 55%,#000)}
+.c-tk{position:absolute;left:2.6cqw;bottom:-3.4cqw;font:900 27cqw/1 var(--display);color:var(--sec);letter-spacing:-.01em;text-shadow:1cqw 1cqw 0 #0A0B09}
+.c-tk.long{font-size:22cqw}
+.c-sec{position:absolute;right:2.6cqw;top:2.4cqw;font:700 2.6cqw/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:#0A0B09;background:var(--sec);padding:1cqw 1.4cqw .8cqw;border-radius:.8cqw}
+.c-name{padding:2.6cqw 3.6cqw 0;display:flex;flex-direction:column;gap:.6cqw}
+.c-name b{font:700 4.6cqw/1.1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-name span{font:500 2.9cqw/1.1 var(--mono);color:#9FA697;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-stats{margin:2.6cqw 3.6cqw 0;display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:.4cqw solid #3A3F35}
+.c-stat{padding:1.8cqw 0 1.6cqw;border-bottom:.4cqw solid #3A3F35}
+.c-stat:nth-child(odd){padding-right:2.4cqw;border-right:.4cqw solid #3A3F35}
+.c-stat:nth-child(even){padding-left:2.6cqw}
+.c-stat .l{font:500 2.6cqw/1 var(--mono);text-transform:uppercase;color:#9FA697;letter-spacing:.04em}
+.c-stat .v{font:800 8.6cqw/1 var(--display);margin-top:.9cqw;display:block}
+.c-stat .v.na{color:#6B7166}
+.c-stat .rk{display:block;height:1cqw;margin-top:1.1cqw;background:#2A2E26;border-radius:1cqw;position:relative;overflow:hidden}
+.c-stat .rk i{position:absolute;left:0;top:0;bottom:0;background:var(--sec);border-radius:1cqw}
+.c-stat.hl{background:color-mix(in srgb,var(--sec) 18%,transparent);box-shadow:0 0 0 .6cqw var(--sec) inset}
+.c-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding:0 3.6cqw 3.2cqw;font:500 2.5cqw/1.2 var(--mono);color:#9FA697;text-transform:uppercase;gap:2cqw}
+.pips{display:flex;gap:1cqw;flex:none}
+.pips i{width:3cqw;height:3cqw;border-radius:50%;border:.5cqw solid #6B7166}
+.pips i.on{background:var(--sec);border-color:var(--sec)}
+/* back */
+.b-head{display:flex;justify-content:space-between;align-items:baseline;padding:3.6cqw 3.6cqw 0}
+.b-head b{font:900 7.2cqw/1 var(--display);text-transform:uppercase}
+.b-head span{font:700 3.2cqw/1 var(--mono);color:var(--sec)}
+.b-sub{padding:1cqw 3.6cqw 0;font:500 2.6cqw/1.3 var(--mono);color:#9FA697;text-transform:uppercase}
+.b-tabs{display:flex;gap:1.4cqw;padding:3cqw 3.6cqw 0;flex-wrap:wrap}
+.b-tabs button{border:.45cqw solid #4A5044;background:transparent;color:#C9CEC0;border-radius:5cqw;padding:1.5cqw 2.4cqw 1.2cqw;font:600 2.8cqw/1 var(--mono);text-transform:uppercase;cursor:pointer}
+.b-tabs button[aria-pressed="true"]{background:var(--sec);border-color:var(--sec);color:#0A0B09}
+.b-chart{margin:3cqw 3.6cqw 0;border-radius:2cqw;background:#1B1E18;padding:2cqw}
+.b-chart svg{display:block;width:100%;height:auto}
+.b-range{display:flex;justify-content:space-between;padding:2cqw 3.6cqw 0;font:500 2.8cqw/1.3 var(--mono);color:#9FA697}
+.b-range b{display:block;color:#EDF0E6;font:800 6cqw/1.1 var(--display)}
+.b-mast{margin:auto 3.6cqw 0;padding:2.6cqw 0;border-top:.4cqw solid #3A3F35;display:flex;justify-content:space-between;align-items:center;font:500 2.7cqw/1.3 var(--mono);text-transform:uppercase;color:#C9CEC0}
+.b-src{padding:0 3.6cqw 3.2cqw;font:500 2.3cqw/1.3 var(--mono);color:#80867A;text-transform:uppercase}
+/* sleeve (face-down) */
+.sleeve .plate{background:repeating-linear-gradient(45deg,#FF4F1A 0 3cqw,#131511 3cqw 6cqw);align-items:center;justify-content:center}
+.sleeve .plate::before{content:"";position:absolute;inset:6cqw;border:1cqw solid #131511;border-radius:3cqw;background:#131511}
+.sleeve .logo{position:relative;font:900 13cqw/.85 var(--display);text-transform:uppercase;color:#EDF0E6;text-align:center}
+.sleeve .logo small{display:block;font:700 3cqw/1.4 var(--mono);letter-spacing:.1em;color:var(--acid);margin-top:3cqw}
+/* mini card */
+.mini{display:block;container-type:inline-size;aspect-ratio:5/7;border-radius:9px;padding:4px;background:var(--frame-bg);position:relative;border:0;width:100%;text-align:left;transition:transform .35s var(--spring);box-shadow:0 0 0 1.5px rgba(0,0,0,.55)}
+.mini:hover{transform:translateY(-3px) rotate(-1.5deg)}
+.mini .plate{border-radius:6px}
+.mini .m-tk{font:900 30cqw/.9 var(--display);color:var(--sec);padding:6cqw 7cqw 0}
+.mini .m-t{font:700 8cqw/1 var(--mono);text-transform:uppercase;padding:0 7cqw;color:#9FA697;margin-top:auto}
+.mini .m-v{font:800 17cqw/1 var(--display);padding:2cqw 7cqw 8cqw}
+.mini .m-v small{display:block;font:500 7cqw/1.2 var(--mono);color:#9FA697;text-transform:uppercase}
+.mini.sel{outline:3px solid var(--accent);outline-offset:3px}
+.slot{container-type:inline-size;aspect-ratio:5/7;border:2px dashed var(--line);border-radius:9px;display:flex;flex-direction:column;justify-content:space-between;padding:12% 9%;min-width:0;background:repeating-linear-gradient(-45deg,transparent 0 6px,var(--surface-2) 6px 7px);color:var(--muted)}
+.slot b{font:900 26cqw/.9 var(--display);color:transparent;-webkit-text-stroke:1.2px var(--muted)}
+.slot span{font:600 7.5cqw/1.25 var(--mono);text-transform:uppercase}
+
+/* ---------- deck view ---------- */
+.deckhead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.idline{font-size:13px;color:var(--muted);margin:0}
+.idline b{color:var(--ink)}
+.count{font:900 44px/.85 var(--display);text-align:right}
+.count small{display:block;margin-top:5px;font:600 10px/1.2 var(--mono);color:var(--muted);text-transform:uppercase}
+.nextup{margin:14px 0 18px;display:flex;gap:12px;align-items:center;background:#131511;color:#EDF0E6;border:2px solid #131511;border-radius:6px;padding:12px}
+.nextup .txt{flex:1;min-width:0;font-size:13px;line-height:1.35}
+.nextup .txt b{display:block;font:800 19px/1 var(--display);text-transform:uppercase;margin-bottom:3px;color:#C8F03C}
+.nextup .btn{flex:none;box-shadow:3px 3px 0 #C8F03C;border-color:#C8F03C;font-size:15px;padding:9px 11px 8px}
+.feature{position:relative;width:82%;margin:4px auto 0}
+.featctl{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:18px 0 20px}
+.featctl .btn{font-size:14px;padding:8px 10px 7px}
+.iconbtn{width:40px;height:40px;border:2px solid var(--ink);background:var(--surface);border-radius:50%;display:grid;place-items:center;padding:0}
+.iconbtn svg{width:18px;height:18px}
+.binder{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:8px}
+.secthead{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px}
+.decks{display:grid;gap:10px;margin-top:10px}
+.deckbox{display:flex;gap:12px;align-items:center;border:2px solid var(--ink);border-radius:6px;padding:10px;background:var(--surface)}
+.deckbox .stack{position:relative;width:54px;height:64px;flex:none}
+.deckbox .stack span{position:absolute;inset:0 8px 0 0;border-radius:4px;border:2px solid #0A0B09;background:#131511;display:grid;place-items:center;font:900 15px/1 var(--display);color:var(--c)}
+.deckbox .stack span:nth-child(1){transform:rotate(-10deg) translateX(-2px)}
+.deckbox .stack span:nth-child(2){transform:rotate(-3deg) translateX(4px)}
+.deckbox .stack span:nth-child(3){transform:rotate(6deg) translateX(10px)}
+.deckbox b{font:800 20px/1 var(--display);text-transform:uppercase;display:block}
+.deckbox small{font:500 10px/1.4 var(--mono);color:var(--muted);text-transform:uppercase}
+
+/* ---------- learn ---------- */
+.unit{border:2px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--surface)}
+.unit-top{background:var(--acid);color:#0E100D;padding:12px 14px;border-bottom:2px solid var(--ink)}
+.unit-top .kick{color:#0E100D}
+.lessonrow{display:flex;gap:12px;align-items:center;padding:12px 14px;border-bottom:1.5px solid var(--line)}
+.lessonrow:last-child{border-bottom:0}
+.lessonrow .no{flex:none;width:34px;height:46px;border-radius:4px;border:2px solid var(--ink);display:grid;place-items:center;font:900 18px/1 var(--display)}
+.lessonrow.cur .no{background:var(--accent);color:var(--on-accent)}
+.lessonrow.done .no{background:var(--ink);color:var(--app)}
+.lessonrow.lock{color:var(--muted)}
+.lessonrow.lock .no{border-style:dashed;border-color:var(--line)}
+.lessonrow .t{flex:1;min-width:0}
+.lessonrow .t b{display:block;font-weight:700;font-size:14.5px;line-height:1.25}
+.lessonrow .t small{font:500 10px/1.4 var(--mono);text-transform:uppercase;color:var(--muted)}
+.rw{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.rw span{font:700 9.5px/1 var(--mono);padding:3px 5px 2px;border-radius:3px;border:1.5px solid var(--ink);text-transform:uppercase}
+.rw span.new{background:var(--ink);color:var(--app)}
+
+/* lesson overlay */
+.lesson{position:absolute;inset:0;z-index:30;background:var(--app);display:flex;flex-direction:column;padding-top:44px;animation:slideup .5s var(--spring)}
+.lesson[hidden],.reveal[hidden],.modal[hidden]{display:none}
+@keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.ls-top{display:flex;align-items:center;gap:12px;padding:8px 18px 10px}
+.ls-top .iconbtn{width:34px;height:34px}
+.ls-bar{flex:1;height:14px;border:2px solid var(--ink);border-radius:3px;overflow:hidden;background:var(--surface)}
+.ls-bar i{display:block;height:100%;background:repeating-linear-gradient(-45deg,var(--accent) 0 6px,color-mix(in srgb,var(--accent) 75%,#000) 6px 9px);transition:width .6s var(--spring)}
+.ls-count{font:700 11px/1 var(--mono)}
+.ls-body{flex:1;overflow-y:auto;padding:6px 18px 16px}
+.ls-body .prompt{font:700 20px/1.25 var(--sans);margin:6px 0 16px}
+.ls-body .intro{font-size:15px;line-height:1.55}
+.ls-body .intro strong{background:linear-gradient(transparent 55%,color-mix(in srgb,var(--acid) 80%,transparent) 55%)}
+.readcard{width:62%;margin:4px auto 16px}
+.choices{display:grid;gap:9px}
+.choice{border:2px solid var(--ink);border-radius:6px;background:var(--surface);padding:13px 14px;text-align:left;font-weight:600;font-size:15px;display:flex;gap:10px;align-items:center;transition:transform .25s var(--spring),background .2s}
+.choice .k{flex:none;width:24px;height:24px;border:1.5px solid var(--ink);border-radius:3px;display:grid;place-items:center;font:700 11px/1 var(--mono)}
+.choice[aria-pressed="true"]{background:var(--ink);color:var(--app);transform:translateX(4px)}
+.choice[aria-pressed="true"] .k{border-color:var(--app)}
+.choice.right{background:var(--ok-soft);color:var(--ink);border-color:var(--ok)}
+.choice.wrong{background:var(--miss-soft);color:var(--ink);border-color:var(--miss)}
+.choices.two{grid-template-columns:1fr 1fr}
+.cmp-choice{flex-direction:column;align-items:stretch;padding:10px}
+.cmp-choice .mini{pointer-events:none}
+.cmp-choice span.lbl{font-size:12.5px;line-height:1.25;margin-top:8px}
+.ls-foot{padding:12px 18px 22px;border-top:2px solid var(--ink);background:var(--surface)}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:16px 18px 22px;border-top:3px solid var(--ok);background:var(--ok-soft);transform:translateY(105%);transition:transform .5s var(--spring);max-height:72%;overflow-y:auto}
+.sheet.miss{border-top-color:var(--miss);background:var(--miss-soft)}
+.sheet.show{transform:none}
+.sheet h4{margin:0 0 6px;font:900 26px/1 var(--display);text-transform:uppercase;color:var(--ok)}
+.sheet.miss h4{color:var(--miss)}
+.sheet p{margin:0 0 14px;font-size:14px;line-height:1.5}
+.sheet .src{font:500 10px/1.4 var(--mono);text-transform:uppercase;color:var(--muted);margin:-6px 0 14px}
+
+/* reveal overlay */
+.reveal{position:absolute;inset:0;z-index:35;background:#0A0B09;color:#EDF0E6;display:flex;flex-direction:column;align-items:center;padding:56px 22px 26px;overflow:hidden;text-align:center}
+.reveal .rays{position:absolute;left:50%;top:44%;width:900px;height:900px;margin:-450px 0 0 -450px;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--sec,#C8F03C) 22%,transparent) 0 6deg,transparent 6deg 18deg);-webkit-mask:radial-gradient(circle,#000 0,transparent 55%);mask:radial-gradient(circle,#000 0,transparent 55%);opacity:0;transform:scale(.4);transition:opacity .8s,transform 1.2s var(--spring);pointer-events:none}
+.reveal.lit .rays{opacity:1;transform:scale(1);animation:spin 28s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+.reveal .kick{color:#9FA697;position:relative}
+.reveal h3{position:relative;font:900 34px/.9 var(--display);text-transform:uppercase;margin:6px 0 16px;min-height:31px}
+.reveal h3 em{font-style:normal;color:var(--sec,#C8F03C)}
+.rv-card{position:relative;width:64%;max-width:250px;cursor:pointer}
+.rv-card.drop{animation:drop .8s var(--spring) both}
+@keyframes drop{from{transform:translateY(-60px) rotate(-8deg) scale(.8);opacity:0}to{transform:none;opacity:1}}
+.rv-card .card.flipped .flip{transform:rotateY(180deg)}
+.rv-card .card .flip{transition:transform 1s var(--spring)}
+.rv-card.shake .card{animation:wiggle 1.6s ease-in-out infinite}
+@keyframes wiggle{0%,70%,100%{transform:none}76%{transform:rotate(-2deg)}84%{transform:rotate(2deg)}92%{transform:rotate(-1deg)}}
+.rv-card.sweep .front .foil{animation:sweep 1.6s ease-out both}
+@keyframes sweep{0%{opacity:0;background-position:0% 0%,0 0}25%{opacity:.85}100%{opacity:calc(var(--foil-o) * .38);background-position:100% 100%,0 0}}
+.stamp{position:absolute;right:-8%;top:10%;z-index:5;font:900 26px/1 var(--display);text-transform:uppercase;padding:6px 10px 4px;border:3px solid currentColor;border-radius:4px;background:#0A0B09;transform:rotate(12deg) scale(2.2);opacity:0;pointer-events:none}
+.stamp.go{animation:stamp .55s var(--spring) forwards}
+@keyframes stamp{to{transform:rotate(12deg) scale(1);opacity:1}}
+.reveal .rv-note{position:relative;font-size:13.5px;color:#C9CEC0;max-width:300px;margin:18px 0 0;min-height:40px}
+.reveal .rv-foot{position:relative;margin-top:auto;width:100%;display:grid;gap:8px}
+.reveal .btn{border-color:#EDF0E6;box-shadow:3px 3px 0 #EDF0E6;background:#131511;color:#EDF0E6}
+.reveal .btn.primary{background:var(--acid);color:#0E100D}
+.reveal .segbar i{border-color:#3A3F35}.reveal .segbar i.on{border-color:#EDF0E6}
+.summary{position:relative;width:100%;text-align:left;margin-top:6px}
+.summary .big{font:900 88px/.85 var(--display);color:var(--acid)}
+.summary .big small{font-size:34px;color:#9FA697}
+.summary ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.summary li{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #2A2E26;padding-bottom:8px;font-size:14px}
+.summary li b{font:800 18px/1 var(--display);text-transform:uppercase}
+
+/* ---------- build ---------- */
+.filters{display:grid;gap:14px;margin-top:12px}
+.rng label{display:flex;justify-content:space-between;font:600 13px/1.2 var(--sans);margin-bottom:6px}
+.rng label output{font:700 12px/1 var(--mono);background:var(--ink);color:var(--app);padding:4px 6px 3px;border-radius:3px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:6px;background:linear-gradient(90deg,var(--accent) var(--p,0%),var(--surface-2) var(--p,0%));border:1.5px solid var(--ink);border-radius:3px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:28px;margin-top:-12px;border:2px solid var(--ink);border-radius:3px;background:var(--surface);box-shadow:2px 2px 0 var(--ink);transition:transform .2s var(--spring)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15) rotate(-6deg)}
+input[type=range]::-moz-range-track{height:6px;background:var(--surface-2);border:1.5px solid var(--ink);border-radius:3px}
+input[type=range]::-moz-range-progress{height:6px;background:var(--accent)}
+input[type=range]::-moz-range-thumb{width:18px;height:24px;border:2px solid var(--ink);border-radius:3px;background:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.results{margin-top:16px}
+.hand{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.hand .mini{animation:dealin .5s var(--spring) both}
+@keyframes dealin{from{transform:translateY(16px) rotate(-6deg);opacity:0}to{transform:none;opacity:1}}
+.note{font:500 10.5px/1.45 var(--mono);color:var(--muted);text-transform:uppercase;margin:8px 0 0}
+.namer{display:flex;gap:8px;margin-top:14px}
+.namer input{flex:1;min-width:0;border:2px solid var(--ink);border-radius:4px;background:var(--surface);padding:10px 12px;font:800 18px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.namer .btn{flex:none}
+.empty{border:2px dashed var(--line);border-radius:6px;padding:18px;text-align:center;color:var(--muted);font-size:13px}
+
+/* ---------- face-off ---------- */
+.fo-pick{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-top:10px}
+.fo-pick select{width:100%;border:2px solid var(--ink);border-radius:4px;background:var(--surface);padding:8px 8px;font:800 17px/1 var(--display);text-transform:uppercase}
+.vs{font:900 28px/1 var(--display);color:var(--accent);transform:rotate(-8deg)}
+.fo-cards{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:14px 8px 6px;position:relative}
+.fo-cards .card:first-child{transform:rotate(-4deg)}
+.fo-cards .card:last-child{transform:rotate(4deg)}
+.fo-rows{margin-top:16px;border-top:2px solid var(--ink)}
+.fo-row{padding:10px 0 9px;border-bottom:1.5px solid var(--line)}
+.fo-row .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.fo-row .top b{font:800 16px/1 var(--display);text-transform:uppercase}
+.fo-row .vals{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;align-items:center}
+.fo-bar{height:12px;border-radius:2px;background:var(--surface-2);position:relative;overflow:hidden;border:1.5px solid var(--ink)}
+.fo-bar i{position:absolute;top:0;bottom:0;background:var(--c);transition:width .7s var(--spring)}
+.fo-bar.l i{right:0}.fo-bar.r i{left:0}
+.fo-v{font:700 12px/1 var(--mono)}
+.fo-row .v2{display:flex;justify-content:space-between;margin-top:5px}
+.fo-row p{margin:5px 0 0;font-size:12px;color:var(--muted);line-height:1.4}
+
+/* ---------- you / money ---------- */
+.you-card{--sec:#FF4F1A;--frame-bg:linear-gradient(150deg,#FF4F1A,#FFB199 45%,#C8F03C);}
+.you-art{background:repeating-linear-gradient(90deg,rgba(255,79,26,.25) 0 1cqw,transparent 1cqw 3cqw),#1B1E18}
+.you-art .mono-a{position:absolute;right:3cqw;bottom:-6cqw;font:900 44cqw/1 var(--display);color:transparent;-webkit-text-stroke:.6cqw #FF4F1A}
+.you-art .who{position:absolute;left:3cqw;top:3cqw;font:900 12cqw/.85 var(--display);text-transform:uppercase;color:#EDF0E6}
+.you-art .who small{display:block;font:600 2.8cqw/1.4 var(--mono);color:#C8F03C;letter-spacing:.06em;margin-top:1.4cqw}
+.bs{padding:3cqw 3.6cqw 0;display:grid;gap:1.6cqw;font:500 3.2cqw/1.2 var(--mono)}
+.bs div{display:flex;justify-content:space-between;gap:2cqw;border-bottom:.3cqw dashed #3A3F35;padding-bottom:1.4cqw}
+.bs .sum{border-bottom:0;font-weight:700;color:var(--sec)}
+.bs .hd{font:900 5cqw/1 var(--display);text-transform:uppercase;border-bottom:0;padding:1.4cqw 0 0;color:#EDF0E6}
+.check{margin-top:18px}
+.check .q{font:900 30px/.92 var(--display);text-transform:uppercase;margin:4px 0 10px}
+.eq{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end;margin:10px 0}
+.eq div{border:2px solid var(--ink);border-radius:4px;padding:8px 10px;background:var(--app)}
+.eq small{display:block;font:600 9.5px/1.3 var(--mono);text-transform:uppercase;color:var(--muted)}
+.eq b{font:900 30px/1 var(--display)}
+.eq .op{font:900 26px/1 var(--display);border:0;background:none;padding:0 0 12px}
+.meter{position:relative;height:30px;border:2px solid var(--ink);border-radius:4px;background:var(--app);overflow:hidden;margin:12px 0 4px}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:repeating-linear-gradient(-45deg,var(--ok) 0 7px,color-mix(in srgb,var(--ok) 75%,#000) 7px 10px);width:0;transition:width 1s var(--spring)}
+.meter .line{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--ink)}
+.meter .line span{position:absolute;top:100%;left:50%;transform:translateX(-50%);font:600 9px/1.6 var(--mono);white-space:nowrap}
+.meter-cap{display:flex;justify-content:space-between;font:500 10px/1.4 var(--mono);color:var(--muted);text-transform:uppercase;margin-top:14px}
+.verdict{margin-top:12px;border-left:5px solid var(--ok);padding:4px 0 4px 12px}
+.verdict>b{font:900 24px/1 var(--display);text-transform:uppercase;display:block;color:var(--ok)}
+.verdict p{margin:6px 0 0;font-size:13.5px;line-height:1.5}
+.toggle{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13px;cursor:pointer}
+.toggle input{appearance:none;-webkit-appearance:none;width:40px;height:24px;border:2px solid var(--ink);border-radius:12px;background:var(--surface-2);position:relative;cursor:pointer;flex:none;margin:0;transition:background .2s}
+.toggle input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--ink);transition:transform .35s var(--spring)}
+.toggle input:checked{background:var(--acid)}
+.toggle input:checked::after{transform:translateX(16px)}
+.accts{margin-top:16px;border-top:2px solid var(--ink)}
+.acct{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1.5px solid var(--line)}
+.acct b{font-weight:700;font-size:14px}
+.acct small{display:block;font:500 10px/1.4 var(--mono);color:var(--muted);text-transform:uppercase}
+.acct .amt{font:800 20px/1 var(--display)}
+.tie{margin-top:14px;font-size:13px;line-height:1.5;background:#131511;color:#EDF0E6;border:2px solid var(--ink);border-radius:6px;padding:12px}
+.tie b{color:#C8F03C}
+
+/* ---------- share modal ---------- */
+.modal{position:absolute;inset:0;z-index:50;background:rgba(10,11,9,.72);display:flex;align-items:flex-end;animation:fade .25s}
+@keyframes fade{from{opacity:0}}
+.modal .sheet2{width:100%;background:var(--app);border-top:3px solid var(--ink);padding:16px 18px 24px;animation:slideup .45s var(--spring);max-height:92%;overflow-y:auto}
+.sharecard{background:#0A0B09;color:#EDF0E6;border-radius:8px;padding:16px;position:relative;overflow:hidden}
+.sharecard .row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:10px 0 12px}
+.sharecard .row .mini:hover{transform:none}
+.sharecard .row .slot{border-color:#3A3F35;background:none;padding:10% 8%}
+.sharecard .row .slot b{-webkit-text-stroke-color:#6B7166;font-size:30cqw}
+.sharecard h5{margin:0;font:900 30px/.9 var(--display);text-transform:uppercase}
+.sharecard h5 em{font-style:normal;color:var(--acid)}
+.sharecard p{margin:0;font:500 10px/1.4 var(--mono);color:#9FA697;text-transform:uppercase}
+.caption{width:100%;margin:12px 0 10px;border:2px solid var(--ink);border-radius:4px;background:var(--surface);padding:10px;font:500 13px/1.45 var(--sans);resize:none;min-height:112px}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+@media (max-width:980px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:28px}
+  .phone{position:relative;top:0}
+  .fan{height:260px}
+}
+@media (max-width:520px){
+  .page{padding:14px 16px 28px}
+  .dirbar{flex-direction:column}
+  .dirlabel{flex-direction:column;gap:10px}
+  .themebtn{position:absolute;right:0;top:0}
+  .dirbar{position:relative}
+  .rationale br{display:none}
+  .ladder{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%}
+  .ladder b{font-size:15px}
+  .ladder span{font-size:8.5px}
+  .hero h1{font-size:60px}
+  .hero .lede{font-size:16px}
+  .fan{height:210px;max-width:358px}
+  .fan .card{width:132px}
+  .fan .card:nth-child(2){left:112px}
+  .fan .card:nth-child(3){left:224px}
+  .rules{grid-template-columns:minmax(0,1fr)}
+  .ladder div{padding:8px 9px 7px}
+  .ladder b{font-size:17px}
+  .phone{padding:0;border-radius:24px;background:none;box-shadow:none;max-width:none}
+  .screen{border-radius:22px;height:min(800px,calc(100svh - 24px));max-height:none;min-height:600px;border:2px solid var(--ink)}
+  .notch{display:none}
+  .app-head{padding-top:14px}
+  .lesson{padding-top:10px}
+  .reveal{padding-top:30px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .card .tilt{transform:none!important}
+  .reveal.lit .rays{animation:none}
+}
+</style>
+
+<div class="page">
+  <header class="dirbar">
+    <div class="dirlabel">
+      <span class="tag">Direction: The Deck</span>
+      <p class="rationale"><b>Cards level up only when you learn to read them.</b> Empty binder slots (Zeigarnik) and a starter set (endowed progress) pull you to the next lesson. <br>A flip-to-reveal peak, decks you build yourself (IKEA effect) and an analyst identity make knowledge the thing you collect.</p>
+    </div>
+    <button class="themebtn" id="themeBtn" type="button" aria-label="Toggle color theme">Theme</button>
+  </header>
+
+  <main class="stage">
+    <section class="hero" aria-labelledby="heroTitle">
+      <h1 id="heroTitle">Collect the <em>market.</em><br><span class="outline">One 10-K</span><br>at a time.</h1>
+      <p class="lede">Tenbagger turns real SEC filings into a deck of company cards. Lessons teach you to read each card's stat panel; finishing one reveals a new card or levels one up. You don't open packs. You earn every tier by learning.</p>
+      <div class="ladder" aria-label="Rarity tiers, earned by lessons">
+        <div><b>Common</b><span>1 lesson</span></div>
+        <div><b>Uncommon</b><span>2 lessons</span></div>
+        <div><b>Rare</b><span>3 lessons</span></div>
+        <div class="l4"><b>Holo</b><span>4 lessons</span></div>
+      </div>
+      <div class="fan" id="heroFan" aria-hidden="true"></div>
+      <div class="rules">
+        <div><h3>Earned, never bought</h3><p>Tiers come only from finished lessons. There's no store and no currency.</p></div>
+        <div><h3>No luck involved</h3><p>You always know which lesson reveals which card. No packs or random drops.</p></div>
+        <div><h3>Real filings</h3><p>Stats come from 10-K data. Prices are sample prices, clearly labeled.</p></div>
+      </div>
+      <details class="psy">
+        <summary>Which psychology principle does what</summary>
+        <dl>
+          <dt>Zeigarnik</dt><dd>12 binder slots, with the empty ones drawn as outlines. Unfinished sets stay on your mind.</dd>
+          <dt>Endowed progress</dt><dd>You start with three cards from Unit 1, so the bar is already a quarter full.</dd>
+          <dt>Peak-end</dt><dd>Every lesson ends on a face-down card you flip yourself, followed by a calm summary of what's next.</dd>
+          <dt>IKEA effect</dt><dd>In Build, you set the rules and name the deck, and the rules stay printed on the box.</dd>
+          <dt>Identity</dt><dd>“You're building an analyst's deck.” Your own money card uses the same stats as the companies.</dd>
+          <dt>Shareable</dt><dd>The deck share card shows what you learned and never shows dollar amounts.</dd>
+        </dl>
+      </details>
+    </section>
+
+    <div class="phone">
+      <div class="screen" id="screen">
+        <div class="notch" aria-hidden="true"></div>
+        <div class="app-head">
+          <div class="wordmark"><i aria-hidden="true"></i>Tenbagger</div>
+          <span class="xp num" id="xp" aria-label="Experience points">140 XP</span>
+        </div>
+        <div class="disc">Educational only. Not investment advice. Prices are samples.</div>
+        <div class="views" id="views" tabindex="-1"></div>
+        <nav class="tabbar" id="tabbar" aria-label="App sections"></nav>
+        <div class="lesson" id="lesson" hidden role="dialog" aria-label="Lesson"></div>
+        <div class="reveal" id="reveal" hidden role="dialog" aria-label="Card reveal"></div>
+        <div class="modal" id="modal" hidden role="dialog" aria-label="Share"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span><b>Educational only. Not investment advice.</b></span>
+    <span>Company figures come from SEC 10-K filings (fixture generated 2026-09-25). Prices are sample prices.</span>
+    <span>“Alex, 20” is a fictional persona.</span>
+  </footer>
+</div>
+
+<script>
+const D={"source":"fixture","generated_at":"2026-09-25T22:01:11Z","disclaimer":"Educational content built from reported financials. Not investment advice.","companies":[{"t":"MU","n":"Micron Technology, Inc.","s":"Technology","i":"Semiconductors","p":1000.26,"pd":"2026-09-08","fy":2025,"m":{"market_cap":1125542565000,"pe":131.786561,"ps":30.112434,"ev_ebitda":61.742635,"fcf_yield":0.001482,"dividend_yield":0.000464,"gross_margin":0.400583,"operating_margin":0.266734,"net_margin":0.22845,"roe":0.157648,"roic":0.147136,"debt_to_equity":0.28343,"current_ratio":2.517985,"net_cash":-5706000000,"revenue_growth_yoy":0.488511,"revenue_cagr_3y":0.067135},"f":{"revenue":37378000000,"gross_profit":14973000000,"operating_income":9970000000,"net_income":8539000000,"free_cash_flow":1668000000,"cash":9646000000,"total_debt":15352000000},"h":{"revenue":[[2016,12399000000],[2017,20322000000],[2018,30391000000],[2019,23406000000],[2020,21435000000],[2021,27705000000],[2022,30758000000],[2023,15540000000],[2024,25111000000],[2025,37378000000]],"net_income":[[2016,-276000000],[2017,5089000000],[2018,14135000000],[2019,6313000000],[2020,2687000000],[2021,5861000000],[2022,8687000000],[2023,-5833000000],[2024,778000000],[2025,8539000000]],"free_cash_flow":[[2016,-2649000000],[2017,3419000000],[2018,8521000000],[2019,3409000000],[2020,83000000],[2021,2438000000],[2022,3114000000],[2023,-6117000000],[2024,121000000],[2025,1668000000]],"gross_margin":[[2016,0.202032],[2017,0.415117],[2018,0.588694],[2019,0.457233],[2020,0.305668],[2021,0.375203],[2022,0.45185],[2023,-0.09112],[2024,0.223528],[2025,0.400583]]}},{"t":"AAPL","n":"Apple Inc.","s":"Technology","i":"Consumer Electronics","p":255.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3826275000000,"pe":34.182306,"ps":9.194218,"ev_ebitda":26.867369,"fcf_yield":0.025813,"dividend_yield":0.00403,"gross_margin":0.469052,"operating_margin":0.319708,"net_margin":0.269151,"roe":1.51913,"roic":0.822836,"debt_to_equity":1.33803,"current_ratio":0.893293,"net_cash":-62723000000,"revenue_growth_yoy":0.064255,"revenue_cagr_3y":0.018125},"f":{"revenue":416161000000,"gross_profit":195201000000,"operating_income":133050000000,"net_income":112010000000,"free_cash_flow":98767000000,"cash":35934000000,"total_debt":98657000000},"h":{"revenue":[[2020,274515000000],[2021,365817000000],[2022,394328000000],[2023,383285000000],[2024,391035000000],[2025,416161000000]],"net_income":[[2020,57411000000],[2021,94680000000],[2022,99803000000],[2023,96995000000],[2024,93736000000],[2025,112010000000]],"free_cash_flow":[[2020,73365000000],[2021,92953000000],[2022,111443000000],[2023,99584000000],[2024,108807000000],[2025,98767000000]],"gross_margin":[[2020,0.382332],[2021,0.417794],[2022,0.433096],[2023,0.441311],[2024,0.462063],[2025,0.469052]]}},{"t":"MSFT","n":"Microsoft Corporation","s":"Technology","i":"Software","p":515.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":3844475000000,"pe":37.756598,"ps":13.646246,"ev_ebitda":23.711337,"fcf_yield":0.018627,"dividend_yield":0.006264,"gross_margin":0.688237,"operating_margin":0.45622,"net_margin":0.36146,"roe":0.296472,"roic":0.297068,"debt_to_equity":0.125629,"current_ratio":1.353446,"net_cash":-12909000000,"revenue_growth_yoy":0.149322,"revenue_cagr_3y":0.124231},"f":{"revenue":281724000000,"gross_profit":193893000000,"operating_income":128528000000,"net_income":101832000000,"free_cash_flow":71611000000,"cash":30242000000,"total_debt":43151000000},"h":{"revenue":[[2021,168088000000],[2022,198270000000],[2023,211915000000],[2024,245122000000],[2025,281724000000]],"net_income":[[2021,61271000000],[2022,72738000000],[2023,72361000000],[2024,88136000000],[2025,101832000000]],"free_cash_flow":[[2021,56118000000],[2022,65149000000],[2023,59475000000],[2024,74071000000],[2025,71611000000]],"gross_margin":[[2021,0.689258],[2022,0.684017],[2023,0.689201],[2024,0.697644],[2025,0.688237]]}},{"t":"COST","n":"Costco Wholesale Corporation","s":"Consumer Staples","i":"Discount Stores","p":925.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":411625000000,"pe":50.796266,"ps":1.49554,"ev_ebitda":31.476072,"fcf_yield":0.019039,"dividend_yield":0.005328,"gross_margin":0.128432,"operating_margin":0.037724,"net_margin":0.029426,"roe":0.277705,"roic":0.376242,"debt_to_equity":0.195892,"current_ratio":0.999479,"net_cash":8448000000,"revenue_growth_yoy":0.081673,"revenue_cagr_3y":0.066404},"f":{"revenue":275235000000,"gross_profit":35349000000,"operating_income":10383000000,"net_income":8099000000,"free_cash_flow":7837000000,"cash":14161000000,"total_debt":5713000000},"h":{"revenue":[[2021,195929000000],[2022,226954000000],[2023,242290000000],[2024,254453000000],[2025,275235000000]],"net_income":[[2021,5007000000],[2022,5844000000],[2023,6292000000],[2024,7367000000],[2025,8099000000]],"free_cash_flow":[[2021,5370000000],[2022,3501000000],[2023,6745000000],[2024,6629000000],[2025,7837000000]],"gross_margin":[[2021,0.128848],[2022,0.121487],[2023,0.122597],[2024,0.126133],[2025,0.128432]]}},{"t":"KO","n":"The Coca-Cola Company","s":"Consumer Staples","i":"Beverages","p":66.5,"pd":"2025-09-30","fy":2024,"m":{"market_cap":287280000000,"pe":27.03252,"ps":6.104418,"ev_ebitda":29.319508,"fcf_yield":0.016503,"dividend_yield":0.029097,"gross_margin":0.610633,"operating_margin":0.21232,"net_margin":0.225898,"roe":0.427704,"roic":0.131032,"debt_to_equity":1.93221,"current_ratio":1.029625,"net_cash":-37199000000,"revenue_growth_yoy":0.028566,"revenue_cagr_3y":0.067788},"f":{"revenue":47061000000,"gross_profit":28737000000,"operating_income":9992000000,"net_income":10631000000,"free_cash_flow":4741000000,"cash":10828000000,"total_debt":48027000000},"h":{"revenue":[[2020,33014000000],[2021,38655000000],[2022,43004000000],[2023,45754000000],[2024,47061000000]],"net_income":[[2020,7747000000],[2021,9771000000],[2022,9542000000],[2023,10714000000],[2024,10631000000]],"free_cash_flow":[[2020,8667000000],[2021,11258000000],[2022,9534000000],[2023,9747000000],[2024,4741000000]],"gross_margin":[[2020,0.593112],[2021,0.602716],[2022,0.581434],[2023,0.595227],[2024,0.610633]]}},{"t":"NVDA","n":"NVIDIA Corporation","s":"Technology","i":"Semiconductors","p":186.0,"pd":"2025-09-30","fy":2025,"m":{"market_cap":4613544000000,"pe":63.265306,"ps":35.35364,"ev_ebitda":55.371869,"fcf_yield":0.01319,"dividend_yield":0.000181,"gross_margin":0.749887,"operating_margin":0.624175,"net_margin":0.55848,"roe":0.918729,"roic":0.892013,"debt_to_equity":0.106685,"current_ratio":4.439851,"net_cash":126000000,"revenue_growth_yoy":1.142034,"revenue_cagr_3y":0.692547},"f":{"revenue":130497000000,"gross_profit":97858000000,"operating_income":81453000000,"net_income":72880000000,"free_cash_flow":60853000000,"cash":8589000000,"total_debt":8463000000},"h":{"revenue":[[2021,16675000000],[2022,26914000000],[2023,26974000000],[2024,60922000000],[2025,130497000000]],"net_income":[[2021,4332000000],[2022,9752000000],[2023,4368000000],[2024,29760000000],[2025,72880000000]],"free_cash_flow":[[2021,4694000000],[2022,8132000000],[2023,3808000000],[2024,27021000000],[2025,60853000000]],"gross_margin":[[2021,0.623448],[2022,0.64929],[2023,0.569289],[2024,0.727176],[2025,0.749887]]}},{"t":"JPM","n":"JPMorgan Chase & Co.","s":"Financials","i":"Banks","p":315.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":905940000000,"pe":15.949367,"ps":5.102278,"ev_ebitda":null,"fcf_yield":null,"dividend_yield":0.016579,"gross_margin":null,"operating_margin":null,"net_margin":0.32931,"roe":0.1696,"roic":null,"debt_to_equity":1.164347,"current_ratio":null,"net_cash":-378046000000,"revenue_growth_yoy":0.123033,"revenue_cagr_3y":0.134337},"f":{"revenue":177556000000,"gross_profit":null,"operating_income":null,"net_income":58471000000,"free_cash_flow":null,"cash":23372000000,"total_debt":401418000000},"h":{"revenue":[[2020,119543000000],[2021,121649000000],[2022,128695000000],[2023,158104000000],[2024,177556000000]],"net_income":[[2020,29131000000],[2021,48334000000],[2022,37676000000],[2023,49552000000],[2024,58471000000]],"free_cash_flow":[],"gross_margin":[]}},{"t":"XOM","n":"Exxon Mobil Corporation","s":"Energy","i":"Oil & Gas Integrated","p":113.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":485787000000,"pe":14.413265,"ps":1.389611,"ev_ebitda":null,"fcf_yield":0.063229,"dividend_yield":0.034385,"gross_margin":null,"operating_margin":null,"net_margin":0.096343,"roe":0.127718,"roic":null,"debt_to_equity":0.158169,"current_ratio":1.308405,"net_cash":-18681000000,"revenue_growth_yoy":0.014519,"revenue_cagr_3y":0.069657},"f":{"revenue":349585000000,"gross_profit":null,"operating_income":null,"net_income":33680000000,"free_cash_flow":30716000000,"cash":23029000000,"total_debt":41710000000},"h":{"revenue":[[2020,181502000000],[2021,285640000000],[2022,413680000000],[2023,344582000000],[2024,349585000000]],"net_income":[[2020,-22440000000],[2021,23040000000],[2022,55740000000],[2023,36010000000],[2024,33680000000]],"free_cash_flow":[[2020,-2614000000],[2021,36053000000],[2022,58390000000],[2023,33450000000],[2024,30716000000]],"gross_margin":[]}},{"t":"JNJ","n":"Johnson & Johnson","s":"Health Care","i":"Pharmaceuticals","p":185.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":449365000000,"pe":31.951641,"ps":5.05922,"ev_ebitda":null,"fcf_yield":0.044156,"dividend_yield":0.02631,"gross_margin":0.690715,"operating_margin":null,"net_margin":0.158363,"roe":0.196755,"roic":null,"debt_to_equity":0.512435,"current_ratio":1.110689,"net_cash":-12529000000,"revenue_growth_yoy":0.043002,"revenue_cagr_3y":0.040974},"f":{"revenue":88821000000,"gross_profit":61350000000,"operating_income":null,"net_income":14066000000,"free_cash_flow":19842000000,"cash":24105000000,"total_debt":36634000000},"h":{"revenue":[[2020,82584000000],[2021,78740000000],[2022,79990000000],[2023,85159000000],[2024,88821000000]],"net_income":[[2020,14714000000],[2021,20878000000],[2022,17941000000],[2023,35153000000],[2024,14066000000]],"free_cash_flow":[[2020,20189000000],[2021,19758000000],[2022,18185000000],[2023,18248000000],[2024,19842000000]],"gross_margin":[[2020,0.655781],[2021,0.702794],[2022,0.692512],[2023,0.688195],[2024,0.690715]]}},{"t":"TSLA","n":"Tesla, Inc.","s":"Consumer Discretionary","i":"Automobiles","p":445.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":1556610000000,"pe":218.137255,"ps":15.93418,"ev_ebitda":124.443185,"fcf_yield":0.002302,"dividend_yield":0.0,"gross_margin":0.178626,"operating_margin":0.072433,"net_margin":0.072587,"roe":0.097253,"roic":0.086803,"debt_to_equity":0.111091,"current_ratio":2.024912,"net_cash":8039000000,"revenue_growth_yoy":0.009476,"revenue_cagr_3y":0.219815},"f":{"revenue":97690000000,"gross_profit":17450000000,"operating_income":7076000000,"net_income":7091000000,"free_cash_flow":3584000000,"cash":16139000000,"total_debt":8100000000},"h":{"revenue":[[2020,31536000000],[2021,53823000000],[2022,81462000000],[2023,96773000000],[2024,97690000000]],"net_income":[[2020,721000000],[2021,5519000000],[2022,12556000000],[2023,14997000000],[2024,7091000000]],"free_cash_flow":[[2020,2786000000],[2021,5015000000],[2022,7566000000],[2023,4358000000],[2024,3584000000]],"gross_margin":[[2020,0.210236],[2021,0.252792],[2022,0.255984],[2023,0.182489],[2024,0.178626]]}},{"t":"AMZN","n":"Amazon.com, Inc.","s":"Consumer Discretionary","i":"Internet Retail","p":220.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":2358620000000,"pe":39.783002,"ps":3.697134,"ev_ebitda":19.256409,"fcf_yield":0.013937,"dividend_yield":0.0,"gross_margin":0.488544,"operating_margin":0.107519,"net_margin":0.092871,"roe":0.207183,"roic":0.224019,"debt_to_equity":0.201616,"current_ratio":1.063735,"net_cash":21123000000,"revenue_growth_yoy":0.109909,"revenue_cagr_3y":0.107354},"f":{"revenue":637959000000,"gross_profit":311671000000,"operating_income":68593000000,"net_income":59248000000,"free_cash_flow":32873000000,"cash":78779000000,"total_debt":57656000000},"h":{"revenue":[[2020,386064000000],[2021,469822000000],[2022,513983000000],[2023,574785000000],[2024,637959000000]],"net_income":[[2020,21331000000],[2021,33364000000],[2022,-2722000000],[2023,30425000000],[2024,59248000000]],"free_cash_flow":[[2020,25924000000],[2021,-14726000000],[2022,-16893000000],[2023,32217000000],[2024,32873000000]],"gross_margin":[[2020,0.395678],[2021,0.420325],[2022,0.438053],[2023,0.469821],[2024,0.488544]]}},{"t":"PG","n":"The Procter & Gamble Company","s":"Consumer Staples","i":"Household Products","p":154.0,"pd":"2025-09-30","fy":2024,"m":{"market_cap":380842000000,"pe":25.581395,"ps":4.531729,"ev_ebitda":18.83401,"fcf_yield":0.043388,"dividend_yield":0.024451,"gross_margin":0.51394,"operating_margin":0.220671,"net_margin":0.177049,"roe":0.29429,"roic":0.201778,"debt_to_equity":0.642022,"current_ratio":0.734796,"net_cash":-22978000000,"revenue_growth_yoy":0.024791,"revenue_cagr_3y":0.033549},"f":{"revenue":84039000000,"gross_profit":43191000000,"operating_income":18545000000,"net_income":14879000000,"free_cash_flow":16524000000,"cash":9482000000,"total_debt":32460000000},"h":{"revenue":[[2020,70950000000],[2021,76118000000],[2022,80187000000],[2023,82006000000],[2024,84039000000]],"net_income":[[2020,13027000000],[2021,14306000000],[2022,14742000000],[2023,14653000000],[2024,14879000000]],"free_cash_flow":[[2020,14330000000],[2021,15584000000],[2022,13567000000],[2023,13786000000],[2024,16524000000]],"gross_margin":[[2020,0.503171],[2021,0.512494],[2022,0.474266],[2023,0.478575],[2024,0.51394]]}}],"units":[{"id":"u1-revenue","title":"What a company sells","summary":"Revenue is where every analysis starts: how much a company sells and how fast that is growing.","lessons":[{"id":"u1-l1","title":"Revenue: the top line","xp":10,"n":7},{"id":"u1-l2","title":"Revenue growth","xp":10,"n":7},{"id":"u1-l3","title":"Compounding: 3-year CAGR","xp":10,"n":6}]},{"id":"u2-margins","title":"Margins","summary":"Margins show how many cents of each sales dollar a company keeps at each step of the income statement.","lessons":[{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"n":7},{"id":"u2-l2","title":"Operating margin","xp":10,"n":7},{"id":"u2-l3","title":"Net margin","xp":10,"n":6},{"id":"u2-l4","title":"The margin stack","xp":10,"n":7}]},{"id":"u3-profit","title":"Profit & EPS","summary":"From total profit to one share's slice of it, and what taxes take along the way.","lessons":[{"id":"u3-l1","title":"Net income","xp":10,"n":7},{"id":"u3-l2","title":"Earnings per share","xp":10,"n":6},{"id":"u3-l3","title":"EPS growth","xp":10,"n":6},{"id":"u3-l4","title":"Taxes: the effective rate","xp":10,"n":6}]},{"id":"u4-cashflow","title":"Cash flow & FCF","summary":"Profit is an opinion, cash is a fact: reading the cash-flow statement.","lessons":[{"id":"u4-l1","title":"Cash from operations vs. profit","xp":10,"n":7},{"id":"u4-l2","title":"Free cash flow","xp":10,"n":6},{"id":"u4-l3","title":"FCF margin","xp":10,"n":6},{"id":"u4-l4","title":"Capex intensity","xp":10,"n":6}]},{"id":"u5-balance","title":"Balance sheet & debt","summary":"What a company owns, what it owes, and whether it can pay its bills.","lessons":[{"id":"u5-l1","title":"Assets = liabilities + equity","xp":10,"n":6},{"id":"u5-l2","title":"Net cash vs. net debt","xp":10,"n":7},{"id":"u5-l3","title":"Debt-to-equity","xp":10,"n":6},{"id":"u5-l4","title":"Current ratio","xp":10,"n":6}]},{"id":"u6-returns","title":"Returns on capital","summary":"How much profit a business squeezes out of the money invested in it.","lessons":[{"id":"u6-l1","title":"Return on equity (ROE)","xp":10,"n":6},{"id":"u6-l2","title":"Return on assets (ROA)","xp":10,"n":6},{"id":"u6-l3","title":"Return on invested capital (ROIC)","xp":15,"n":7},{"id":"u6-l4","title":"Leverage and ROE","xp":15,"n":7}]},{"id":"u7-valuation","title":"Valuation multiples","summary":"Bringing in the share price: what the market is paying for each dollar of sales, profit and cash.","lessons":[{"id":"u7-l1","title":"Market cap & enterprise value","xp":10,"n":7},{"id":"u7-l2","title":"P/E & earnings yield","xp":15,"n":7},{"id":"u7-l3","title":"P/S & EV/EBITDA","xp":15,"n":7},{"id":"u7-l4","title":"FCF yield & dividend yield","xp":15,"n":6},{"id":"u7-l5","title":"What a P/E implies about growth","xp":20,"n":7}]},{"id":"u8-intrinsic","title":"Intrinsic value","summary":"Discounted cash flow basics: estimating what a business is worth, and why the estimate is fragile.","lessons":[{"id":"u8-l1","title":"A one-line DCF","xp":20,"n":6},{"id":"u8-l2","title":"A two-stage DCF","xp":20,"n":5},{"id":"u8-l3","title":"Price vs. estimate & sensitivity","xp":20,"n":6},{"id":"u8-l4","title":"Cycles: why one DCF can mislead","xp":20,"n":8}]}],"lesson":{"id":"u2-l1","title":"Gross profit & gross margin","xp":10,"intro":"**Gross profit** is revenue minus the **cost of revenue**: what it cost to make or purchase the things the company sold. **Gross margin** is gross profit \u00f7 revenue. A software company with a 70% gross margin keeps 70 cents of each sales dollar after delivering its product; a warehouse retailer might keep 12 cents. Neither is automatically better. Low-margin retailers can win on volume, while high gross margins leave room to spend on research and marketing. The classic mistake is using net income instead of gross profit.","questions":[{"id":"q-u2-l1-01","type":"multiple_choice","prompt":"In FY2024, Coca-Cola (KO) had revenue of $47.1B and cost of revenue of $18.3B. What was its gross profit?","choices":["$65.4B","$10.6B","$18.3B","$28.7B"],"answer":3,"explanation":"Gross profit = revenue \u2212 cost of revenue = $47.1B \u2212 $18.3B = $28.7B. Gross profit is what's left from sales after paying for the products or services themselves. Common slip: adding cost instead of subtracting it gives $65.4B.","source":{"ticker":"KO","fy":2024,"metrics":["gross_profit"],"formula":"revenue - cost_of_revenue","inputs":{"revenue":47061000000.0,"cost_of_revenue":18324000000.0}}},{"id":"q-u2-l1-04","type":"compare","prompt":"Which company had the higher gross margin in its latest fiscal year?","choices":["Costco Wholesale (COST)","Microsoft (MSFT)"],"answer":1,"explanation":"Gross margin = gross profit \u00f7 revenue. Costco Wholesale (COST), FY2025: $35.3B \u00f7 $275.2B = 12.8%. Microsoft (MSFT), FY2025: $193.9B \u00f7 $281.7B = 68.8%. So Microsoft (MSFT) is higher.","source":{"ticker":"MSFT","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":193893000000.0,"revenue":281724000000.0},"tickers":["COST","MSFT"],"fys":[2025,2025],"direction":"higher"}},{"id":"q-u2-l1-05","type":"true_false","prompt":"True or false? Apple (AAPL)'s gross margin in FY2025 was above 60.0%.","answer":false,"explanation":"False. Gross margin = gross profit \u00f7 revenue = $195.2B \u00f7 $416.2B = 46.9%, which is below 60.0%. Out of every $1 of sales, Apple kept about 47 cents after paying for what it sold.","source":{"ticker":"AAPL","fy":2025,"metrics":["gross_margin"],"formula":"gross_profit / revenue","inputs":{"gross_profit":195201000000.0,"revenue":416161000000.0},"threshold":0.6}}]}};
+(function(){
+"use strict";
+var C=D.companies, byT={};
+C.forEach(function(c,i){c.idx=i;byT[c.t]=c;});
+var TIERS=["Unrevealed","Common","Uncommon","Rare","Holo"];
+var TCOL=["#8E948A","#8E948A","#23B06A","#2F5BFF","#E8B400"];
+var SEC={"Technology":"#C8F03C","Consumer Staples":"#FF7A2F","Financials":"#3FE0C5","Energy":"#FFC53D","Health Care":"#FF6F9C","Consumer Discretionary":"#7CC0FF"};
+var HINT={MU:"Operating margin",NVDA:"Operating margin",COST:"Gross profit & gross margin",JPM:"Net margin",XOM:"Net margin",JNJ:"The margin stack",TSLA:"Net margin",AMZN:"The margin stack",PG:"Operating margin"};
+var mq=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):{matches:false};
+function RM(){return mq.matches;}
+var S={tab:"deck",m:{MSFT:4,KO:2,AAPL:1},feat:"MSFT",flipped:false,xp:140,done:false,hist:"revenue",
+  b:{gm:0,roic:0,pe:250,fcf:0,sec:"All"},decks:[],fo:["MSFT","COST"],pend:false,youFlip:false,checked:false};
+
+/* ---------- format ---------- */
+function pct(v,d){return v==null?"n/a":(v*100).toFixed(d==null?1:d)+"%";}
+function xx(v){return v==null?"n/a":(v>=100?v.toFixed(0):v.toFixed(1))+"×";}
+function big(v){if(v==null)return"n/a";var a=Math.abs(v),s=v<0?"−$":"$";
+  if(a>=1e12)return s+(a/1e12).toFixed(2)+"T";if(a>=1e9)return s+(a/1e9).toFixed(1)+"B";if(a>=1e6)return s+(a/1e6).toFixed(0)+"M";return s+a.toFixed(0);}
+function usd(v){return "$"+v.toLocaleString("en-US");}
+function pad(n){return ("00"+n).slice(-3);}
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function dt(s){var p=s.split("-");return MON[+p[1]-1]+" "+(+p[2])+", "+p[0];}
+function esc(s){return String(s).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch];});}
+function rank(key,v){if(v==null)return null;var vals=C.map(function(c){return c.m[key];}).filter(function(x){return x!=null;}).sort(function(a,b){return a-b;});return vals.length<2?1:vals.indexOf(v)/(vals.length-1);}
+function tier(t){return S.m[t]||0;}
+function owned(){return C.filter(function(c){return tier(c.t)>0;});}
+
+/* ---------- icons ---------- */
+var I={
+ deck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="7" y="3" width="12" height="17" rx="1.5" transform="rotate(8 13 11)"/><rect x="4" y="4" width="12" height="17" rx="1.5" fill="var(--surface)"/><path d="M7 16h6"/></svg>',
+ learn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 8h8M8 12h8M8 16h4"/><circle cx="16" cy="16" r="1.2" fill="currentColor"/></svg>',
+ build:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/><rect x="7" y="4" width="3" height="4" fill="var(--surface)"/><rect x="14" y="10" width="3" height="4" fill="var(--surface)"/><rect x="9" y="16" width="3" height="4" fill="var(--surface)"/></svg>',
+ vs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2.5" y="5" width="9" height="13" rx="1.2" transform="rotate(-10 7 11.5)"/><rect x="12.5" y="5" width="9" height="13" rx="1.2" transform="rotate(10 17 11.5)"/></svg>',
+ you:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><circle cx="12" cy="10" r="3"/><path d="M7.5 18c1-2.4 2.6-3.4 4.5-3.4s3.5 1 4.5 3.4"/></svg>',
+ flip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>',
+ share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v8h14v-8"/></svg>',
+ prev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+ next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+ x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'
+};
+
+/* ---------- card rendering ---------- */
+function stat(label,val,r,hl,na){
+  return '<div class="c-stat'+(hl?' hl':'')+'"><span class="l">'+label+'</span><span class="v'+(na?' na':'')+'">'+val+'</span>'+
+    '<span class="rk" title="Position among the 12 companies in this set">'+(r==null?'':'<i style="width:'+Math.max(6,Math.round(r*100))+'%"></i>')+'</span></div>';
+}
+function pips(n){var s="";for(var i=1;i<=4;i++)s+='<i class="'+(i<=n?'on':'')+'"></i>';return '<span class="pips" aria-label="'+n+' of 4 lessons read">'+s+'</span>';}
+function front(c,t,hl){
+  var m=c.m;
+  return '<div class="face front"><div class="plate">'+
+   '<div class="c-top"><span>#'+pad(c.idx+1)+'/012</span><span class="c-tier">'+TIERS[t]+'</span></div>'+
+   '<div class="c-art"><span class="c-sec">'+esc(c.s)+'</span><span class="c-tk'+(c.t.length>3?' long':'')+'">'+c.t+'</span></div>'+
+   '<div class="c-name"><b>'+esc(c.n)+'</b><span>'+esc(c.i)+' · FY'+c.fy+'</span></div>'+
+   '<div class="c-stats">'+
+     stat("Gross margin",pct(m.gross_margin),rank("gross_margin",m.gross_margin),hl==="gm",m.gross_margin==null)+
+     stat("ROIC",pct(m.roic),rank("roic",m.roic),hl==="roic",m.roic==null)+
+     stat("P/E",xx(m.pe),rank("pe",m.pe),false,m.pe==null)+
+     stat("FCF yield",pct(m.fcf_yield,2),rank("fcf_yield",m.fcf_yield),false,m.fcf_yield==null)+
+   '</div>'+
+   '<div class="c-foot"><span>Sample price $'+c.p.toFixed(2)+' · '+dt(c.pd)+'</span>'+pips(t)+'</div>'+
+   '<div class="foil"></div><div class="glare"></div></div></div>';
+}
+var HK={revenue:"Revenue",net_income:"Net income",free_cash_flow:"FCF",gross_margin:"Gross margin"};
+function spark(c,key){
+  var h=(c.h[key]||[]).filter(function(p){return p[1]!=null;});
+  if(!h.length)return '<svg viewBox="0 0 200 84"><text x="100" y="46" fill="#9FA697" font-size="10" text-anchor="middle" font-family="Martian Mono,monospace">Not reported</text></svg>';
+  var vs=h.map(function(p){return p[1];}),mn=Math.min.apply(null,vs.concat([0])),mx=Math.max.apply(null,vs);
+  if(mx===mn)mx=mn+1;
+  var W=200,H=84,px=6,py=8;
+  function X(i){return px+(h.length===1?0:i*(W-2*px)/(h.length-1));}
+  function Y(v){return py+(mx-v)*(H-2*py)/(mx-mn);}
+  var pts=h.map(function(p,i){return X(i).toFixed(1)+","+Y(p[1]).toFixed(1);}).join(" ");
+  var z=Y(0).toFixed(1);
+  var area="M"+X(0).toFixed(1)+","+z+" L"+pts.replace(/ /g," L")+" L"+X(h.length-1).toFixed(1)+","+z+" Z";
+  var dots=h.map(function(p,i){return '<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p[1]).toFixed(1)+'" r="'+(i===h.length-1?3.2:1.8)+'" fill="'+(p[1]<0?'#FF8A65':'var(--sec)')+'"/>';}).join("");
+  var yrs=h.map(function(p,i){return (i===0||i===h.length-1||h.length<=6)?'<text x="'+X(i).toFixed(1)+'" y="'+(H+10)+'" fill="#80867A" font-size="7" text-anchor="middle" font-family="Martian Mono,monospace">'+String(p[0]).slice(2)+'</text>':'';}).join("");
+  return '<svg viewBox="0 0 200 '+(H+14)+'" role="img" aria-label="'+HK[key]+' history for '+c.t+'">'+
+    '<line x1="0" x2="200" y1="'+z+'" y2="'+z+'" stroke="#4A5044" stroke-dasharray="2 3"/>'+
+    '<path d="'+area+'" fill="var(--sec)" opacity=".16"/>'+
+    '<polyline points="'+pts+'" fill="none" stroke="var(--sec)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>'+dots+yrs+'</svg>';
+}
+function backFace(c,t){
+  var key=S.hist,h=(c.h[key]||[]).filter(function(p){return p[1]!=null;});
+  var f=key==="gross_margin"?function(v){return pct(v);}:big;
+  var first=h[0],last=h[h.length-1];
+  var tabs=Object.keys(HK).map(function(k){return '<button type="button" data-act="hist" data-k="'+k+'" aria-pressed="'+(k===key)+'">'+HK[k]+'</button>';}).join("");
+  return '<div class="face back"><div class="plate">'+
+   '<div class="b-head"><b>10-K stat history</b><span>'+c.t+'</span></div>'+
+   '<div class="b-sub">Reported fiscal years · flip back to see the stat panel</div>'+
+   '<div class="b-tabs">'+tabs+'</div>'+
+   '<div class="b-chart">'+spark(c,key)+'</div>'+
+   (first?'<div class="b-range"><span>FY'+first[0]+'<b>'+f(first[1])+'</b></span><span style="text-align:right">FY'+last[0]+'<b>'+f(last[1])+'</b></span></div>':'')+
+   '<div class="b-mast"><span>'+(t>=4?'Mastered · Holo':'Lessons read '+t+'/4 · next: '+TIERS[Math.min(4,t+1)])+'</span>'+pips(t)+'</div>'+
+   '<div class="b-src">Source: SEC 10-K filings · educational only</div>'+
+   '</div></div>';
+}
+function sleeve(){return '<div class="face back sleeve"><div class="plate"><div class="logo">Ten<br>bagger<small>EARNED BY LEARNING</small></div></div></div>';}
+function card(c,t,o){
+  o=o||{};
+  var cls="card t"+Math.max(1,t)+(o.tilt!==false?" tiltable":"")+(o.flipped?" flipped":"");
+  return '<div class="'+cls+'" style="--sec:'+SEC[c.s]+'" data-card="'+c.t+'"'+(o.id?' id="'+o.id+'"':'')+'>'+
+    '<div class="tilt"><div class="flip">'+front(c,t,o.hl)+(o.sleeve?sleeve():backFace(c,t))+'</div></div></div>';
+}
+function mini(c,t,o){
+  o=o||{};
+  var metric=o.metric||"gross_margin";
+  var lab={gross_margin:"Gross mgn",roic:"ROIC",pe:"P/E",fcf_yield:"FCF yld"}[metric];
+  var v=metric==="pe"?xx(c.m.pe):pct(c.m[metric],metric==="fcf_yield"?2:0);
+  var tag=o.tag||"button";
+  return '<'+tag+(tag==="button"?' type="button"':'')+' class="mini t'+Math.max(1,t)+(o.sel?' sel':'')+'" style="--sec:'+SEC[c.s]+';--frame-bg:'+frameBg(t)+(o.delay!=null?';animation-delay:'+o.delay+'ms':'')+'" '+(o.act?'data-act="'+o.act+'" data-t="'+c.t+'"':'')+' aria-label="'+esc(c.n)+(t?', '+TIERS[t]:'')+'">'+
+    '<span class="plate" style="display:flex;flex-direction:column;height:100%"><span class="m-tk">'+c.t+'</span><span class="m-t">'+(o.hide?'Gross mgn':lab)+'</span><span class="m-v">'+(o.hide?'??':v)+'</span><span class="foil" style="opacity:'+[0,0,.06,.14,.34][t]+'"></span></span></'+tag+'>';
+}
+function frameBg(t){return ["linear-gradient(160deg,#C5C9C0,#7E847A 55%,#555A50)","linear-gradient(160deg,#C5C9C0,#7E847A 55%,#555A50)","linear-gradient(160deg,#5BE39A,#1D8E53 55%,#0E5A33)","linear-gradient(160deg,#8FA8FF,#2F5BFF 50%,#10248F)","conic-gradient(#FF4F1A,#E8B400,#8BD42A,#12C2A8,#3B6BFF,#E0428C,#FF4F1A)"][t];}
+function slot(c){return '<div class="slot" aria-label="'+c.t+' not collected yet"><b>'+c.t+'</b><span>Reveals in:<br>'+esc(HINT[c.t]||"Unit 3")+'</span></div>';}
+function segbar(){return '<div class="segbar" aria-hidden="true">'+C.slice().sort(function(a,b){return tier(b.t)-tier(a.t);}).map(function(c){var t=tier(c.t);return '<i class="'+(t?'on t'+t:'')+'"></i>';}).join("")+'</div>';}
+
+/* ---------- views ---------- */
+var views,screen,lessonEl,revealEl,modalEl;
+var TABS=[["deck","Deck"],["learn","Learn"],["build","Build"],["faceoff","Face-off"],["you","You"]];
+function renderTabs(){
+  document.getElementById("tabbar").innerHTML=TABS.map(function(t){
+    return '<button type="button" data-act="tab" data-tab="'+t[0]+'"'+(S.tab===t[0]?' aria-current="page"':'')+'>'+I[t[0]==="faceoff"?"vs":t[0]]+t[1]+'</button>';}).join("");
+}
+function render(){
+  renderTabs();
+  var f={deck:vDeck,learn:vLearn,build:vBuild,faceoff:vFace,you:vYou}[S.tab];
+  views.innerHTML='<div class="view">'+f()+'</div>';
+  if(S.tab==="build")renderHand();
+  document.getElementById("xp").textContent=S.xp+" XP";
+}
+function vDeck(){
+  var own=owned(),n=own.length,c=byT[S.feat];
+  var secs={};own.forEach(function(o){secs[o.s]=1;});
+  var holo=own.filter(function(o){return tier(o.t)===4;}).length;
+  var next=S.done?'<div class="txt"><b>Next reveal: MU &amp; NVDA</b>The <i>Operating margin</i> lesson reveals 2 new cards. '+(12-n)+' slots still empty.</div><button class="btn primary" type="button" data-act="tab" data-tab="learn">Preview</button>'
+    :'<div class="txt"><b>'+(12-n)+' cards to go</b>Next reveal: <b style="display:inline;font:inherit;color:inherit;text-decoration:underline">COST</b> in “Gross profit &amp; gross margin” (3 questions). It also levels up KO and AAPL.</div><button class="btn primary" type="button" data-act="start">Read</button>';
+  var binder=C.map(function(o){var t=tier(o.t);return t?mini(o,t,{act:"feat",sel:o.t===S.feat}):slot(o);}).join("");
+  var decks=S.decks.length?'<div class="decks">'+S.decks.map(deckbox).join("")+'</div>':'';
+  return '<div class="deckhead"><div><div class="kick">Alex\'s collection</div><h2 class="h2">The Deck</h2>'+
+    '<p class="idline">You\'re building an <b>analyst\'s deck</b>: '+Object.keys(secs).length+' sectors, '+holo+' Holo.</p></div>'+
+    '<div class="count num" aria-label="'+n+' of 12 collected">'+n+'<span style="color:var(--muted)">/12</span><small>collected</small></div></div>'+
+    segbar()+
+    '<div class="nextup">'+next+'</div>'+
+    '<div class="feature">'+card(c,tier(c.t),{flipped:S.flipped,id:"featCard"})+'</div>'+
+    '<div class="featctl"><button class="iconbtn" type="button" data-act="cycle" data-d="-1" aria-label="Previous card">'+I.prev+'</button>'+
+    '<button class="btn" type="button" data-act="flip">'+I.flip+'Flip</button>'+
+    '<button class="btn" type="button" data-act="share">'+I.share+'Share deck</button>'+
+    '<button class="iconbtn" type="button" data-act="cycle" data-d="1" aria-label="Next card">'+I.next+'</button></div>'+
+    '<div class="secthead"><h3 class="h3">Binder</h3><span class="kick">Tap a card</span></div>'+
+    '<div class="binder">'+binder+'</div>'+
+    (decks?'<div class="secthead" style="margin-top:18px"><h3 class="h3">Decks you built</h3></div>'+decks:'');
+}
+function deckbox(d){
+  var top=d.tks.slice(0,3);
+  return '<div class="deckbox"><div class="stack" aria-hidden="true">'+top.map(function(t){return '<span style="--c:'+SEC[byT[t].s]+'">'+t+'</span>';}).join("")+'</div>'+
+    '<div style="min-width:0"><b>'+esc(d.name)+'</b><small>'+d.tks.length+' cards · your rules: '+esc(d.recipe)+'</small></div></div>';
+}
+function vLearn(){
+  var rows=[
+    {n:1,t:"Gross profit & gross margin",s:"3 questions · Reading the card",st:S.done?"done":"cur",rw:S.done?[["Done",0]]:[["Reveals COST",1],["KO → Rare",0],["AAPL → Uncommon",0]]},
+    {n:2,t:"Operating margin",s:"7 questions",st:"lock",rw:[["Reveals MU",1],["Reveals NVDA",1]]},
+    {n:3,t:"Net margin",s:"6 questions",st:"lock",rw:[["Reveals JPM",1],["Reveals XOM",1]]},
+    {n:4,t:"The margin stack",s:"7 questions",st:"lock",rw:[["Reveals JNJ",1],["Reveals AMZN",1]]}
+  ];
+  return '<div class="kick">Reading the card</div><h2 class="h2">Learn</h2>'+
+   '<p class="idline" style="margin-bottom:14px">Each lesson reads one line of a card\'s stat panel. You always know what a lesson reveals before you start, and nothing is random.</p>'+
+   '<div class="unit"><div class="unit-top"><div class="kick">Unit 2 of 8</div><div class="h3" style="margin:4px 0 2px">Margins</div><div style="font-size:13px">'+esc(D.units[1].summary)+'</div></div>'+
+   rows.map(function(r){
+     return '<div class="lessonrow '+r.st+'"><span class="no">'+(r.st==="done"?"✓":r.n)+'</span><div class="t"><b>'+esc(r.t)+'</b><small>'+r.s+'</small><div class="rw">'+r.rw.map(function(x){return '<span class="'+(x[1]?'new':'')+'">'+x[0]+'</span>';}).join("")+'</div></div>'+
+     (r.st==="cur"?'<button class="btn primary" type="button" data-act="start" style="font-size:15px;padding:9px 11px 8px">Start</button>':r.st==="done"?'<button class="btn" type="button" data-act="start" style="font-size:14px;padding:8px 10px 7px">Replay</button>':'')+'</div>';
+   }).join("")+'</div>'+
+   '<p class="note">Only this lesson is playable in the prototype. The questions come from the real Unit 2 bank.</p>';
+}
+/* build */
+function passes(c){
+  var b=S.b,m=c.m;
+  if(b.sec!=="All"&&c.s!==b.sec)return false;
+  if(b.gm>0&&(m.gross_margin==null||m.gross_margin<b.gm/100))return false;
+  if(b.roic>0&&(m.roic==null||m.roic<b.roic/100))return false;
+  if(b.pe<250&&(m.pe==null||m.pe>b.pe))return false;
+  if(b.fcf>0&&(m.fcf_yield==null||m.fcf_yield<b.fcf/100))return false;
+  return true;
+}
+function recipe(){
+  var b=S.b,r=[];
+  if(b.sec!=="All")r.push(b.sec);
+  if(b.gm>0)r.push("GM ≥ "+b.gm+"%");
+  if(b.roic>0)r.push("ROIC ≥ "+b.roic+"%");
+  if(b.pe<250)r.push("P/E ≤ "+b.pe);
+  if(b.fcf>0)r.push("FCF yld ≥ "+b.fcf+"%");
+  return r.length?r.join(" · "):"no filters";
+}
+function rng(id,label,min,max,step,val,fmt){
+  var p=((val-min)/(max-min)*100).toFixed(1);
+  return '<div class="rng"><label for="'+id+'">'+label+'<output id="'+id+'-o">'+fmt(val)+'</output></label>'+
+    '<input type="range" id="'+id+'" data-k="'+id+'" min="'+min+'" max="'+max+'" step="'+step+'" value="'+val+'" style="--p:'+p+'%"></div>';
+}
+var FMT={gm:function(v){return +v?"≥ "+v+"%":"any";},roic:function(v){return +v?"≥ "+v+"%":"any";},pe:function(v){return +v>=250?"any":"≤ "+v+"×";},fcf:function(v){return +v?"≥ "+v+"%":"any";}};
+function vBuild(){
+  var secs=["All"].concat(Object.keys(SEC));
+  return '<div class="kick">Screener</div><h2 class="h2">Build a deck</h2>'+
+  '<p class="idline">Pick your own rules. Every company in the set gets dealt against them.</p>'+
+  '<div class="filters panel" style="margin-top:12px">'+
+   rng("gm","Gross margin",0,75,5,S.b.gm,FMT.gm)+rng("roic","ROIC",0,80,5,S.b.roic,FMT.roic)+
+   rng("pe","P/E (sample price)",15,250,5,S.b.pe,FMT.pe)+rng("fcf","FCF yield",0,6,0.5,S.b.fcf,FMT.fcf)+
+   '<div class="chips" role="group" aria-label="Sector">'+secs.map(function(s){return '<button type="button" class="chip" data-act="sec" data-s="'+esc(s)+'" aria-pressed="'+(S.b.sec===s)+'">'+esc(s)+'</button>';}).join("")+'</div>'+
+  '</div>'+
+  '<div class="results" id="results"></div>';
+}
+function renderHand(){
+  var el=document.getElementById("results");if(!el)return;
+  var hit=C.filter(passes);
+  var metric=S.b.roic>0?"roic":S.b.pe<250?"pe":S.b.fcf>0?"fcf_yield":"gross_margin";
+  var nulls=C.filter(function(c){return (S.b.gm>0&&c.m.gross_margin==null)||(S.b.roic>0&&c.m.roic==null)||(S.b.fcf>0&&c.m.fcf_yield==null);}).map(function(c){return c.t;});
+  var prevName=(document.getElementById("deckName")||{}).value||"";
+  el.innerHTML='<div class="secthead"><h3 class="h3"><span class="num">'+hit.length+'</span> card'+(hit.length===1?'':'s')+' dealt</h3><span class="kick">'+esc(recipe())+'</span></div>'+
+   (hit.length?'<div class="hand">'+hit.map(function(c,i){return mini(c,tier(c.t),{metric:metric,tag:"div",delay:i*40});}).join("")+'</div>':'<div class="empty">No cards match these rules. Loosen one slider.</div>')+
+   (nulls.length?'<p class="note">Not reported, so left out: '+nulls.join(", ")+'. Banks and some energy filers don\'t report gross margin the usual way.</p>':'')+
+   '<div class="namer"><label class="sr" for="deckName">Name your deck</label><input id="deckName" maxlength="22" placeholder="Name it: e.g. Margin Makers" value="'+esc(prevName)+'"><button class="btn primary" type="button" data-act="save"'+(hit.length?'':' disabled')+'>Save</button></div>'+
+   (S.decks.length?'<div class="decks">'+S.decks.map(deckbox).join("")+'</div>':'');
+}
+/* face-off */
+var FO=[["gross_margin","Gross margin","Cents kept from each sales dollar after the cost of what was sold.",pct],
+ ["operating_margin","Operating margin","What's left after running the business (R&D, marketing, admin).",pct],
+ ["net_margin","Net margin","Bottom line after interest and taxes.",pct],
+ ["roic","ROIC","Profit generated per dollar invested in the business.",pct],
+ ["revenue_growth_yoy","Revenue growth","Sales change vs. the prior fiscal year.",pct],
+ ["pe","P/E (sample price)","What the market pays per $1 of profit. A high or low P/E isn't good or bad by itself.",xx],
+ ["fcf_yield","FCF yield","Free cash flow ÷ market value, at the sample price.",function(v){return pct(v,2);}],
+ ["current_ratio","Current ratio","Short-term assets ÷ short-term bills. Your money card has one too.",xx]];
+function vFace(){
+  var a=byT[S.fo[0]],b=byT[S.fo[1]];
+  function sel(i){return '<select data-act="fo" data-i="'+i+'" aria-label="Card '+(i+1)+'">'+C.map(function(c){return '<option value="'+c.t+'"'+(S.fo[i]===c.t?' selected':'')+'>'+c.t+(tier(c.t)?'':' · not in deck')+'</option>';}).join("")+'</select>';}
+  var rows=FO.map(function(r){
+    var va=a.m[r[0]],vb=b.m[r[0]],mx=Math.max(Math.abs(va||0),Math.abs(vb||0))||1;
+    function w(v){return v==null?0:Math.max(3,Math.abs(v)/mx*100);}
+    return '<div class="fo-row"><div class="top"><b>'+r[1]+'</b></div>'+
+     '<div class="vals"><div class="fo-bar l"><i style="--c:'+SEC[a.s]+';width:'+w(va)+'%"></i></div><div class="fo-bar r"><i style="--c:'+SEC[b.s]+';width:'+w(vb)+'%"></i></div></div>'+
+     '<div class="v2"><span class="fo-v">'+a.t+' '+r[3](va)+'</span><span class="fo-v">'+r[3](vb)+' '+b.t+'</span></div>'+
+     '<p>'+r[2]+'</p></div>';
+  }).join("");
+  return '<div class="kick">Compare</div><h2 class="h2">Face-off</h2>'+
+   '<p class="idline">Two cards, stat by stat. There\'s no winner: different businesses have different shapes.</p>'+
+   '<div class="fo-pick">'+sel(0)+'<span class="vs" aria-hidden="true">VS</span>'+sel(1)+'</div>'+
+   '<div class="fo-cards">'+card(a,Math.max(1,tier(a.t)))+card(b,Math.max(1,tier(b.t)))+'</div>'+
+   '<div class="fo-rows">'+rows+'</div>'+
+   '<p class="note">Bars are scaled to the larger of the two. n/a means the company doesn\'t report that line (common for banks).</p>';
+}
+/* you */
+var A={checking:840,savings:410,card:1120,due:"Oct 17",min:25,brokerage:2600,roth:300,pending:93};
+function vYou(){
+  var cash=A.checking+A.savings,nw=cash+A.brokerage+A.roth-A.card,liq=cash/A.card;
+  var have=cash+(S.pend?A.pending:0),spare=have-A.card;
+  var youFront='<div class="face front"><div class="plate">'+
+    '<div class="c-top"><span>#YOU/001</span><span class="c-tier" style="background:#FF4F1A;color:#0E100D">Rookie</span></div>'+
+    '<div class="c-art you-art"><span class="who">Alex<small>20 · FICTIONAL PERSONA</small></span><span class="mono-a">A</span></div>'+
+    '<div class="c-name"><b>Your balance sheet, as a card</b><span>Same stats you read on company cards</span></div>'+
+    '<div class="c-stats">'+
+      stat("Net worth",usd(nw),null)+stat("Liquidity",liq.toFixed(2)+"×",null)+
+      stat("Card due "+A.due,usd(A.card),null)+stat("Pending hours",usd(A.pending),null)+
+    '</div><div class="c-foot"><span>Flip for the full breakdown</span><span>Updated today</span></div><div class="foil"></div><div class="glare"></div></div></div>';
+  var youBack='<div class="face back"><div class="plate">'+
+    '<div class="b-head"><b>Balance sheet</b><span>ALEX</span></div><div class="b-sub">Assets − liabilities = net worth, just like on a 10-K</div>'+
+    '<div class="bs"><div class="hd">Assets</div><div><span>Checking</span><span>'+usd(A.checking)+'</span></div><div><span>Savings</span><span>'+usd(A.savings)+'</span></div><div><span>Brokerage</span><span>'+usd(A.brokerage)+'</span></div><div><span>Roth IRA</span><span>'+usd(A.roth)+'</span></div>'+
+    '<div class="hd">Liabilities</div><div><span>Credit card</span><span>−'+usd(A.card)+'</span></div>'+
+    '<div class="sum"><span>Net worth</span><span>'+usd(nw)+'</span></div></div>'+
+    '<div class="b-src" style="margin-top:auto">Pending $93 (hours not yet submitted) isn\'t counted until it arrives.</div></div></div>';
+  var pctFill=Math.min(100,have/Math.max(have,A.card)*100),line=A.card/Math.max(have,A.card)*100;
+  var res=S.checked?
+    '<div class="meter" role="img" aria-label="Cash '+usd(have)+' against card balance '+usd(A.card)+'"><i id="meterFill" style="width:0"></i><span class="line" style="left:calc('+line.toFixed(1)+'% - 1.5px)"><span>'+usd(A.card)+'</span></span></div>'+
+    '<div class="meter-cap"><span>$0</span><span>'+usd(have)+' on hand</span></div>'+
+    '<div class="verdict"><b>Yes, you\'re covered.</b><p>Checking + savings'+(S.pend?' + pending':'')+' = <b class="num">'+usd(have)+'</b>. Paying the full <b class="num">'+usd(A.card)+'</b> by '+A.due+' leaves <b class="num">'+usd(spare)+'</b>. Paying in full means no interest on these purchases. The '+usd(A.min)+' minimum is there if a month gets tight, though interest would apply to the rest.</p></div>'+
+    '<label class="toggle"><input type="checkbox" data-act="pend"'+(S.pend?' checked':'')+'> Include the $93 from hours once you submit them</label>'
+    :'';
+  return '<div class="kick">Money hub</div><h2 class="h2">Your card</h2>'+
+   '<p class="idline" style="margin-bottom:12px">You read company cards. This one is yours.</p>'+
+   '<div class="feature" style="width:78%"><div class="card you-card tiltable'+(S.youFlip?' flipped':'')+'" id="youCard" data-card="YOU"><div class="tilt"><div class="flip">'+youFront+youBack+'</div></div></div></div>'+
+   '<div class="featctl" style="justify-content:center"><button class="btn" type="button" data-act="youflip">'+I.flip+'Flip</button></div>'+
+   '<div class="panel check"><div class="kick">A calm check, not a grade</div><div class="q">Can I cover the card?</div>'+
+    '<div class="eq"><div><small>Checking + savings</small><b class="num">'+usd(cash)+'</b></div><span class="op">vs</span><div><small>Card · due '+A.due+'</small><b class="num">'+usd(A.card)+'</b></div></div>'+
+    (S.checked?res:'<button class="btn primary block" type="button" data-act="check">Run the check</button>')+
+   '</div>'+
+   '<div class="tie">Your liquidity ratio is <b>'+liq.toFixed(2)+'×</b>. On company cards this is the <b>current ratio</b>: Coca-Cola is '+xx(byT.KO.m.current_ratio)+' and Microsoft is '+xx(byT.MSFT.m.current_ratio)+'. Above 1× means this month\'s bills are covered.</div>'+
+   '<div class="accts">'+[["Checking","Everyday",A.checking],["Savings","Buffer",A.savings],["Credit card","Min $25 · due "+A.due,-A.card],["Brokerage","Long run · not counted above",A.brokerage],["Roth IRA","Retirement · not counted above",A.roth],["Pending pay","Hours not submitted yet",A.pending]].map(function(r){
+     return '<div class="acct"><div><b>'+r[0]+'</b><small>'+r[1]+'</small></div><span class="amt num">'+(r[2]<0?'−':'')+usd(Math.abs(r[2]))+'</span></div>';}).join("")+'</div>'+
+   '<p class="note">Fictional persona. Net worth = $4,150 assets − $1,120 card = $3,030. Liquidity = $1,250 ÷ $1,120.</p>';
+}
+
+/* ---------- lesson ---------- */
+var L=null, Q=D.lesson.questions;
+function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");}
+function startLesson(){
+  L={step:-1,queue:Q.map(function(_,i){return i;}),sel:null,checked:false,right:0,retried:{}};
+  lessonEl.hidden=false;renderLesson();
+}
+function tkOf(s){var m=/\(([A-Z.]+)\)/.exec(s);return m?m[1]:null;}
+function renderLesson(){
+  var total=Q.length,doneN=L.step<0?0:Math.min(total,L.right);
+  var head='<div class="ls-top"><button class="iconbtn" type="button" data-act="quit" aria-label="Close lesson">'+I.x+'</button><div class="ls-bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+total+'" aria-valuenow="'+doneN+'"><i style="width:'+(doneN/total*100)+'%"></i></div><span class="ls-count num">'+doneN+'/'+total+'</span></div>';
+  var body,foot;
+  if(L.step<0){
+    body='<div class="kick">Reading the card · '+esc(D.lesson.title)+'</div><h2 class="h2" style="font-size:32px">Find this line on the card</h2>'+
+      '<div class="readcard">'+card(byT.KO,tier("KO"),{hl:"gm",tilt:false})+'</div>'+
+      '<div class="intro">'+md(D.lesson.intro)+'</div>';
+    foot='<button class="btn primary block" type="button" data-act="begin">Start reading</button>';
+  }else{
+    var q=Q[L.queue[L.step]],ch=q.type==="true_false"?["True","False"]:q.choices;
+    var cls=q.type==="multiple_choice"?"choices":"choices two";
+    var ans=q.type==="true_false"?(q.answer?0:1):q.answer;
+    var items=ch.map(function(t,i){
+      var st=L.checked?(i===ans?' right':(i===L.sel?' wrong':'')):'';
+      if(q.type==="compare"){var tk=tkOf(t),c=byT[tk];
+        return '<button type="button" class="choice cmp-choice'+st+'" data-act="pick" data-i="'+i+'" aria-pressed="'+(L.sel===i)+'"'+(L.checked?' disabled':'')+'>'+(c?mini(c,Math.max(1,tier(tk)),{tag:"span",hide:!L.checked}):'')+'<span class="lbl">'+esc(t)+'</span></button>';}
+      return '<button type="button" class="choice'+st+'" data-act="pick" data-i="'+i+'" aria-pressed="'+(L.sel===i)+'"'+(L.checked?' disabled':'')+'><span class="k">'+"ABCD"[i]+'</span>'+esc(t)+'</button>';
+    }).join("");
+    body='<div class="kick">'+(q.type==="multiple_choice"?"Work it out":q.type==="compare"?"Face-off question":"True or false")+(L.retried[L.queue[L.step]]&&L.step>=Q.length?' · second look':'')+'</div><p class="prompt">'+esc(q.prompt)+'</p><div class="'+cls+'">'+items+'</div>';
+    foot='<button class="btn primary block" type="button" data-act="checkq"'+(L.sel==null?' disabled':'')+'>Check</button>';
+    if(L.checked){
+      var ok=L.sel===ans,s=q.source||{};
+      body+='';
+      foot+='';
+      setTimeout(function(){var sh=lessonEl.querySelector(".sheet");if(sh)sh.classList.add("show");},20);
+      return paint(head,body,foot,'<div class="sheet'+(ok?'':' miss')+'" role="status"><h4>'+(ok?'Nice read.':'Not quite. That\'s how you learn it.')+'</h4><p>'+esc(q.explanation)+'</p><div class="src">Source: '+esc((s.tickers||[s.ticker]).join(" & "))+' 10-K · FY'+esc(s.fy)+(ok?'':' · this one comes back at the end')+'</div><button class="btn primary block" type="button" data-act="nextq">Continue</button></div>');
+    }
+  }
+  paint(head,body,foot,"");
+}
+function paint(h,b,f,extra){lessonEl.innerHTML=h+'<div class="ls-body">'+b+'</div><div class="ls-foot">'+f+'</div>'+extra;}
+function checkQ(){
+  var qi=L.queue[L.step],q=Q[qi],ans=q.type==="true_false"?(q.answer?0:1):q.answer;
+  L.checked=true;
+  if(L.sel===ans)L.right++;else if(!L.retried[qi]){L.retried[qi]=1;L.queue.push(qi);}
+  renderLesson();
+  var b=lessonEl.querySelector('[data-act="nextq"]');if(b)b.focus({preventScroll:true});
+}
+function nextQ(){
+  L.step++;L.sel=null;L.checked=false;
+  if(L.step>=L.queue.length||L.right>=Q.length){finishLesson();return;}
+  renderLesson();
+}
+/* ---------- reveal (peak) & summary (end) ---------- */
+var R=null;
+function finishLesson(){
+  lessonEl.hidden=true;
+  var first=!S.done;
+  var tks=[];Q.forEach(function(q){var s=q.source||{};(s.tickers||[s.ticker]).forEach(function(t){if(t&&tks.indexOf(t)<0&&byT[t])tks.push(t);});});
+  var steps=[];
+  if(first){
+    tks.forEach(function(t){var f=tier(t);if(f<4)steps.push({t:t,from:f,to:f+1});});
+    steps.sort(function(a,b){return a.from-b.from;});
+  }
+  var before=owned().length;
+  R={steps:steps,i:0,before:before,xp:first?D.lesson.xp:0,held:tks.filter(function(t){return tier(t)===4;})};
+  S.done=true;S.xp+=R.xp;
+  revealEl.hidden=false;
+  if(steps.length)showStep();else showSummary();
+}
+function showStep(){
+  var st=R.steps[R.i],c=byT[st.t],isNew=st.from===0;
+  revealEl.style.setProperty("--sec",SEC[c.s]);
+  revealEl.classList.remove("lit");
+  if(isNew){
+    revealEl.innerHTML='<div class="rays"></div><div class="kick">Earned by reading gross margin · '+(R.i+1)+' of '+R.steps.length+'</div><h3 id="rvH">A new card</h3>'+
+     '<div class="rv-card drop shake" id="rvCard" role="button" tabindex="0" aria-label="Reveal card">'+card(c,1,{sleeve:true,flipped:true,tilt:false})+'<span class="stamp" id="stamp" style="color:'+TCOL[1]+'">New</span></div>'+
+     '<p class="rv-note" id="rvNote">This one showed up in the Face-off question. Tap the card to turn it over.</p>'+
+     '<div class="rv-foot"><button class="btn primary block" type="button" data-act="rvflip" id="rvBtn">Turn it over</button></div>';
+  }else{
+    revealEl.innerHTML='<div class="rays"></div><div class="kick">Level up · '+(R.i+1)+' of '+R.steps.length+'</div><h3 id="rvH">'+c.t+': '+TIERS[st.from]+'</h3>'+
+     '<div class="rv-card drop" id="rvCard">'+card(c,st.from,{hl:"gm"})+'<span class="stamp" id="stamp" style="color:'+TCOL[st.to]+'">'+TIERS[st.to]+'</span></div>'+
+     '<p class="rv-note" id="rvNote">You just read '+c.t+'\'s gross margin line: '+pct(c.m.gross_margin)+' of each sales dollar kept.</p>'+
+     '<div class="rv-foot"><button class="btn primary block" type="button" data-act="rvnext" id="rvBtn">'+(R.i<R.steps.length-1?'Next card':'See your deck')+'</button></div>';
+    S.m[st.t]=st.to;
+    setTimeout(function(){
+      var cd=revealEl.querySelector(".card");if(!cd)return;
+      cd.classList.remove("t"+st.from);cd.classList.add("t"+st.to);
+      var tp=cd.querySelector(".c-tier");if(tp)tp.textContent=TIERS[st.to];
+      var pp=cd.querySelector(".c-foot .pips");if(pp)pp.outerHTML=pips(st.to);
+      document.getElementById("rvH").innerHTML=c.t+' → <em>'+TIERS[st.to]+'</em>';
+      document.getElementById("stamp").classList.add("go");
+      revealEl.classList.add("lit");
+      var rc=document.getElementById("rvCard");rc.classList.add("sweep");
+    },RM()?30:750);
+  }
+  var b=document.getElementById("rvBtn");if(b)b.focus({preventScroll:true});
+}
+function rvFlip(){
+  var st=R.steps[R.i];if(!st||st.from!==0)return;
+  var rc=document.getElementById("rvCard"),cd=rc.querySelector(".card");
+  if(!cd.classList.contains("flipped")){nextStep();return;}
+  rc.classList.remove("shake","drop");
+  cd.classList.remove("flipped");
+  S.m[st.t]=st.to;
+  var c=byT[st.t];
+  setTimeout(function(){
+    revealEl.classList.add("lit");rc.classList.add("sweep");
+    document.getElementById("stamp").classList.add("go");
+    document.getElementById("rvH").innerHTML='<em>'+c.t+'</em> joins your deck';
+    document.getElementById("rvNote").textContent=c.n+' · '+TIERS[st.to]+'. Gross margin '+pct(c.m.gross_margin)+': it keeps about '+Math.round(c.m.gross_margin*100)+'¢ of each sales dollar.';
+    var b=document.getElementById("rvBtn");b.textContent=R.i<R.steps.length-1?"Next card":"See your deck";b.dataset.act="rvnext";b.focus({preventScroll:true});
+  },RM()?20:520);
+}
+function nextStep(){R.i++;if(R.i<R.steps.length)showStep();else showSummary();}
+function showSummary(){
+  var n=owned().length,up=R.steps.filter(function(s){return s.from>0;}),nw=R.steps.filter(function(s){return s.from===0;});
+  revealEl.style.setProperty("--sec","#C8F03C");
+  revealEl.classList.add("lit");
+  revealEl.innerHTML='<div class="rays"></div><div class="kick">Lesson complete · '+esc(D.lesson.title)+'</div>'+
+   '<div class="summary"><div class="big num">'+n+'<small>/12</small></div><div style="font:600 11px/1.3 var(--mono);text-transform:uppercase;color:#9FA697">cards in your deck</div>'+
+   segbar()+
+   '<ul>'+(R.xp?'<li><span>Learning XP</span><b>+'+R.xp+'</b></li>':'')+
+    nw.map(function(s){return '<li><span>New card</span><b>'+s.t+' · '+TIERS[s.to]+'</b></li>';}).join("")+
+    up.map(function(s){return '<li><span>Leveled up</span><b>'+s.t+' → '+TIERS[s.to]+'</b></li>';}).join("")+
+    (R.held.length?'<li><span>Already mastered</span><b>'+R.held.join(", ")+' · Holo</b></li>':'')+
+    (!R.steps.length?'<li><span>Replay</span><b>Practice only</b></li>':'')+
+   '</ul></div>'+
+   '<p class="rv-note">Next up: <b>Operating margin</b> reveals MU and NVDA. '+(12-n)+' slots left in the binder.</p>'+
+   '<div class="rv-foot"><button class="btn" type="button" data-act="share">'+I.share+'Share my deck</button><button class="btn primary block" type="button" data-act="rvdone">Back to my deck</button></div>';
+}
+
+/* ---------- share ---------- */
+function openShare(){
+  var own=owned(),holo=own.filter(function(c){return tier(c.t)===4;}).map(function(c){return c.t;});
+  var cap="My Tenbagger deck: "+own.length+"/12 cards"+(holo.length?", "+holo.join(" & ")+" at Holo":"")+". I earned every one by learning to read real 10-K numbers. Nothing bought, no luck involved. (Educational only, not investment advice.)";
+  modalEl.hidden=false;
+  modalEl.innerHTML='<div class="sheet2"><div class="kick">Share card</div><h3 class="h3" style="margin-top:4px">Show the deck, not the dollars</h3>'+
+   '<div class="sharecard"><p>Alex · Analyst track</p><h5><em>'+own.length+'/12</em> cards read</h5>'+
+   '<div class="row">'+C.slice(0,6).map(function(c){var t=tier(c.t);return t?mini(c,t,{tag:"div"}):'<div class="slot"><b>'+c.t+'</b><span></span></div>';}).join("")+'</div>'+
+   '<div class="row" style="margin-top:0">'+C.slice(6).map(function(c){var t=tier(c.t);return t?mini(c,t,{tag:"div"}):'<div class="slot"><b>'+c.t+'</b><span></span></div>';}).join("")+'</div>'+
+   '<p>Earned by learning · tenbagger · educational only</p></div>'+
+   '<label class="sr" for="cap">Caption</label><textarea class="caption" id="cap" readonly>'+esc(cap)+'</textarea>'+
+   '<div class="modal-actions"><button class="btn" type="button" data-act="closemodal">Close</button><button class="btn primary" type="button" data-act="copy" id="copyBtn">Copy caption</button></div></div>';
+  var b=document.getElementById("copyBtn");if(b)b.focus({preventScroll:true});
+}
+function copyCap(){
+  var ta=document.getElementById("cap"),b=document.getElementById("copyBtn");
+  function ok(){b.textContent="Copied";}
+  function manual(){try{ta.select();b.textContent="Selected: copy it";}catch(e){}}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(ok,manual);}else manual();}catch(e){manual();}
+}
+
+/* ---------- tilt + foil tracking ---------- */
+var active=null;
+function resetTilt(cd){if(!cd)return;cd.classList.remove("tracking");cd.style.setProperty("--rx","0deg");cd.style.setProperty("--ry","0deg");}
+function onMove(e){
+  if(RM())return;
+  var cd=e.target.closest&&e.target.closest(".tiltable");
+  if(cd!==active){resetTilt(active);active=cd;}
+  if(!cd)return;
+  var r=cd.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+  x=Math.max(0,Math.min(1,x));y=Math.max(0,Math.min(1,y));
+  var flip=cd.classList.contains("flipped")?-1:1;
+  cd.classList.add("tracking");
+  cd.style.setProperty("--ry",((x-.5)*22*flip).toFixed(2)+"deg");
+  cd.style.setProperty("--rx",((.5-y)*18).toFixed(2)+"deg");
+  cd.style.setProperty("--mx",((flip<0?1-x:x)*100).toFixed(1));
+  cd.style.setProperty("--my",(y*100).toFixed(1));
+}
+
+/* ---------- events ---------- */
+function onClick(e){
+  var el=e.target.closest("[data-act]");
+  if(!el){
+    var cd=e.target.closest(".tiltable");
+    if(cd&&cd.id==="featCard")toggleFlip();
+    else if(cd&&cd.id==="youCard"){S.youFlip=!S.youFlip;cd.classList.toggle("flipped",S.youFlip);}
+    else if(e.target.closest("#rvCard"))rvFlip();
+    return;
+  }
+  var a=el.dataset.act;
+  switch(a){
+    case "tab":S.tab=el.dataset.tab;S.flipped=false;render();views.scrollTop=0;break;
+    case "start":startLesson();break;
+    case "begin":L.step=0;renderLesson();break;
+    case "quit":lessonEl.hidden=true;L=null;break;
+    case "pick":if(!L.checked){L.sel=+el.dataset.i;renderLesson();}break;
+    case "checkq":if(L.sel!=null)checkQ();break;
+    case "nextq":nextQ();break;
+    case "rvflip":rvFlip();break;
+    case "rvnext":nextStep();break;
+    case "rvdone":revealEl.hidden=true;revealEl.classList.remove("lit");S.tab="deck";S.feat=R&&R.steps.length?R.steps[0].t:S.feat;S.flipped=false;render();views.scrollTop=0;break;
+    case "feat":S.feat=el.dataset.t;S.flipped=false;render();var fc=document.getElementById("featCard");if(fc&&fc.scrollIntoView)fc.scrollIntoView({block:"center",behavior:RM()?"auto":"smooth"});break;
+    case "cycle":var own=owned(),i=own.map(function(c){return c.t;}).indexOf(S.feat);S.feat=own[(i+(+el.dataset.d)+own.length)%own.length].t;S.flipped=false;render();break;
+    case "flip":toggleFlip();break;
+    case "hist":e.stopPropagation();S.hist=el.dataset.k;var cdh=el.closest(".card"),c=byT[cdh.dataset.card];
+      var back=cdh.querySelector(".face.back");back.outerHTML=backFace(c,tier(c.t));break;
+    case "share":openShare();break;
+    case "closemodal":modalEl.hidden=true;break;
+    case "copy":copyCap();break;
+    case "sec":S.b.sec=el.dataset.s;views.querySelectorAll('[data-act="sec"]').forEach(function(b){b.setAttribute("aria-pressed",b.dataset.s===S.b.sec);});renderHand();break;
+    case "save":var nm=(document.getElementById("deckName").value||"").trim()||"Untitled deck";var hit=C.filter(passes).map(function(c){return c.t;});
+      S.decks.unshift({name:nm,tks:hit,recipe:recipe()});document.getElementById("deckName").value="";renderHand();break;
+    case "youflip":S.youFlip=!S.youFlip;document.getElementById("youCard").classList.toggle("flipped",S.youFlip);break;
+    case "check":S.checked=true;render();animMeter();break;
+  }
+}
+function animMeter(){
+  var m=document.getElementById("meterFill");if(!m)return;
+  var have=A.checking+A.savings+(S.pend?A.pending:0);
+  var w=(have/Math.max(have,A.card)*100).toFixed(1)+"%";
+  if(RM()){m.style.width=w;return;}
+  requestAnimationFrame(function(){requestAnimationFrame(function(){m.style.width=w;});});
+}
+function toggleFlip(){S.flipped=!S.flipped;var fc=document.getElementById("featCard");if(fc)fc.classList.toggle("flipped",S.flipped);}
+function onInput(e){
+  var t=e.target;
+  if(t.type==="range"){var k=t.dataset.k;S.b[k]=+t.value;
+    t.style.setProperty("--p",((t.value-t.min)/(t.max-t.min)*100).toFixed(1)+"%");
+    document.getElementById(k+"-o").textContent=FMT[k](t.value);renderHand();}
+}
+function onChange(e){
+  var t=e.target;
+  if(t.dataset.act==="fo"){S.fo[+t.dataset.i]=t.value;render();}
+  if(t.dataset.act==="pend"){S.pend=t.checked;render();animMeter();}
+}
+function onKey(e){
+  if((e.key==="Enter"||e.key===" ")&&e.target.id==="rvCard"){e.preventDefault();rvFlip();}
+  if(e.key==="Escape"){if(!modalEl.hidden)modalEl.hidden=true;}
+}
+
+function init(){
+  views=document.getElementById("views");screen=document.getElementById("screen");
+  lessonEl=document.getElementById("lesson");revealEl=document.getElementById("reveal");modalEl=document.getElementById("modal");
+  document.getElementById("heroFan").innerHTML=card(byT.KO,2)+card(byT.NVDA,4,{})+card(byT.COST,3);
+  render();
+  document.addEventListener("click",onClick);
+  document.addEventListener("pointermove",onMove,{passive:true});
+  document.addEventListener("mouseout",function(e){if(!e.relatedTarget){resetTilt(active);active=null;}});
+  document.addEventListener("input",onInput);
+  document.addEventListener("change",onChange);
+  document.addEventListener("keydown",onKey);
+  var tb=document.getElementById("themeBtn"),root=document.documentElement;
+  tb.addEventListener("click",function(){
+    var cur=root.getAttribute("data-theme")||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+    root.setAttribute("data-theme",cur==="dark"?"light":"dark");
+  });
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>

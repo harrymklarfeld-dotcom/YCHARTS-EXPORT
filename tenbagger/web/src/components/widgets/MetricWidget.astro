@@ -1,0 +1,39 @@
+---
+/** widget:metric — one live number, its formula, and the inputs filled in. */
+import { companyByTicker, shortName, tickerSlug } from '../../lib/data.ts';
+import { wmetric, value } from '../../lib/widgets.ts';
+import { wfmt } from '../../lib/wformat.ts';
+import SampleTags from './SampleTags.astro';
+import WidgetError from './WidgetError.astro';
+interface Props { ticker?: string; metric?: string; caption?: string }
+const { ticker = '', metric = '', caption } = Astro.props;
+const c = companyByTicker(String(ticker));
+const m = wmetric(String(metric));
+const v = c && m ? value(c, String(metric)) : null;
+const terms = m?.terms?.length === 2 && c ? m.terms.map((t) => ({ key: t, meta: wmetric(t), v: value(c, t) })) : null;
+const usesPrice = ['price', 'market_cap', 'enterprise_value', 'pe', 'ps', 'pb', 'ev_ebitda', 'fcf_yield', 'earnings_yield', 'dividend_yield'].includes(String(metric));
+---
+{!c || !m ? (
+  <WidgetError message={`Unknown ${!c ? `ticker “${ticker}”` : `metric “${metric}”`}.`} />
+) : (
+  <figure class="widget w-metric">
+    <div class="w-head">
+      <p class="widget-kicker"><a href={`/companies/${tickerSlug(c.ticker)}/`}><span class="ticker">{c.ticker}</span></a> {shortName(c.name)} · FY{c.latest_fy}</p>
+      <SampleTags companies={[c]} usesPrice={usesPrice} />
+    </div>
+    <p class="w-label">{m.label}</p>
+    <p class="big-number">{wfmt(m.format, v)}</p>
+    {m.formula && (
+      <p class="w-formula">
+        <span class="formula">
+          {terms && terms.every((t) => t.v !== null) ? (
+            <>{m.formula} = {terms.map((t, i) => <>{i > 0 && ` ${m.op ?? '/'} `}{wfmt(t.meta?.format ?? 'usd', t.v)}</>)} = <strong>{wfmt(m.format, v)}</strong></>
+          ) : (
+            <>{m.formula}</>
+          )}
+        </span>
+      </p>
+    )}
+    <figcaption class="w-caption">{caption ?? <a href={`/metrics/${String(metric).replace(/_/g, '-')}/`}>What is {m.label.toLowerCase()}?</a>}</figcaption>
+  </figure>
+)}

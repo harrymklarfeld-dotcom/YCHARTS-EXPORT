@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE prospectus fee-table excerpt (inline XBRL shape). Not a real filing. -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ix="http://www.xbrl.org/2013/inlineXBRL"
+      xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:xbrldi="http://xbrl.org/2006/xbrldi">
+<body>
+<ix:header><ix:resources>
+  <xbrli:context id="c_C000102844"><xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0000000000</xbrli:identifier>
+    <xbrli:segment><xbrldi:explicitMember dimension="oef:ClassAxis">sst:C000102844Member</xbrldi:explicitMember></xbrli:segment>
+  </xbrli:entity><xbrli:period><xbrli:startDate>2025-01-01</xbrli:startDate><xbrli:endDate>2025-12-31</xbrli:endDate></xbrli:period></xbrli:context>
+  <xbrli:context id="c_other"><xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0000000000</xbrli:identifier>
+    <xbrli:segment><xbrldi:explicitMember dimension="oef:ClassAxis">sst:C000999999Member</xbrldi:explicitMember></xbrli:segment>
+  </xbrli:entity><xbrli:period><xbrli:startDate>2025-01-01</xbrli:startDate><xbrli:endDate>2025-12-31</xbrli:endDate></xbrli:period></xbrli:context>
+</ix:resources></ix:header>
+<table>
+ <tr><td>Management fees</td><td><ix:nonFraction name="oef:ManagementFeesOverAssets" contextRef="c_C000102844" unitRef="pure" scale="-2" decimals="4">0.06</ix:nonFraction>%</td></tr>
+ <tr><td>Total annual fund operating expenses</td><td><ix:nonFraction name="oef:ExpensesOverAssets" contextRef="c_C000102844" unitRef="pure" scale="-2" decimals="4">0.06</ix:nonFraction>%</td></tr>
+ <tr><td>Other share class (ignored)</td><td><ix:nonFraction name="oef:ExpensesOverAssets" contextRef="c_other" unitRef="pure" scale="-2" decimals="4">0.14</ix:nonFraction>%</td></tr>
+</table>
+</body></html>

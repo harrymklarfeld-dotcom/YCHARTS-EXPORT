@@ -1,0 +1,60 @@
+/**
+ * Every user-facing auth string, scanned by __tests__/auth.test.ts with findBannedPhrases.
+ * Shame-free: a wrong or expired code is routine, never the user's fault.
+ */
+export const AUTH_COPY = {
+  sandboxLabel: 'Sandbox sign-in',
+  sandboxNote: 'Sandbox mode: any email works, the code is 123456, and nothing is sent or saved.',
+  emailTitle: 'Sign in with email',
+  emailIntro: "We'll email you a 6-digit code. No password to remember.",
+  emailLabel: 'Email address',
+  emailPlaceholder: 'you@example.com',
+  ageLabel: "I'm 18 or older",
+  ageHelp: 'Linking a bank or brokerage is for adults (18+). Lessons and the sample Home work at any age.',
+  sendCode: 'Email me a code',
+  codeTitle: 'Check your email',
+  codeIntro: (email: string) => `Enter the 6-digit code we sent to ${email}. It can take a minute to arrive.`,
+  codeLabel: '6-digit code',
+  verify: 'Continue',
+  resend: 'Send a new code',
+  useDifferentEmail: 'Use a different email',
+  signedInAs: (email: string) => `Signed in as ${email}`,
+  continue: 'Continue',
+  webNote: 'On the web you stay signed in until you close this tab.',
+
+  mfaTitle: 'Two-step sign-in',
+  mfaWhy: 'Banks require two-step sign-in before we can read your accounts. It means a code from your phone is needed as well as your email.',
+  mfaEnrollSteps: [
+    'Open an authenticator app (for example Google Authenticator, 1Password or Authy).',
+    'Add a new account and choose "enter a setup key" (or tap the link below on this phone).',
+    'Paste the setup key, then type the 6-digit code the app shows.',
+  ],
+  mfaKeyLabel: 'Setup key',
+  mfaOpenLink: 'Open in authenticator app',
+  mfaLinkLabel: 'Setup link',
+  mfaVerifyIntro: 'Enter the 6-digit code from your authenticator app.',
+  mfaCodeLabel: 'Authenticator code',
+  mfaDone: 'Two-step sign-in is on.',
+  mfaVerify: 'Verify',
+  mfaStartOver: 'Get a new setup key',
+
+  profileTitle: 'Account',
+  profileSignedOut: 'Not signed in',
+  profileSignedOutDetail: 'Sign in to link a bank or brokerage (read-only)',
+  profileSignIn: 'Sign in',
+  twoStepOn: 'Two-step sign-in: on',
+  twoStepOff: 'Two-step sign-in: not set up',
+  twoStepNeedsCode: 'Two-step sign-in: enter your code',
+  twoStepDetailOff: 'Needed before linking accounts',
+  signOut: 'Sign out',
+  signOutDetail: 'Removes the sign-in saved on this device',
+
+  errors: {
+    invalid_email: 'That email address looks incomplete. Check it and try again.',
+    invalid_code: "That code didn't work. It may have expired; try the newest one.",
+    rate_limited: 'Too many tries in a row. Wait a minute, then try again.',
+    network: "Couldn't reach the server. Check your connection and try again.",
+    signed_out: 'Your sign-in ended. Sign in again to continue.',
+    server: "Something went wrong on our side. Nothing changed; try again in a moment.",
+  },
+} as const;
